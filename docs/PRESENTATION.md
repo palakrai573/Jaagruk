@@ -274,8 +274,10 @@ paired drill.
 >
 > Detects: broken link · mutated payload · bad signature · unknown signer · sequence gap · fork
 >
-> The QR carries the **entire signed record** (~376 characters), so an inspector verifies at
-> the pit head with no signal and no copy of the ledger.
+> The QR carries the **entire signed record** (435 characters measured, QR version 11), so an
+> inspector verifies at the pit head with no signal and no copy of the ledger. 192 of those
+> characters are the signature and signer key — 44% of the payload is the crypto that makes it
+> verifiable offline.
 >
 > ⚠️ **This is a tamper-evident hash-chained ledger, not a blockchain.** No consensus, no
 > mining, no distributed agreement. Calling it a blockchain would be inaccurate.
@@ -453,7 +455,7 @@ SYNC (whenever, never blocking)
 | Crypto | **Web Crypto** — Ed25519 → ECDSA P-256 → HMAC ladder | Native, audited primitives. Ed25519 where available; automatic fallback down the ladder rather than failing on older WebViews. PIN hashing is PBKDF2, 210 000 iterations. |
 | AR overlay | **getUserMedia + DeviceOrientationEvent** | Camera passthrough with compass/pitch anchoring. No plugin, no ARCore dependency, runs on any Android 10+ phone. |
 | Hand tracking | **@mediapipe/tasks-vision** (WASM) | Same model family as native MediaPipe Hands. Loaded from CDN at runtime and cached, so it never inflates the base bundle. |
-| Peer-to-peer | **WebRTC RTCDataChannel + QR signalling** | No signalling server and no internet. Offer/answer compressed with `deflate-raw` (885 → 476 chars) so it fits a scannable QR. |
+| Peer-to-peer | **WebRTC RTCDataChannel + QR signalling** | No signalling server and no internet. Offer/answer trimmed then `deflate-raw` compressed: 1054 → 663 chars, dropping the code from QR version 19 to 14 so a cheap phone camera reads it first time. |
 | Voice | **Web Speech API** | Synthesis and recognition with per-language locale mapping and a fixed command lexicon with fuzzy matching. |
 | Offline shell | **Service worker + Workbox** (`vite-plugin-pwa`) | 11 precached entries, ~1.6 MB. App boots with no network on first cold start after install. |
 | 3D fallback | **three.js + React Three Fiber** | For phones with no usable camera or compass, the drill runs as a 3D scene rather than refusing to start. |
@@ -1072,7 +1074,10 @@ Every number here is from the code, not rounded up for effect. Safe to be challe
 - Record: `{ v, workerId, workerName, moduleId, domain, score, readiness, latencyGrade,
   timestamp, siteId, seq, prevHash }`
 - Canonical JSON → SHA-256 → signed by device key → `prevHash` links to predecessor
-- QR payload format `JGK1|alg|signer|sig|json`, ≈ 376 characters
+- QR payload format `JGK1|alg|signer|sig|json`, **435 characters measured** (QR version 11).
+  Payload uses single-character keys (`st` `q` `p` `w` `n` `d` `r` `f` `a` `t`), which is 32%
+  smaller than self-describing names — 343 → 234 chars. Signature 128 + signer key 64 = 192 of
+  the 435 characters
 - Signature ladder: Ed25519 → ECDSA P-256 → HMAC (graceful degradation on older WebViews)
 - PIN hashing: PBKDF2, 210 000 iterations, per-worker salt
 - Verification reports 4 independent signals; detects broken link, mutated payload, bad
@@ -1081,7 +1086,12 @@ Every number here is from the code, not rounded up for effect. Safe to be challe
 **Platform**
 - IndexedDB `jaagruk` v1, 9 stores: `workers` `chain` `keys` `attempts` `schedule` `sites`
   `hazards` `syncQueue` `blobs`
-- WebRTC signalling compressed with `deflate-raw`: 885 → 476 characters (fits a scannable QR)
+- WebRTC signalling: raw SDP 1054 → `trimSdp` 882 → `deflate-raw` + base64url **663 chars**
+  (37% smaller; QR version 19 → 14). Without `CompressionStream` the trim-only fallback is
+  1196 chars — still works, just a denser code
+- Shipped bundle: 1643 KB raw → 474 KB gzip → **390 KB brotli** (76% smaller). First install
+  62 s on 2G, 4.2 s on 3G, 0.6 s on 4G; **0 bytes on every launch after**
+- Hazard photo: 720 px cap at JPEG q0.62 — a 12 MP photo (~3500 KB) lands at 45–70 KB (≈98%)
 - 39 ISO 7010-style inline SVG pictograms
 - 6 languages, ~430 UI keys. Hindi/Bengali/Odia/Urdu 100%; Santali ~38%, flagged in-app
 - Gesture confirm paths: pinch, or 1.2 s dwell (glove fallback)
