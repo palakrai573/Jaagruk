@@ -327,10 +327,60 @@ export function rollingMean(values, window = 3) {
   })
 }
 
+/* ================================================================== */
+/* Chart colours                                                       */
+/* ================================================================== */
+
+/**
+ * Colours are emitted as `rgb(var(--token))` rather than hex so a theme switch
+ * repaints inline SVG at the same instant as the surrounding page. Passing them
+ * as props would mean every chart re-renders on toggle, and any chart that forgot
+ * would be left on the previous theme.
+ *
+ * The split between FILL and TEXT is not cosmetic. ISO 7010 green `#2E7D4F` is
+ * correct as a shape fill in both themes — it has to match the sign painted on
+ * the wall — but as small text on white it only reaches about 4.4:1, and ISO
+ * yellow reaches 1.9:1, which is illegible. So fills keep the ISO hue and text
+ * uses a contrast-corrected variant per theme.
+ */
+export const CHART_COLOR = {
+  // structural — follow the theme
+  grid: 'rgb(var(--border-default))',
+  gridSubtle: 'rgb(var(--border-subtle))',
+  axisText: 'rgb(var(--text-tertiary))',
+  surface: 'rgb(var(--surface-1))',
+  surfaceInset: 'rgb(var(--surface-inset))',
+  ink: 'rgb(var(--text-primary))',
+  brand: 'rgb(var(--brand))',
+
+  // semantic fills — ISO hue, theme-independent
+  safe: 'rgb(var(--safe))',
+  warning: 'rgb(var(--warning))',
+  hazard: 'rgb(var(--hazard))',
+
+  // semantic text — contrast-corrected per theme
+  safeText: 'rgb(var(--safe-text))',
+  warningText: 'rgb(var(--warning-text))',
+  hazardText: 'rgb(var(--hazard-text))',
+}
+
+/** Translucent variant of a semantic token, for heatmap steps and fills. */
+export function chartAlpha(token, alpha) {
+  return `rgb(var(--${token}) / ${alpha})`
+}
+
 /** Colour ramp shared by every readiness display, so they never disagree. */
 export function readinessColor(value) {
   const v = toNumberOr(value, 0)
-  if (v >= 70) return '#2E7D4F'
-  if (v >= 45) return '#FFB020'
-  return '#D93025'
+  if (v >= 70) return CHART_COLOR.safe
+  if (v >= 45) return CHART_COLOR.warning
+  return CHART_COLOR.hazard
+}
+
+/** Same ramp for text, where the ISO hues do not carry enough contrast. */
+export function readinessTextColor(value) {
+  const v = toNumberOr(value, 0)
+  if (v >= 70) return CHART_COLOR.safeText
+  if (v >= 45) return CHART_COLOR.warningText
+  return CHART_COLOR.hazardText
 }

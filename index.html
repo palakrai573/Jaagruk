@@ -1,23 +1,60 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" dir="ltr" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#1C1F22" />
+    <meta name="theme-color" content="#0D0F11" />
+    <meta name="color-scheme" content="dark light" />
     <meta
       name="description"
       content="Jaagruk — AR safety training, reaction-time assessment and tamper-evident offline certification for mining, steel and mica workers in Jharkhand."
     />
     <title>Jaagruk — Industrial Safety Training &amp; Certification</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
-      rel="stylesheet"
-    />
+    <!--
+      Theme applied before the first paint.
+
+      Resolving the theme from React means the browser has already painted with
+      whatever the stylesheet default was, so a light-theme user sees a dark flash
+      on every cold load. This runs synchronously in <head>, ahead of any
+      stylesheet, so the first painted frame is already correct.
+
+      Deliberately inline and dependency-free: an import here would be a network
+      round trip before paint. It must stay in step with src/lib/theme.js — same
+      storage key, same resolution rule.
+    -->
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('jaagruk_theme')
+          var pref = stored === 'light' || stored === 'dark' || stored === 'system' ? stored : 'system'
+          var light =
+            pref === 'light' ||
+            (pref === 'system' &&
+              window.matchMedia &&
+              window.matchMedia('(prefers-color-scheme: light)').matches)
+          var theme = light ? 'light' : 'dark'
+          var root = document.documentElement
+          root.setAttribute('data-theme', theme)
+          root.style.colorScheme = theme
+          var meta = document.querySelector('meta[name="theme-color"]')
+          if (meta) meta.setAttribute('content', light ? '#F7F8F9' : '#0D0F11')
+
+          // Direction too, for the same reason: an RTL user should not see one
+          // left-aligned frame before React mounts.
+          var lang = localStorage.getItem('jaagruk_language')
+          if (lang === 'ur') {
+            root.setAttribute('dir', 'rtl')
+            root.setAttribute('lang', 'ur-PK')
+          }
+        } catch (e) {
+          /* Private mode with storage disabled. The dark default in the markup
+             above already applies, so there is nothing to recover from. */
+        }
+      })()
+    </script>
   </head>
-  <body class="bg-steel text-chalk font-body">
+  <body class="bg-surface-0 text-ink font-body antialiased">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

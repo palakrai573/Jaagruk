@@ -41,6 +41,23 @@ export default defineConfig({
         // verification all have to work with no network at all — that is the
         // core requirement, not a nice-to-have.
         globPatterns: ['**/*.{js,css,html,png,svg,woff2}'],
+
+        // ...but not every script's fonts.
+        //
+        // Latin, Devanagari and Ol Chiki ARE precached: the problem statement
+        // names Hindi and Santali localisation specifically, so those two have to
+        // be fully styled on a cold offline start. Ol Chiki costs 10 KB for both
+        // weights, so there is no reason to defer it.
+        //
+        // Bengali, Odia and Urdu are runtime-cached instead. They are additional
+        // languages beyond the brief, and Nastaliq alone is ~317 KB for two
+        // weights — making every worker download it up front to install the app
+        // would be the wrong default. They cache permanently on first use.
+        globIgnores: [
+          '**/noto-sans-bengali-*.woff2',
+          '**/noto-sans-oriya-*.woff2',
+          '**/noto-nastaliq-urdu-*.woff2',
+        ],
         // The three-panel dashboard plus three.js pushes the bundle past the
         // default 2 MB precache ceiling.
         maximumFileSizeToCacheInBytes: 6 * 1024 * 1024,
@@ -75,6 +92,19 @@ export default defineConfig({
             options: {
               cacheName: 'jaagruk-mediapipe',
               expiration: { maxEntries: 12, maxAgeSeconds: 60 * 60 * 24 * 180 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+          {
+            // The three deferred script fonts. Self-hosted, so same-origin and
+            // immutable once hashed — cache-first and keep them for a year. After
+            // one online use of Bengali, Odia or Urdu, that language is offline
+            // too.
+            urlPattern: /\/assets\/noto-(sans-bengali|sans-oriya|nastaliq-urdu)-[^/]+\.woff2$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'jaagruk-script-fonts',
+              expiration: { maxEntries: 12, maxAgeSeconds: 60 * 60 * 24 * 365 },
               cacheableResponse: { statuses: [0, 200] },
             },
           },

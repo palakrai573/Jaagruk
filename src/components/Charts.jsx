@@ -7,6 +7,8 @@ import {
   radarRings,
   readinessColor,
   relativeTime,
+  CHART_COLOR,
+  chartAlpha,
 } from '../lib/charts.js'
 import { toNumberOr, clampPercent } from '../lib/num.js'
 import { useLanguage } from '../context/LanguageContext.jsx'
@@ -117,7 +119,7 @@ export function Sparkline({ values = [], width = 128, height = 34, color, showAr
           y1={height / 2}
           x2={width - 2}
           y2={height / 2}
-          stroke="#3A3F45"
+          stroke={CHART_COLOR.grid}
           strokeWidth="2"
           strokeDasharray="3 3"
         />
@@ -175,7 +177,7 @@ export function TrendPill({ trend }) {
   if (!trend) return null
 
   const { direction, delta } = trend
-  const color = direction === 'up' ? '#2E7D4F' : direction === 'down' ? '#D93025' : '#8B8F94'
+  const color = direction === 'up' ? CHART_COLOR.safeText : direction === 'down' ? CHART_COLOR.hazardText : CHART_COLOR.axisText
   const arrow = direction === 'up' ? '▲' : direction === 'down' ? '▼' : '→'
 
   return (
@@ -239,18 +241,18 @@ export function RadarChart({ axes = [], size = 260, showLabels = true }) {
           cy={ring.cy}
           r={ring.r}
           fill="none"
-          stroke="#3A3F45"
+          stroke={CHART_COLOR.grid}
           strokeWidth="1"
           strokeDasharray={ring.value === 100 ? undefined : '2 3'}
         />
       ))}
 
       {/* The 70% pass threshold, drawn distinctly — it is the line that matters */}
-      <circle cx={cx} cy={cy} r={radius * 0.7} fill="none" stroke="#FFB020" strokeWidth="1" strokeOpacity="0.45" />
+      <circle cx={cx} cy={cy} r={radius * 0.7} fill="none" stroke={CHART_COLOR.warning} strokeWidth="1" strokeOpacity="0.45" />
 
       {/* Spokes */}
       {spokes.map((axis, i) => (
-        <line key={i} x1={cx} y1={cy} x2={axis.x2} y2={axis.y2} stroke="#3A3F45" strokeWidth="1" />
+        <line key={i} x1={cx} y1={cy} x2={axis.x2} y2={axis.y2} stroke={CHART_COLOR.grid} strokeWidth="1" />
       ))}
 
       {/* Value polygon */}
@@ -275,8 +277,8 @@ export function RadarChart({ axes = [], size = 260, showLabels = true }) {
             cx={cx + Math.cos(angle) * r}
             cy={cy + Math.sin(angle) * r}
             r={isWeak ? 4.5 : 3}
-            fill={isWeak ? '#D93025' : fill}
-            stroke="#1C1F22"
+            fill={isWeak ? CHART_COLOR.hazard : fill}
+            stroke={CHART_COLOR.surface}
             strokeWidth="1.5"
             style={{ transition: reduced ? undefined : 'all 900ms cubic-bezier(0.22, 1, 0.36, 1)' }}
           />
@@ -294,7 +296,7 @@ export function RadarChart({ axes = [], size = 260, showLabels = true }) {
             dominantBaseline="middle"
             className="font-mono"
             fontSize="8.5"
-            fill={values[i] >= 70 ? '#8B8F94' : '#D93025'}
+            fill={values[i] >= 70 ? CHART_COLOR.axisText : CHART_COLOR.hazardText}
           >
             {shortLabel(axes[i].label)}
           </text>
@@ -314,7 +316,7 @@ function shortLabel(label) {
 /* Heatmap                                                             */
 /* ================================================================== */
 
-const HEAT_LEVELS = ['#2A2E33', '#2E7D4F55', '#2E7D4FAA', '#2E7D4F']
+const HEAT_LEVELS = [CHART_COLOR.surfaceInset, chartAlpha('safe', 0.35), chartAlpha('safe', 0.68), CHART_COLOR.safe]
 
 /**
  * Training-consistency grid, one cell per day.
@@ -349,7 +351,7 @@ export function Heatmap({ heatmap, cellSize = 10, gap = 2 }) {
               height={cellSize}
               rx="2"
               fill={HEAT_LEVELS[cell.level]}
-              stroke={cell.isToday ? '#FFB020' : 'none'}
+              stroke={cell.isToday ? CHART_COLOR.warning : 'none'}
               strokeWidth={cell.isToday ? 1.5 : 0}
             >
               <title>
@@ -471,8 +473,8 @@ export function DecayCurve({ points = [], width = 260, height = 96, threshold = 
       <svg width={width} height={height} role="img" aria-label={t('ch_decay_label')} className="overflow-visible">
         <defs>
           <linearGradient id="decay-fill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#FFB020" stopOpacity="0.25" />
-            <stop offset="100%" stopColor="#FFB020" stopOpacity="0" />
+            <stop offset="0%" stopColor={CHART_COLOR.warning} stopOpacity="0.25" />
+            <stop offset="100%" stopColor={CHART_COLOR.warning} stopOpacity="0" />
           </linearGradient>
         </defs>
 
@@ -482,19 +484,19 @@ export function DecayCurve({ points = [], width = 260, height = 96, threshold = 
           y1={toY(threshold)}
           x2={width - pad.right}
           y2={toY(threshold)}
-          stroke="#2E7D4F"
+          stroke={CHART_COLOR.safe}
           strokeWidth="1"
           strokeDasharray="3 3"
         />
-        <text x={pad.left} y={toY(threshold) - 4} fontSize="8" className="font-mono" fill="#2E7D4F">
+        <text x={pad.left} y={toY(threshold) - 4} fontSize="8" className="font-mono" fill={CHART_COLOR.safeText}>
           {threshold}%
         </text>
 
         <path d={area} fill="url(#decay-fill)" />
-        <path d={line} fill="none" stroke="#FFB020" strokeWidth="2" strokeLinecap="round" className="spark-draw" />
+        <path d={line} fill="none" stroke={CHART_COLOR.warning} strokeWidth="2" strokeLinecap="round" className="spark-draw" />
 
         {/* Today */}
-        <circle cx={toX(0)} cy={toY(points[0].value)} r="3.5" fill="#F2F1ED" />
+        <circle cx={toX(0)} cy={toY(points[0].value)} r="3.5" fill={CHART_COLOR.ink} />
 
         {/* The point it stops counting as competent */}
         {crossing && (
@@ -504,18 +506,18 @@ export function DecayCurve({ points = [], width = 260, height = 96, threshold = 
               y1={pad.top}
               x2={toX(crossing.day)}
               y2={pad.top + usableH}
-              stroke="#D93025"
+              stroke={CHART_COLOR.hazard}
               strokeWidth="1"
               strokeDasharray="2 2"
             />
-            <circle cx={toX(crossing.day)} cy={toY(crossing.value)} r="3" fill="#D93025" />
+            <circle cx={toX(crossing.day)} cy={toY(crossing.value)} r="3" fill={CHART_COLOR.hazard} />
           </>
         )}
 
-        <text x={pad.left} y={height - 4} fontSize="8" className="font-mono" fill="#8B8F94">
+        <text x={pad.left} y={height - 4} fontSize="8" className="font-mono" fill={CHART_COLOR.axisText}>
           {t('ch_today')}
         </text>
-        <text x={width - pad.right} y={height - 4} fontSize="8" textAnchor="end" className="font-mono" fill="#8B8F94">
+        <text x={width - pad.right} y={height - 4} fontSize="8" textAnchor="end" className="font-mono" fill={CHART_COLOR.axisText}>
           +{maxDay}d
         </text>
       </svg>

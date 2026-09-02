@@ -1,13 +1,52 @@
+/* Latin faces are always needed, so they are static imports and get bundled into
+   the main CSS. The five non-Latin scripts are dynamic imports in lib/fonts.js so
+   a Hindi user never downloads Ol Chiki or Nastaliq. All self-hosted: the Google
+   Fonts CDN was a first-run network dependency, which contradicted offline-first. */
+@import '@fontsource/barlow-condensed/latin-600.css';
+@import '@fontsource/barlow-condensed/latin-700.css';
+@import '@fontsource/inter/latin-400.css';
+@import '@fontsource/inter/latin-500.css';
+@import '@fontsource/inter/latin-600.css';
+@import '@fontsource/inter/latin-700.css';
+@import '@fontsource/jetbrains-mono/latin-400.css';
+@import '@fontsource/jetbrains-mono/latin-500.css';
+@import '@fontsource/jetbrains-mono/latin-700.css';
+
+@import './styles/tokens.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 html {
   scroll-behavior: smooth;
+  /* Fallbacks for the first paint, before fonts.js sets the language stack. */
+  --font-display: 'Barlow Condensed', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
 }
 
 body {
   -webkit-font-smoothing: antialiased;
+  background-color: rgb(var(--surface-0));
+  color: rgb(var(--text-primary));
+  font-family: var(--font-body);
+  /* Themes must cross-fade rather than snap, or a toggle reads as a page reload.
+     Colour only — animating layout properties here would be a jank source. */
+  transition: background-color var(--dur-base) var(--ease-in-out),
+    color var(--dur-base) var(--ease-in-out);
+}
+
+/* Nastaliq needs materially more line height than Latin or Devanagari; at the
+   app's default leading the descenders of one line collide with the next. */
+[data-script='urdu'] {
+  line-height: 2;
+}
+
+/* Ol Chiki has no case distinction, so `uppercase` does nothing but it also does
+   no harm. Letter-spacing does harm — it breaks the visual word shapes readers
+   rely on, so the display tracking used for Latin headings is removed. */
+[data-script='olchiki'] {
+  letter-spacing: normal;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -20,13 +59,18 @@ body {
 }
 
 :focus-visible {
-  outline: 2px solid #FFB020;
+  outline: 2px solid rgb(var(--brand));
   outline-offset: 2px;
+  border-radius: var(--radius-sm);
 }
 
 .stripe-divider {
   height: 6px;
-  background: repeating-linear-gradient(135deg, #FFB020, #FFB020 10px, #1C1F22 10px, #1C1F22 20px);
+  background: repeating-linear-gradient(
+    135deg,
+    rgb(var(--warning)) 0 10px,
+    rgb(var(--surface-0)) 10px 20px
+  );
 }
 
 /* ---------------------------------------------------------------- */

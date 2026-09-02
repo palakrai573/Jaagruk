@@ -7,6 +7,9 @@
 
 export const LS = {
   LANG: 'jaagruk_language',
+  // 'dark' | 'light' | 'system'. Read by the pre-paint script in index.html as
+  // well as by theme.js, so the key name is duplicated there — change both.
+  THEME: 'jaagruk_theme',
   API_KEY: 'jaagruk_api_key',
   PROVIDER: 'jaagruk_provider',
   LOG: 'jaagruk_training_log',

@@ -1,0 +1,243 @@
+/* ==================================================================
+   Jaagruk design tokens — "Instrument"
+   ==================================================================
+
+   WHY EVERY VALUE IS A CUSTOM PROPERTY
+   A theme switch has to change SVG chart fills, pictogram colours and border
+   tints at the same instant as backgrounds. Passing colours through props would
+   mean every chart re-renders on toggle and any component that forgot would be
+   left on the old theme. One attribute on <html> and CSS does all of it.
+
+   WHY RGB TRIPLETS AND NOT HEX
+   Tailwind opacity modifiers (bg-brand/10, border-warning/40) need the channels
+   separately so it can compose rgb(... / alpha). Hex would break every one of
+   those utilities, and the existing code uses them heavily.
+
+   WHY TEAL IS THE BRAND
+   ISO 7010 — which the 39 pictograms already follow — reserves red, yellow,
+   green and blue for prohibition, warning, safe condition and mandatory action.
+   Amber was previously the brand AND the caution colour, so the chrome spoke the
+   same language as a hazard sign. Teal is the only hue with no ISO meaning, so it
+   cannot be misread as a safety instruction. Amber is now reserved for caution.
+   ================================================================== */
+
+:root {
+  /* ---------------- brand ramp: teal ---------------- */
+  --teal-50: 240 253 250;
+  --teal-100: 204 251 241;
+  --teal-200: 153 246 228;
+  --teal-300: 94 234 212;
+  --teal-400: 45 212 191;
+  --teal-500: 20 184 166;
+  --teal-600: 13 148 136;
+  --teal-700: 15 118 110;
+  --teal-800: 17 94 89;
+  --teal-900: 19 78 74;
+  --teal-950: 4 47 46;
+
+  /* ---------------- neutral ramp: steel ---------------- */
+  --steel-950: 13 15 17;
+  --steel-900: 20 23 26;
+  --steel-850: 26 30 33;
+  --steel-800: 33 38 42;
+  --steel-700: 44 50 56;
+  --steel-600: 58 66 73;
+  --steel-500: 78 87 95;
+  --steel-400: 107 117 125;
+  --steel-300: 139 148 156;
+  --steel-200: 180 187 193;
+  --steel-100: 216 220 223;
+  --steel-50: 242 244 245;
+
+  /* ---------------- raw ISO 7010 safety hues ----------------
+     These never change between themes. A safety colour that shifted with the
+     theme would no longer match the sign painted on the wall. Only the *text*
+     variants below are contrast-corrected per theme. */
+  --iso-red: 217 48 37;
+  --iso-yellow: 255 176 32;
+  --iso-green: 46 125 79;
+  --iso-blue: 21 101 192;
+
+  /* ---------------- showcase-only accent ----------------
+     Copper. Hero gradient only — the ore-and-steel note. Never semantic. */
+  --ore: 184 92 56;
+
+  /* ================================================================
+     DARK THEME (default — correct for a shaft, a night shift, and OLED)
+     ================================================================ */
+
+  --surface-0: var(--steel-950);
+  --surface-1: var(--steel-900);
+  --surface-2: var(--steel-850);
+  --surface-3: var(--steel-800);
+  --surface-inset: 8 10 11;
+
+  --border-subtle: var(--steel-800);
+  --border-default: var(--steel-700);
+  --border-strong: var(--steel-600);
+
+  --text-primary: var(--steel-50);
+  --text-secondary: var(--steel-200);
+  --text-tertiary: var(--steel-300);
+  --text-disabled: var(--steel-500);
+  --text-on-brand: var(--steel-950);
+
+  /* brand roles */
+  --brand: var(--teal-500);
+  --brand-hover: var(--teal-400);
+  --brand-pressed: var(--teal-600);
+  --brand-text: var(--teal-300);
+  --brand-subtle: var(--teal-950);
+  --brand-border: var(--teal-800);
+
+  /* semantic fills keep the ISO hue; text variants are lightened for contrast
+     against a dark surface, where #2E7D4F green only reaches about 3:1 */
+  --hazard: var(--iso-red);
+  --hazard-text: 255 138 128;
+  --hazard-subtle: 43 14 12;
+  --hazard-border: 109 30 24;
+
+  --warning: var(--iso-yellow);
+  --warning-text: var(--iso-yellow);
+  --warning-subtle: 43 32 8;
+  --warning-border: 122 84 15;
+
+  --safe: var(--iso-green);
+  --safe-text: 110 231 160;
+  --safe-subtle: 9 33 21;
+  --safe-border: 27 84 52;
+
+  --mandate: var(--iso-blue);
+  --mandate-text: 125 179 250;
+  --mandate-subtle: 8 25 46;
+  --mandate-border: 21 66 122;
+
+  /* elevation — on dark, depth reads through border tint and a soft ambient
+     shadow. Heavy drop shadows on a near-black surface just look like smudges. */
+  --elev-1: 0 1px 2px 0 rgb(0 0 0 / 0.4);
+  --elev-2: 0 2px 8px -1px rgb(0 0 0 / 0.5), 0 1px 3px -1px rgb(0 0 0 / 0.4);
+  --elev-3: 0 8px 24px -4px rgb(0 0 0 / 0.6), 0 2px 6px -2px rgb(0 0 0 / 0.4);
+  --elev-4: 0 20px 48px -8px rgb(0 0 0 / 0.7), 0 4px 12px -4px rgb(0 0 0 / 0.5);
+  --glow-brand: 0 0 0 1px rgb(var(--teal-700) / 0.6), 0 4px 20px -4px rgb(var(--teal-500) / 0.25);
+
+  /* hero gradient stops */
+  --hero-from: 4 47 46;
+  --hero-via: var(--steel-900);
+  --hero-to: var(--steel-950);
+}
+
+/* ==================================================================
+   LIGHT THEME
+   Not a colour inversion. Surfaces go warm-neutral rather than pure white,
+   because #FFFFFF beside teal reads cheap and glares on a projector. Shadows
+   become real, borders soften, and every semantic text colour is darkened —
+   ISO yellow on white is about 1.9:1, which is unreadable as text.
+   ================================================================== */
+
+[data-theme='light'] {
+  --surface-0: 247 248 249;
+  --surface-1: 255 255 255;
+  --surface-2: 255 255 255;
+  --surface-3: 255 255 255;
+  --surface-inset: 240 242 244;
+
+  --border-subtle: 228 231 233;
+  --border-default: 207 212 216;
+  --border-strong: 180 187 193;
+
+  --text-primary: 20 23 26;
+  --text-secondary: 78 87 95;
+  --text-tertiary: 107 117 125;
+  --text-disabled: 160 168 175;
+  --text-on-brand: 255 255 255;
+
+  --brand: var(--teal-700);
+  --brand-hover: var(--teal-600);
+  --brand-pressed: var(--teal-800);
+  --brand-text: var(--teal-800);
+  --brand-subtle: 236 253 250;
+  --brand-border: var(--teal-200);
+
+  /* fills stay ISO; text darkens to clear AA on white */
+  --hazard: var(--iso-red);
+  --hazard-text: 166 29 21;
+  --hazard-subtle: 254 242 241;
+  --hazard-border: 250 205 201;
+
+  --warning: var(--iso-yellow);
+  --warning-text: 124 74 0;
+  --warning-subtle: 255 249 235;
+  --warning-border: 253 224 161;
+
+  --safe: var(--iso-green);
+  --safe-text: 22 89 52;
+  --safe-subtle: 240 250 244;
+  --safe-border: 187 226 202;
+
+  --mandate: var(--iso-blue);
+  --mandate-text: 17 79 152;
+  --mandate-subtle: 239 246 255;
+  --mandate-border: 191 219 254;
+
+  --elev-1: 0 1px 2px 0 rgb(16 24 40 / 0.05);
+  --elev-2: 0 2px 8px -1px rgb(16 24 40 / 0.08), 0 1px 3px -1px rgb(16 24 40 / 0.06);
+  --elev-3: 0 8px 24px -4px rgb(16 24 40 / 0.1), 0 2px 6px -2px rgb(16 24 40 / 0.06);
+  --elev-4: 0 20px 48px -8px rgb(16 24 40 / 0.14), 0 4px 12px -4px rgb(16 24 40 / 0.08);
+  --glow-brand: 0 0 0 1px rgb(var(--teal-300) / 0.8), 0 4px 20px -4px rgb(var(--teal-600) / 0.2);
+
+  --hero-from: 240 253 250;
+  --hero-via: 255 255 255;
+  --hero-to: 247 248 249;
+}
+
+/* ==================================================================
+   Scales that do not change per theme
+   ================================================================== */
+
+:root {
+  /* fluid type — continuous 320px to 1440px, so there are no breakpoint jumps.
+     Numbers are always rendered in mono: a latency or readiness figure should
+     read as a measurement, not as prose. */
+  --text-2xs: clamp(0.625rem, 0.6rem + 0.1vw, 0.6875rem);
+  --text-xs: clamp(0.75rem, 0.72rem + 0.12vw, 0.8125rem);
+  --text-sm: clamp(0.875rem, 0.85rem + 0.12vw, 0.9375rem);
+  --text-base: clamp(0.9375rem, 0.9rem + 0.2vw, 1.0625rem);
+  --text-lg: clamp(1.125rem, 1.05rem + 0.35vw, 1.3125rem);
+  --text-xl: clamp(1.375rem, 1.2rem + 0.8vw, 1.75rem);
+  --text-2xl: clamp(1.75rem, 1.4rem + 1.6vw, 2.5rem);
+  --text-3xl: clamp(2.25rem, 1.5rem + 3.4vw, 4rem);
+  --text-hero: clamp(2.5rem, 1.4rem + 5.2vw, 5.25rem);
+
+  /* 4px base grid */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+
+  /* motion — three durations, two easings. Anything bespoke is a bug. */
+  --dur-fast: 120ms;
+  --dur-base: 240ms;
+  --dur-slow: 520ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Field tier minimum touch target. A gloved thumb in bad light needs more
+     than the 44px web default, so drill controls use this. */
+  --touch-min: 56px;
+
+  --z-sticky: 20;
+  --z-nav: 30;
+  --z-sheet: 40;
+  --z-toast: 50;
+  --z-cursor: 60;
+}
