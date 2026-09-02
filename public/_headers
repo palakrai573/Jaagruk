@@ -1,0 +1,26 @@
+# Cache and security headers. Read natively by Cloudflare Pages and Netlify.
+# Other hosts need the equivalent expressed in their own config — see
+# docs/DEPLOYMENT.md.
+
+# Hashed build assets are immutable: the filename changes when the content does.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# The service worker and the shell must never be served stale, or a released
+# update can be pinned on a device indefinitely.
+/sw.js
+  Cache-Control: no-cache
+/registerSW.js
+  Cache-Control: no-cache
+/index.html
+  Cache-Control: no-cache
+/manifest.webmanifest
+  Cache-Control: no-cache
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  # The AR overlay needs the camera and the hazard voice note needs the mic.
+  # Granting them to self only, and denying everything else we do not use.
+  Permissions-Policy: camera=(self), microphone=(self), geolocation=(self), accelerometer=(self), magnetometer=(self), gyroscope=(self), payment=(), usb=()
