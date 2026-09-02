@@ -17,6 +17,7 @@ import ReportHazard from './pages/ReportHazard.jsx'
 import LanguageSwitcher from './components/LanguageSwitcher.jsx'
 import ChatBox from './components/ChatBox.jsx'
 import GestureLayer from './components/GestureLayer.jsx'
+import { ThemeToggle } from './components/ui/index.js'
 import Pictogram from './lib/pictograms.jsx'
 import { useLanguage } from './context/LanguageContext.jsx'
 import { isPartiallyTranslated, coverageNotice } from './lib/i18n.js'
@@ -144,6 +145,14 @@ export default function App() {
             </nav>
 
             <SessionChip worker={worker} t={t} />
+            <ThemeToggle
+              compact
+              labels={{
+                dark: t('th_dark'),
+                light: t('th_light'),
+                system: t('th_system'),
+              }}
+            />
             <LanguageSwitcher />
           </div>
         </div>

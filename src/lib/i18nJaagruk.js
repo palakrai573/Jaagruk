@@ -48,6 +48,13 @@ const SHELL = {
   retry_label: { en: 'Try again', hi: 'फिर कोशिश करें', sat: 'ᱫᱚᱦᱲᱟ ᱠᱩᱨᱩᱢᱩᱴᱩᱭ', bn: 'আবার চেষ্টা করুন', or: 'ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ', ur: 'دوبارہ کوشش کریں' },
   loading_label: { en: 'Loading…', hi: 'लोड हो रहा है…', sat: 'ᱞᱟᱫᱮᱫ ᱠᱟᱱᱟ…', bn: 'লোড হচ্ছে…', or: 'ଲୋଡ ହେଉଛି…', ur: 'لوڈ ہو رہا ہے…' },
   offline_label: { en: 'Offline', hi: 'ऑफ़लाइन', sat: 'ᱚᱯᱷᱞᱟᱭᱤᱱ', bn: 'অফলাইন', or: 'ଅଫଲାଇନ', ur: 'آف لائن' },
+
+  // Theme. Three states, because a two-state switch cannot express "follow my
+  // phone" and silently overrides the OS the first time it is touched.
+  th_dark: { en: 'Dark', hi: 'गहरा', sat: 'ᱧᱩᱛ', bn: 'গাঢ়', or: 'ଗାଢ଼', ur: 'گہرا' },
+  th_light: { en: 'Light', hi: 'हल्का', sat: 'ᱨᱟᱹᱲᱟᱹ', bn: 'হালকা', or: 'ହାଲୁକା', ur: 'ہلکا' },
+  th_system: { en: 'Auto', hi: 'स्वतः', sat: 'ᱟᱡᱛᱮ', bn: 'স্বয়ংক্রিয়', or: 'ସ୍ୱୟଂଚାଳିତ', ur: 'خودکار' },
+  dismiss_label: { en: 'Dismiss', hi: 'हटाएं', sat: 'ᱚᱰᱚᱠ', bn: 'সরান', or: 'ହଟାନ୍ତୁ', ur: 'ہٹائیں' },
 }
 
 /* ================================================================== */

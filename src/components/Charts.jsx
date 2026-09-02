@@ -12,6 +12,9 @@ import {
 } from '../lib/charts.js'
 import { toNumberOr, clampPercent } from '../lib/num.js'
 import { useLanguage } from '../context/LanguageContext.jsx'
+// One implementation, in ui/motion.js. This module had its own copy, and any
+// component that needed the same thing would have grown a third.
+import { usePrefersReducedMotion } from './ui/motion.js'
 
 /**
  * Dashboard visualisation primitives.
@@ -21,36 +24,6 @@ import { useLanguage } from '../context/LanguageContext.jsx'
  * changing number, and for anyone who has asked the OS to stop moving things it
  * is pure cost.
  */
-
-/* ================================================================== */
-/* Motion preference                                                   */
-/* ================================================================== */
-
-function usePrefersReducedMotion() {
-  const [reduced, setReduced] = useState(() => {
-    try {
-      return window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
-    } catch {
-      return false
-    }
-  })
-
-  useEffect(() => {
-    let media
-    try {
-      media = window.matchMedia?.('(prefers-reduced-motion: reduce)')
-    } catch {
-      return undefined
-    }
-    if (!media) return undefined
-
-    const onChange = (e) => setReduced(e.matches)
-    media.addEventListener?.('change', onChange)
-    return () => media.removeEventListener?.('change', onChange)
-  }, [])
-
-  return reduced
-}
 
 /* ================================================================== */
 /* AnimatedNumber                                                      */

@@ -6,6 +6,7 @@ import { LanguageProvider } from './context/LanguageContext.jsx'
 import { migrateLegacyKeys } from './lib/local.js'
 import { requestPersistence } from './lib/idb.js'
 import { applyTheme, watchSystemTheme } from './lib/theme.js'
+import { ToastProvider } from './components/ui/index.js'
 import './index.css'
 
 // Carry across settings saved under the app's previous name before anything
@@ -28,7 +29,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <HashRouter>
       <LanguageProvider>
-        <App />
+        {/* Inside LanguageProvider so toast copy can be translated, and outside
+            App so a toast survives route changes. */}
+        <ToastProvider>
+          <App />
+        </ToastProvider>
       </LanguageProvider>
     </HashRouter>
   </React.StrictMode>

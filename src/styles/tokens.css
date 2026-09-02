@@ -141,9 +141,12 @@
   --surface-3: 255 255 255;
   --surface-inset: 240 242 244;
 
-  --border-subtle: 228 231 233;
-  --border-default: 207 212 216;
-  --border-strong: 180 187 193;
+  /* Slightly darker than a conventional light-theme border. A card here sits on
+     white while the page is #F7F8F9, so the edge has to register against both
+     surfaces; the usual near-white border disappears against one of them. */
+  --border-subtle: 226 230 233;
+  --border-default: 199 205 210;
+  --border-strong: 172 180 187;
 
   --text-primary: 20 23 26;
   --text-secondary: 78 87 95;

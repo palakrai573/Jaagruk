@@ -273,3 +273,89 @@ body {
     background: #2a2e33;
   }
 }
+
+/* ---------------------------------------------------------------- */
+/* Scroll reveal                                                     */
+/* ---------------------------------------------------------------- */
+
+/* The transition lives here rather than in JS so `prefers-reduced-motion` can
+   switch it off centrally. useReveal() only toggles `is-visible`.
+
+   The transform is small on purpose: a 14px rise reads as content settling, while
+   the 40-60px slides common in template landing pages read as a page that has not
+   finished loading. */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out);
+  /* Hint the compositor, but only while animating — a permanent will-change on
+     dozens of sections costs memory on the low-end phones this has to run on. */
+  will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+  will-change: auto;
+}
+
+/* Scale-in for hero elements that should feel like they are arriving rather than
+   rising. Used sparingly — one per screen at most. */
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.97);
+  transition: opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out);
+}
+
+.reveal-scale.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Slow drift for the hero's ambient gradient. Long enough that it reads as depth
+   rather than as something moving. */
+.ambient-drift {
+  animation: ambient-drift 24s var(--ease-in-out) infinite alternate;
+}
+
+@keyframes ambient-drift {
+  from {
+    transform: translate3d(-2%, -1%, 0) scale(1.05);
+  }
+  to {
+    transform: translate3d(2%, 1%, 0) scale(1.12);
+  }
+}
+
+/* Utility: balanced headline wrapping where supported. Progressive enhancement —
+   browsers without it simply wrap normally. */
+.text-balance {
+  text-wrap: balance;
+}
+
+.text-pretty {
+  text-wrap: pretty;
+}
+
+/* ---------------------------------------------------------------- */
+/* Reduced motion — the new primitives                               */
+/* ---------------------------------------------------------------- */
+
+/* CRITICAL: reveals must render COMPLETE AND STATIC, not hidden. A reveal left at
+   opacity 0 because its animation was disabled is a blank page for anyone who
+   asked the OS to stop moving things. useReveal() also returns visible=true
+   immediately under this preference, so this is belt and braces. */
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal-scale {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    will-change: auto !important;
+  }
+
+  .ambient-drift {
+    animation: none !important;
+    transform: none !important;
+  }
+}
