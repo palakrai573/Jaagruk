@@ -186,7 +186,7 @@ export default function App() {
 
       <main className="flex-1 pb-24 md:pb-0">
         {isPartiallyTranslated(lang) && (
-          <div className="bg-amber/10 border-b border-amber/40 px-5 py-2 text-center text-xs text-amber font-mono">
+          <div className="bg-warning-subtle border-b border-warning-border px-5 py-2 text-center text-xs text-warning-text font-mono">
             {coverageNotice(lang)}
           </div>
         )}
@@ -377,7 +377,7 @@ function SessionChip({ worker, t }) {
     return (
       <NavLink
         to="/start"
-        className="font-mono text-[10px] uppercase tracking-widest border border-steel-lighter rounded px-2.5 py-1.5 text-concrete hover:border-amber hover:text-amber whitespace-nowrap"
+        className="font-mono text-2xs uppercase tracking-widest border border-line-subtle rounded-md px-2.5 min-h-[40px] flex items-center text-ink-tertiary hover:border-brand hover:text-brand-text transition-colors duration-fast whitespace-nowrap"
       >
         {t('nav_start')}
       </NavLink>
@@ -387,11 +387,11 @@ function SessionChip({ worker, t }) {
   return (
     <NavLink
       to="/start"
-      className="flex items-center gap-2 border border-steel-lighter rounded px-2.5 py-1.5 hover:border-amber max-w-[140px]"
+      className="flex items-center gap-2 border border-line-subtle rounded-md px-2.5 min-h-[40px] hover:border-brand transition-colors duration-fast max-w-[140px]"
       title={worker.name}
     >
       <Pictogram name={worker.role === ROLE.SUPERVISOR ? 'report_it' : 'ppe'} size={16} />
-      <span className="font-mono text-[10px] text-chalk truncate">{worker.name}</span>
+      <span className="font-mono text-2xs text-ink truncate">{worker.name}</span>
     </NavLink>
   )
 }
@@ -400,8 +400,11 @@ function NotFound({ t }) {
   return (
     <div className="max-w-md mx-auto px-5 py-20 text-center">
       <Pictogram name="warning" size={48} className="mx-auto mb-5" />
-      <p className="text-concrete mb-6">{t('vf_unreadable')}</p>
-      <NavLink to="/" className="bg-amber text-steel font-display font-bold uppercase px-6 py-3 rounded">
+      <p className="text-ink-secondary mb-7">{t('vf_unreadable')}</p>
+      <NavLink
+        to="/"
+        className="inline-flex items-center justify-center bg-brand text-ink-onBrand font-display font-bold uppercase tracking-wide px-6 py-3 rounded-lg shadow-1 hover:bg-brand-hover transition-colors duration-base"
+      >
         {t('nav_home')}
       </NavLink>
     </div>

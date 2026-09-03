@@ -46,6 +46,8 @@ const SHELL = {
   next_label: { en: 'Next', hi: 'आगे', sat: 'ᱟᱶᱜᱟ', bn: 'পরবর্তী', or: 'ପରବର୍ତ୍ତୀ', ur: 'اگلا' },
   done_label: { en: 'Done', hi: 'पूर्ण', sat: 'ᱦᱩᱭ ᱮᱱᱟ', bn: 'সম্পন্ন', or: 'ସମାପ୍ତ', ur: 'مکمل' },
   retry_label: { en: 'Try again', hi: 'फिर कोशिश करें', sat: 'ᱫᱚᱦᱲᱟ ᱠᱩᱨᱩᱢᱩᱴᱩᱭ', bn: 'আবার চেষ্টা করুন', or: 'ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ', ur: 'دوبارہ کوشش کریں' },
+  error_label: { en: 'Something went wrong', hi: 'कुछ गलत हुआ', sat: 'ᱚᱠᱟ ᱦᱚᱸ ᱵᱷᱩᱞ ᱦᱩᱭ ᱮᱱᱟ', bn: 'কিছু ভুল হয়েছে', or: 'କିଛି ଭୁଲ ହେଲା', ur: 'کچھ غلط ہو گیا' },
+  scan_again_label: { en: 'Scan another', hi: 'दूसरा स्कैन करें', sat: 'ᱮᱴᱟᱜ ᱥᱠᱮᱱ', bn: 'আরেকটি স্ক্যান', or: 'ଅନ୍ୟ ସ୍କାନ', ur: 'دوسرا اسکین کریں' },
   loading_label: { en: 'Loading…', hi: 'लोड हो रहा है…', sat: 'ᱞᱟᱫᱮᱫ ᱠᱟᱱᱟ…', bn: 'লোড হচ্ছে…', or: 'ଲୋଡ ହେଉଛି…', ur: 'لوڈ ہو رہا ہے…' },
   offline_label: { en: 'Offline', hi: 'ऑफ़लाइन', sat: 'ᱚᱯᱷᱞᱟᱭᱤᱱ', bn: 'অফলাইন', or: 'ଅଫଲାଇନ', ur: 'آف لائن' },
 

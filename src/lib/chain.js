@@ -409,11 +409,12 @@ export function decodeCertQr(text) {
 /**
  * Full offline verification of a scanned certificate.
  *
- * Reports three independent things, because they mean different things to an
- * inspector:
- *   selfValid  — payload is intact and correctly signed
- *   signerKnown— the signing device is one this phone already trusts
- *   chainLinked— the record is present in this phone's copy of the site chain
+ * Reports four independent things, because they mean different things to an
+ * inspector and the Verify screen surfaces them as four separate rows:
+ *   selfValid     — payload is intact and correctly signed
+ *   signerKnown   — the signing device is one this phone already trusts
+ *   presentLocally— the record exists in this phone's ledger at all
+ *   chainLinked   — and, if present, links correctly to its predecessor
  *                and links correctly
  */
 export async function verifyScannedCertificate(text) {

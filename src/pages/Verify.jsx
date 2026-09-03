@@ -1,28 +1,42 @@
 import { useState, useEffect, useCallback } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { verifyScannedCertificate, encodeCertQr, getRecordByCertId, CHAIN_STATUS } from '../lib/chain.js'
 import { verifyCertificate } from '../lib/certificate.js'
 import { barcodeDetectionSupported } from '../lib/p2p.js'
-import { isOnline } from '../lib/sync.js'
 import QrScanner from '../components/QrScanner.jsx'
 import Pictogram from '../lib/pictograms.jsx'
 import { useLanguage } from '../context/LanguageContext.jsx'
+import {
+  Button,
+  Card,
+  Badge,
+  Reveal,
+  Skeleton,
+  SkeletonText,
+  TextAreaField,
+} from '../components/ui/index.js'
 
 /**
  * Certificate verification, offline.
  *
- * An inspector standing at a pit head with no signal needs to answer four
- * separate questions, and collapsing them into one valid/invalid badge would hide
- * the interesting cases:
+ * An inspector at a pit head with no signal needs FOUR separate answers, and
+ * collapsing them into one valid/invalid badge hides the interesting cases:
  *
- *   1. Is the record intact and correctly signed?  (works from the QR alone)
+ *   1. Is the record intact and correctly signed?   (from the QR alone)
  *   2. Is the signing device one this phone trusts?
  *   3. Is the record present in this phone's ledger?
  *   4. Does it link correctly into that chain?
  *
  * A certificate can be genuinely signed but issued by a device this phone has
- * never met — that is not forgery, it is a different site. Saying so precisely is
- * more useful than a red cross.
+ * never met. That is not forgery, it is a different site — and saying so precisely
+ * is more useful than a red cross.
+ *
+ * PHASE 2b fixed two things here. The verdict panel's border was built from a
+ * template literal missing its `$`, so the string `2px solid{...}` was emitted as
+ * a border value — invalid CSS, meaning the most important panel in the app had no
+ * border at all. And signals 3 and 4 were folded into one row, so "not in this
+ * ledger" and "links incorrectly" were indistinguishable; they are now separate,
+ * matching the four documented above.
  */
 
 export default function Verify() {
@@ -35,8 +49,6 @@ export default function Verify() {
   const [scanning, setScanning] = useState(false)
   const [notFound, setNotFound] = useState(false)
 
-  /* ---------------- deep link by id ---------------- */
-
   const checkById = useCallback(async (id) => {
     setChecking(true)
     setNotFound(false)
@@ -47,7 +59,7 @@ export default function Verify() {
         setResult(null)
         return
       }
-      // Re-run the QR path so both routes produce the same shape.
+      // Re-run the QR path so a deep link and a scan produce the same shape.
       const record = await getRecordByCertId(id)
       const scanned = await verifyScannedCertificate(encodeCertQr(record))
       setResult(scanned)
@@ -62,8 +74,6 @@ export default function Verify() {
     if (certId) checkById(certId)
   }, [certId, checkById])
 
-  /* ---------------- scan / paste ---------------- */
-
   const checkPayload = useCallback(async (text) => {
     setChecking(true)
     setNotFound(false)
@@ -77,114 +87,134 @@ export default function Verify() {
     }
   }, [])
 
-  /* ---------------- render ---------------- */
+  const reset = () => {
+    setResult(null)
+    setPasted('')
+    setNotFound(false)
+  }
 
   return (
-    <div className="max-w-2xl mx-auto px-5 py-14">
-      <p className="font-mono text-amber text-xs tracking-[0.2em] uppercase mb-3 text-center">{t('verify_eyebrow')}</p>
-      <h1 className="font-display font-bold text-3xl md:text-4xl uppercase mb-3 text-center">{t('verify_title')}</h1>
+    <div className="max-w-2xl mx-auto px-5 py-10 md:py-14">
+      <Reveal>
+        <div className="text-center mb-8">
+          <p className="font-mono text-2xs tracking-[0.22em] uppercase text-brand-text mb-3">{t('verify_eyebrow')}</p>
+          <h1 className="font-display font-bold text-2xl md:text-3xl uppercase tracking-tight text-balance mb-4">
+            {t('verify_title')}
+          </h1>
 
-      <p className="font-mono text-[10px] uppercase tracking-widest text-center mb-8 flex items-center justify-center gap-2">
-        <Pictogram name={isOnline() ? 'correct' : 'warning'} size={14} />
-        <span className="text-safe">{t('vf_offline_ok')}</span>
-      </p>
+          {/* This badge is the pitch, not decoration: verification does not depend
+              on connectivity, so it says so unconditionally rather than reporting
+              the current network state. */}
+          <div className="flex justify-center">
+            <Badge tone="safe" icon={<Pictogram name="correct" size={13} />}>
+              {t('vf_offline_ok')}
+            </Badge>
+          </div>
+        </div>
+      </Reveal>
 
-      {checking && (
-        <p className="font-mono text-xs text-concrete uppercase tracking-widest text-center py-8">
-          {t('loading_label')}
-        </p>
-      )}
+      {checking && <VerifySkeleton />}
 
-      {/* Input, when there is no result yet */}
       {!checking && !result && (
         <>
           {notFound && (
-            <div className="bg-hazard/10 border-2 border-hazard rounded-lg p-6 text-center mb-8">
-              <Pictogram name="incorrect" size={44} className="mx-auto mb-3" />
-              <p className="font-bold text-hazard uppercase tracking-widest text-sm mb-2">{t('verify_invalid')}</p>
-              <p className="text-concrete text-sm">{t('verify_invalid_desc')}</p>
-            </div>
+            <Card accent="hazard" className="mb-8">
+              <div className="p-6 text-center">
+                <Pictogram name="incorrect" size={44} className="mx-auto mb-3" />
+                <p className="font-display font-bold text-lg uppercase tracking-wide text-hazard-text mb-2">
+                  {t('verify_invalid')}
+                </p>
+                <p className="text-sm text-ink-secondary leading-relaxed">{t('verify_invalid_desc')}</p>
+              </div>
+            </Card>
           )}
 
-          <p className="text-sm text-concrete mb-5 text-center">{t('vf_scan_or_paste')}</p>
+          <p className="text-sm text-ink-secondary mb-5 text-center">{t('vf_scan_or_paste')}</p>
 
           {scanning ? (
             <QrScanner onResult={checkPayload} height={280} />
           ) : (
-            <button
-              type="button"
+            <Button
               onClick={() => setScanning(true)}
               disabled={!barcodeDetectionSupported()}
-              className="w-full bg-amber text-steel font-display font-bold text-lg uppercase py-4 rounded mb-4 disabled:opacity-40"
+              size="field"
+              icon={<Pictogram name="correct" size={20} />}
             >
               {t('ad_tab_verify')}
-            </button>
+            </Button>
           )}
 
           {!barcodeDetectionSupported() && (
-            <p className="font-mono text-[11px] text-concrete text-center mb-4">{t('bd_qr_unsupported')}</p>
+            <p className="font-mono text-xs text-ink-tertiary text-center mt-3">{t('bd_qr_unsupported')}</p>
           )}
 
-          <div className="mt-5">
-            <label className="font-mono text-[10px] uppercase tracking-widest text-concrete block mb-2">
-              {t('bd_paste_instead')}
-            </label>
-            <textarea
+          {/* Paste is the fallback that keeps this usable on a device with no
+              BarcodeDetector — which is most older Android WebViews. */}
+          <div className="mt-8 pt-6 border-t border-line-subtle">
+            <TextAreaField
+              label={t('bd_paste_instead')}
               value={pasted}
               onChange={(e) => setPasted(e.target.value)}
               placeholder={t('vf_paste_placeholder')}
               rows={4}
-              className="w-full bg-steel border border-steel-lighter rounded px-3 py-2 font-mono text-[11px] focus:border-amber outline-none"
+              className="font-mono"
             />
-            <button
-              type="button"
+            <Button
+              variant="secondary"
               onClick={() => checkPayload(pasted)}
               disabled={pasted.trim().length < 20}
-              className="w-full border border-concrete rounded py-3 font-mono text-sm mt-3 hover:border-amber hover:text-amber disabled:opacity-40"
+              fullWidth
+              size="md"
             >
               {t('vf_check_now')}
-            </button>
+            </Button>
           </div>
         </>
       )}
 
-      {/* Result */}
       {!checking && result && (
         <>
           {!result.found ? (
-            <div className="bg-hazard/10 border-2 border-hazard rounded-lg p-8 text-center">
-              <Pictogram name="incorrect" size={52} className="mx-auto mb-4" />
-              <p className="font-bold text-hazard uppercase tracking-widest text-sm mb-2">{t('vf_unreadable')}</p>
-              <p className="text-concrete text-sm">{t('verify_invalid_desc')}</p>
-            </div>
+            <Card accent="hazard">
+              <div className="p-8 text-center">
+                <Pictogram name="incorrect" size={52} className="mx-auto mb-4" />
+                <p className="font-display font-bold text-xl uppercase tracking-wide text-hazard-text mb-2">
+                  {t('vf_unreadable')}
+                </p>
+                <p className="text-sm text-ink-secondary leading-relaxed">{t('verify_invalid_desc')}</p>
+              </div>
+            </Card>
           ) : (
             <VerifyResult result={result} t={t} />
           )}
 
-          <button
-            type="button"
-            onClick={() => {
-              setResult(null)
-              setPasted('')
-              setNotFound(false)
-            }}
-            className="w-full border border-concrete rounded py-3 font-mono text-sm mt-6 hover:border-amber hover:text-amber"
-          >
-            {t('ad_tab_verify')}
-          </button>
+          <Button variant="secondary" onClick={reset} fullWidth size="md" className="mt-6">
+            {t('scan_again_label')}
+          </Button>
         </>
       )}
-
-      <div className="text-center mt-10">
-        <Link to="/" className="text-amber underline text-sm">
-          {t('nav_home')}
-        </Link>
-      </div>
     </div>
   )
 }
 
 /* ================================================================== */
+
+function VerifySkeleton() {
+  return (
+    <div>
+      <Skeleton className="h-40 w-full mb-6" rounded="lg" />
+      <div className="border border-line-subtle rounded-xl divide-y divide-line-subtle mb-6">
+        {Array.from({ length: 3 }, (_, i) => (
+          <div key={i} className="px-4 py-3.5 flex items-center gap-3">
+            <Skeleton className="w-5 h-5" rounded="full" />
+            <Skeleton className="h-3 flex-1" />
+          </div>
+        ))}
+      </div>
+      <SkeletonText lines={4} />
+    </div>
+  )
+}
 
 function VerifyResult({ result, t }) {
   const cert = result.described
@@ -192,56 +222,70 @@ function VerifyResult({ result, t }) {
 
   return (
     <div>
-      {/* Headline verdict — is the record itself intact and signed? */}
-      <div
-        className="rounded-lg p-8 text-center mb-6"
-        style={{
-          background: genuine ? 'rgba(46,125,79,0.1)' : 'rgba(217,48,37,0.1)',
-          border: `2px solid{genuine ? '#2E7D4F' : '#D93025'}`,
-        }}
-      >
-        <Pictogram name={genuine ? 'correct' : 'incorrect'} size={56} className="mx-auto mb-4" />
-        <p
-          className="font-bold uppercase tracking-widest text-sm mb-4"
-          style={{ color: genuine ? '#2E7D4F' : '#D93025' }}
-        >
-          {genuine ? t('vf_genuine') : t('vf_tampered')}
-        </p>
+      {/* Signal 1 — the headline. Is the record itself intact and signed?
+          Uses a token-driven accent rather than an inline style; the previous
+          inline border was silently invalid. */}
+      <Card accent={genuine ? 'safe' : 'hazard'} className="mb-6">
+        <div className={`p-6 md:p-8 text-center ${genuine ? 'bg-safe-subtle' : 'bg-hazard-subtle'}`}>
+          <Pictogram name={genuine ? 'correct' : 'incorrect'} size={56} className="mx-auto mb-4" />
+          <p
+            className={`font-display font-bold uppercase tracking-widest text-lg mb-4 ${
+              genuine ? 'text-safe-text' : 'text-hazard-text'
+            }`}
+          >
+            {genuine ? t('vf_genuine') : t('vf_tampered')}
+          </p>
 
-        {cert && (
-          <>
-            <h2 className="font-display font-bold text-2xl uppercase mb-1">{cert.workerName}</h2>
-            <p className="text-concrete text-xs font-mono">
-              {t('verify_issued')} {new Date(cert.issuedAt).toLocaleDateString()}
-            </p>
-          </>
-        )}
-      </div>
+          {cert && (
+            <>
+              <h2 className="font-display font-bold text-2xl uppercase tracking-tight text-balance mb-1">
+                {cert.workerName}
+              </h2>
+              <p className="font-mono text-xs text-ink-tertiary">
+                {t('verify_issued')} {new Date(cert.issuedAt).toLocaleDateString()}
+              </p>
+            </>
+          )}
+        </div>
+      </Card>
 
-      {/* The three independent signals */}
-      <div className="border border-steel-lighter rounded-lg divide-y divide-steel-lighter mb-6">
+      {/* Signals 2, 3 and 4 — separately, because they answer different questions.
+          Folding "not in this ledger" together with "links incorrectly" made a
+          record from another site indistinguishable from a broken chain. */}
+      <div className="border border-line-subtle rounded-xl divide-y divide-line-subtle mb-6 overflow-hidden">
         <SignalRow
           ok={result.signerKnown}
           okText={t('vf_signer_known')}
           warnText={t('vf_signer_unknown')}
-          neutral
+          // Unknown signer is a caution, not a failure: it means "issued
+          // elsewhere", which is normal on a multi-site deployment.
+          tone={result.signerKnown ? 'safe' : 'warning'}
+        />
+        <SignalRow
+          ok={result.presentLocally}
+          okText={t('vf_in_ledger')}
+          warnText={t('vf_not_in_ledger')}
+          tone={result.presentLocally ? 'safe' : 'warning'}
         />
         <SignalRow
           ok={result.chainLinked}
-          okText={t('vf_in_ledger')}
+          okText={t('chain_OK')}
           warnText={t('vf_not_in_ledger')}
-          neutral={!result.presentLocally}
+          // Only a genuine failure when the record IS in this ledger. If it is not
+          // here, there is nothing for it to link to and amber is the honest colour.
+          tone={result.chainLinked ? 'safe' : result.presentLocally ? 'hazard' : 'warning'}
         />
       </div>
 
-      {/* Specific failures, named */}
       {result.selfIssues?.length > 0 && (
-        <div className="bg-hazard/10 border border-hazard/40 rounded-lg p-4 mb-6">
-          <p className="font-mono text-[10px] uppercase tracking-widest text-hazard mb-2">{t('verify_invalid')}</p>
-          <ul className="space-y-1">
+        <div className="bg-hazard-subtle border border-hazard-border rounded-xl p-4 mb-6">
+          <p className="font-mono text-2xs uppercase tracking-widest text-hazard-text mb-2.5">
+            {t('verify_invalid')}
+          </p>
+          <ul className="space-y-1.5">
             {result.selfIssues.map((issue) => (
-              <li key={issue} className="text-xs text-concrete flex items-start gap-2">
-                <Pictogram name="warning" size={14} />
+              <li key={issue} className="text-xs text-ink-secondary flex items-start gap-2 leading-relaxed">
+                <Pictogram name="warning" size={14} className="shrink-0 mt-0.5" />
                 {t(`chain_${issue}`)}
               </li>
             ))}
@@ -250,13 +294,13 @@ function VerifyResult({ result, t }) {
       )}
 
       {result.chainIssues?.length > 0 && result.presentLocally && (
-        <div className="bg-amber/10 border border-amber/40 rounded-lg p-4 mb-6">
-          <ul className="space-y-1">
+        <div className="bg-warning-subtle border border-warning-border rounded-xl p-4 mb-6">
+          <ul className="space-y-1.5">
             {result.chainIssues
               .filter((i) => i !== CHAIN_STATUS.OK)
               .map((issue) => (
-                <li key={issue} className="text-xs text-concrete flex items-start gap-2">
-                  <Pictogram name="warning" size={14} />
+                <li key={issue} className="text-xs text-ink-secondary flex items-start gap-2 leading-relaxed">
+                  <Pictogram name="warning" size={14} className="shrink-0 mt-0.5" />
                   {t(`chain_${issue}`)}
                 </li>
               ))}
@@ -264,56 +308,64 @@ function VerifyResult({ result, t }) {
         </div>
       )}
 
-      {/* Domain detail */}
       {cert && (
-        <div className="border border-steel-lighter rounded-lg p-5 mb-6">
-          <p className="font-mono text-[10px] uppercase tracking-widest text-concrete mb-4">
+        <Card className="p-5 mb-6">
+          <p className="font-mono text-2xs uppercase tracking-widest text-ink-tertiary mb-4">
             {t('cert_domains_passed')}
           </p>
-          <div className="space-y-2">
+
+          <dl className="space-y-2.5">
             {cert.domains.map((d) => (
-              <div key={d.domain} className="flex justify-between items-center text-sm gap-3">
-                <span className="flex items-center gap-2 min-w-0">
-                  {d.hesitation && <Pictogram name="slow" size={15} />}
-                  <span className="truncate">{d.domain}</span>
-                </span>
-                <span className="font-mono text-amber font-bold shrink-0">{d.readiness}%</span>
+              <div key={d.domain} className="flex justify-between items-center gap-3 text-sm">
+                <dt className="flex items-center gap-2 min-w-0">
+                  {d.hesitation && <Pictogram name="slow" size={15} className="shrink-0" />}
+                  <span className="truncate text-ink-secondary">{d.domain}</span>
+                </dt>
+                <dd className="font-mono font-bold text-ink shrink-0 tabular-nums">{d.readiness}%</dd>
               </div>
             ))}
-          </div>
+          </dl>
 
-          <div className="border-t border-steel-lighter mt-4 pt-4 flex justify-between text-sm">
-            <span className="font-bold">{t('cert_readiness_now')}</span>
-            <span className="font-mono text-amber font-bold">{cert.avgReadiness}%</span>
+          <div className="border-t border-line-subtle mt-4 pt-4 flex justify-between items-center gap-3">
+            <span className="font-bold text-sm text-ink">{t('cert_readiness_now')}</span>
+            <span className="font-mono text-lg font-bold text-safe-text tabular-nums">{cert.avgReadiness}%</span>
           </div>
 
           {cert.hesitationCount > 0 && (
-            <p className="font-mono text-[10px] text-amber mt-3">
-              {cert.hesitationCount} · {t('db_flagged_slow')}
-            </p>
+            <div className="mt-4">
+              <Badge tone="warning" icon={<Pictogram name="slow" size={12} />}>
+                {cert.hesitationCount} · {t('db_flagged_slow')}
+              </Badge>
+            </div>
           )}
-        </div>
+        </Card>
       )}
 
-      {/* Ledger detail */}
       {cert && (
-        <div className="border border-steel-lighter rounded-lg p-5 space-y-2">
-          <Detail label={t('cert_chain_position')} value={`#${cert.seq}`} />
-          <Detail label={t('cert_record_hash')} value={cert.hash.slice(0, 40)} mono />
-          <Detail label={t('cert_prev_hash')} value={cert.prevHash.slice(0, 40)} mono />
-          <Detail label="ID" value={cert.certId} mono />
-        </div>
+        <Card className="p-5">
+          <dl className="space-y-2">
+            <Detail label={t('cert_chain_position')} value={`#${cert.seq}`} />
+            <Detail label={t('cert_record_hash')} value={cert.hash.slice(0, 40)} mono />
+            <Detail label={t('cert_prev_hash')} value={cert.prevHash.slice(0, 40)} mono />
+            <Detail label="ID" value={cert.certId} mono />
+          </dl>
+        </Card>
       )}
     </div>
   )
 }
 
-function SignalRow({ ok, okText, warnText, neutral }) {
-  const color = ok ? '#2E7D4F' : neutral ? '#FFB020' : '#D93025'
+const SIGNAL_TEXT = {
+  safe: 'text-safe-text',
+  warning: 'text-warning-text',
+  hazard: 'text-hazard-text',
+}
+
+function SignalRow({ ok, okText, warnText, tone }) {
   return (
-    <div className="px-4 py-3 flex items-start gap-3">
-      <Pictogram name={ok ? 'correct' : 'warning'} size={20} />
-      <p className="text-xs leading-relaxed" style={{ color }}>
+    <div className="px-4 py-3.5 flex items-start gap-3">
+      <Pictogram name={ok ? 'correct' : 'warning'} size={20} className="shrink-0" />
+      <p className={`text-xs leading-relaxed ${SIGNAL_TEXT[tone] || SIGNAL_TEXT.warning}`}>
         {ok ? okText : warnText}
       </p>
     </div>
@@ -323,10 +375,8 @@ function SignalRow({ ok, okText, warnText, neutral }) {
 function Detail({ label, value, mono }) {
   return (
     <div className="flex justify-between gap-3 text-xs">
-      <span className="font-mono text-[10px] uppercase tracking-widest text-concrete shrink-0">{label}</span>
-      <span className={`${mono ? 'font-mono' : ''} text-chalk break-all text-right`}>{value}</span>
+      <dt className="font-mono text-2xs uppercase tracking-widest text-ink-tertiary shrink-0">{label}</dt>
+      <dd className={`${mono ? 'font-mono' : ''} text-ink-secondary break-all text-end`}>{value}</dd>
     </div>
   )
 }
-
-
