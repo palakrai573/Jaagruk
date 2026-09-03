@@ -140,7 +140,13 @@ export default function GestureLayer({ enabled = false, onStatusChange }) {
           aria-hidden="true"
         >
           <svg width="56" height="56" viewBox="0 0 56 56">
-            {/* Dwell progress */}
+            {/*
+              COLOURS HERE ARE FIXED, NOT TOKENISED — deliberately.
+              The gesture cursor floats above every surface in the app, including
+              the live camera feed during an AR drill. It has to hold against an
+              unknown background rather than against a theme surface, so amber on
+              near-white is correct in both themes.
+            */}
             <circle cx="28" cy="28" r="22" fill="none" stroke="rgba(242,241,237,0.28)" strokeWidth="3" />
             <circle
               cx="28"

@@ -91,16 +91,16 @@ export default function ScenarioList() {
                 <Pictogram name={meta.pictogram} size={46} />
 
                 {row?.attempted && (
-                  <span className="text-right shrink-0">
+                  <span className="text-end shrink-0">
                     <span
                       className="font-display font-bold text-2xl"
                       style={{
                         color:
                           row.effectiveReadiness >= PASS_THRESHOLD
-                            ? '#2E7D4F'
+                            ? 'rgb(var(--safe-text))'
                             : row.effectiveReadiness > 0
-                              ? '#FFB020'
-                              : '#8B8F94',
+                              ? 'rgb(var(--warning-text))'
+                              : 'rgb(var(--text-tertiary))',
                       }}
                     >
                       {row.effectiveReadiness}%

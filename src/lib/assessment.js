@@ -256,9 +256,33 @@ export function formatLatency(ms) {
   return `${m}m ${Math.round(s - m * 60)}s`
 }
 
+/**
+ * Grade colour, as a token reference rather than a hex literal, so a theme switch
+ * repaints it along with the page instead of leaving it on the previous theme.
+ *
+ * Two variants for the same reason charts have them: the ISO hues are correct as
+ * fills in either theme because they must match the signage on the wall, but ISO
+ * yellow as small text on white reaches about 1.9:1 and is unreadable. Anything
+ * rendering a grade as TEXT uses gradeTextColor.
+ */
 export function gradeColor(grade) {
-  if (grade === GRADE.FAST) return '#2E7D4F'
-  if (grade === GRADE.NORMAL) return '#FFB020'
-  if (grade === GRADE.SLOW) return '#D93025'
-  return '#8B8F94'
+  if (grade === GRADE.FAST) return 'rgb(var(--safe))'
+  if (grade === GRADE.NORMAL) return 'rgb(var(--warning))'
+  if (grade === GRADE.SLOW) return 'rgb(var(--hazard))'
+  return 'rgb(var(--text-tertiary))'
+}
+
+export function gradeTextColor(grade) {
+  if (grade === GRADE.FAST) return 'rgb(var(--safe-text))'
+  if (grade === GRADE.NORMAL) return 'rgb(var(--warning-text))'
+  if (grade === GRADE.SLOW) return 'rgb(var(--hazard-text))'
+  return 'rgb(var(--text-tertiary))'
+}
+
+/** Translucent variant, for the tinted background behind a grade pill. */
+export function gradeTint(grade, alpha = 0.14) {
+  if (grade === GRADE.FAST) return `rgb(var(--safe) / ${alpha})`
+  if (grade === GRADE.NORMAL) return `rgb(var(--warning) / ${alpha})`
+  if (grade === GRADE.SLOW) return `rgb(var(--hazard) / ${alpha})`
+  return `rgb(var(--text-tertiary) / ${alpha})`
 }

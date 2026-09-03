@@ -286,7 +286,7 @@ export default function Refresher() {
         </div>
 
         {outcome.hesitation && (
-          <div className="bg-amber/10 border border-amber/40 rounded-lg p-4 mb-6 text-left flex items-start gap-3">
+          <div className="bg-amber/10 border border-amber/40 rounded-lg p-4 mb-6 text-start flex items-start gap-3">
             <Pictogram name="slow" size={28} />
             <p className="text-xs text-concrete leading-relaxed">{t('as_hesitation_body')}</p>
           </div>
@@ -433,7 +433,7 @@ export default function Refresher() {
 function RetentionRow({ row, t, onStart }) {
   const effective = row.effectiveReadiness
   const decayed = row.attempted && effective < row.baseReadiness
-  const color = effective >= 70 ? '#2E7D4F' : effective >= 45 ? '#FFB020' : '#D93025'
+  const color = effective >= 70 ? 'rgb(var(--safe-text))' : effective >= 45 ? 'rgb(var(--warning-text))' : 'rgb(var(--hazard-text))'
 
   return (
     <div className="p-4 flex items-center justify-between gap-4 flex-wrap">
@@ -451,7 +451,7 @@ function RetentionRow({ row, t, onStart }) {
         </p>
       </div>
 
-      <div className="text-right shrink-0">
+      <div className="text-end shrink-0">
         <span className="font-display font-bold text-2xl" style={{ color }}>
           {row.attempted ? `${effective}%` : '—'}
         </span>

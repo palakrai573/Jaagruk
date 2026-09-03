@@ -397,7 +397,7 @@ function Console({ t, onLock }) {
                       <span className="font-mono text-[10px] text-concrete">
                         {scores.length} {t('ad_ledger_records')}
                       </span>
-                      <span className="font-mono text-amber font-bold text-sm w-12 text-right">
+                      <span className="font-mono text-amber font-bold text-sm w-12 text-end">
                         {avg !== null ? `${avg}%` : '—'}
                       </span>
                     </span>
@@ -545,7 +545,7 @@ function Console({ t, onLock }) {
                     <span
                       key={cluster.key}
                       className="font-mono text-[10px] border border-steel-lighter rounded px-2.5 py-1.5 flex items-center gap-2"
-                      style={{ color: cluster.highCount > 0 ? '#D93025' : '#8B8F94' }}
+                      style={{ color: cluster.highCount > 0 ? 'rgb(var(--hazard-text))' : 'rgb(var(--text-tertiary))' }}
                     >
                       {cluster.zoneName || t('hz_no_direction')}
                       {cluster.centreBearing !== null && ` ${Math.round(cluster.centreBearing)}°`}
@@ -599,12 +599,12 @@ function Console({ t, onLock }) {
                 className="rounded-lg p-5 mb-6 flex items-start gap-4"
                 style={{
                   background: chain.ok ? 'rgba(46,125,79,0.1)' : 'rgba(217,48,37,0.1)',
-                  border: `1px solid ${chain.ok ? '#2E7D4F' : '#D93025'}66`,
+                  border: `1px solid ${chain.ok ? 'rgb(var(--safe) / 0.4)' : 'rgb(var(--hazard) / 0.4)'}`,
                 }}
               >
                 <Pictogram name={chain.ok ? 'correct' : 'incorrect'} size={34} />
                 <div>
-                  <p className="font-bold text-sm mb-1" style={{ color: chain.ok ? '#2E7D4F' : '#D93025' }}>
+                  <p className="font-bold text-sm mb-1" style={{ color: chain.ok ? 'rgb(var(--safe-text))' : 'rgb(var(--hazard-text))' }}>
                     {chain.ok
                       ? t('ad_ledger_intact')
                       : `${t('ad_ledger_intact_to')} #${Math.max(0, chain.firstBrokenIndex)}`}
@@ -641,7 +641,7 @@ function Console({ t, onLock }) {
                       </span>
                     </span>
                     {!entry.ok && (
-                      <span className="font-mono text-[9px] text-hazard shrink-0 text-right">
+                      <span className="font-mono text-[9px] text-hazard shrink-0 text-end">
                         {entry.issues
                           .filter((i) => i !== CHAIN_STATUS.OK)
                           .map((i) => t(`chain_${i}`))
@@ -742,7 +742,13 @@ function HazardCard({ report, t, onChange, reporter }) {
   return (
     <div
       className="bg-steel-light border rounded-lg p-4"
-      style={{ borderColor: report.status === HAZARD_STATUS.OPEN ? `${SEVERITY_COLOR[report.severity]}88` : '#3A3F45' }}
+      style={{
+        borderColor:
+          report.status === HAZARD_STATUS.OPEN
+            ? // SEVERITY_COLOR is an ISO hex, so the alpha suffix is still valid here.
+              `${SEVERITY_COLOR[report.severity]}88`
+            : 'rgb(var(--border-default))',
+      }}
     >
       <div className="flex items-start gap-4">
         <Pictogram name={meta.pictogram} size={40} />
@@ -779,7 +785,7 @@ function HazardCard({ report, t, onChange, reporter }) {
           )}
 
           <div className="flex items-center gap-2 flex-wrap mt-3">
-            <span className="font-mono text-[9px] uppercase tracking-widest text-concrete mr-2">
+            <span className="font-mono text-[9px] uppercase tracking-widest text-concrete me-2">
               {t(`hz_status_${report.status}`)}
             </span>
             {transitions.map((next) => (

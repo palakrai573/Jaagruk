@@ -74,19 +74,31 @@ export default {
         ore: token('ore'),
 
         // ---- Legacy aliases ----
-        // The previous palette is mapped onto tokens so the ~40 existing
-        // `bg-steel-light` / `text-concrete` / `text-amber` usages keep working
-        // and become theme-aware for free. They are migrated page by page as each
-        // phase lands; these can be deleted once nothing references them.
+        // The previous palette maps onto tokens so pages not yet migrated keep
+        // working and become theme-aware for free. Deleted once nothing uses them.
         steel: {
           DEFAULT: token('surface-0'),
           light: token('surface-1'),
           lighter: token('border-default'),
         },
+
+        // `amber` maps to BRAND, not to `warning`, and that is deliberate.
+        //
+        // In the old palette amber was the accent: eyebrows, links, values, active
+        // states, primary buttons. Mapping it to `warning` preserved the colour but
+        // broke two things at once. Semantically it made every accent read as a
+        // caution signal. Practically it was a light-theme contrast failure —
+        // `text-amber` resolved to raw ISO yellow, which on a light surface reaches
+        // about 1.9:1 and is unreadable.
+        //
+        // `brand` measures 7.71:1 on dark and 5.15:1 on light, so this single line
+        // fixes accent contrast across every unmigrated page. Genuine caution now
+        // uses `warning-*` explicitly, which is what a migrated file does.
         amber: {
-          DEFAULT: token('warning'),
-          dim: token('warning-border'),
+          DEFAULT: token('brand'),
+          dim: token('brand-border'),
         },
+
         concrete: token('text-tertiary'),
         chalk: token('text-primary'),
       },

@@ -6,7 +6,8 @@ import { speak } from '../lib/speech.js'
 import RiskGauge from '../components/RiskGauge.jsx'
 import { useLanguage } from '../context/LanguageContext.jsx'
 
-const severityColor = { low: '#2E7D4F', medium: '#FFB020', high: '#D93025' }
+// ISO fills, used as borders and chip backgrounds. Identical in both themes,
+const severityColor = { low: 'rgb(var(--safe))', medium: 'rgb(var(--warning))', high: 'rgb(var(--hazard))' }
 
 export default function HazardScan() {
   const { t, lang } = useLanguage()
@@ -167,7 +168,7 @@ export default function HazardScan() {
 
 function HazardBox({ hazard }) {
   const [x, y, w, h] = hazard.bbox || [0.1, 0.1, 0.3, 0.3]
-  const color = severityColor[hazard.severity] || '#FFB020'
+  const color = severityColor[hazard.severity] || 'rgb(var(--warning))'
   return (
     <div
       className="absolute border-2 rounded"

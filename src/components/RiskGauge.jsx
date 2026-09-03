@@ -8,7 +8,18 @@ export default function RiskGauge({ score = 0, size = 180 }) {
 
   const clamped = Math.max(0, Math.min(100, score))
   const angle = -90 + (clamped / 100) * 180 // -90deg (left) to +90deg (right)
-  const color = clamped < 34 ? '#2E7D4F' : clamped < 67 ? '#FFB020' : '#D93025'
+
+  // Two variants, not one. The arc is a thick 14px stroke, so the raw ISO hue is
+  // correct there in both themes. The score numeral and label beneath it are text,
+  // and ISO yellow as text on a light surface reaches about 1.9:1 — unreadable.
+  const arc =
+    clamped < 34 ? 'rgb(var(--safe))' : clamped < 67 ? 'rgb(var(--warning))' : 'rgb(var(--hazard))'
+  const ink =
+    clamped < 34
+      ? 'rgb(var(--safe-text))'
+      : clamped < 67
+        ? 'rgb(var(--warning-text))'
+        : 'rgb(var(--hazard-text))'
   // Previously hardcoded English, so a Hindi or Santali speaker saw "MODERATE
   // RISK" on an otherwise translated screen.
   const label = clamped < 34 ? t('gauge_low') : clamped < 67 ? t('gauge_moderate') : t('gauge_high')
@@ -22,11 +33,11 @@ export default function RiskGauge({ score = 0, size = 180 }) {
   return (
     <div className="flex flex-col items-center" role="img" aria-label={`${clamped}/100 — ${label}`}>
       <svg width={size} height={size / 1.7} viewBox={`0 0 ${size} ${size / 1.7}`}>
-        <path d={arcPath} fill="none" stroke="#3A3F45" strokeWidth="14" strokeLinecap="round" />
+        <path d={arcPath} fill="none" stroke="rgb(var(--surface-inset))" strokeWidth="14" strokeLinecap="round" />
         <path
           d={describeArc(cx, cy, radius, -90, angle)}
           fill="none"
-          stroke={color}
+          stroke={arc}
           strokeWidth="14"
           strokeLinecap="round"
         />
@@ -35,15 +46,15 @@ export default function RiskGauge({ score = 0, size = 180 }) {
           y1={cy}
           x2={cx + radius * 0.8 * Math.cos(((angle - 90) * Math.PI) / 180)}
           y2={cy + radius * 0.8 * Math.sin(((angle - 90) * Math.PI) / 180)}
-          stroke="#F2F1ED"
+          stroke="rgb(var(--text-primary))"
           strokeWidth="3"
         />
-        <circle cx={cx} cy={cy} r="6" fill="#F2F1ED" />
+        <circle cx={cx} cy={cy} r="6" fill="rgb(var(--text-primary))" />
       </svg>
-      <div className="font-display font-bold text-4xl -mt-2" style={{ color }}>
+      <div className="font-display font-bold text-3xl -mt-2 tabular-nums" style={{ color: ink }}>
         {clamped}
       </div>
-      <div className="font-mono text-xs tracking-widest uppercase" style={{ color }}>
+      <div className="font-mono text-xs tracking-widest uppercase" style={{ color: ink }}>
         {label}
       </div>
     </div>

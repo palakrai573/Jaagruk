@@ -213,10 +213,10 @@ export default function Settings() {
               <div key={c.code} className="flex items-center justify-between gap-3 text-[11px]">
                 <span className="text-concrete min-w-0 truncate">{c.label}</span>
                 <span className="flex items-center gap-3 shrink-0 font-mono">
-                  <span style={{ color: c.percent >= 92 ? '#2E7D4F' : '#FFB020' }}>{c.percent}%</span>
+                  <span style={{ color: c.percent >= 92 ? 'rgb(var(--safe-text))' : 'rgb(var(--warning-text))' }}>{c.percent}%</span>
                   <span
                     className="text-[10px]"
-                    style={{ color: voice?.available ? '#2E7D4F' : '#8B8F94' }}
+                    style={{ color: voice?.available ? 'rgb(var(--safe-text))' : 'rgb(var(--text-tertiary))' }}
                   >
                     {voice?.available
                       ? SPEECH_IS_SUBSTITUTE[c.code]

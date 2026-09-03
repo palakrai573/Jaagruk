@@ -16,6 +16,17 @@ import Pictogram from '../lib/pictograms.jsx'
 import { useLanguage } from '../context/LanguageContext.jsx'
 
 /**
+ * COLOURS IN THIS FILE ARE DELIBERATELY NOT TOKENS.
+ *
+ * Everything drawn here sits on top of a LIVE CAMERA FEED, not on an app surface.
+ * A theme-aware colour is meaningless there: the background is whatever the worker
+ * is pointing the phone at, which might be a bright doorway or a dark shaft wall.
+ * Marker outlines stay near-white and the aim reticle stays ISO amber in both
+ * themes because they have to hold against the camera image, not against a
+ * surface token. The Phase 3 token sweep skipped this file on purpose.
+ */
+
+/**
  * Live AR viewport: rear camera passthrough with hazard markers anchored to
  * real compass bearings.
  *
@@ -430,7 +441,10 @@ export default function ARDrill({
               </div>
               <span
                 className="mt-1 font-mono text-[10px] uppercase tracking-wide px-1.5 py-0.5 rounded whitespace-nowrap"
-                style={{ background: meta.color, color: '#1C1F22' }}
+                // Fixed dark ink on a fixed ISO-coloured chip. Not a token: the
+              // background is an ISO safety hue that is identical in both themes,
+              // so the text on it must be too.
+              style={{ background: meta.color, color: '#1C1F22' }}
               >
                 {anchor.label || t(meta.labelKey)}
               </span>

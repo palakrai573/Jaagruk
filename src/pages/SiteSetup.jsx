@@ -249,7 +249,7 @@ export default function SiteSetup() {
               <button
                 type="button"
                 onClick={() => setActiveZoneId(zone.id)}
-                className="text-left min-w-0 flex-1 flex items-center gap-3"
+                className="text-start min-w-0 flex-1 flex items-center gap-3"
               >
                 <Pictogram name="assembly_point" size={26} />
                 <span className="min-w-0">
@@ -343,7 +343,7 @@ export default function SiteSetup() {
                   <span
                     className="font-mono text-xs px-2.5 py-1 rounded"
                     style={{
-                      color: headingSource === HEADING_SOURCE.COMPASS ? '#2E7D4F' : '#FFB020',
+                      color: headingSource === HEADING_SOURCE.COMPASS ? 'rgb(var(--safe-text))' : 'rgb(var(--warning-text))',
                       background: 'rgba(255,255,255,0.05)',
                     }}
                   >

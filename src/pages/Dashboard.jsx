@@ -1,6 +1,14 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { listAttempts, bestByDomain, formatLatency, TRAINING_MODE, GRADE } from '../lib/assessment.js'
+import {
+  listAttempts,
+  bestByDomain,
+  formatLatency,
+  TRAINING_MODE,
+  GRADE,
+  gradeColor,
+  gradeTextColor,
+} from '../lib/assessment.js'
 import { getCurrentWorker, getActiveSiteId } from '../lib/identity.js'
 import { loadDomainProgress, overallCompliance, PASS_THRESHOLD } from '../lib/certificate.js'
 import { retentionOverview, decayFactor } from '../lib/spaced.js'
@@ -60,12 +68,11 @@ const SCENARIO_TITLE = SCENARIOS.reduce((acc, s) => {
   return acc
 }, {})
 
-const GRADE_COLOR = {
-  [GRADE.FAST]: '#2E7D4F',
-  [GRADE.NORMAL]: '#FFB020',
-  [GRADE.SLOW]: '#D93025',
-  [GRADE.UNKNOWN]: '#8B8F94',
-}
+// This was a local hex map duplicating what assessment.js already knows. It is
+// used in two different positions — as bar fills and as text — which is exactly
+// why the tokens come in pairs: gradeColor for fills keeps the ISO hue, while
+// gradeTextColor is contrast-corrected, because ISO yellow as small text on a
+// light surface reaches about 1.9:1.
 
 export default function Dashboard() {
   const { t } = useLanguage()
@@ -359,10 +366,10 @@ export default function Dashboard() {
                   <StackedBar
                     height={14}
                     segments={[
-                      { label: t('as_grade_fast'), value: distribution.fast, color: GRADE_COLOR[GRADE.FAST] },
-                      { label: t('as_grade_normal'), value: distribution.normal, color: GRADE_COLOR[GRADE.NORMAL] },
-                      { label: t('as_grade_slow'), value: distribution.slow, color: GRADE_COLOR[GRADE.SLOW] },
-                      { label: t('as_grade_unknown'), value: distribution.unknown, color: GRADE_COLOR[GRADE.UNKNOWN] },
+                      { label: t('as_grade_fast'), value: distribution.fast, color: gradeColor(GRADE.FAST) },
+                      { label: t('as_grade_normal'), value: distribution.normal, color: gradeColor(GRADE.NORMAL) },
+                      { label: t('as_grade_slow'), value: distribution.slow, color: gradeColor(GRADE.SLOW) },
+                      { label: t('as_grade_unknown'), value: distribution.unknown, color: gradeColor(GRADE.UNKNOWN) },
                     ]}
                   />
                   {distribution.slow > 0 && (
@@ -558,7 +565,7 @@ function FilterChip({ active, onClick, label, count }) {
       }`}
     >
       {label}
-      <span className="ml-1.5 opacity-60">{count}</span>
+      <span className="ms-1.5 opacity-60">{count}</span>
     </button>
   )
 }
@@ -602,7 +609,7 @@ function DomainRow({ row, series, t }) {
         </div>
       </div>
 
-      <div className="text-right shrink-0 w-16">
+      <div className="text-end shrink-0 w-16">
         <span className="font-display font-bold text-xl" style={{ color }}>
           {row.attempted ? (
             <>
@@ -637,7 +644,7 @@ function AttemptRow({ attempt, t, expanded, onToggle }) {
         type="button"
         onClick={hasDetail ? onToggle : undefined}
         aria-expanded={hasDetail ? expanded : undefined}
-        className={`w-full text-left p-4 flex items-center justify-between gap-3 flex-wrap ${
+        className={`w-full text-start p-4 flex items-center justify-between gap-3 flex-wrap ${
           hasDetail ? '' : 'cursor-default'
         }`}
       >
@@ -654,7 +661,7 @@ function AttemptRow({ attempt, t, expanded, onToggle }) {
             {t(MODE_LABEL[attempt.mode] || 'db_mode_solo')}
             {attempt.totalLatencyMs > 0 && ` · ${formatLatency(attempt.totalLatencyMs)}`}
             {slowSteps > 0 && (
-              <span style={{ color: GRADE_COLOR[GRADE.SLOW] }}>
+              <span style={{ color: gradeTextColor(GRADE.SLOW) }}>
                 {' · '}
                 {slowSteps} {t('as_grade_slow')}
               </span>
@@ -663,7 +670,7 @@ function AttemptRow({ attempt, t, expanded, onToggle }) {
         </div>
 
         <div className="flex items-center gap-3 shrink-0">
-          <div className="text-right">
+          <div className="text-end">
             <span className="font-mono font-bold text-lg" style={{ color }}>
               {attempt.readiness}%
             </span>
@@ -701,14 +708,14 @@ function AttemptRow({ attempt, t, expanded, onToggle }) {
                     className="h-full rounded-full"
                     style={{
                       width: `${Math.min(100, ((step.latencyMs || 0) / Math.max(1, (step.targetMs || 9000) * 2)) * 100)}%`,
-                      background: GRADE_COLOR[step.grade] || GRADE_COLOR[GRADE.UNKNOWN],
+                      background: gradeColor(step.grade),
                     }}
                   />
                 </div>
 
                 <span
-                  className="font-mono text-[10px] shrink-0 w-20 text-right"
-                  style={{ color: GRADE_COLOR[step.grade] || GRADE_COLOR[GRADE.UNKNOWN] }}
+                  className="font-mono text-[10px] shrink-0 w-20 text-end"
+                  style={{ color: gradeTextColor(step.grade) }}
                 >
                   {step.latencyMs ? formatLatency(step.latencyMs) : '—'}
                   {step.targetMs ? <span className="text-concrete"> /{Math.round(step.targetMs / 1000)}s</span> : null}

@@ -343,7 +343,7 @@ export default function Onboarding() {
                     setSignInError(null)
                     setSignInPin('')
                   }}
-                  className="w-full text-left bg-steel-light border border-steel-lighter rounded-lg p-4 hover:border-amber flex items-center gap-4"
+                  className="w-full text-start bg-steel-light border border-steel-lighter rounded-lg p-4 hover:border-amber flex items-center gap-4"
                 >
                   <Pictogram name={w.role === ROLE.SUPERVISOR ? 'report_it' : 'ppe'} size={32} />
                   <span className="min-w-0">
@@ -503,7 +503,7 @@ function BigChoice({ pictogram, label, onClick, disabled, hint }) {
       type="button"
       onClick={disabled ? undefined : onClick}
       disabled={disabled}
-      className={`w-full text-left rounded-lg border p-5 flex items-center gap-4 transition-colors ${
+      className={`w-full text-start rounded-lg border p-5 flex items-center gap-4 transition-colors ${
         disabled
           ? 'border-steel-lighter opacity-50 cursor-default'
           : 'border-steel-lighter hover:border-amber bg-steel-light'

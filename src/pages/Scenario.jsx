@@ -17,6 +17,7 @@ import SafetyScene3D from '../components/SafetyScene3D.jsx'
 import ARDrill from '../components/ARDrill.jsx'
 import Pictogram from '../lib/pictograms.jsx'
 import { ChoiceCard, LatencyBar, FeedbackPanel, ReadinessRing, VoiceButton } from '../components/DrillUI.jsx'
+import { Button, Card, Badge, EmptyState } from '../components/ui/index.js'
 import { useLanguage } from '../context/LanguageContext.jsx'
 import { langName, contentNotice, scenarioContentIsEnglish } from '../lib/i18n.js'
 
@@ -265,12 +266,18 @@ export default function Scenario() {
 
   if (!scenario) {
     return (
-      <div className="max-w-3xl mx-auto px-5 py-16 text-center">
-        <Pictogram name="warning" size={44} className="mx-auto mb-4" />
-        <p className="text-concrete mb-4">Module not found.</p>
-        <Link to="/train" className="text-amber underline">
-          {t('sc_more')}
-        </Link>
+      <div className="max-w-3xl mx-auto px-5 py-16">
+        {/* Was a hardcoded English "Module not found." — the one string in this
+            file that never went through t(), so a Santali user hit English here. */}
+        <EmptyState
+          icon={<Pictogram name="warning" size={44} />}
+          title={t('not_found_label')}
+          action={
+            <Button to="/train" variant="secondary" size="md">
+              {t('sc_more')}
+            </Button>
+          }
+        />
       </div>
     )
   }
@@ -283,79 +290,93 @@ export default function Scenario() {
     const passed = result.readiness >= PASS_THRESHOLD
 
     return (
-      <div className="max-w-2xl mx-auto px-5 py-14 text-center">
-        <p className="font-mono text-amber text-xs tracking-[0.2em] uppercase mb-3">{t('sc_complete')}</p>
-        <h1 className="font-display font-bold text-4xl uppercase mb-8">{scenario.title}</h1>
+      <div className="max-w-2xl mx-auto px-5 py-12 md:py-14 text-center">
+        <p className="font-mono text-2xs tracking-[0.22em] uppercase text-brand-text mb-3">{t('sc_complete')}</p>
+        <h1 className="font-display font-bold text-2xl uppercase tracking-tight text-balance mb-8">
+          {scenario.title}
+        </h1>
 
         <div className="flex justify-center mb-8">
           <ReadinessRing readiness={result.readiness} accuracy={result.accuracyPct} speed={result.speedPct} />
         </div>
 
+        {/* Pass/fail verdict. Was two inline rgba() literals plus a hex with a
+            concatenated alpha suffix; now tokens, so it follows the theme. */}
         <div
-          className="inline-flex items-center gap-3 rounded-lg px-5 py-3 mb-8"
-          style={{
-            background: passed ? 'rgba(46,125,79,0.12)' : 'rgba(217,48,37,0.12)',
-            border: `1px solid ${passed ? '#2E7D4F' : '#D93025'}66`,
-          }}
+          className={`inline-flex items-center gap-3 rounded-xl px-5 py-3 mb-8 border ${
+            passed ? 'bg-safe-subtle border-safe-border' : 'bg-hazard-subtle border-hazard-border'
+          }`}
         >
           <Pictogram name={passed ? 'correct' : 'incorrect'} size={28} />
-          <span className="font-mono text-sm" style={{ color: passed ? '#2E7D4F' : '#D93025' }}>
+          <span
+            className={`font-display font-bold text-sm uppercase tracking-widest ${
+              passed ? 'text-safe-text' : 'text-hazard-text'
+            }`}
+          >
             {passed ? t('rf_passed') : t('rf_failed')}
           </span>
         </div>
 
         {result.hesitation && (
-          <div className="bg-amber/10 border border-amber/40 rounded-lg p-5 mb-8 text-left flex items-start gap-4">
-            <Pictogram name="slow" size={34} />
-            <div>
-              <p className="font-bold text-sm text-amber mb-1">{t('as_hesitation_title')}</p>
-              <p className="text-xs text-concrete leading-relaxed">{t('as_hesitation_body')}</p>
+          <div className="bg-warning-subtle border border-warning-border rounded-xl p-5 mb-8 text-start flex items-start gap-4">
+            <Pictogram name="slow" size={34} className="shrink-0" />
+            <div className="min-w-0">
+              <p className="font-display font-bold text-sm uppercase tracking-wide text-warning-text mb-1">
+                {t('as_hesitation_title')}
+              </p>
+              <p className="text-xs text-ink-secondary leading-relaxed">{t('as_hesitation_body')}</p>
             </div>
           </div>
         )}
 
-        {/* Per-step timing, so the worker can see exactly where they slowed down */}
-        <div className="text-left border border-steel-lighter rounded-lg divide-y divide-steel-lighter mb-8">
+        {/* Per-step timing, so the worker can see exactly where they slowed down.
+            Grade now drives a Badge rather than an inline hex, and the timing
+            figure sits next to it — the number alone did not say whether it was
+            good. */}
+        <ol className="text-start border border-line-subtle rounded-xl divide-y divide-line-subtle mb-8 overflow-hidden">
           {result.steps.map((s, i) => (
-            <div key={s.stepId || i} className="flex items-center justify-between gap-3 px-4 py-3">
+            <li key={s.stepId || i} className="flex items-center justify-between gap-3 px-4 py-3 bg-surface-1">
               <span className="flex items-center gap-3 min-w-0">
-                <Pictogram name={s.correct ? 'correct' : 'incorrect'} size={22} />
-                <span className="font-mono text-xs text-concrete">
+                <Pictogram name={s.correct ? 'correct' : 'incorrect'} size={22} className="shrink-0" />
+                <span className="font-mono text-xs text-ink-secondary">
                   {t('sc_decision')} {i + 1}
                 </span>
               </span>
-              <span
-                className="font-mono text-[11px] shrink-0"
-                style={{ color: s.grade === 'fast' ? '#2E7D4F' : s.grade === 'slow' ? '#D93025' : '#FFB020' }}
-              >
-                {s.latencyMs ? `${(s.latencyMs / 1000).toFixed(1)}s` : '—'}
+
+              <span className="flex items-center gap-2 shrink-0">
+                <span className="font-mono text-xs text-ink tabular-nums">
+                  {s.latencyMs ? `${(s.latencyMs / 1000).toFixed(1)}s` : '—'}
+                </span>
+                <Badge
+                  tone={s.grade === 'fast' ? 'safe' : s.grade === 'slow' ? 'hazard' : 'warning'}
+                  size="sm"
+                >
+                  {t(`as_grade_${s.grade}`)}
+                </Badge>
               </span>
-            </div>
+            </li>
           ))}
-        </div>
+        </ol>
 
         {saveNote === 'guest' && (
-          <p className="font-mono text-[11px] text-concrete mb-6">
+          <p className="font-mono text-xs text-ink-tertiary mb-6 leading-relaxed">
             {t('cert_sign_in_why')}{' '}
-            <Link to="/start" className="text-amber underline">
+            <Link to="/start" className="text-brand-text underline">
               {t('ob_sign_in')}
             </Link>
           </p>
         )}
-        {saveNote === 'temp' && (
-          <p className="font-mono text-[11px] text-hazard mb-6">{t('db_storage_temp')}</p>
-        )}
+        {saveNote === 'temp' && <p className="font-mono text-xs text-hazard-text mb-6">{t('db_storage_temp')}</p>}
 
-        <div className="flex gap-4 justify-center flex-wrap">
-          <Link
-            to="/train"
-            className="border border-concrete rounded px-6 py-3 font-mono text-sm hover:border-amber hover:text-amber"
-          >
+        {/* Stacks on a phone. Two side-by-side buttons at 320px give two cramped
+            targets instead of one comfortable one. */}
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <Button to="/train" variant="secondary" size="lg">
             {t('sc_more')}
-          </Link>
-          <Link to="/dashboard" className="bg-amber text-steel font-display font-bold uppercase px-6 py-3 rounded">
+          </Button>
+          <Button to="/dashboard" size="lg">
             {t('sc_dashboard')}
-          </Link>
+          </Button>
         </div>
       </div>
     )
@@ -364,15 +385,31 @@ export default function Scenario() {
   /* ---------------- drill ---------------- */
 
   return (
-    <div className="max-w-2xl mx-auto px-5 py-10">
-      <p className="font-mono text-amber text-xs tracking-[0.2em] uppercase mb-3">
-        {scenario.sector} · {t('sc_decision')} {stepIndex + 1} {t('sc_of')} {totalSteps}
-      </p>
+    <div className="max-w-2xl mx-auto px-5 py-8 md:py-10">
+      {/* Step progress. A worker mid-drill needs to know how much is left, and a
+          bar communicates that faster than "2 of 3" alone. */}
+      <div className="mb-4">
+        <p className="font-mono text-2xs tracking-[0.22em] uppercase text-brand-text mb-2">
+          {scenario.sector} · {t('sc_decision')} {stepIndex + 1} {t('sc_of')} {totalSteps}
+        </p>
+        <div
+          className="h-1 bg-surface-inset rounded-full overflow-hidden"
+          role="progressbar"
+          aria-valuenow={stepIndex + 1}
+          aria-valuemin={1}
+          aria-valuemax={totalSteps}
+        >
+          <div
+            className="h-full bg-brand rounded-full transition-[width] duration-slow ease-out"
+            style={{ width: `${((stepIndex + 1) / totalSteps) * 100}%` }}
+          />
+        </div>
+      </div>
 
-      <div className="flex items-start justify-between gap-4 mb-5 flex-wrap">
-        <h1 className="font-display font-bold text-3xl uppercase flex items-center gap-3">
-          <Pictogram name={scenario.pictogram} size={34} />
-          {scenario.title}
+      <div className="flex items-start justify-between gap-3 mb-5">
+        <h1 className="font-display font-bold text-xl md:text-2xl uppercase tracking-tight flex items-center gap-3 min-w-0">
+          <Pictogram name={scenario.pictogram} size={34} className="shrink-0" />
+          <span className="min-w-0">{scenario.title}</span>
         </h1>
 
         <button
@@ -382,16 +419,19 @@ export default function Scenario() {
             setArMode(nextValue)
             lsSetBool(LS.MODE_AR, nextValue)
           }}
-          className="font-mono text-[10px] uppercase tracking-widest border border-steel-lighter rounded px-3 py-2 text-concrete hover:border-amber hover:text-amber shrink-0"
+          className="font-mono text-2xs uppercase tracking-widest border border-line-subtle rounded-lg px-3 min-h-[44px] flex items-center text-ink-tertiary hover:border-brand hover:text-brand-text transition-colors duration-fast shrink-0"
         >
           {arMode ? t('ar_use_3d') : t('ar_use_ar')}
         </button>
       </div>
 
+      {/* Untranslated drill CONTENT is a safety problem, not an inconvenience —
+          a hazard instruction in a language the worker does not read. Hence
+          hazard tokens rather than the softer warning used for menu coverage. */}
       {contentUntranslated && (
-        <div className="bg-hazard/10 border border-hazard/40 rounded p-3 mb-5 flex items-start gap-3">
-          <Pictogram name="warning" size={24} />
-          <p className="text-xs text-concrete leading-relaxed">{contentNotice(lang)}</p>
+        <div className="bg-hazard-subtle border border-hazard-border rounded-xl p-3.5 mb-5 flex items-start gap-3">
+          <Pictogram name="warning" size={24} className="shrink-0" />
+          <p className="text-xs text-ink-secondary leading-relaxed">{contentNotice(lang)}</p>
         </div>
       )}
 
@@ -412,8 +452,11 @@ export default function Scenario() {
         >
           {step?.aim && !feedback && (
             <div className="absolute bottom-3 inset-x-3 pointer-events-none">
-              <div className="bg-steel/85 rounded px-3 py-2 text-center">
-                <p className="font-mono text-[11px] text-chalk">
+              {/* Fixed dark plate regardless of theme: this sits over a live
+                  camera feed, so it needs to stay legible against whatever the
+                  worker happens to be pointing at. */}
+              <div className="bg-black/75 backdrop-blur-sm rounded-lg px-3 py-2.5 text-center">
+                <p className="font-mono text-xs text-white">
                   {aimedThisStep ? t('site_marked') : t('ar_aim_prompt')}
                 </p>
               </div>
@@ -424,20 +467,28 @@ export default function Scenario() {
         <SafetyScene3D scenarioId={scenario.id} />
       )}
 
+      {/* border-s / ps, not border-l / pl — the rule mirrors for Urdu. */}
       {stepIndex === 0 && !feedback && (
-        <p className="text-concrete mb-8 leading-relaxed border-l-2 border-amber pl-4">{scenario.intro}</p>
+        <p className="text-ink-secondary mb-8 leading-relaxed border-s-2 border-brand ps-4 text-pretty">
+          {scenario.intro}
+        </p>
       )}
 
-      {/* Prompt */}
-      <div className="bg-steel-light border border-steel-lighter rounded-lg p-6 mb-6">
+      {/* The prompt. Deliberately the largest text on the screen: it is the thing
+          being read under time pressure. */}
+      <div className="bg-surface-1 border border-line-subtle rounded-xl p-5 md:p-6 mb-6">
         <div className="flex items-start gap-4">
-          {pictogramMode && <Pictogram name={step.pictogram} size={56} />}
-          <p className={`leading-relaxed ${pictogramMode ? 'text-base' : 'text-lg'}`}>{step.prompt}</p>
+          {pictogramMode && <Pictogram name={step.pictogram} size={56} className="shrink-0" />}
+          <p className={`leading-relaxed text-ink ${pictogramMode ? 'text-base' : 'text-lg'}`}>{step.prompt}</p>
         </div>
+
+        {/* 44px target: a worker who cannot read relies on this, so it cannot be
+            a text link sized for a mouse. */}
         <button
           type="button"
           onClick={repeatPrompt}
-          className="mt-4 font-mono text-[10px] uppercase tracking-widest text-concrete hover:text-amber flex items-center gap-2"
+          className="mt-4 font-mono text-2xs uppercase tracking-widest text-ink-tertiary hover:text-brand-text
+                     transition-colors duration-fast flex items-center gap-2 min-h-[44px] -mb-1"
         >
           <Pictogram name="listen" size={18} />
           {t('as_listen_again')}
@@ -466,29 +517,33 @@ export default function Scenario() {
             <VoiceButton choiceCount={step.choices.length} onCommand={onVoiceCommand} className="mt-4" />
           )}
 
-          <div className="flex items-center justify-center gap-4 mt-6">
-            <button
-              type="button"
+          {/* Accessibility toggles, reachable mid-drill on purpose: a worker who
+              finds they cannot read the text should not have to abandon the drill
+              and go to Settings. aria-pressed so the state is announced rather
+              than only rendered as a word. */}
+          <div className="flex flex-wrap items-center justify-center gap-2 mt-6 pt-5 border-t border-line-subtle">
+            <ModeToggle
+              on={pictogramMode}
+              label={t('st_pictogram_mode')}
+              onLabel={t('st_on')}
+              offLabel={t('st_off')}
               onClick={() => {
                 const nextValue = !pictogramMode
                 setPictogramMode(nextValue)
                 lsSetBool(LS.MODE_PICTOGRAM, nextValue)
               }}
-              className="font-mono text-[10px] uppercase tracking-widest text-concrete hover:text-amber"
-            >
-              {t('st_pictogram_mode')}: {pictogramMode ? t('st_on') : t('st_off')}
-            </button>
-            <button
-              type="button"
+            />
+            <ModeToggle
+              on={voiceMode}
+              label={t('st_voice_mode')}
+              onLabel={t('st_on')}
+              offLabel={t('st_off')}
               onClick={() => {
                 const nextValue = !voiceMode
                 setVoiceMode(nextValue)
                 lsSetBool(LS.MODE_VOICE, nextValue)
               }}
-              className="font-mono text-[10px] uppercase tracking-widest text-concrete hover:text-amber"
-            >
-              {t('st_voice_mode')}: {voiceMode ? t('st_on') : t('st_off')}
-            </button>
+            />
           </div>
         </>
       )}
@@ -504,15 +559,45 @@ export default function Scenario() {
           aiCoaching={aiCoaching}
           aiLoading={aiLoading}
         >
-          <button
-            onClick={next}
-            data-gesture-target="continue"
-            className="w-full bg-amber text-steel font-display font-bold text-lg uppercase py-3 rounded"
-          >
+          {/* Field size: 56px. data-gesture-target is preserved so this stays
+              operable hands-free — it is the one control a gloved worker has to
+              hit between every decision. */}
+          <Button onClick={next} data-gesture-target="continue" size="field">
             {stepIndex + 1 < totalSteps ? t('sc_continue') : t('sc_finish')}
-          </button>
+          </Button>
         </FeedbackPanel>
       )}
     </div>
+  )
+}
+
+/* ================================================================== */
+
+/**
+ * An in-drill accessibility toggle.
+ *
+ * 44px and bordered rather than a bare text link, because these are pressed with
+ * gloves on, and because the previous version gave no visual indication of which
+ * state was active beyond the word beside it.
+ */
+function ModeToggle({ on, label, onLabel, offLabel, onClick }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={on}
+      className={`font-mono text-2xs uppercase tracking-widest rounded-lg border px-3 min-h-[44px]
+                  flex items-center gap-2 transition-colors duration-fast ${
+                    on
+                      ? 'border-brand bg-brand-subtle text-brand-text'
+                      : 'border-line-subtle text-ink-tertiary hover:border-brand hover:text-brand-text'
+                  }`}
+    >
+      <span
+        aria-hidden="true"
+        className={`w-1.5 h-1.5 rounded-full ${on ? 'bg-brand' : 'bg-ink-disabled'}`}
+      />
+      {label}: {on ? onLabel : offLabel}
+    </button>
   )
 }

@@ -206,7 +206,7 @@ export default function ReportHazard() {
         <h1 className="font-display font-bold text-2xl uppercase mb-3">{t('hz_thanks_title')}</h1>
         <p className="text-concrete text-sm mb-8 leading-relaxed">{t('hz_thanks_body')}</p>
 
-        <div className="border border-steel-lighter rounded-lg p-4 mb-8 flex items-center gap-4 text-left">
+        <div className="border border-steel-lighter rounded-lg p-4 mb-8 flex items-center gap-4 text-start">
           <Pictogram name={categoryMeta(submitted.category).pictogram} size={38} />
           <div className="min-w-0">
             <p className="font-bold text-sm">{t(categoryMeta(submitted.category).labelKey)}</p>
@@ -283,7 +283,7 @@ export default function ReportHazard() {
                 aria-pressed={severity === level}
                 className="rounded-lg border p-4 flex items-center gap-4 transition-colors"
                 style={{
-                  borderColor: severity === level ? SEVERITY_COLOR[level] : '#3A3F45',
+                  borderColor: severity === level ? SEVERITY_COLOR[level] : 'rgb(var(--border-default))',
                   background: severity === level ? `${SEVERITY_COLOR[level]}18` : 'transparent',
                 }}
               >
@@ -467,7 +467,7 @@ export default function ReportHazard() {
                 <span
                   className="font-mono text-[10px] uppercase tracking-widest px-2 py-1 rounded shrink-0"
                   style={{
-                    color: report.status === HAZARD_STATUS.RESOLVED ? '#2E7D4F' : '#FFB020',
+                    color: report.status === HAZARD_STATUS.RESOLVED ? 'rgb(var(--safe-text))' : 'rgb(var(--warning-text))',
                     background: 'rgba(255,255,255,0.05)',
                   }}
                 >

@@ -1,16 +1,38 @@
 import { useEffect, useRef, useState } from 'react'
 import Pictogram from '../lib/pictograms.jsx'
-import { GRADE, gradeColor, formatLatency, DEFAULT_TARGET_MS } from '../lib/assessment.js'
+import {
+  GRADE,
+  gradeColor,
+  gradeTextColor,
+  gradeTint,
+  formatLatency,
+  DEFAULT_TARGET_MS,
+} from '../lib/assessment.js'
 import { toNumberOr } from '../lib/num.js'
 import { COMMAND, createCommandListener, ASR_ERROR, speechRecognitionSupported } from '../lib/speech.js'
 import { useLanguage } from '../context/LanguageContext.jsx'
 
 /**
  * Shared primitives for every drill surface: the solo modules, the spaced
- * refresher, and the buddy drill. Keeping them here means a change to how a
- * choice is presented lands everywhere at once, which matters because these
- * buttons are the one thing a low-literacy worker has to be able to operate
- * under stress.
+ * refresher, and the buddy drill.
+ *
+ * THESE ARE FIELD-TIER COMPONENTS, AND THE RULES ARE DIFFERENT HERE.
+ *
+ * A worker operating these is wearing gloves, in bad light, possibly underground,
+ * with a six-second timer running. So:
+ *
+ *   - Minimum 56px targets, not the 44px web default. That default assumes a bare
+ *     fingertip on a lit screen.
+ *   - No decorative motion. The only things that animate are the ones carrying
+ *     information: the latency bar, and the dwell fill that shows a gesture
+ *     selection landing.
+ *   - Nothing is ever disabled in a way that hides why.
+ *   - Text alternatives on everything, because pictogram mode hides the labels.
+ *
+ * Restyled in Phase 3 without touching the timing path. Latency is captured in
+ * Scenario.jsx from startedAt to the click; nothing here participates in that
+ * measurement, which is why this file could be reworked and that one barely
+ * touched.
  */
 
 /* ================================================================== */
@@ -18,13 +40,12 @@ import { useLanguage } from '../context/LanguageContext.jsx'
 /* ================================================================== */
 
 /**
- * A single answer button.
+ * A single answer button. The most important control in the product.
  *
- * The number badge is not decoration. It is the anchor that ties together the
- * three ways a worker can answer — tap it, say "one"/"two", or point at it with
- * gesture control. In pictogram mode the text is hidden and the badge plus the
- * spoken narration carry the whole interaction, so it has to be large and
- * unambiguous.
+ * The number badge is not decoration. It is the anchor tying together the three
+ * ways to answer — tap it, say "one"/"two", or point at it with gesture control.
+ * In pictogram mode the text is visually hidden and the badge plus spoken
+ * narration carry the entire interaction, so it has to be large and unambiguous.
  *
  * `data-gesture-target` is what gesture.js hit-tests against.
  */
@@ -47,18 +68,27 @@ export function ChoiceCard({
       disabled={disabled}
       data-gesture-target={disabled ? undefined : `choice-${index}`}
       aria-label={pictogramMode ? `${number}. ${text}` : undefined}
-      className={`relative w-full text-left rounded-lg border transition-colors overflow-hidden ${
-        pictogramMode ? 'p-5' : 'p-4'
-      } ${
+      className={[
+        // text-start, not text-left: mirrors for Urdu.
+        'relative w-full text-start rounded-xl border-2 overflow-hidden',
+        'transition-colors duration-fast',
+        // Comfortably past the 56px token. This is the primary target under time
+        // pressure and there is no reason to be economical with it.
+        pictogramMode ? 'p-5 min-h-[96px]' : 'p-4 min-h-touch',
         highlighted
-          ? 'bg-steel-lighter border-amber'
-          : 'bg-steel-light border-steel-lighter hover:bg-steel-lighter hover:border-amber'
-      } ${disabled ? 'opacity-60 cursor-default' : ''}`}
+          ? 'bg-brand-subtle border-brand'
+          : 'bg-surface-1 border-line hover:border-brand hover:bg-surface-2 active:bg-surface-3',
+        disabled ? 'opacity-60 cursor-default' : 'cursor-pointer',
+      ]
+        .filter(Boolean)
+        .join(' ')}
     >
-      {/* Dwell fill for gesture selection — grows left to right behind the content */}
+      {/* Dwell fill for gesture selection. start-0, not left-0, so it grows from
+          the correct edge in RTL. This animates because it is information: it is
+          the feedback that a hands-free selection is landing. */}
       {dwellProgress > 0 && (
         <span
-          className="absolute inset-y-0 left-0 bg-amber/25 pointer-events-none"
+          className="absolute inset-y-0 start-0 bg-brand/25 pointer-events-none"
           style={{ width: `${Math.min(100, dwellProgress * 100)}%` }}
           aria-hidden="true"
         />
@@ -66,19 +96,22 @@ export function ChoiceCard({
 
       <span className={`relative flex items-center ${pictogramMode ? 'gap-5' : 'gap-4'}`}>
         <span
-          className={`shrink-0 rounded-full bg-amber text-steel font-display font-bold flex items-center justify-center ${
-            pictogramMode ? 'w-12 h-12 text-2xl' : 'w-8 h-8 text-base'
+          className={`shrink-0 rounded-full bg-brand text-ink-onBrand font-display font-bold flex items-center justify-center tabular-nums ${
+            pictogramMode ? 'w-14 h-14 text-2xl' : 'w-10 h-10 text-lg'
           }`}
           aria-hidden="true"
         >
           {number}
         </span>
 
-        {pictogram && <Pictogram name={pictogram} size={pictogramMode ? 64 : 34} label={pictogramMode ? undefined : ''} />}
+        {pictogram && (
+          <Pictogram name={pictogram} size={pictogramMode ? 64 : 34} label={pictogramMode ? undefined : ''} />
+        )}
 
-        {/* In pictogram mode the text is still in the DOM for screen readers,
-            just visually hidden — removing it would break assistive tech. */}
-        <span className={pictogramMode ? 'sr-only' : 'flex-1 leading-relaxed'}>{text}</span>
+        {/* In pictogram mode the text stays in the DOM for screen readers, only
+            visually hidden. Removing it would break assistive technology for the
+            users this mode exists to serve. */}
+        <span className={pictogramMode ? 'sr-only' : 'flex-1 leading-relaxed text-ink'}>{text}</span>
       </span>
     </button>
   )
@@ -91,10 +124,13 @@ export function ChoiceCard({
 /**
  * Live countdown against the step's reaction-time baseline.
  *
- * Deliberately shows time *elapsed* rather than a hard deadline, and never locks
- * the worker out. The point is to create the mild pressure a real incident
- * creates, not to fail somebody whose glove slipped. Past the target the bar
- * stays full and turns amber, then red — visible feedback without a cliff.
+ * Shows time ELAPSED rather than a hard deadline, and never locks the worker out.
+ * The point is to create the mild pressure a real incident creates, not to fail
+ * somebody whose glove slipped. Past target the bar stays full and turns amber,
+ * then red — feedback without a cliff.
+ *
+ * The 120ms LINEAR transition in `.latency-bar` is deliberate and must stay
+ * linear: an easing curve on a countdown misrepresents how much time is left.
  */
 export function LatencyBar({ startedAt, targetMs, paused = false }) {
   const { t } = useLanguage()
@@ -121,25 +157,30 @@ export function LatencyBar({ startedAt, targetMs, paused = false }) {
   const over = elapsed > target
   const wayOver = elapsed > target * 2
 
-  const color = wayOver ? '#D93025' : over ? '#FFB020' : '#2E7D4F'
+  // Fill uses the ISO hue; the numeral beside it uses the text variant, which is
+  // the pair that survives both themes.
+  const fill = wayOver ? 'rgb(var(--hazard))' : over ? 'rgb(var(--warning))' : 'rgb(var(--safe))'
+  const textColor = wayOver ? 'rgb(var(--hazard-text))' : over ? 'rgb(var(--warning-text))' : 'rgb(var(--safe-text))'
 
   return (
     <div className="mb-4" aria-hidden="true">
-      <div className="flex items-center justify-between mb-1.5">
-        <span className="font-mono text-[10px] uppercase tracking-widest text-concrete">
-          {over ? <span className="text-hazard">{t('as_decide_now')}</span> : t('as_time_pressure')}
+      <div className="flex items-center justify-between gap-3 mb-1.5">
+        <span className="font-mono text-2xs uppercase tracking-widest text-ink-tertiary">
+          {over ? <span className="text-hazard-text font-bold">{t('as_decide_now')}</span> : t('as_time_pressure')}
         </span>
-        {/* The elapsed number on its own means nothing without the target beside
-            it. Showing both is what turns the bar into feedback. */}
-        <span className="font-mono text-[11px] text-concrete">
-          <span style={{ color }}>{formatLatency(elapsed)}</span>
+        {/* The elapsed number means nothing without the target beside it. Showing
+            both is what turns the bar into feedback rather than a stopwatch. */}
+        <span className="font-mono text-xs text-ink-tertiary tabular-nums whitespace-nowrap">
+          <span style={{ color: textColor }} className="font-bold">
+            {formatLatency(elapsed)}
+          </span>
           <span className="opacity-60"> / {formatLatency(target)}</span>
         </span>
       </div>
-      <div className="h-1.5 bg-steel-lighter rounded-full overflow-hidden">
+      <div className="h-2 bg-surface-inset rounded-full overflow-hidden">
         <div
           className="h-full latency-bar rounded-full"
-          style={{ width: `${Math.max(2, ratio * 100)}%`, backgroundColor: color }}
+          style={{ width: `${Math.max(2, ratio * 100)}%`, backgroundColor: fill }}
         />
       </div>
     </div>
@@ -160,21 +201,24 @@ export function GradePill({ grade, latencyMs, targetMs }) {
     [GRADE.UNKNOWN]: 'as_grade_unknown',
   }[grade]
 
-  const color = gradeColor(grade)
-
   return (
     <span className="inline-flex items-center gap-2 flex-wrap">
       <span
-        className="font-mono text-[10px] uppercase tracking-widest px-2 py-0.5 rounded"
-        style={{ backgroundColor: `${color}22`, color, border: `1px solid ${color}66` }}
+        className="font-mono text-2xs uppercase tracking-widest px-2 py-0.5 rounded-full border"
+        style={{
+          backgroundColor: gradeTint(grade),
+          color: gradeTextColor(grade),
+          borderColor: gradeColor(grade),
+        }}
       >
         {t(labelKey)}
       </span>
+
       {latencyMs > 0 && (
-        // "4.2s / 9s" is ambiguous on its own. The visible form stays compact;
-        // the accessible name and the tooltip say which number is which.
+        // "4.2s / 9s" is ambiguous alone. The visible form stays compact; the
+        // accessible name and the tooltip say which number is which.
         <span
-          className="font-mono text-[10px] text-concrete"
+          className="font-mono text-2xs text-ink-tertiary tabular-nums"
           title={
             targetMs > 0
               ? `${t('as_your_time')} ${formatLatency(latencyMs)} · ${t('as_target_time')} ${formatLatency(targetMs)}`
@@ -201,9 +245,9 @@ export function GradePill({ grade, latencyMs, targetMs }) {
 /* ================================================================== */
 
 /**
- * The composite readiness score. Shows the two inputs underneath, because
- * "82%" on its own tells a worker nothing about what to fix — knowing it was
- * full marks on accuracy but weak on speed points at a specific problem.
+ * The composite readiness score, with its two inputs underneath — because "82%"
+ * alone tells a worker nothing about what to fix, while "full marks on accuracy,
+ * weak on speed" points at a specific problem.
  */
 export function ReadinessRing({ readiness = 0, accuracy = null, speed = null, size = 168, showBreakdown = true }) {
   const { t } = useLanguage()
@@ -212,7 +256,10 @@ export function ReadinessRing({ readiness = 0, accuracy = null, speed = null, si
   const stroke = 12
   const radius = size / 2 - stroke
   const circumference = 2 * Math.PI * radius
-  const color = clamped >= 70 ? '#2E7D4F' : clamped >= 45 ? '#FFB020' : '#D93025'
+
+  const arc = clamped >= 70 ? 'rgb(var(--safe))' : clamped >= 45 ? 'rgb(var(--warning))' : 'rgb(var(--hazard))'
+  const label =
+    clamped >= 70 ? 'rgb(var(--safe-text))' : clamped >= 45 ? 'rgb(var(--warning-text))' : 'rgb(var(--hazard-text))'
 
   return (
     <div className="flex flex-col items-center">
@@ -223,39 +270,49 @@ export function ReadinessRing({ readiness = 0, accuracy = null, speed = null, si
         aria-label={`${t('as_readiness')} ${clamped}%`}
       >
         <svg width={size} height={size} className="-rotate-90">
-          <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="#3A3F45" strokeWidth={stroke} />
           <circle
             cx={size / 2}
             cy={size / 2}
             r={radius}
             fill="none"
-            stroke={color}
+            stroke="rgb(var(--surface-inset))"
+            strokeWidth={stroke}
+          />
+          <circle
+            cx={size / 2}
+            cy={size / 2}
+            r={radius}
+            fill="none"
+            stroke={arc}
             strokeWidth={stroke}
             strokeLinecap="round"
             strokeDasharray={circumference}
             strokeDashoffset={circumference * (1 - clamped / 100)}
-            style={{ transition: 'stroke-dashoffset 700ms ease-out' }}
+            style={{ transition: 'stroke-dashoffset 700ms var(--ease-out)' }}
           />
         </svg>
+
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="font-display font-bold text-5xl" style={{ color }}>
+          <span className="font-display font-bold text-3xl tabular-nums leading-none" style={{ color: label }}>
             {clamped}
           </span>
-          <span className="font-mono text-[10px] uppercase tracking-widest text-concrete mt-0.5">
+          <span className="font-mono text-2xs uppercase tracking-widest text-ink-tertiary mt-1.5">
             {t('as_readiness')}
           </span>
         </div>
       </div>
 
       {showBreakdown && accuracy !== null && speed !== null && (
-        <div className="flex gap-6 mt-4 font-mono text-[11px]">
-          <span className="text-concrete">
-            {t('as_accuracy')} <span className="text-chalk font-bold">{Math.round(accuracy)}%</span>
-          </span>
-          <span className="text-concrete">
-            {t('as_speed')} <span className="text-chalk font-bold">{Math.round(speed)}%</span>
-          </span>
-        </div>
+        <dl className="flex gap-6 mt-4 font-mono text-xs">
+          <div className="flex items-center gap-1.5">
+            <dt className="text-ink-tertiary">{t('as_accuracy')}</dt>
+            <dd className="text-ink font-bold tabular-nums">{Math.round(accuracy)}%</dd>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <dt className="text-ink-tertiary">{t('as_speed')}</dt>
+            <dd className="text-ink font-bold tabular-nums">{Math.round(speed)}%</dd>
+          </div>
+        </dl>
       )}
     </div>
   )
@@ -268,10 +325,10 @@ export function ReadinessRing({ readiness = 0, accuracy = null, speed = null, si
 /**
  * Push-to-talk answer input.
  *
- * Restricted to the commands the current screen can actually act on, so "left"
- * cannot fire where there is no left option. Every recognition failure produces
- * a specific message rather than silence — a worker who speaks and gets no
- * reaction assumes the feature is broken and stops using it.
+ * Restricted to the commands the current screen can act on, so "left" cannot fire
+ * where there is no left option. Every recognition failure produces a specific
+ * message rather than silence — a worker who speaks, gets no reaction and no
+ * explanation concludes the feature is broken and stops using it.
  */
 export function VoiceButton({ choiceCount = 2, onCommand, disabled = false, className = '' }) {
   const { t, lang } = useLanguage()
@@ -293,7 +350,7 @@ export function VoiceButton({ choiceCount = 2, onCommand, disabled = false, clas
         onCommand?.(match.command)
       },
       onError: (code) => {
-        // A deliberate stop is not worth reporting to the user.
+        // A deliberate stop is not worth reporting.
         if (code === ASR_ERROR.ABORTED) return
         setError(code)
       },
@@ -322,18 +379,26 @@ export function VoiceButton({ choiceCount = 2, onCommand, disabled = false, clas
           else listenerRef.current?.start()
         }}
         disabled={disabled}
-        className={`w-full rounded-lg border py-3 px-4 font-mono text-sm flex items-center justify-center gap-3 transition-colors ${
-          listening ? 'border-amber bg-amber/10 text-amber' : 'border-steel-lighter text-concrete hover:border-amber hover:text-amber'
-        } disabled:opacity-50`}
+        aria-pressed={listening}
+        className={`w-full rounded-xl border-2 min-h-touch px-4 font-mono text-sm flex items-center justify-center gap-3
+                    transition-colors duration-fast disabled:opacity-50 ${
+                      listening
+                        ? 'border-brand bg-brand-subtle text-brand-text'
+                        : 'border-line text-ink-secondary hover:border-brand hover:text-brand-text'
+                    }`}
       >
+        {/* The mic indicator pulses only while listening. That is state, not
+            decoration — it is how a worker knows the phone is actually hearing
+            them, which is the single thing voice input most needs to communicate. */}
+        {listening && <span className="w-2 h-2 rounded-full bg-hazard live-dot shrink-0" aria-hidden="true" />}
         <Pictogram name="listen" size={22} />
         {listening ? t('as_listening') : t('as_speak_answer')}
       </button>
 
-      <p className="font-mono text-[10px] text-concrete text-center mt-2">{t('as_say_one_or_two')}</p>
+      <p className="font-mono text-2xs text-ink-tertiary text-center mt-2">{t('as_say_one_or_two')}</p>
 
       {errorKey && (
-        <p className="font-mono text-[10px] text-hazard text-center mt-1.5" role="status">
+        <p className="font-mono text-2xs text-hazard-text text-center mt-1.5" role="status">
           {t(errorKey)}
         </p>
       )}
@@ -349,7 +414,7 @@ export function VoiceButton({ choiceCount = 2, onCommand, disabled = false, clas
  * Post-decision feedback.
  *
  * Shows the reaction-time grade alongside the safe/unsafe verdict, and calls out
- * correct-but-slow explicitly. That case is the whole reason the latency
+ * correct-but-slow explicitly. That case is the entire reason the latency
  * measurement exists, so burying it would waste the signal.
  */
 export function FeedbackPanel({ safe, feedback, grade, latencyMs, targetMs, aiCoaching, aiLoading, children }) {
@@ -358,16 +423,19 @@ export function FeedbackPanel({ safe, feedback, grade, latencyMs, targetMs, aiCo
 
   return (
     <div className="space-y-4">
+      {/* border-s-4, not border-l-4: the accent rule mirrors for RTL. */}
       <div
-        className="rounded-lg p-5 border-l-4"
-        style={{ borderColor: safe ? '#2E7D4F' : '#D93025', background: 'rgba(255,255,255,0.03)' }}
+        className={`rounded-xl p-5 border border-s-4 ${
+          safe ? 'border-safe-border border-s-safe bg-safe-subtle' : 'border-hazard-border border-s-hazard bg-hazard-subtle'
+        }`}
       >
-        <div className="flex items-center justify-between gap-3 flex-wrap mb-2">
+        <div className="flex items-center justify-between gap-3 flex-wrap mb-3">
           <span className="flex items-center gap-2">
             <Pictogram name={safe ? 'correct' : 'incorrect'} size={22} />
             <span
-              className="font-mono text-xs uppercase tracking-widest"
-              style={{ color: safe ? '#2E7D4F' : '#D93025' }}
+              className={`font-display font-bold text-sm uppercase tracking-widest ${
+                safe ? 'text-safe-text' : 'text-hazard-text'
+              }`}
             >
               {safe ? t('sc_safe') : t('sc_unsafe')}
             </span>
@@ -375,21 +443,33 @@ export function FeedbackPanel({ safe, feedback, grade, latencyMs, targetMs, aiCo
           <GradePill grade={grade} latencyMs={latencyMs} targetMs={targetMs} />
         </div>
 
-        <p className="text-sm leading-relaxed">{feedback}</p>
+        <p className="text-sm leading-relaxed text-ink">{feedback}</p>
 
         {hesitated && (
-          <div className="mt-4 pt-3 border-t border-steel-lighter flex items-start gap-3">
-            <Pictogram name="slow" size={30} />
-            <div>
-              <p className="font-bold text-xs uppercase tracking-wide text-amber mb-1">{t('as_hesitation_title')}</p>
-              <p className="text-xs text-concrete leading-relaxed">{t('as_hesitation_body')}</p>
+          <div className="mt-4 pt-3.5 border-t border-warning-border/60 flex items-start gap-3">
+            <Pictogram name="slow" size={30} className="shrink-0" />
+            <div className="min-w-0">
+              <p className="font-display font-bold text-sm uppercase tracking-wide text-warning-text mb-1">
+                {t('as_hesitation_title')}
+              </p>
+              <p className="text-xs text-ink-secondary leading-relaxed">{t('as_hesitation_body')}</p>
             </div>
           </div>
         )}
 
-        {aiLoading && <p className="text-xs text-concrete mt-3 font-mono">{t('sc_trainer_thinking')}</p>}
+        {aiLoading && (
+          <p className="text-xs text-ink-tertiary mt-3 font-mono flex items-center gap-2">
+            <span
+              className="w-3 h-3 rounded-full border-2 border-current border-e-transparent animate-spin"
+              aria-hidden="true"
+            />
+            {t('sc_trainer_thinking')}
+          </p>
+        )}
         {aiCoaching && (
-          <p className="text-xs text-amber mt-3 border-t border-steel-lighter pt-3 leading-relaxed">{aiCoaching}</p>
+          <p className="text-xs text-brand-text mt-3 border-t border-line-subtle pt-3 leading-relaxed">
+            {aiCoaching}
+          </p>
         )}
       </div>
 

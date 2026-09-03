@@ -79,7 +79,7 @@ export default function ChatBox() {
               <div
                 key={i}
                 className={`text-sm leading-relaxed rounded-lg px-3 py-2 max-w-[90%] ${
-                  m.role === 'user' ? 'bg-amber text-steel ml-auto font-medium' : 'bg-steel border border-steel-lighter text-chalk'
+                  m.role === 'user' ? 'bg-amber text-steel ms-auto font-medium' : 'bg-steel border border-steel-lighter text-chalk'
                 }`}
               >
                 {m.content}

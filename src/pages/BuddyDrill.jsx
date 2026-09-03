@@ -281,7 +281,7 @@ export default function BuddyDrill() {
               <button
                 type="button"
                 onClick={startLoopback}
-                className="w-full border border-steel-lighter rounded-lg p-4 text-left hover:border-amber flex items-center gap-4"
+                className="w-full border border-steel-lighter rounded-lg p-4 text-start hover:border-amber flex items-center gap-4"
               >
                 <Pictogram name="report_it" size={32} />
                 <span className="min-w-0">
@@ -423,7 +423,7 @@ export default function BuddyDrill() {
           />
         </div>
 
-        <div className="border border-steel-lighter rounded-lg divide-y divide-steel-lighter text-left mb-6">
+        <div className="border border-steel-lighter rounded-lg divide-y divide-steel-lighter text-start mb-6">
           <Row
             label={t('bd_you_are')}
             value={result.role === BUDDY_ROLE.CASUALTY ? t('bd_role_casualty') : t('bd_role_responder')}
@@ -438,7 +438,7 @@ export default function BuddyDrill() {
         </div>
 
         {drill?.buddy?.result ? (
-          <div className="bg-steel-light border border-steel-lighter rounded-lg p-4 mb-6 text-left">
+          <div className="bg-steel-light border border-steel-lighter rounded-lg p-4 mb-6 text-start">
             <p className="font-mono text-[10px] uppercase tracking-widest text-concrete mb-2">{t('bd_buddy_score')}</p>
             <p className="font-display font-bold text-2xl text-amber">{drill.buddy.result.readiness}%</p>
           </div>
@@ -447,7 +447,7 @@ export default function BuddyDrill() {
         )}
 
         {result.partial && (
-          <div className="bg-amber/10 border border-amber/40 rounded p-4 mb-6 text-left flex items-start gap-3">
+          <div className="bg-amber/10 border border-amber/40 rounded p-4 mb-6 text-start flex items-start gap-3">
             <Pictogram name="warning" size={24} />
             <p className="text-xs text-concrete leading-relaxed">{t('bd_partial_note')}</p>
           </div>
@@ -484,7 +484,7 @@ export default function BuddyDrill() {
           )}
           <span
             className="font-mono text-[10px] uppercase tracking-widest"
-            style={{ color: drill?.connected ? '#2E7D4F' : '#D93025' }}
+            style={{ color: drill?.connected ? 'rgb(var(--safe-text))' : 'rgb(var(--hazard-text))' }}
           >
             {drill?.connected ? t('bd_connected') : t('bd_disconnected')}
           </span>
@@ -509,7 +509,7 @@ export default function BuddyDrill() {
         <Pictogram name={drill?.buddyDown ? 'warning' : drill?.buddyResponsive ? 'correct' : 'buddy'} size={26} />
         <span
           className="font-mono text-xs"
-          style={{ color: drill?.buddyDown ? '#D93025' : drill?.buddyResponsive ? '#2E7D4F' : '#8B8F94' }}
+          style={{ color: drill?.buddyDown ? 'rgb(var(--hazard-text))' : drill?.buddyResponsive ? 'rgb(var(--safe-text))' : 'rgb(var(--text-tertiary))' }}
         >
           {drill?.buddyDown ? t('bd_buddy_down') : drill?.buddyResponsive ? t('bd_buddy_responsive') : t('bd_buddy_quiet')}
         </span>
@@ -644,7 +644,7 @@ function RoleButton({ pictogram, label, hint, onClick }) {
     <button
       type="button"
       onClick={onClick}
-      className="w-full text-left rounded-lg border border-steel-lighter bg-steel-light p-5 flex items-center gap-4 hover:border-amber"
+      className="w-full text-start rounded-lg border border-steel-lighter bg-steel-light p-5 flex items-center gap-4 hover:border-amber"
     >
       <Pictogram name={pictogram} size={42} />
       <span className="min-w-0">
