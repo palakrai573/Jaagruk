@@ -359,3 +359,48 @@ body {
     transform: none !important;
   }
 }
+
+/* ---------------------------------------------------------------- */
+/* Hero surfaces                                                     */
+/* ---------------------------------------------------------------- */
+
+/* Fine engineering grid. Reads as instrumentation and drawing paper rather than
+   decoration, which is the register this product wants — and unlike a noise
+   texture or an image it costs nothing to download and scales to any viewport.
+   Deliberately very low contrast: it should register as texture, not pattern. */
+.grid-surface {
+  background-image: linear-gradient(to right, rgb(var(--border-subtle) / 0.55) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(var(--border-subtle) / 0.55) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+/* Fades the grid out toward the bottom so it does not fight the content that
+   follows. mask-image has near-universal support now; where it is missing the
+   grid simply stays uniform, which is a cosmetic difference only. */
+.grid-fade {
+  -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 35%, transparent 78%);
+  mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 35%, transparent 78%);
+}
+
+/* Ambient brand bloom behind the hero headline. Two offset ellipses read as depth
+   where a single one reads as a spotlight. */
+.hero-bloom::before,
+.hero-bloom::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.hero-bloom::before {
+  background: radial-gradient(ellipse 55% 45% at 22% 8%, rgb(var(--brand) / 0.16), transparent 62%);
+}
+
+.hero-bloom::after {
+  background: radial-gradient(ellipse 45% 40% at 82% 22%, rgb(var(--ore) / 0.1), transparent 60%);
+}
+
+/* Thin vertical rule used to tie a stat column to the section above it. */
+.rule-start {
+  box-shadow: inset 2px 0 0 0 rgb(var(--brand));
+}

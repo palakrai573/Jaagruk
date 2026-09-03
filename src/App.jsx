@@ -115,12 +115,16 @@ export default function App() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="border-b border-steel-lighter sticky top-0 bg-steel/95 backdrop-blur z-20">
-        <div className="stripe-divider" />
-        <div className="max-w-5xl mx-auto px-5 py-4 flex items-center justify-between gap-4 flex-wrap">
-          <NavLink to="/" className="flex items-baseline gap-2 min-w-0">
-            <span className="font-display text-3xl tracking-wide text-amber font-bold">{t('app_name')}</span>
-            <span className="font-mono text-xs text-concrete uppercase tracking-widest hidden sm:inline">
+      {/* No flex-wrap: at ~380px the previous header wrapped the nav onto a second
+          row, which made the sticky bar change height as you scrolled. The
+          wordmark truncates instead. */}
+      <header className="border-b border-line-subtle sticky top-0 bg-surface-0/90 backdrop-blur-md z-sticky">
+        <div className="max-w-5xl mx-auto px-5 h-16 flex items-center justify-between gap-3">
+          <NavLink to="/" className="flex items-baseline gap-2.5 min-w-0 shrink">
+            <span className="font-display text-2xl tracking-wide text-brand-text font-bold shrink-0">
+              {t('app_name')}
+            </span>
+            <span className="font-mono text-2xs text-ink-tertiary uppercase tracking-widest hidden lg:inline truncate">
               {t('app_tagline')}
             </span>
           </NavLink>
@@ -133,8 +137,10 @@ export default function App() {
                   to={item.to}
                   end={item.end}
                   className={({ isActive }) =>
-                    `relative px-3 py-2 rounded transition-colors ${
-                      isActive ? 'bg-amber text-steel font-bold' : 'text-concrete hover:text-chalk hover:bg-steel-light'
+                    `relative px-3 py-2 rounded-md transition-colors duration-fast whitespace-nowrap ${
+                      isActive
+                        ? 'bg-brand-subtle text-brand-text font-bold'
+                        : 'text-ink-tertiary hover:text-ink hover:bg-surface-2'
                     }`
                   }
                 >
@@ -159,15 +165,18 @@ export default function App() {
 
         {/* Status strip: only rendered when there is something to say */}
         {(!online || pending > 0) && (
-          <div className="bg-steel-light border-t border-steel-lighter px-5 py-1.5 flex items-center justify-center gap-4 font-mono text-[10px] uppercase tracking-widest">
+          <div
+            aria-live="polite"
+            className="bg-surface-2 border-t border-line-subtle px-5 py-1.5 flex items-center justify-center gap-4 font-mono text-2xs uppercase tracking-widest"
+          >
             {!online && (
-              <span className="text-amber flex items-center gap-1.5">
+              <span className="text-warning-text flex items-center gap-1.5">
                 <Pictogram name="warning" size={12} />
                 {t('offline_label')}
               </span>
             )}
             {pending > 0 && (
-              <span className="text-concrete">
+              <span className="text-ink-tertiary">
                 {pending} {t('db_pending_sync')}
               </span>
             )}
@@ -203,20 +212,40 @@ export default function App() {
         </Routes>
       </main>
 
-      {/* Mobile bottom bar */}
-      <nav className="md:hidden fixed bottom-0 inset-x-0 bg-steel-light border-t border-steel-lighter flex justify-around py-2 font-mono text-[10px] z-30">
+      {/* Mobile bottom bar.
+          safe-area padding matters on notched phones: without it the last few
+          pixels of the tap target sit under the home indicator, so the bar looks
+          right and mis-taps anyway. Each item is min-h-12 to stay thumb-sized. */}
+      <nav
+        className="md:hidden fixed bottom-0 inset-x-0 bg-surface-1/95 backdrop-blur-md border-t border-line-subtle
+                   flex justify-around font-mono text-2xs z-nav
+                   pb-[env(safe-area-inset-bottom)]"
+      >
         {PRIMARY_NAV.map((item) => (
           <NavLink
             key={item.to}
             to={item.to}
             end={item.end}
             className={({ isActive }) =>
-              `relative flex flex-col items-center gap-1 px-2 py-1 ${isActive ? 'text-amber' : 'text-concrete'}`
+              `relative flex flex-col items-center justify-center gap-1 flex-1 min-h-[52px] py-2 px-1
+               transition-colors duration-fast ${isActive ? 'text-brand-text' : 'text-ink-tertiary'}`
             }
           >
-            <Pictogram name={item.pictogram} size={22} />
-            <span className="leading-none">{t(item.key)}</span>
-            {item.to === '/refresher' && dueCount > 0 && <Badge count={dueCount} />}
+            {({ isActive }) => (
+              <>
+                {/* Active indicator on the top edge: a colour change alone is easy
+                    to miss on a small, dim screen. */}
+                <span
+                  aria-hidden="true"
+                  className={`absolute top-0 inset-x-4 h-0.5 rounded-full transition-opacity duration-base ${
+                    isActive ? 'bg-brand opacity-100' : 'opacity-0'
+                  }`}
+                />
+                <Pictogram name={item.pictogram} size={22} />
+                <span className="leading-none truncate max-w-full">{t(item.key)}</span>
+                {item.to === '/refresher' && dueCount > 0 && <Badge count={dueCount} />}
+              </>
+            )}
           </NavLink>
         ))}
 
@@ -224,12 +253,13 @@ export default function App() {
           type="button"
           onClick={() => setMoreOpen((o) => !o)}
           aria-expanded={moreOpen}
-          className={`flex flex-col items-center gap-1 px-2 py-1 ${moreOpen ? 'text-amber' : 'text-concrete'}`}
+          className={`flex flex-col items-center justify-center gap-1 flex-1 min-h-[52px] py-2 px-1
+                      transition-colors duration-fast ${moreOpen ? 'text-brand-text' : 'text-ink-tertiary'}`}
         >
-          <span className="text-xl leading-none" aria-hidden="true">
+          <span className="text-xl leading-none h-[22px] flex items-center" aria-hidden="true">
             {moreOpen ? '×' : '⋯'}
           </span>
-          <span className="leading-none">{t('more_label')}</span>
+          <span className="leading-none truncate max-w-full">{t('more_label')}</span>
         </button>
       </nav>
 
@@ -242,29 +272,39 @@ export default function App() {
             onClick={() => setMoreOpen(false)}
             className="md:hidden fixed inset-0 bg-black/60 z-30"
           />
-          <div className="md:hidden fixed bottom-16 inset-x-3 bg-steel-light border border-steel-lighter rounded-xl p-3 z-40 shadow-2xl">
+          <div
+            className="md:hidden fixed inset-x-3 bg-surface-2 border border-line rounded-xl p-3 z-sheet shadow-4 rise-in
+                       bottom-[calc(3.75rem+env(safe-area-inset-bottom))]"
+          >
             <div className="grid grid-cols-3 gap-2">
               {SECONDARY_NAV.map((item) => (
                 <NavLink
                   key={item.to}
                   to={item.to}
                   className={({ isActive }) =>
-                    `flex flex-col items-center gap-2 rounded-lg p-3 ${
-                      isActive ? 'bg-amber/15 text-amber' : 'text-concrete hover:bg-steel'
-                    }`
+                    `flex flex-col items-center justify-center gap-2 rounded-lg p-3 min-h-[76px]
+                     transition-colors duration-fast ${
+                       isActive ? 'bg-brand-subtle text-brand-text' : 'text-ink-tertiary hover:bg-surface-3'
+                     }`
                   }
                 >
                   <Pictogram name={item.pictogram} size={26} />
-                  <span className="font-mono text-[10px] text-center leading-tight">{t(item.key)}</span>
+                  <span className="font-mono text-2xs text-center leading-tight">{t(item.key)}</span>
                 </NavLink>
               ))}
             </div>
 
-            <div className="border-t border-steel-lighter mt-3 pt-3 flex items-center justify-between">
-              <NavLink to="/admin" className="font-mono text-[10px] uppercase tracking-widest text-concrete">
+            <div className="border-t border-line-subtle mt-3 pt-3 flex items-center justify-between gap-3">
+              <NavLink
+                to="/admin"
+                className="font-mono text-2xs uppercase tracking-widest text-ink-tertiary py-2 px-1"
+              >
                 {t('nav_admin')} →
               </NavLink>
-              <NavLink to="/start" className="font-mono text-[10px] uppercase tracking-widest text-amber">
+              <NavLink
+                to="/start"
+                className="font-mono text-2xs uppercase tracking-widest text-brand-text py-2 px-1"
+              >
                 {worker ? t('ob_sign_out') : t('nav_start')}
               </NavLink>
             </div>
@@ -272,21 +312,37 @@ export default function App() {
         </>
       )}
 
-      <footer className="hidden md:block">
-        <div className="stripe-divider" />
-        <div className="text-center py-3 bg-steel flex items-center justify-center gap-6">
-          <NavLink
-            to="/admin"
-            className="text-concrete text-[10px] font-mono uppercase tracking-widest hover:text-amber"
-          >
-            {t('nav_admin')} →
-          </NavLink>
-          <NavLink
-            to="/verify"
-            className="text-concrete text-[10px] font-mono uppercase tracking-widest hover:text-amber"
-          >
-            {t('vf_check_now')} →
-          </NavLink>
+      {/* Footer. Previously desktop-only and two links wide, which meant a phone
+          user had no route to verification or admin outside the More sheet. Now it
+          renders everywhere, below the bottom nav's clearance. */}
+      <footer className="border-t border-line-subtle bg-surface-1 mt-auto">
+        <div className="max-w-5xl mx-auto px-5 py-8">
+          <div className="flex flex-wrap items-start justify-between gap-8">
+            <div className="min-w-0">
+              <p className="font-display font-bold text-xl tracking-wide text-brand-text mb-1.5">{t('app_name')}</p>
+              <p className="font-mono text-2xs uppercase tracking-widest text-ink-tertiary">{t('app_tagline')}</p>
+            </div>
+
+            <nav className="flex flex-wrap gap-x-6 gap-y-2">
+              {[
+                { to: '/verify', label: t('vf_check_now') },
+                { to: '/dashboard', label: t('nav_dashboard') },
+                { to: '/settings', label: t('nav_settings') },
+                { to: '/admin', label: t('nav_admin') },
+              ].map((link) => (
+                <NavLink
+                  key={link.to}
+                  to={link.to}
+                  className="font-mono text-2xs uppercase tracking-widest text-ink-tertiary
+                             hover:text-brand-text transition-colors duration-fast py-1"
+                >
+                  {link.label}
+                </NavLink>
+              ))}
+            </nav>
+          </div>
+
+          <div className="stripe-divider mt-8 opacity-70 rounded-full" />
         </div>
       </footer>
 
@@ -304,10 +360,11 @@ export default function App() {
 
 /* ================================================================== */
 
+/** Count badge. `end-0` not `right-0`, so it mirrors for Urdu. */
 function Badge({ count }) {
   return (
     <span
-      className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 rounded-full bg-hazard text-white font-mono text-[9px] flex items-center justify-center"
+      className="absolute top-1 end-2 min-w-[16px] h-4 px-1 rounded-full bg-hazard text-white font-mono text-[9px] font-bold flex items-center justify-center tabular-nums"
       aria-hidden="true"
     >
       {count > 9 ? '9+' : count}

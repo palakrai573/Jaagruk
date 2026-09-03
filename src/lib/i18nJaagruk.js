@@ -51,6 +51,48 @@ const SHELL = {
 
   // Theme. Three states, because a two-state switch cannot express "follow my
   // phone" and silently overrides the OS the first time it is touched.
+  // Metric labels. Short by design — these sit under a number in a card, where a
+  // full sentence would wrap to three lines on a 320px phone.
+  m_readiness: { en: 'Readiness', hi: 'तैयारी', sat: 'ᱛᱮᱭᱟᱨᱤ', bn: 'প্রস্তুতি', or: 'ପ୍ରସ୍ତୁତି', ur: 'تیاری' },
+  m_domains: { en: 'Domains passed', hi: 'क्षेत्र पास', sat: 'ᱮᱞᱟᱠᱟ ᱯᱟᱥ', bn: 'ক্ষেত্র উত্তীর্ণ', or: 'କ୍ଷେତ୍ର ପାସ', ur: 'شعبے پاس' },
+  m_due: { en: 'Refreshers due', hi: 'रिफ्रेशर बाकी', sat: 'ᱫᱚᱦᱲᱟ ᱛᱟᱞᱤᱢ ᱵᱟᱠᱤ', bn: 'রিফ্রেশার বাকি', or: 'ରିଫ୍ରେସର ବାକି', ur: 'ریفریشر باقی' },
+  m_reports: { en: 'Open reports', hi: 'खुली रिपोर्ट', sat: 'ᱡᱷᱤᱡ ᱠᱷᱚᱵᱚᱨ', bn: 'খোলা রিপোর্ট', or: 'ଖୋଲା ରିପୋର୍ଟ', ur: 'کھلی رپورٹیں' },
+  m_zones: { en: 'Zones scanned', hi: 'ज़ोन स्कैन', sat: 'ᱡᱚᱱ ᱥᱠᱮᱱ', bn: 'জোন স্ক্যান', or: 'ଜୋନ ସ୍କାନ', ur: 'زون اسکین' },
+  m_modules: { en: 'Modules', hi: 'मॉड्यूल', sat: 'ᱢᱚᱰᱩᱞ', bn: 'মডিউল', or: 'ମଡ୍ୟୁଲ', ur: 'ماڈیولز' },
+  m_decisions: { en: 'Timed decisions', hi: 'समयबद्ध निर्णय', sat: 'ᱚᱠᱛᱚ ᱮᱢ ᱴᱷᱮᱭᱟᱣ', bn: 'সময়বদ্ধ সিদ্ধান্ত', or: 'ସମୟବଦ୍ଧ ନିଷ୍ପତ୍ତି', ur: 'وقت شدہ فیصلے' },
+  m_languages: { en: 'Languages', hi: 'भाषाएं', sat: 'ᱯᱟᱹᱨᱥᱤ ᱠᱚ', bn: 'ভাষা', or: 'ଭାଷା', ur: 'زبانیں' },
+  m_anchors: { en: 'Anchors placed', hi: 'एंकर लगाए', sat: 'ᱮᱸᱠᱚᱨ ᱮᱢ', bn: 'অ্যাঙ্কর স্থাপিত', or: 'ଆଙ୍କର ସ୍ଥାପିତ', ur: 'اینکر لگائے' },
+
+  home_your_status: { en: 'Where you stand today', hi: 'आज आपकी स्थिति', sat: 'ᱛᱮᱦᱮᱸ ᱟᱢᱟᱜ ᱡᱟᱭᱜᱟ', bn: 'আজ আপনার অবস্থান', or: 'ଆଜି ଆପଣଙ୍କ ସ୍ଥିତି', ur: 'آج آپ کی حالت' },
+  home_status_hint: {
+    en: 'Readiness decays if you stop refreshing, so this is today\u2019s figure rather than the day you passed.',
+    hi: 'रिफ्रेश न करने पर तैयारी घटती है, इसलिए यह आज का आंकड़ा है, पास होने के दिन का नहीं।',
+    sat: 'ᱫᱚᱦᱲᱟ ᱵᱟᱝ ᱛᱟᱞᱤᱢ ᱠᱷᱟᱱ ᱛᱮᱭᱟᱨᱤ ᱠᱚᱢ ᱦᱩᱭᱩᱜᱼᱟ ᱾',
+    bn: 'রিফ্রেশ না করলে প্রস্তুতি কমে, তাই এটি আজকের হিসাব — পাস করার দিনের নয়।',
+    or: 'ରିଫ୍ରେସ ନକଲେ ପ୍ରସ୍ତୁତି କମେ, ତେଣୁ ଏହା ଆଜିର ହିସାବ।',
+    ur: 'ریفریش نہ کرنے پر تیاری کم ہوتی ہے، اس لیے یہ آج کا اعداد و شمار ہے۔',
+  },
+  home_signed_out_title: { en: 'Two minutes to set up', hi: 'सेट अप में दो मिनट', sat: 'ᱵᱟᱨ ᱢᱤᱱᱤᱴ ᱨᱮ ᱛᱮᱭᱟᱨ', bn: 'সেট আপে দুই মিনিট', or: 'ସେଟ ଅପରେ ଦୁଇ ମିନିଟ', ur: 'سیٹ اپ میں دو منٹ' },
+  home_signed_out_body: {
+    en: 'Pick your language by hearing it spoken, set a PIN, and start. No email, no account, nothing to remember.',
+    hi: 'भाषा सुनकर चुनें, पिन सेट करें, और शुरू करें। कोई ईमेल नहीं, कोई खाता नहीं।',
+    sat: 'ᱯᱟᱹᱨᱥᱤ ᱟᱸᱡᱚᱢ ᱠᱟᱛᱮ ᱵᱟᱪᱷᱟᱣ ᱢᱮ, ᱯᱤᱱ ᱮᱢ ᱢᱮ, ᱟᱨ ᱮᱦᱚᱵ ᱢᱮ ᱾',
+    bn: 'ভাষা শুনে বেছে নিন, পিন দিন, শুরু করুন। কোনো ইমেল বা অ্যাকাউন্ট নেই।',
+    or: 'ଭାଷା ଶୁଣି ବାଛନ୍ତୁ, PIN ଦିଅନ୍ତୁ, ଆରମ୍ଭ କରନ୍ତୁ। କୌଣସି ଇମେଲ ନାହିଁ।',
+    ur: 'زبان سن کر منتخب کریں، پن سیٹ کریں، شروع کریں۔ کوئی ای میل یا اکاؤنٹ نہیں۔',
+  },
+  home_explore: { en: 'Everything in Jaagruk', hi: 'जागरुक में सब कुछ', sat: 'ᱡᱟᱜᱨᱩᱠ ᱨᱮ ᱡᱚᱛᱚ', bn: 'জাগরুকে সবকিছু', or: 'ଜାଗରୁକରେ ସବୁକିଛି', ur: 'جاگروک میں سب کچھ' },
+  home_not_certified: { en: 'Not yet certified', hi: 'अभी प्रमाणित नहीं', sat: 'ᱛᱮᱦᱮᱸ ᱦᱟᱹᱵᱤᱡ ᱵᱟᱝ', bn: 'এখনও সনদ হয়নি', or: 'ଏପର୍ଯ୍ୟନ୍ତ ପ୍ରମାଣିତ ନୁହେଁ', ur: 'ابھی سرٹیفائیڈ نہیں' },
+  home_ready_now: { en: 'Eligible now', hi: 'अभी पात्र', sat: 'ᱱᱤᱛᱚᱜ ᱞᱟᱭᱠᱚ', bn: 'এখনই যোগ্য', or: 'ଏବେ ଯୋଗ୍ୟ', ur: 'ابھی اہل' },
+  home_footer_note: {
+    en: 'Built for Jharkhand\u2019s mines, steel plants and mica units. Works with the network cable pulled out.',
+    hi: 'झारखंड की खदानों, स्टील प्लांट और अभ्रक इकाइयों के लिए। नेटवर्क के बिना भी काम करता है।',
+    sat: 'ᱡᱷᱟᱨᱠᱷᱚᱸᱰ ᱨᱮᱱᱟᱜ ᱠᱷᱟᱰᱟᱱ ᱟᱨ ᱠᱟᱹᱨᱠᱷᱟᱱᱟ ᱞᱟᱹᱜᱤᱫ ᱾ ᱱᱮᱴᱣᱟᱨᱠ ᱵᱟᱝ ᱛᱮ ᱦᱚᱸ ᱠᱟᱹᱢᱤᱭᱟ ᱾',
+    bn: 'ঝাড়খণ্ডের খনি, স্টিল প্লান্ট ও অভ্র ইউনিটের জন্য। নেটওয়ার্ক ছাড়াও কাজ করে।',
+    or: 'ଝାଡ଼ଖଣ୍ଡର ଖଣି, ଷ୍ଟିଲ ପ୍ଲାଣ୍ଟ ଓ ଅଭ୍ରକ ୟୁନିଟ ପାଇଁ। ନେଟୱର୍କ ବିନା ମଧ୍ୟ କାମ କରେ।',
+    ur: 'جھارکھنڈ کی کانوں، اسٹیل پلانٹس اور ابرک یونٹس کے لیے۔ نیٹ ورک کے بغیر بھی کام کرتا ہے۔',
+  },
+
   th_dark: { en: 'Dark', hi: 'गहरा', sat: 'ᱧᱩᱛ', bn: 'গাঢ়', or: 'ଗାଢ଼', ur: 'گہرا' },
   th_light: { en: 'Light', hi: 'हल्का', sat: 'ᱨᱟᱹᱲᱟᱹ', bn: 'হালকা', or: 'ହାଲୁକା', ur: 'ہلکا' },
   th_system: { en: 'Auto', hi: 'स्वतः', sat: 'ᱟᱡᱛᱮ', bn: 'স্বয়ংক্রিয়', or: 'ସ୍ୱୟଂଚାଳିତ', ur: 'خودکار' },
