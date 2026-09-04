@@ -8,6 +8,11 @@
 // domain restructure) — the other 5 modules will show in English for those
 // three languages until translated, rather than risk rushed/lower-quality
 // translations of safety-critical content.
+//
+// Santali has no scenario content. It resolves to Hindi through the fallback
+// chain rather than to English — see scenarioContentLanguage below.
+
+import { LANGUAGE_FALLBACK } from './i18n.js'
 
 export const SCENARIO_TRANSLATIONS = {
   'fire-explosion': {
@@ -267,9 +272,32 @@ export const SCENARIO_TRANSLATIONS = {
   },
 }
 
+/**
+ * The language a scenario's content will actually render in.
+ *
+ * Resolves the requested language, then its fallback chain, then English. This
+ * matters more here than for UI labels: a worker who picked Santali and gets a
+ * hazard instruction in a script they cannot read is a safety problem, not a
+ * cosmetic one. Santali has no scenario translations yet and every scenario has
+ * Hindi, so a Santali worker sees Hindi rather than English — Devanagari being
+ * far more readable than Latin for that population.
+ */
+export function scenarioContentLanguage(scenarioId, lang) {
+  if (lang === 'en') return 'en'
+  const available = SCENARIO_TRANSLATIONS[scenarioId]
+  if (!available) return 'en'
+  if (available[lang]) return lang
+  for (const alt of LANGUAGE_FALLBACK[lang] || []) {
+    if (available[alt]) return alt
+  }
+  return 'en'
+}
+
 export function translateScenario(scenario, lang) {
   if (lang === 'en') return scenario
-  const tr = SCENARIO_TRANSLATIONS[scenario.id]?.[lang]
+  const resolved = scenarioContentLanguage(scenario.id, lang)
+  if (resolved === 'en') return scenario
+  const tr = SCENARIO_TRANSLATIONS[scenario.id]?.[resolved]
   if (!tr) return scenario
   return {
     ...scenario,

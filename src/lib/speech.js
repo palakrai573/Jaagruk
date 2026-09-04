@@ -1,3 +1,5 @@
+import { forSpeech, olChikiToDevanagari, hasOlChiki } from './olchiki.js'
+
 // Voice layer — output (TTS) and fixed-vocabulary input (ASR).
 //
 // Two things the previous version got wrong, both fixed here:
@@ -241,7 +243,14 @@ export function isSpeaking() {
 export function speak(text, lang = 'en', opts = {}) {
   if (!speechSynthesisSupported()) return 0
 
-  const chunks = chunkText(text)
+  // Santali is read by a Hindi voice, which has no entry for an Ol Chiki
+  // codepoint. Handed the raw script it produces silence or a run of "unknown
+  // character" — so the substitution was not approximate, it was broken.
+  // Transliterating first is what makes it audible. Runs before chunking so that
+  // ᱾, now a danda, is available as a sentence boundary.
+  const spoken = forSpeech(text, lang)
+
+  const chunks = chunkText(spoken)
   if (!chunks.length) return 0
 
   const { rate = 0.95, pitch = 1, onEnd, onStart, interrupt = true } = opts
@@ -358,8 +367,12 @@ export const COMMAND = {
  * Santali coverage is deliberately partial: only words we are reasonably
  * confident of are listed. A native speaker review is required before
  * deployment — see docs/ARCHITECTURE.md §9.4.
+ *
+ * This is the authored table. The lexicon actually matched against is
+ * COMMAND_PHRASES below, which adds a Devanagari form for every Ol Chiki entry —
+ * see the note there for why the Ol Chiki entries alone could never match.
  */
-export const COMMAND_PHRASES = {
+const AUTHORED_PHRASES = {
   [COMMAND.YES]: [
     'yes', 'yeah', 'yep', 'ok', 'okay', 'confirm', 'correct', 'right',
     'हाँ', 'हां', 'ठीक', 'ठीक है', 'सही', 'haan', 'ha', 'theek', 'thik hai', 'sahi',
@@ -419,6 +432,32 @@ export const COMMAND_PHRASES = {
     'पीछे', 'वापस', 'पिछला', 'peeche', 'wapas', 'pichla',
   ],
 }
+
+/**
+ * The lexicon matched against, derived from AUTHORED_PHRASES.
+ *
+ * WHY THE Ol Chiki ENTRIES NEEDED THIS
+ * Santali recognition runs on the Hindi acoustic model, because no engine ships a
+ * Santali one. A Hindi recogniser returns Devanagari. It cannot return Ol Chiki —
+ * the script is not in its output alphabet. So every Ol Chiki entry in the table
+ * above was unreachable: a Santali speaker saying "ᱦᱟᱸ" got a transcript of
+ * "हाँ", which was compared against "ᱦᱟᱸ" and missed on every character.
+ *
+ * Adding the transliteration makes those entries live. It is the same conversion
+ * used for speech output, so input and output agree on how a Santali word maps
+ * into Devanagari, and nothing has to be authored twice.
+ */
+export const COMMAND_PHRASES = Object.fromEntries(
+  Object.entries(AUTHORED_PHRASES).map(([command, phrases]) => {
+    const expanded = [...phrases]
+    for (const phrase of phrases) {
+      if (!hasOlChiki(phrase)) continue
+      const devanagari = olChikiToDevanagari(phrase)
+      if (devanagari && !expanded.includes(devanagari)) expanded.push(devanagari)
+    }
+    return [command, expanded]
+  })
+)
 
 /* ================================================================== */
 /* Matching                                                            */

@@ -1040,7 +1040,10 @@ export function coverageFor(lang, dictionaries = [JAAGRUK_STRINGS]) {
 export const COVERAGE_NOTICE = {
   en: 'Some screens are still in English while this translation is completed.',
   hi: 'इस अनुवाद के पूरा होने तक कुछ स्क्रीन अंग्रेज़ी में रहेंगी।',
-  sat: 'ᱱᱚᱶᱟ ᱛᱚᱨᱡᱚᱢᱟ ᱯᱩᱨᱟᱹᱣ ᱦᱟᱵᱤᱡ ᱛᱤᱱᱟᱹᱜ ᱥᱠᱨᱤᱱ ᱤᱝᱜᱞᱤᱥ ᱛᱮ ᱛᱟᱦᱮᱸᱱᱟ ᱾',
+  // Names Hindi, not English: Santali falls back to Hindi first (see FALLBACK in
+  // i18n.js), and Hindi is at full coverage, so a Santali screen never reaches
+  // English. Telling the worker "English" would have been simply untrue.
+  sat: 'ᱱᱚᱶᱟ ᱛᱚᱨᱡᱚᱢᱟ ᱯᱩᱨᱟᱹᱣ ᱦᱟᱵᱤᱡ ᱛᱤᱱᱟᱹᱜ ᱥᱠᱨᱤᱱ ᱦᱤᱱᱫᱤ ᱛᱮ ᱛᱟᱦᱮᱸᱱᱟ ᱾',
   bn: 'এই অনুবাদ সম্পূর্ণ হওয়া পর্যন্ত কিছু স্ক্রিন ইংরেজিতে থাকবে।',
   or: 'ଏହି ଅନୁବାଦ ସମ୍ପୂର୍ଣ୍ଣ ହେବା ପର୍ଯ୍ୟନ୍ତ କିଛି ସ୍କ୍ରିନ ଇଂରାଜୀରେ ରହିବ।',
   ur: 'اس ترجمے کے مکمل ہونے تک کچھ اسکرینیں انگریزی میں رہیں گی۔',
@@ -1053,7 +1056,7 @@ export const COVERAGE_NOTICE = {
 export const CONTENT_NOTICE = {
   en: 'This module\u2019s safety content has not been translated yet and is shown in English.',
   hi: 'इस मॉड्यूल की सुरक्षा सामग्री का अनुवाद नहीं हुआ है और यह अंग्रेज़ी में दिख रही है।',
-  sat: 'ᱱᱚᱶᱟ ᱢᱚᱰᱩᱞ ᱨᱮᱭᱟᱜ ᱨᱠᱷᱟ ᱠᱟᱛᱷᱟ ᱵᱟᱝ ᱛᱚᱨᱡᱚᱢᱟ ᱦᱩᱭ ᱟᱠᱟᱱᱟ, ᱤᱝᱜᱞᱤᱥ ᱛᱮ ᱧᱮᱞᱚᱜ ᱠᱟᱱᱟ ᱾',
+  sat: 'ᱱᱚᱶᱟ ᱢᱚᱰᱩᱞ ᱨᱮᱭᱟᱜ ᱨᱠᱷᱟ ᱠᱟᱛᱷᱟ ᱵᱟᱝ ᱛᱚᱨᱡᱚᱢᱟ ᱦᱩᱭ ᱟᱠᱟᱱᱟ, ᱦᱤᱱᱫᱤ ᱛᱮ ᱧᱮᱞᱚᱜ ᱠᱟᱱᱟ ᱾',
   bn: 'এই মডিউলের নিরাপত্তা বিষয়বস্তু এখনও অনুবাদ হয়নি এবং ইংরেজিতে দেখানো হচ্ছে।',
   or: 'ଏହି ମଡ୍ୟୁଲର ସୁରକ୍ଷା ବିଷୟବସ୍ତୁ ଏପର୍ଯ୍ୟନ୍ତ ଅନୁବାଦ ହୋଇନାହିଁ ଏବଂ ଇଂରାଜୀରେ ଦେଖାଯାଉଛି।',
   ur: 'اس ماڈیول کا حفاظتی مواد ابھی ترجمہ نہیں ہوا اور انگریزی میں دکھایا جا رہا ہے۔',

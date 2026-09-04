@@ -39,10 +39,17 @@ export function langName(code) {
 // never shows a raw key.
 const STRINGS = {
   nav_home: { en: 'Home', hi: 'होम', bn: 'হোম', or: 'ମୂଳପୃଷ୍ଠା', ur: 'ہوم', sat: 'ᱚᱲᱟᱜ' },
-  nav_scan: { en: 'Hazard Scan', hi: 'खतरा स्कैन', bn: 'বিপদ স্ক্যান', or: 'ବିପଦ ସ୍କାନ', ur: 'خطرہ اسکین', sat: 'Hazard Scan' },
-  nav_train: { en: 'Simulator', hi: 'सिम्युलेटर', bn: 'সিমুলেটর', or: 'ସିମୁଲେଟର', ur: 'سمیولیٹر', sat: 'Simulator' },
-  nav_dashboard: { en: 'Dashboard', hi: 'डैशबोर्ड', bn: 'ড্যাশবোর্ড', or: 'ଡ୍ୟାସବୋର୍ଡ', ur: 'ڈیش بورڈ', sat: 'Dashboard' },
-  nav_settings: { en: 'Settings', hi: 'सेटिंग्स', bn: 'সেটিংস', or: 'ସେଟିଂସ', ur: 'ترتیبات', sat: 'Settings' },
+  // These four held English text in the `sat` slot. That is worse than leaving
+  // them empty: the coverage audit counts any non-empty string as translated, so
+  // they reported Santali coverage that did not exist, and a Santali reader saw
+  // Latin script with no notice explaining why. Three are loanwords with no
+  // Santali equivalent, so they are written in Ol Chiki as loanwords, which is
+  // what a Santali reader expects. `nav_scan` uses ᱡᱚᱠᱷᱚᱢ (hazard), already used
+  // elsewhere in the app.
+  nav_scan: { en: 'Hazard Scan', hi: 'खतरा स्कैन', bn: 'বিপদ স্ক্যান', or: 'ବିପଦ ସ୍କାନ', ur: 'خطرہ اسکین', sat: 'ᱡᱚᱠᱷᱚᱢ ᱥᱠᱮᱱ' },
+  nav_train: { en: 'Simulator', hi: 'सिम्युलेटर', bn: 'সিমুলেটর', or: 'ସିମୁଲେଟର', ur: 'سمیولیٹر', sat: 'ᱥᱤᱢᱩᱞᱮᱴᱚᱨ' },
+  nav_dashboard: { en: 'Dashboard', hi: 'डैशबोर्ड', bn: 'ড্যাশবোর্ড', or: 'ଡ୍ୟାସବୋର୍ଡ', ur: 'ڈیش بورڈ', sat: 'ᱰᱮᱥᱵᱚᱨᱰ' },
+  nav_settings: { en: 'Settings', hi: 'सेटिंग्स', bn: 'সেটিংস', or: 'ସେଟିଂସ', ur: 'ترتیبات', sat: 'ᱥᱮᱴᱤᱝᱥ' },
 
   home_eyebrow: { en: "Jharkhand · Mining & Manufacturing Safety", hi: 'झारखंड · खनन एवं विनिर्माण सुरक्षा', bn: 'ঝাড়খণ্ড · খনি ও উৎপাদন নিরাপত্তা', or: 'ଝାଡ଼ଖଣ୍ଡ · ଖଣି ଓ ଉତ୍ପାଦନ ସୁରକ୍ଷା', ur: 'جھارکھنڈ · کان کنی اور مینوفیکچرنگ حفاظت' },
   home_title_1: { en: 'Every shift', hi: 'हर शिफ्ट', bn: 'প্রতিটি শিফট', or: 'ପ୍ରତ୍ୟେକ ସିଫ୍ଟ', ur: 'ہر شفٹ' },
@@ -256,11 +263,38 @@ const STRINGS = {
  * a missing translation should be visible in development, not silently blank on
  * a worker's screen.
  */
+/**
+ * Fallback chain per language, tried in order before English.
+ *
+ * Santali falls back to Hindi first. Going straight to English skipped the more
+ * useful option: in Jharkhand a Santali speaker is far more likely to read
+ * Devanagari than Latin, since Hindi is the language of schooling and
+ * administration in the state. It also costs nothing to render — Devanagari is
+ * in the precached font subset, so the fallback never pulls a font over a network
+ * the device may not have.
+ *
+ * Hindi is at 100% coverage, so in practice a Santali screen never reaches
+ * English. That is what lets the coverage notice name Hindi honestly.
+ */
+export const LANGUAGE_FALLBACK = {
+  sat: ['hi'],
+}
+const FALLBACK = LANGUAGE_FALLBACK
+
+/** The language a missing string will actually be shown in. */
+export function fallbackLanguage(lang) {
+  return (FALLBACK[lang] || [])[0] || 'en'
+}
+
 export function t(key, lang) {
   const entry = STRINGS[key] || JAAGRUK_STRINGS[key]
   if (!entry) return key
-  const value = entry[lang]
-  if (typeof value === 'string' && value.length > 0) return value
+  const direct = entry[lang]
+  if (typeof direct === 'string' && direct.length > 0) return direct
+  for (const alt of FALLBACK[lang] || []) {
+    const value = entry[alt]
+    if (typeof value === 'string' && value.length > 0) return value
+  }
   return entry.en || key
 }
 
@@ -300,7 +334,16 @@ export function isPartiallyTranslated(lang) {
  */
 export function scenarioContentIsEnglish(lang, scenarioId, translations) {
   if (lang === 'en') return false
-  return !translations?.[scenarioId]?.[lang]
+  const available = translations?.[scenarioId]
+  if (available?.[lang]) return false
+  // The fallback chain has to be consulted, not just the requested language.
+  // Without this the warning fired for Santali while the content was in fact
+  // rendering in Hindi, so it named the wrong language and cried wolf on a
+  // notice whose whole job is to be trusted.
+  for (const alt of FALLBACK[lang] || []) {
+    if (available?.[alt]) return false
+  }
+  return true
 }
 
 /** Header notice text, in the user's own language. */
