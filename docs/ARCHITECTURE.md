@@ -277,8 +277,35 @@ matters because those are the values hashed into a certificate.
 3. **Santali ASR does not exist at production quality.** Commands are matched against a
    Hindi acoustic model with a fixed lexicon. Santali *text and audio output* (Ol Chiki) is
    real; Santali *speech input* is best-effort.
-4. **Santali translations are unverified.** Written by a non-native speaker as a starting
-   point. Requires review by a native speaker before any deployment. Flagged in-app.
+
+   Both directions of that substitution route through `src/lib/olchiki.js`, an Ol Chiki →
+   Devanagari transliterator, because the substitution does not work without one. A Hindi
+   voice has no entry for an Ol Chiki codepoint, so handing it Ol Chiki produces silence or
+   "unknown character", not accented Santali. A Hindi recogniser returns Devanagari and
+   cannot return Ol Chiki, so the Ol Chiki entries in the lexicon were unreachable. It is a
+   syllabifier rather than a character map: Ol Chiki is an alphabet, Devanagari an abugida,
+   and mapping letter-for-letter turns `ᱦᱟᱸ` ("hã") into `हआं` ("ha-aa-n"). Verified by
+   `npm run translit`.
+
+4. **Santali translations are 42% complete and not verified by a native speaker.** 241 of
+   573 UI strings, and no scenario content. This is a declared gap, not a hidden one:
+
+   - The missing strings resolve to **Hindi**, not English — a Santali speaker in Jharkhand
+     is far more likely to read Devanagari than Latin, and Devanagari is already in the
+     precached font subset so the fallback costs no network.
+   - The in-app notice says so in Ol Chiki, naming Hindi rather than English, because Hindi
+     is what actually appears.
+   - `npm run i18n` fails the build if English text is stored in another language's slot.
+     Four nav labels used to do this, which inflated the reported coverage while showing
+     Latin script to a Santali reader.
+   - `npm run santali:worksheet` regenerates `docs/santali-worksheet.csv`: every missing
+     key with its English and Hindi source, ordered by consequence so drill and hazard
+     instructions come before supervisor dashboards.
+
+   The remaining strings are deliberately **not** machine-generated. This is safety
+   training content, and a confident-looking wrong instruction is more dangerous than a
+   declared gap, because the gap degrades to a language the worker can read while the wrong
+   instruction teaches the wrong reaction.
 5. **No hardware keystore.** Private keys are non-extractable Web Crypto handles in
    IndexedDB, not hardware-backed. Clearing site data destroys the device key — which is
    why chain records gossip to a second device.

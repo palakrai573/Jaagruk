@@ -282,9 +282,41 @@ on the light theme; four Onboarding fields sized 50 px on a tier that promises 5
 **Not covered:** rendered layout. Static analysis cannot see a wrapped heading or a clipped
 sticky bar. The device matrix in `docs/DEPLOYMENT.md` §10 is still required.
 
-### ☐ Phase 7 — Copy & i18n completion
-Santali to 100%. Rewrite vague strings in all six languages. Ol Chiki→Devanagari transliteration
-map for TTS. Widened command lexicon.
+### ☑ Phase 7 — Copy & i18n completion
+
+**Done — Ol Chiki→Devanagari transliteration for TTS.** This was the item on the list that
+turned out to be a live bug rather than a nicety. `speak()` maps `sat` to `hi-IN` because no
+engine ships a Santali voice, but it then handed the Hindi voice raw Ol Chiki codepoints,
+which a Hindi acoustic model has no entry for — so Santali narration produced silence or
+"unknown character", not accented Santali. `src/lib/olchiki.js` syllabifies Ol Chiki into
+Devanagari; it is not a character map, because Ol Chiki is an alphabet and Devanagari an
+abugida, so letter-for-letter turns `ᱦᱟᱸ` ("hã") into `हआं` ("ha-aa-n"). Verified by
+`npm run translit`: 14 hand-derived words plus all 246 Ol Chiki strings in the app.
+
+**Done — widened command lexicon.** The mirror of the same fault on the input side: Santali
+recognition runs on the Hindi model, a Hindi recogniser returns Devanagari, and it cannot
+return Ol Chiki — so every Ol Chiki entry in the lexicon was unreachable. The lexicon is now
+derived, adding the Devanagari transliteration of each Ol Chiki phrase using the same
+converter, so input and output agree and nothing is authored twice.
+
+**Done — the fallback is Hindi, not English.** Applies to UI strings and to scenario
+content, where 5 of 6 modules have Hindi and none has Santali. Devanagari is in the
+precached font subset, so this costs nothing to render.
+
+**Done — the coverage number is now honest.** Four nav labels held English text in the `sat`
+slot; the audit counts any non-empty value, so they reported coverage that did not exist.
+`npm run i18n` now fails on English-in-another-slot, values written in the wrong script, and
+fallback chains that do not end in a fully covered language.
+
+**Not done, deliberately — Santali to 100%.** Coverage is 42% (241/573 strings, no scenario
+content). Filling the remaining 332 slots with machine-produced Ol Chiki would show 100% and
+would be the wrong thing to ship: this is safety training content, and a confident-looking
+wrong instruction is more dangerous than a declared gap, because the gap falls back to a
+language the worker can read while the wrong instruction teaches the wrong reaction.
+
+`npm run santali:worksheet` generates `docs/santali-worksheet.csv` — all 332 keys with
+English and Hindi source, ordered by consequence (drill and hazard instructions first,
+supervisor dashboards last) for native-speaker review.
 
 ---
 

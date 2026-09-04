@@ -12,6 +12,7 @@
     "a11y:selftest": "node scripts/a11y-gate.mjs --selftest",
     "i18n": "node scripts/i18n-gate.mjs",
     "translit": "node scripts/translit-check.mjs",
+    "santali:worksheet": "node scripts/santali-worksheet.mjs",
     "verify": "npm run a11y && npm run a11y:selftest && npm run i18n && npm run translit && npm run build",
     "android:sync": "vite build && npx cap sync android",
     "android:open": "npx cap open android"
