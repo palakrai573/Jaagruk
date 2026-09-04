@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef, useId } from 'react'
 import {
   getSite,
   saveSite,
@@ -64,6 +64,8 @@ export default function SiteSetup() {
   const { t } = useLanguage()
   const fileInputRef = useRef(null)
   const viewRef = useRef({ heading: 0, elevation: 0, headingSource: HEADING_SOURCE.NONE })
+
+  const siteNameId = useId()
 
   const [site, setSite] = useState(null)
   const [summary, setSummary] = useState(null)
@@ -279,10 +281,14 @@ export default function SiteSetup() {
 
       {/* Site name */}
       <div className="mb-8">
-        <label className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary block mb-2">
+        <label
+          htmlFor={siteNameId}
+          className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary block mb-2"
+        >
           {t('site_name_label')}
         </label>
         <input
+          id={siteNameId}
           type="text"
           value={site?.name || ''}
           onChange={(e) => setSite((prev) => ({ ...prev, name: e.target.value }))}
@@ -352,6 +358,7 @@ export default function SiteSetup() {
             type="text"
             value={newZoneName}
             onChange={(e) => setNewZoneName(e.target.value)}
+            aria-label={t('site_new_zone')}
             placeholder={t('site_zone_name_prompt')}
             className="flex-1 bg-surface-0 border border-line-subtle rounded px-4 py-2.5 text-sm focus:border-brand outline-none"
           />
@@ -398,7 +405,7 @@ export default function SiteSetup() {
                     className="font-mono text-xs px-2.5 py-1 rounded"
                     style={{
                       color: headingSource === HEADING_SOURCE.COMPASS ? 'rgb(var(--safe-text))' : 'rgb(var(--warning-text))',
-                      background: 'rgba(255,255,255,0.05)',
+                      background: 'rgb(var(--surface-inset))',
                     }}
                   >
                     {t('site_heading_now')} {normaliseHeading(headingDisplay)}°
@@ -409,6 +416,7 @@ export default function SiteSetup() {
                   type="text"
                   value={pendingLabel}
                   onChange={(e) => setPendingLabel(e.target.value)}
+                  aria-label={t('site_marker_label')}
                   placeholder={t('site_marked')}
                   className="w-full bg-surface-0 border border-line-subtle rounded px-4 py-2.5 text-sm mb-4 focus:border-brand outline-none"
                 />
@@ -463,9 +471,10 @@ export default function SiteSetup() {
                         await deleteAnchor(siteId, activeZone.id, anchor.id)
                         await refresh()
                       }}
+                      aria-label={t('site_delete_anchor')}
                       className="font-mono text-[10px] uppercase text-ink-tertiary hover:text-hazard shrink-0"
                     >
-                      ✕
+                      <span aria-hidden="true">✕</span>
                     </button>
                   </div>
                 )

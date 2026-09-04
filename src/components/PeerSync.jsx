@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useRef, useEffect, useCallback, useId } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
 import { createPeer, webrtcSupported, P2P_ROLE, P2P_STATE } from '../lib/p2p.js'
 import { createGossipSession } from '../lib/sync.js'
@@ -43,6 +43,7 @@ export default function PeerSync({ siteId = null, onComplete }) {
   const [stage, setStage] = useState(STAGE.IDLE)
   const [myCode, setMyCode] = useState('')
   const [pasted, setPasted] = useState('')
+  const pasteId = useId()
   const [error, setError] = useState(null)
   const [copied, setCopied] = useState(false)
   const [progress, setProgress] = useState({ certs: 0, hazards: 0 })
@@ -275,10 +276,14 @@ export default function PeerSync({ siteId = null, onComplete }) {
             onResult={(value) => (stage === STAGE.JOIN_SCAN ? consumeOffer(value) : consumeAnswer(value))}
           />
 
-          <label className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary block mt-4 mb-2">
+          <label
+            htmlFor={pasteId}
+            className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary block mt-4 mb-2"
+          >
             {t('bd_paste_instead')}
           </label>
           <textarea
+            id={pasteId}
             value={pasted}
             onChange={(e) => setPasted(e.target.value)}
             placeholder={t('bd_paste_placeholder')}

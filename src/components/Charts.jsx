@@ -151,7 +151,10 @@ export function TrendPill({ trend }) {
 
   const { direction, delta } = trend
   const color = direction === 'up' ? CHART_COLOR.safeText : direction === 'down' ? CHART_COLOR.hazardText : CHART_COLOR.axisText
-  const arrow = direction === 'up' ? '▲' : direction === 'down' ? '▼' : '→'
+  // Flat uses a horizontal bar, not an arrow. A "→" for no-change reads as
+  // direction-of-travel, and in an RTL layout it points the wrong way while
+  // meaning nothing — a bar is direction-neutral and clearer for "unchanged".
+  const arrow = direction === 'up' ? '▲' : direction === 'down' ? '▼' : '—'
 
   return (
     <span className="font-mono text-[10px] inline-flex items-center gap-1" style={{ color }}>

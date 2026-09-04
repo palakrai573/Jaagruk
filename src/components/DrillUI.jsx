@@ -269,7 +269,10 @@ export function ReadinessRing({ readiness = 0, accuracy = null, speed = null, si
         role="img"
         aria-label={`${t('as_readiness')} ${clamped}%`}
       >
-        <svg width={size} height={size} className="-rotate-90">
+        {/* aria-hidden: the wrapper already carries role="img" and the readiness
+            value as its accessible name. Without this a screen reader announces
+            the image and then walks into two unlabelled circles. */}
+        <svg width={size} height={size} className="-rotate-90" aria-hidden="true">
           <circle
             cx={size / 2}
             cy={size / 2}

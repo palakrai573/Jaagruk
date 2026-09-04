@@ -6,7 +6,7 @@
 
 export { default as Button } from './Button.jsx'
 export { default as Card, CardHeader, CardBody, CardMeta, CardActions, CardSpacer } from './Card.jsx'
-export { default as Badge, StatusDot } from './Badge.jsx'
+export { default as Badge, StatusDot, Chevron } from './Badge.jsx'
 export { default as Stat, MiniStat } from './Stat.jsx'
 export { default as Section, SectionHeader, Reveal } from './Section.jsx'
 export { Skeleton, SkeletonText, SkeletonCard, EmptyState, ErrorState, Progress } from './Feedback.jsx'

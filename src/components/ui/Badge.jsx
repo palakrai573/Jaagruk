@@ -24,6 +24,36 @@ const SIZES = {
   md: 'text-xs px-2.5 py-1',
 }
 
+/**
+ * Directional chevron that mirrors for RTL.
+ *
+ * A literal "→" cannot be fixed by logical properties, because the direction is in
+ * the character itself — in an Urdu layout it points away from the direction of
+ * travel. This is an inline SVG flipped by a transform, which is the one case where
+ * a transform is the correct tool rather than a workaround.
+ *
+ * Lived as a private copy in Home.jsx before three other files needed the same
+ * thing.
+ */
+export function Chevron({ size = 14, className = '' }) {
+  return (
+    <svg
+      viewBox="0 0 16 16"
+      width={size}
+      height={size}
+      aria-hidden="true"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={`rtl:-scale-x-100 shrink-0 inline-block ${className}`}
+    >
+      <path d="M6 3l5 5-5 5" />
+    </svg>
+  )
+}
+
 export function Badge({ tone = 'neutral', size = 'md', dot = false, icon = null, className = '', children }) {
   return (
     <span

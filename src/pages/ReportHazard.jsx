@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback, useId } from 'react'
 import { Link } from 'react-router-dom'
 import {
   HAZARD_CATEGORY_LIST,
@@ -46,6 +46,8 @@ export default function ReportHazard() {
   const [category, setCategory] = useState(null)
   const [severity, setSeverity] = useState(null)
   const [note, setNote] = useState('')
+  const noteId = useId()
+  const zoneSelectId = useId()
   const [photo, setPhoto] = useState(null)
   const [photoError, setPhotoError] = useState(null)
   const [voice, setVoice] = useState(null)
@@ -389,10 +391,14 @@ export default function ReportHazard() {
             <p className="font-mono text-[11px] text-ink-tertiary">{t('hz_MIC_UNSUPPORTED')}</p>
           )}
 
-          <label className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary block mt-5 mb-2">
+          <label
+            htmlFor={noteId}
+            className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary block mt-5 mb-2"
+          >
             {t('hz_note_optional')}
           </label>
           <textarea
+            id={noteId}
             value={note}
             onChange={(e) => setNote(e.target.value.slice(0, 400))}
             placeholder={t('hz_note_placeholder')}
@@ -407,10 +413,14 @@ export default function ReportHazard() {
         <Section number={5} title={t('hz_location')} hint={t('hz_location_note')}>
           {zones.length > 0 && (
             <>
-              <label className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary block mb-2">
+              <label
+                htmlFor={zoneSelectId}
+                className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary block mb-2"
+              >
                 {t('hz_zone_label')}
               </label>
               <select
+                id={zoneSelectId}
                 value={zoneId || ''}
                 onChange={(e) => setZoneId(e.target.value)}
                 className="w-full bg-surface-0 border border-line-subtle rounded px-4 py-3 text-sm focus:border-brand outline-none mb-4"
@@ -468,7 +478,9 @@ export default function ReportHazard() {
                   className="font-mono text-[10px] uppercase tracking-widest px-2 py-1 rounded shrink-0"
                   style={{
                     color: report.status === HAZARD_STATUS.RESOLVED ? 'rgb(var(--safe-text))' : 'rgb(var(--warning-text))',
-                    background: 'rgba(255,255,255,0.05)',
+                    // A white overlay was invisible on the light theme, so the
+                    // chip lost its background entirely. Tokenised instead.
+                    background: 'rgb(var(--surface-inset))',
                   }}
                 >
                   {t(`hz_status_${report.status}`)}

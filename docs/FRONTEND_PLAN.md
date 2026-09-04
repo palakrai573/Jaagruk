@@ -193,7 +193,7 @@ honest flag stays.
 
 ## 6. Phases
 
-### ☐ Phase 0 — Foundation
+### ☑ Phase 0 — Foundation
 **Goal:** tokens, themes, fonts, RTL. Nothing visual changes yet; everything becomes themeable.
 
 - `src/styles/tokens.css` — all custom properties, `:root` (dark) + `[data-theme="light"]`
@@ -208,7 +208,7 @@ honest flag stays.
 **Acceptance:** theme toggles with zero flicker and zero mismatched colour; all six languages
 render in a real font; Urdu lays out RTL; existing build stays clean; no visual regression.
 
-### ☐ Phase 1 — Primitives
+### ☑ Phase 1 — Primitives
 **Goal:** the component vocabulary everything else is built from.
 
 `Button` (5 variants × 3 sizes, loading/disabled) · `Card` (+ `CardHeader/Body/Meta/Actions`) ·
@@ -225,7 +225,7 @@ Hooks: `useReveal` (IntersectionObserver), `useCountUp`, `usePrefersReducedMotio
 **Acceptance:** every primitive works in both themes, both directions, at 320 px, keyboard
 navigable, reduced-motion safe.
 
-### ☐ Phase 2 — Showcase tier
+### ☑ Phase 2 — Showcase tier
 **Goal:** the surface judges see.
 
 - **Home rebuilt** — real hero (layered gradient, hazard stripe used *once*, live status),
@@ -237,7 +237,7 @@ navigable, reduced-motion safe.
 **Acceptance:** no card is icon+heading+paragraph. Every section reveals on scroll. Reduced-motion
 renders everything static and complete.
 
-### ☐ Phase 3 — Field tier
+### ☑ Phase 3 — Field tier
 **Goal:** worker surfaces. Highest risk — these are working safety flows.
 
 Scenario · ARDrill · DrillUI · BuddyDrill · Refresher · ReportHazard · Onboarding
@@ -247,17 +247,40 @@ motion · pictogram mode audited so no icon reveals an answer
 **Acceptance:** every drill completes end to end on a 320 px viewport; latency capture unchanged;
 gesture targets still resolve; timing logic untouched.
 
-### ☐ Phase 4 — Data surfaces
+### ☑ Phase 4 — Data surfaces
 Dashboard + Admin onto tokens. Tables collapse to cards below 640 px. Charts theme-aware.
 **Acceptance:** no horizontal overflow at any width in either theme.
 
-### ☐ Phase 5 — States
+### ☑ Phase 5 — States
 Toasts replace `window.confirm`. Loading, skeleton, empty, error, offline, validation, success
 states everywhere. Optimistic UI where safe.
 
-### ☐ Phase 6 — Responsive & a11y QA
+### ☑ Phase 6 — Responsive & a11y QA
 320 / 360 / 390 / 430 / 768 / 1024 / 1440 × 2 themes × 6 languages × RTL × reduced-motion.
 Overflow, sticky, touch targets, focus order, contrast audit.
+
+Automated as `npm run a11y` (`scripts/a11y-gate.mjs`), 16 checks over every `.jsx` file:
+accessible names, form labelling, decorative SVG, focus order, reduced-motion escapes,
+320 px width budget, RTL logical properties and mirrored glyphs, live regions, translation
+length pressure, field-tier touch targets, theme-blind colour literals, heading order.
+
+`npm run a11y:selftest` plants one instance of each fault in a synthetic file and asserts
+every check catches it — 9/9 of the file-reading checks are confirmed live. This exists
+because the first version of the accessible-name check passed on a button that had no name:
+`/<[^>]*>/` stops at the `>` inside `onClick={() => …}`, leaking handler source into what
+the check treated as visible label text. A gate that reports safety it never checked is
+worse than no gate.
+
+**What it found and fixed:** 20 unlabelled form controls (six `<label>`s with no `htmlFor`
+beside `<input>`s with no `id`); a `<Field>` in the sign-in flow whose label pointed at an
+id nothing carried, with a stray `)}` from an unfinished edit; an unnamed chat close button
+and an unnamed marker-delete button; `hover:bg-white` on the chat launcher, which erased its
+own white glyph on the light theme; three `rgba(255,255,255,0.05)` chip backgrounds invisible
+on the light theme; four Onboarding fields sized 50 px on a tier that promises 56 px, plus a
+20 px supervisor checkbox and a 38 px copy-code button.
+
+**Not covered:** rendered layout. Static analysis cannot see a wrapped heading or a clipped
+sticky bar. The device matrix in `docs/DEPLOYMENT.md` §10 is still required.
 
 ### ☐ Phase 7 — Copy & i18n completion
 Santali to 100%. Rewrite vague strings in all six languages. Ol Chiki→Devanagari transliteration

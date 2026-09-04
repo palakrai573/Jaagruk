@@ -8,6 +8,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "a11y": "node scripts/a11y-gate.mjs",
+    "a11y:selftest": "node scripts/a11y-gate.mjs --selftest",
     "android:sync": "vite build && npx cap sync android",
     "android:open": "npx cap open android"
   },

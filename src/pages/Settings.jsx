@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useId } from 'react'
 import { Link } from 'react-router-dom'
 import { getApiKey, setApiKey, getProvider, setProvider } from '../lib/api.js'
 import { LANGUAGES, allCoverage } from '../lib/i18n.js'
@@ -26,6 +26,9 @@ import { useLanguage } from '../context/LanguageContext.jsx'
 
 export default function Settings() {
   const { t, lang, setLang } = useLanguage()
+
+  const keyId = useId()
+  const endpointId = useId()
 
   const [key, setKey] = useState(() => getApiKey())
   const [provider, setProviderState] = useState(() => getProvider())
@@ -257,10 +260,14 @@ export default function Settings() {
         </div>
         <p className="text-xs text-ink-tertiary mb-5">{t('set_provider_hint')}</p>
 
-        <label className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary block mb-2">
+        <label
+          htmlFor={keyId}
+          className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary block mb-2"
+        >
           {t('set_key_label')}
         </label>
         <input
+          id={keyId}
           type="password"
           value={key}
           onChange={(e) => setKey(e.target.value)}
@@ -344,7 +351,14 @@ export default function Settings() {
         <SectionTitle pictogram="alarm" title={t('st_sync_title')} />
         <p className="text-xs text-ink-tertiary mb-4 leading-relaxed">{t('st_sync_hint')}</p>
 
+        <label
+          htmlFor={endpointId}
+          className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary block mb-2"
+        >
+          {t('set_endpoint_label')}
+        </label>
         <input
+          id={endpointId}
           type="url"
           value={endpoint}
           onChange={(e) => setEndpoint(e.target.value)}
@@ -371,6 +385,7 @@ export default function Settings() {
           type="text"
           value={resetText}
           onChange={(e) => setResetText(e.target.value)}
+          aria-label={t('st_reset_confirm')}
           placeholder={t('st_reset_confirm')}
           className="w-full bg-surface-inset border border-line-subtle rounded px-4 py-2.5 font-mono text-sm focus:border-hazard outline-none mb-3"
         />

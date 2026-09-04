@@ -139,7 +139,9 @@ export default function GestureLayer({ enabled = false, onStatusChange }) {
           style={{ left: `${pointer.x * 100}vw`, top: `${pointer.y * 100}vh` }}
           aria-hidden="true"
         >
-          <svg width="56" height="56" viewBox="0 0 56 56">
+          {/* Purely a cursor. It conveys nothing to a screen reader, and the
+              gesture status is announced separately by the live region below. */}
+          <svg width="56" height="56" viewBox="0 0 56 56" aria-hidden="true">
             {/*
               COLOURS HERE ARE FIXED, NOT TOKENISED — deliberately.
               The gesture cursor floats above every surface in the app, including

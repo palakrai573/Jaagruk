@@ -48,6 +48,7 @@ import {
   Skeleton,
   SkeletonCard,
   EmptyState,
+  Chevron,
 } from '../components/ui/index.js'
 import { useLanguage } from '../context/LanguageContext.jsx'
 
@@ -377,9 +378,9 @@ export default function Dashboard() {
                       </span>
                       <Link
                         to="/train"
-                        className="font-mono text-[10px] uppercase tracking-widest text-brand-text underline shrink-0"
+                        className="font-mono text-2xs uppercase tracking-widest text-brand-text underline shrink-0 inline-flex items-center gap-1.5"
                       >
-                        {t('nav_train')} →
+                        {t('nav_train')} <Chevron size={10} />
                       </Link>
                     </div>
                   )}

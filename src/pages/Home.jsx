@@ -16,6 +16,7 @@ import {
   SectionHeader,
   Reveal,
   Skeleton,
+  Chevron,
 } from '../components/ui/index.js'
 import { getCurrentWorker } from '../lib/identity.js'
 import { listAttempts, bestByDomain } from '../lib/assessment.js'
@@ -563,26 +564,5 @@ function FooterNote({ t }) {
   )
 }
 
-/**
- * Inline chevron. Flipped for RTL with a CSS transform rather than a different
- * glyph, because the character itself carries a direction and logical properties
- * cannot help with that.
- */
-function Chevron() {
-  return (
-    <svg
-      viewBox="0 0 16 16"
-      width="14"
-      height="14"
-      aria-hidden="true"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="rtl:-scale-x-100 shrink-0"
-    >
-      <path d="M6 3l5 5-5 5" />
-    </svg>
-  )
-}
+// Chevron lived here as a private component until three other files needed the
+// same RTL-mirroring arrow. Promoted to ui/Badge.jsx and imported above.

@@ -61,17 +61,26 @@ export default function ChatBox() {
     <>
       <button
         onClick={() => setOpen((o) => !o)}
-        aria-label={t('chat_title')}
-        className="fixed bottom-20 md:bottom-6 right-5 z-30 w-14 h-14 rounded-full bg-brand text-ink-onBrand font-display font-bold text-2xl shadow-lg flex items-center justify-center hover:bg-white transition-colors"
+        aria-label={open ? t('close_label') : t('chat_title')}
+        aria-expanded={open}
+        // hover:bg-white was a leftover from the dark-only build. On the light
+        // theme the label is white, so hovering erased the glyph.
+        className="fixed bottom-20 md:bottom-6 end-5 z-30 w-14 h-14 rounded-full bg-brand text-ink-onBrand font-display font-bold text-2xl shadow-lg flex items-center justify-center hover:bg-brand-hover transition-colors"
       >
-        {open ? '×' : '?'}
+        <span aria-hidden="true">{open ? '×' : '?'}</span>
       </button>
 
       {open && (
-        <div className="fixed bottom-36 md:bottom-24 right-5 z-30 w-[92vw] max-w-sm h-[60vh] max-h-[520px] bg-surface-1 border border-line-subtle rounded-lg shadow-2xl flex flex-col overflow-hidden">
+        <div className="fixed bottom-36 md:bottom-24 end-5 z-30 w-[92vw] max-w-sm h-[60vh] max-h-[520px] bg-surface-1 border border-line-subtle rounded-lg shadow-2xl flex flex-col overflow-hidden">
           <div className="px-4 py-3 border-b border-line-subtle bg-surface-0 flex items-center justify-between">
             <span className="font-display font-bold text-brand-text uppercase tracking-wide text-sm">{t('chat_title')}</span>
-            <button onClick={() => setOpen(false)} className="text-ink-tertiary hover:text-ink text-lg leading-none">×</button>
+            <button
+              onClick={() => setOpen(false)}
+              aria-label={t('close_label')}
+              className="text-ink-tertiary hover:text-ink text-lg leading-none"
+            >
+              <span aria-hidden="true">×</span>
+            </button>
           </div>
 
           <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
@@ -96,6 +105,7 @@ export default function ChatBox() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={onKeyDown}
+              aria-label={t('chat_placeholder')}
               placeholder={t('chat_placeholder')}
               className="flex-1 bg-surface-1 border border-line-subtle rounded px-3 py-2 text-sm focus:border-brand outline-none"
             />

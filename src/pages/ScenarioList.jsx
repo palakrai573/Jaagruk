@@ -8,6 +8,7 @@ import { retentionOverview } from '../lib/spaced.js'
 import { getCurrentWorker } from '../lib/identity.js'
 import { PASS_THRESHOLD } from '../lib/certificate.js'
 import Pictogram from '../lib/pictograms.jsx'
+import { Chevron } from '../components/ui/index.js'
 import { useLanguage } from '../context/LanguageContext.jsx'
 import { scenarioContentIsEnglish } from '../lib/i18n.js'
 
@@ -68,8 +69,11 @@ export default function ScenarioList() {
               </p>
             </div>
           </div>
-          <Link to="/certification" className="font-mono text-xs text-brand-text underline shrink-0">
-            {t('nav_cert')} →
+          <Link
+            to="/certification"
+            className="font-mono text-xs text-brand-text underline shrink-0 inline-flex items-center gap-1.5"
+          >
+            {t('nav_cert')} <Chevron size={11} />
           </Link>
         </div>
       )}

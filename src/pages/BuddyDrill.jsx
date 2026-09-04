@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback, useId } from 'react'
 import { Link } from 'react-router-dom'
 import { QRCodeSVG } from 'qrcode.react'
 import { createPeer, createLoopbackPeer, webrtcSupported, P2P_ROLE, P2P_STATE } from '../lib/p2p.js'
@@ -53,6 +53,7 @@ export default function BuddyDrill() {
   const [stage, setStage] = useState(STAGE.CHOOSE)
   const [myCode, setMyCode] = useState('')
   const [pasted, setPasted] = useState('')
+  const pasteId = useId()
   const [connState, setConnState] = useState(P2P_STATE.IDLE)
   const [error, setError] = useState(null)
   const [copied, setCopied] = useState(false)
@@ -319,7 +320,7 @@ export default function BuddyDrill() {
                   setCopied(false)
                 }
               }}
-              className="w-full border border-line-subtle rounded px-4 py-2.5 font-mono text-xs text-ink-tertiary hover:border-brand hover:text-brand-text mb-6"
+              className="w-full min-h-touch border border-line-subtle rounded px-4 py-2.5 font-mono text-xs text-ink-tertiary hover:border-brand hover:text-brand-text mb-6"
             >
               {copied ? t('bd_copied') : t('bd_copy_code')}
             </button>
@@ -368,10 +369,14 @@ export default function BuddyDrill() {
             />
 
             <div className="mt-5">
-              <label className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary block mb-2">
+              <label
+                htmlFor={pasteId}
+                className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary block mb-2"
+              >
                 {t('bd_paste_instead')}
               </label>
               <textarea
+                id={pasteId}
                 value={pasted}
                 onChange={(e) => setPasted(e.target.value)}
                 placeholder={t('bd_paste_placeholder')}

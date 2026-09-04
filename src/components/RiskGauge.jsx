@@ -32,7 +32,9 @@ export default function RiskGauge({ score = 0, size = 180 }) {
 
   return (
     <div className="flex flex-col items-center" role="img" aria-label={`${clamped}/100 — ${label}`}>
-      <svg width={size} height={size / 1.7} viewBox={`0 0 ${size} ${size / 1.7}`}>
+      {/* aria-hidden: the wrapper carries role="img" with the score and label as
+          its accessible name, so the arc geometry itself is noise. */}
+      <svg width={size} height={size / 1.7} viewBox={`0 0 ${size} ${size / 1.7}`} aria-hidden="true">
         <path d={arcPath} fill="none" stroke="rgb(var(--surface-inset))" strokeWidth="14" strokeLinecap="round" />
         <path
           d={describeArc(cx, cy, radius, -90, angle)}

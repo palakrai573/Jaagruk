@@ -89,7 +89,7 @@ export default function HazardScan() {
               <HazardBox key={i} hazard={h} />
             ))}
             {!result && (
-              <div className="absolute bottom-3 left-3 right-3 flex gap-3">
+              <div className="absolute bottom-3 inset-x-3 flex gap-3">
                 <button
                   onClick={runScan}
                   disabled={loading}
@@ -137,7 +137,7 @@ export default function HazardScan() {
                     <p className="font-mono text-safe-text text-sm">{t('scan_no_hazards')}</p>
                   )}
                   {(result.hazards || []).map((h, i) => (
-                    <div key={i} className="bg-surface-1 border-l-4 rounded p-3" style={{ borderColor: severityColor[h.severity] || '#8B8F94' }}>
+                    <div key={i} className="bg-surface-1 border-s-4 rounded p-3" style={{ borderColor: severityColor[h.severity] || '#8B8F94' }}>
                       <div className="flex items-center justify-between mb-1">
                         <span className="font-bold text-sm uppercase">{h.label}</span>
                         <span className="font-mono text-[10px] uppercase tracking-widest" style={{ color: severityColor[h.severity] }}>
@@ -185,7 +185,7 @@ function HazardBox({ hazard }) {
       }}
     >
       <span
-        className="absolute -top-6 left-0 font-mono text-[10px] uppercase px-1.5 py-0.5 rounded whitespace-nowrap"
+        className="absolute -top-6 start-0 font-mono text-[10px] uppercase px-1.5 py-0.5 rounded whitespace-nowrap"
         style={{ backgroundColor: color, color: '#1C1F22' }}
       >
         {hazard.label}

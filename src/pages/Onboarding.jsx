@@ -16,6 +16,7 @@ import { LANGUAGES } from '../lib/i18n.js'
 import { speak } from '../lib/speech.js'
 import { LS, lsSetBool, lsGetBool } from '../lib/local.js'
 import Pictogram from '../lib/pictograms.jsx'
+import { Field } from '../components/ui/index.js'
 import { useLanguage } from '../context/LanguageContext.jsx'
 
 /**
@@ -35,6 +36,11 @@ import { useLanguage } from '../context/LanguageContext.jsx'
  */
 
 const STAGE = { LANGUAGE: 'language', WHO: 'who', REGISTER: 'register', SIGN_IN: 'signin', DONE: 'done' }
+
+/* PIN boxes are wide-tracked, centred and monospaced so a worker can count the
+   dots. Declared once: the choose/confirm/sign-in boxes drifting apart is the
+   kind of thing nobody notices until the three screens sit side by side. */
+const PIN_INPUT = 'font-mono text-2xl tracking-[0.4em] text-center'
 
 export default function Onboarding() {
   const { t, lang, setLang } = useLanguage()
@@ -248,59 +254,76 @@ export default function Onboarding() {
         <section>
           <Heading pictogram="ppe" title={t('ob_new_worker')} />
 
-          <Field label={t('ob_your_name')}>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder={t('ob_name_placeholder')}
-              autoComplete="name"
-              className="w-full bg-surface-0 border border-line-subtle rounded px-4 py-3 text-base focus:border-brand outline-none"
-            />
+          {/* size="field" is what makes these 56px rather than the 42px default.
+              Registration happens at the gate with gloves on, so the control
+              classes come from the primitive; only the PIN boxes add a treatment
+              on top, appended to wiring.className rather than replacing it. */}
+          <Field label={t('ob_your_name')} size="field">
+            {(wiring) => (
+              <input
+                {...wiring}
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder={t('ob_name_placeholder')}
+                autoComplete="name"
+              />
+            )}
           </Field>
 
-          <Field label={t('ob_phone_optional')} hint={t('ob_phone_why')}>
-            <input
-              type="tel"
-              inputMode="numeric"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="98765 43210"
-              autoComplete="tel"
-              className="w-full bg-surface-0 border border-line-subtle rounded px-4 py-3 font-mono text-base focus:border-brand outline-none"
-            />
+          <Field label={t('ob_phone_optional')} hint={t('ob_phone_why')} size="field">
+            {(wiring) => (
+              <input
+                {...wiring}
+                type="tel"
+                inputMode="numeric"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="98765 43210"
+                autoComplete="tel"
+                className={`${wiring.className} font-mono`}
+              />
+            )}
           </Field>
 
-          <Field label={t('ob_choose_pin')} hint={t('ob_pin_why')}>
-            <input
-              type="password"
-              inputMode="numeric"
-              value={pin}
-              onChange={(e) => setPin(e.target.value.replace(/\D/g, '').slice(0, 6))}
-              placeholder="••••"
-              autoComplete="new-password"
-              className="w-full bg-surface-0 border border-line-subtle rounded px-4 py-3 font-mono text-2xl tracking-[0.4em] text-center focus:border-brand outline-none"
-            />
+          <Field label={t('ob_choose_pin')} hint={t('ob_pin_why')} size="field">
+            {(wiring) => (
+              <input
+                {...wiring}
+                type="password"
+                inputMode="numeric"
+                value={pin}
+                onChange={(e) => setPin(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                placeholder="••••"
+                autoComplete="new-password"
+                className={`${wiring.className} ${PIN_INPUT}`}
+              />
+            )}
           </Field>
 
-          <Field label={t('ob_confirm_pin')}>
-            <input
-              type="password"
-              inputMode="numeric"
-              value={pinConfirm}
-              onChange={(e) => setPinConfirm(e.target.value.replace(/\D/g, '').slice(0, 6))}
-              placeholder="••••"
-              autoComplete="new-password"
-              className="w-full bg-surface-0 border border-line-subtle rounded px-4 py-3 font-mono text-2xl tracking-[0.4em] text-center focus:border-brand outline-none"
-            />
+          <Field label={t('ob_confirm_pin')} size="field">
+            {(wiring) => (
+              <input
+                {...wiring}
+                type="password"
+                inputMode="numeric"
+                value={pinConfirm}
+                onChange={(e) => setPinConfirm(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                placeholder="••••"
+                autoComplete="new-password"
+                className={`${wiring.className} ${PIN_INPUT}`}
+              />
+            )}
           </Field>
 
-          <label className="flex items-center gap-3 mb-6 cursor-pointer">
+          {/* The whole row is the tap target, padded to the field-tier minimum —
+              a bare 20px checkbox is a missed tap with gloves on. */}
+          <label className="flex items-center gap-3 mb-6 cursor-pointer min-h-touch -mx-2 px-2 rounded-lg hover:bg-surface-1">
             <input
               type="checkbox"
               checked={isSupervisor}
               onChange={(e) => setIsSupervisor(e.target.checked)}
-              className="w-5 h-5 accent-brand"
+              className="w-6 h-6 accent-brand shrink-0"
             />
             <span className="text-sm text-ink-tertiary">{t('site_eyebrow')}</span>
           </label>
@@ -362,20 +385,23 @@ export default function Onboarding() {
                 <span className="font-bold">{selectedWorker.name}</span>
               </div>
 
-              <Field label={t('ob_enter_pin')}>
-                <input
-                  type="password"
-                  inputMode="numeric"
-                  value={signInPin}
-                  onChange={(e) => setSignInPin(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') submitSignIn()
-                  }}
-                  placeholder="••••"
-                  autoComplete="current-password"
-                  autoFocus
-                  className="w-full bg-surface-0 border border-line-subtle rounded px-4 py-3 font-mono text-2xl tracking-[0.4em] text-center focus:border-brand outline-none"
-                />
+              <Field label={t('ob_enter_pin')} size="field">
+                {(wiring) => (
+                  <input
+                    {...wiring}
+                    type="password"
+                    inputMode="numeric"
+                    value={signInPin}
+                    onChange={(e) => setSignInPin(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') submitSignIn()
+                    }}
+                    placeholder="••••"
+                    autoComplete="current-password"
+                    autoFocus
+                    className={`${wiring.className} ${PIN_INPUT}`}
+                  />
+                )}
               </Field>
 
               {signInError && (
@@ -518,20 +544,22 @@ function BigChoice({ pictogram, label, onClick, disabled, hint }) {
   )
 }
 
-function Field({ label, hint, children }) {
-  return (
-    <div className="mb-5">
-      <label className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary block mb-2">{label}</label>
-      {children}
-      {hint && <p className="text-[11px] text-ink-tertiary mt-2 leading-relaxed">{hint}</p>}
-    </div>
-  )
-}
+// A local Field used to live here. It rendered a <label> with NO htmlFor while the
+// inputs had no id, so every field on this screen was visually labelled and
+// programmatically anonymous — a screen reader announced "edit text, blank". On the
+// registration form of an app whose whole premise includes workers who cannot read,
+// that was the worst possible place for it.
+//
+// Replaced by the shared Field primitive, which generates the id and hands it to
+// the control through a render prop, so a call site cannot forget the association.
 
 function ErrorList({ errors, t }) {
   if (!errors?.length) return null
   return (
-    <div className="bg-hazard/10 border border-hazard/40 rounded p-3 mb-4 space-y-1">
+    <div
+      role="alert"
+      className="bg-hazard-subtle border border-hazard-border rounded-xl p-3 mb-4 space-y-1"
+    >
       {errors.map((code) => (
         <p key={code} className="text-xs text-hazard flex items-start gap-2">
           <Pictogram name="warning" size={16} />
