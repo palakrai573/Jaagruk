@@ -204,13 +204,13 @@ export default function ReportHazard() {
       <div className="max-w-md mx-auto px-5 py-14 text-center">
         <Pictogram name="correct" size={64} className="mx-auto mb-5" />
         <h1 className="font-display font-bold text-2xl uppercase mb-3">{t('hz_thanks_title')}</h1>
-        <p className="text-concrete text-sm mb-8 leading-relaxed">{t('hz_thanks_body')}</p>
+        <p className="text-ink-tertiary text-sm mb-8 leading-relaxed">{t('hz_thanks_body')}</p>
 
-        <div className="border border-steel-lighter rounded-lg p-4 mb-8 flex items-center gap-4 text-start">
+        <div className="border border-line-subtle rounded-lg p-4 mb-8 flex items-center gap-4 text-start">
           <Pictogram name={categoryMeta(submitted.category).pictogram} size={38} />
           <div className="min-w-0">
             <p className="font-bold text-sm">{t(categoryMeta(submitted.category).labelKey)}</p>
-            <p className="font-mono text-[10px] text-concrete mt-0.5">
+            <p className="font-mono text-[10px] text-ink-tertiary mt-0.5">
               {submitted.zoneName || t('hz_no_direction')}
               {submitted.bearing !== null && ` · ${submitted.bearing}°`}
             </p>
@@ -220,17 +220,17 @@ export default function ReportHazard() {
         {submitted.persisted === false && (
           <p className="font-mono text-[11px] text-hazard mb-6">{t('hz_storage_full')}</p>
         )}
-        {!isOnline() && <p className="font-mono text-[11px] text-concrete mb-6">{t('offline_label')}</p>}
+        {!isOnline() && <p className="font-mono text-[11px] text-ink-tertiary mb-6">{t('offline_label')}</p>}
 
         <div className="grid gap-3">
           <button
             type="button"
             onClick={resetForm}
-            className="w-full bg-amber text-steel font-display font-bold uppercase py-3 rounded"
+            className="w-full bg-brand text-ink-onBrand font-display font-bold uppercase py-3 rounded"
           >
             {t('hz_report_another')}
           </button>
-          <Link to="/" className="font-mono text-xs text-concrete underline">
+          <Link to="/" className="font-mono text-xs text-ink-tertiary underline">
             {t('nav_home')}
           </Link>
         </div>
@@ -242,9 +242,9 @@ export default function ReportHazard() {
 
   return (
     <div className="max-w-2xl mx-auto px-5 py-10">
-      <p className="font-mono text-amber text-xs tracking-[0.2em] uppercase mb-3">{t('hz_eyebrow')}</p>
+      <p className="font-mono text-brand-text text-xs tracking-[0.2em] uppercase mb-3">{t('hz_eyebrow')}</p>
       <h1 className="font-display font-bold text-4xl md:text-5xl uppercase mb-3">{t('hz_title')}</h1>
-      <p className="text-concrete mb-8 max-w-xl leading-relaxed">{t('hz_desc')}</p>
+      <p className="text-ink-tertiary mb-8 max-w-xl leading-relaxed">{t('hz_desc')}</p>
 
       {/* 1. What */}
       <Section number={1} title={t('hz_pick_what')}>
@@ -261,11 +261,11 @@ export default function ReportHazard() {
               aria-pressed={category === cat.id}
               data-gesture-target={`category-${cat.id}`}
               className={`rounded-lg border p-3 flex flex-col items-center gap-2 transition-colors ${
-                category === cat.id ? 'border-amber bg-amber/10' : 'border-steel-lighter bg-steel-light hover:border-amber'
+                category === cat.id ? 'border-brand bg-brand-subtle' : 'border-line-subtle bg-surface-1 hover:border-brand'
               }`}
             >
               <Pictogram name={cat.pictogram} size={40} />
-              <span className="font-mono text-[10px] text-center leading-tight text-concrete">{t(cat.labelKey)}</span>
+              <span className="font-mono text-[10px] text-center leading-tight text-ink-tertiary">{t(cat.labelKey)}</span>
             </button>
           ))}
         </div>
@@ -315,16 +315,16 @@ export default function ReportHazard() {
           />
 
           {photo ? (
-            <div className="rounded-lg overflow-hidden border border-steel-lighter">
+            <div className="rounded-lg overflow-hidden border border-line-subtle">
               <img src={photo.dataUrl} alt="" className="w-full block" />
-              <div className="flex items-center justify-between gap-3 p-3 bg-steel-light">
-                <span className="font-mono text-[10px] text-concrete">
+              <div className="flex items-center justify-between gap-3 p-3 bg-surface-1">
+                <span className="font-mono text-[10px] text-ink-tertiary">
                   {photo.width}×{photo.height} · {Math.round(photo.bytes / 1024)} KB
                 </span>
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="font-mono text-[10px] uppercase text-concrete hover:text-amber"
+                  className="font-mono text-[10px] uppercase text-ink-tertiary hover:text-brand-text"
                 >
                   {t('hz_retake_photo')}
                 </button>
@@ -334,10 +334,10 @@ export default function ReportHazard() {
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="w-full border-2 border-dashed border-steel-lighter rounded-lg py-10 flex flex-col items-center gap-3 hover:border-amber"
+              className="w-full border-2 border-dashed border-line-subtle rounded-lg py-10 flex flex-col items-center gap-3 hover:border-brand"
             >
               <Pictogram name="report_it" size={44} />
-              <span className="font-mono text-xs text-concrete">{t('hz_add_photo')}</span>
+              <span className="font-mono text-xs text-ink-tertiary">{t('hz_add_photo')}</span>
             </button>
           )}
 
@@ -351,7 +351,7 @@ export default function ReportHazard() {
           {voiceRecordingSupported() ? (
             <>
               {voice ? (
-                <div className="flex items-center justify-between gap-3 border border-steel-lighter rounded-lg p-4">
+                <div className="flex items-center justify-between gap-3 border border-line-subtle rounded-lg p-4">
                   <span className="flex items-center gap-3">
                     <Pictogram name="listen" size={26} />
                     <span className="font-mono text-xs text-safe">
@@ -361,7 +361,7 @@ export default function ReportHazard() {
                   <button
                     type="button"
                     onClick={() => setVoice(null)}
-                    className="font-mono text-[10px] uppercase text-concrete hover:text-hazard"
+                    className="font-mono text-[10px] uppercase text-ink-tertiary hover:text-hazard"
                   >
                     {t('hz_voice_remove')}
                   </button>
@@ -374,7 +374,7 @@ export default function ReportHazard() {
                     else startRecording()
                   }}
                   className={`w-full rounded-lg border py-4 flex items-center justify-center gap-3 font-mono text-sm ${
-                    recording ? 'border-hazard text-hazard bg-hazard/10' : 'border-steel-lighter text-concrete hover:border-amber'
+                    recording ? 'border-hazard text-hazard bg-hazard/10' : 'border-line-subtle text-ink-tertiary hover:border-brand'
                   }`}
                 >
                   <Pictogram name="listen" size={24} />
@@ -386,10 +386,10 @@ export default function ReportHazard() {
               {voiceError && <p className="font-mono text-[11px] text-hazard mt-3">{t(voiceError)}</p>}
             </>
           ) : (
-            <p className="font-mono text-[11px] text-concrete">{t('hz_MIC_UNSUPPORTED')}</p>
+            <p className="font-mono text-[11px] text-ink-tertiary">{t('hz_MIC_UNSUPPORTED')}</p>
           )}
 
-          <label className="font-mono text-[10px] uppercase tracking-widest text-concrete block mt-5 mb-2">
+          <label className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary block mt-5 mb-2">
             {t('hz_note_optional')}
           </label>
           <textarea
@@ -397,7 +397,7 @@ export default function ReportHazard() {
             onChange={(e) => setNote(e.target.value.slice(0, 400))}
             placeholder={t('hz_note_placeholder')}
             rows={3}
-            className="w-full bg-steel border border-steel-lighter rounded px-4 py-3 text-sm focus:border-amber outline-none"
+            className="w-full bg-surface-0 border border-line-subtle rounded px-4 py-3 text-sm focus:border-brand outline-none"
           />
         </Section>
       )}
@@ -407,13 +407,13 @@ export default function ReportHazard() {
         <Section number={5} title={t('hz_location')} hint={t('hz_location_note')}>
           {zones.length > 0 && (
             <>
-              <label className="font-mono text-[10px] uppercase tracking-widest text-concrete block mb-2">
+              <label className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary block mb-2">
                 {t('hz_zone_label')}
               </label>
               <select
                 value={zoneId || ''}
                 onChange={(e) => setZoneId(e.target.value)}
-                className="w-full bg-steel border border-steel-lighter rounded px-4 py-3 text-sm focus:border-amber outline-none mb-4"
+                className="w-full bg-surface-0 border border-line-subtle rounded px-4 py-3 text-sm focus:border-brand outline-none mb-4"
               >
                 {zones.map((z) => (
                   <option key={z.id} value={z.id}>
@@ -426,7 +426,7 @@ export default function ReportHazard() {
 
           <div className="flex items-center gap-3">
             <Pictogram name={headingSource === HEADING_SOURCE.NONE ? 'warning' : 'correct'} size={22} />
-            <span className="font-mono text-xs text-concrete">
+            <span className="font-mono text-xs text-ink-tertiary">
               {headingSource === HEADING_SOURCE.NONE
                 ? t('hz_no_direction')
                 : `${t('hz_facing')} ${bearing}°`}
@@ -441,7 +441,7 @@ export default function ReportHazard() {
           type="button"
           onClick={submit}
           disabled={busy}
-          className="w-full bg-amber text-steel font-display font-bold text-lg uppercase py-4 rounded disabled:opacity-50 mt-4"
+          className="w-full bg-brand text-ink-onBrand font-display font-bold text-lg uppercase py-4 rounded disabled:opacity-50 mt-4"
         >
           {busy ? t('hz_submitting') : t('hz_submit')}
         </button>
@@ -449,16 +449,16 @@ export default function ReportHazard() {
 
       {/* My reports */}
       {mine.length > 0 && (
-        <section className="mt-12 border-t border-steel-lighter pt-8">
+        <section className="mt-12 border-t border-line-subtle pt-8">
           <h2 className="font-display font-bold text-xl uppercase mb-4">{t('hz_my_reports')}</h2>
-          <div className="border border-steel-lighter rounded-lg divide-y divide-steel-lighter">
+          <div className="border border-line-subtle rounded-lg divide-y divide-line-subtle">
             {mine.slice(0, 8).map((report) => (
               <div key={report.id} className="p-4 flex items-center justify-between gap-3">
                 <span className="flex items-center gap-3 min-w-0">
                   <Pictogram name={categoryMeta(report.category).pictogram} size={28} />
                   <span className="min-w-0">
                     <span className="block text-sm truncate">{t(categoryMeta(report.category).labelKey)}</span>
-                    <span className="block font-mono text-[10px] text-concrete">
+                    <span className="block font-mono text-[10px] text-ink-tertiary">
                       {new Date(report.at).toLocaleDateString()}
                       {report.zoneName && ` · ${report.zoneName}`}
                     </span>
@@ -480,7 +480,7 @@ export default function ReportHazard() {
       )}
 
       {mine.length === 0 && category === null && (
-        <p className="font-mono text-xs text-concrete text-center mt-12">{t('hz_none_yet')}</p>
+        <p className="font-mono text-xs text-ink-tertiary text-center mt-12">{t('hz_none_yet')}</p>
       )}
     </div>
   )
@@ -490,12 +490,12 @@ function Section({ number, title, hint, children }) {
   return (
     <section className="mb-8">
       <div className="flex items-center gap-3 mb-3">
-        <span className="w-7 h-7 rounded-full bg-steel-lighter text-chalk font-display font-bold text-sm flex items-center justify-center shrink-0">
+        <span className="w-7 h-7 rounded-full bg-surface-3 text-ink font-display font-bold text-sm flex items-center justify-center shrink-0">
           {number}
         </span>
         <h2 className="font-display font-bold text-xl uppercase">{title}</h2>
       </div>
-      {hint && <p className="text-[11px] text-concrete mb-3 leading-relaxed">{hint}</p>}
+      {hint && <p className="text-[11px] text-ink-tertiary mb-3 leading-relaxed">{hint}</p>}
       {children}
     </section>
   )

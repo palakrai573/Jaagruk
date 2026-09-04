@@ -16,14 +16,23 @@ import Pictogram from '../lib/pictograms.jsx'
 import { useLanguage } from '../context/LanguageContext.jsx'
 
 /**
- * COLOURS IN THIS FILE ARE DELIBERATELY NOT TOKENS.
+ * THIS VIEWPORT IS A FIXED DARK PANEL IN BOTH THEMES. THAT IS DELIBERATE.
  *
- * Everything drawn here sits on top of a LIVE CAMERA FEED, not on an app surface.
- * A theme-aware colour is meaningless there: the background is whatever the worker
- * is pointing the phone at, which might be a bright doorway or a dark shaft wall.
- * Marker outlines stay near-white and the aim reticle stays ISO amber in both
- * themes because they have to hold against the camera image, not against a
- * surface token. The Phase 3 token sweep skipped this file on purpose.
+ * Everything drawn here sits on top of a live camera feed, so a theme-aware
+ * surface colour is meaningless: the background is whatever the worker is pointing
+ * the phone at, which might be a bright doorway or a dark shaft wall. Overlay
+ * plates are black at fixed opacities and text on them is white, so legibility
+ * does not depend on what is in frame.
+ *
+ * The error and permission states use the same dark panel even though no video is
+ * present. Switching those to light in light theme would make the viewport flash
+ * white when the camera fails, which is both jarring and — at night, underground —
+ * destroys the dark adaptation the worker needs. Every camera application behaves
+ * this way for the same reason.
+ *
+ * ISO amber (#FFB020) is written literally rather than as a token because it is a
+ * safety hue that must match the signage on the wall, and the ink on top of it is
+ * fixed dark for the same reason: the chip behind it never changes colour.
  */
 
 /**
@@ -320,16 +329,16 @@ export default function ARDrill({
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 gap-3">
           <Pictogram name="warning" size={44} />
           <p className="font-display font-bold text-xl uppercase">{t('ar_unavailable')}</p>
-          <p className="text-concrete text-sm max-w-sm">{t(CAMERA_ERROR_KEYS[cameraError] || 'ar_camera_unknown')}</p>
+          <p className="text-white/70 text-sm max-w-sm">{t(CAMERA_ERROR_KEYS[cameraError] || 'ar_camera_unknown')}</p>
           <div className="flex gap-3 mt-2 flex-wrap justify-center">
             <button
               onClick={startCamera}
-              className="border border-concrete rounded px-4 py-2 font-mono text-xs hover:border-amber hover:text-amber"
+              className="border border-white/30 rounded px-4 py-2 font-mono text-xs hover:border-[#FFB020] hover:text-[#FFB020]"
             >
               {t('ar_retry')}
             </button>
             {onFallback && (
-              <button onClick={onFallback} className="bg-amber text-steel font-bold text-xs uppercase px-4 py-2 rounded">
+              <button onClick={onFallback} className="bg-[#FFB020] text-[#101315] font-bold text-xs uppercase px-4 py-2 rounded">
                 {t('ar_use_3d')}
               </button>
             )}
@@ -357,8 +366,8 @@ export default function ARDrill({
       />
 
       {!cameraReady && (
-        <div className="absolute inset-0 flex items-center justify-center bg-steel">
-          <p className="font-mono text-xs text-concrete uppercase tracking-widest">{t('ar_starting')}</p>
+        <div className="absolute inset-0 flex items-center justify-center bg-black">
+          <p className="font-mono text-xs text-white/70 uppercase tracking-widest">{t('ar_starting')}</p>
         </div>
       )}
 
@@ -374,12 +383,12 @@ export default function ARDrill({
       {/* Facing the wrong way entirely */}
       {cameraReady && !orientationDead && facingAway && (
         <div
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-2 pointer-events-none px-5 py-4 rounded-lg bg-steel/85 border border-amber"
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-2 pointer-events-none px-5 py-4 rounded-lg bg-black/80 border border-[#FFB020]"
           role="status"
           aria-live="polite"
         >
           <Pictogram name="rotate" size={34} />
-          <p className="font-display font-bold text-sm uppercase tracking-wide text-amber text-center">
+          <p className="font-display font-bold text-sm uppercase tracking-wide text-[#FFB020] text-center">
             {t('ar_turn_around')}
           </p>
         </div>
@@ -477,18 +486,18 @@ export default function ARDrill({
       <div className="absolute top-2 left-2 right-2 flex items-start justify-between gap-2 pointer-events-none">
         <div className="flex flex-col gap-1">
           {zoneName && (
-            <span className="font-mono text-[10px] uppercase tracking-widest bg-steel/80 text-chalk px-2 py-1 rounded">
+            <span className="font-mono text-[10px] uppercase tracking-widest bg-black/75 text-white px-2 py-1 rounded">
               {zoneName}
             </span>
           )}
           {isGenericZone && (
-            <span className="font-mono text-[10px] bg-amber/90 text-steel px-2 py-1 rounded max-w-[220px] leading-snug">
+            <span className="font-mono text-[10px] bg-[#FFB020]/90 text-[#101315] px-2 py-1 rounded max-w-[220px] leading-snug">
               {t('ar_generic_zone')}
             </span>
           )}
         </div>
         {headingSource === HEADING_SOURCE.COMPASS && (
-          <span className="font-mono text-[10px] uppercase tracking-widest bg-steel/80 text-safe px-2 py-1 rounded">
+          <span className="font-mono text-[10px] uppercase tracking-widest bg-black/75 text-safe px-2 py-1 rounded">
             {Math.round(view.heading)}°
           </span>
         )}
@@ -496,16 +505,16 @@ export default function ARDrill({
 
       {/* iOS orientation permission gate */}
       {needsGesture && orientationStatus !== ORIENTATION_STATUS.ACTIVE && !orientationDead && (
-        <div className="absolute inset-0 bg-steel/85 flex flex-col items-center justify-center text-center px-6 gap-3">
+        <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center text-center px-6 gap-3">
           <Pictogram name="listen" size={40} />
           <p className="font-display font-bold text-lg uppercase">{t('ar_permission_title')}</p>
-          <p className="text-concrete text-sm max-w-xs">{t('ar_permission_body')}</p>
+          <p className="text-white/70 text-sm max-w-xs">{t('ar_permission_body')}</p>
           <button
             onClick={async () => {
               setNeedsGesture(false)
               await startOrientation()
             }}
-            className="bg-amber text-steel font-display font-bold uppercase px-6 py-2.5 rounded"
+            className="bg-[#FFB020] text-[#101315] font-display font-bold uppercase px-6 py-2.5 rounded"
           >
             {t('ar_enable_motion')}
           </button>
@@ -521,11 +530,11 @@ export default function ARDrill({
 
       {/* Compass warnings */}
       {portrait && headingSource === HEADING_SOURCE.RELATIVE && (
-        <div className="absolute inset-x-0 bottom-0 bg-amber/90 px-3 py-2 flex items-center justify-between gap-2">
-          <p className="font-mono text-[10px] text-steel leading-snug flex-1">{t('ar_relative_heading')}</p>
+        <div className="absolute inset-x-0 bottom-0 bg-[#FFB020]/90 px-3 py-2 flex items-center justify-between gap-2">
+          <p className="font-mono text-[10px] text-[#101315] leading-snug flex-1">{t('ar_relative_heading')}</p>
           <button
             onClick={() => trackerRef.current?.recentre(0)}
-            className="bg-steel text-amber font-mono text-[10px] uppercase px-2.5 py-1 rounded shrink-0"
+            className="bg-black text-[#FFB020] font-mono text-[10px] uppercase px-2.5 py-1 rounded shrink-0"
           >
             {t('ar_recentre')}
           </button>
@@ -533,12 +542,12 @@ export default function ARDrill({
       )}
 
       {portrait && orientationDead && (
-        <div className="absolute inset-0 bg-steel/88 flex flex-col items-center justify-center text-center px-6 gap-3">
+        <div className="absolute inset-0 bg-black/85 flex flex-col items-center justify-center text-center px-6 gap-3">
           <Pictogram name="warning" size={40} />
           <p className="font-display font-bold text-lg uppercase">{t('ar_no_compass_title')}</p>
-          <p className="text-concrete text-sm max-w-sm">{t('ar_no_compass_body')}</p>
+          <p className="text-white/70 text-sm max-w-sm">{t('ar_no_compass_body')}</p>
           {onFallback && (
-            <button onClick={onFallback} className="bg-amber text-steel font-bold text-xs uppercase px-4 py-2 rounded mt-1">
+            <button onClick={onFallback} className="bg-[#FFB020] text-[#101315] font-bold text-xs uppercase px-4 py-2 rounded mt-1">
               {t('ar_use_3d')}
             </button>
           )}
@@ -551,7 +560,7 @@ export default function ARDrill({
       {showFallbackOffer && onFallback && !orientationDead && (
         <button
           onClick={onFallback}
-          className="absolute bottom-2 right-2 bg-steel/85 border border-concrete rounded px-2.5 py-1 font-mono text-[10px] uppercase text-chalk"
+          className="absolute bottom-2 right-2 bg-black/80 border border-white/30 rounded px-2.5 py-1 font-mono text-[10px] uppercase text-white"
         >
           {t('ar_use_3d')}
         </button>
@@ -563,7 +572,7 @@ export default function ARDrill({
 function ARShell({ height, children }) {
   return (
     <div
-      className="relative w-full rounded-xl overflow-hidden border border-steel-lighter bg-steel mb-6"
+      className="relative w-full rounded-xl overflow-hidden border border-white/15-lighter bg-black mb-6"
       style={{ height }}
     >
       {children}

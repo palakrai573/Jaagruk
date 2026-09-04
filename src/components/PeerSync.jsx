@@ -175,12 +175,12 @@ export default function PeerSync({ siteId = null, onComplete }) {
   /* ---------------- render ---------------- */
 
   return (
-    <div className="border border-steel-lighter rounded-lg p-5">
+    <div className="border border-line-subtle rounded-lg p-5">
       <div className="flex items-start gap-3 mb-4">
         <Pictogram name="buddy" size={30} />
         <div className="min-w-0">
           <h3 className="font-display font-bold text-lg uppercase leading-tight">{t('ad_gossip_title')}</h3>
-          <p className="text-[11px] text-concrete mt-1 leading-relaxed">{t('ad_gossip_desc')}</p>
+          <p className="text-[11px] text-ink-tertiary mt-1 leading-relaxed">{t('ad_gossip_desc')}</p>
         </div>
       </div>
 
@@ -189,7 +189,7 @@ export default function PeerSync({ siteId = null, onComplete }) {
           <Pictogram name="warning" size={18} />
           <div>
             <p className="text-xs text-hazard">{t(error)}</p>
-            {error === 'bd_failed' && <p className="text-[11px] text-concrete mt-1">{t('bd_failed_hint')}</p>}
+            {error === 'bd_failed' && <p className="text-[11px] text-ink-tertiary mt-1">{t('bd_failed_hint')}</p>}
           </div>
         </div>
       )}
@@ -200,7 +200,7 @@ export default function PeerSync({ siteId = null, onComplete }) {
           <button
             type="button"
             onClick={startHost}
-            className="flex-1 min-w-[140px] border border-steel-lighter rounded px-4 py-3 font-mono text-xs hover:border-amber hover:text-amber flex items-center justify-center gap-2"
+            className="flex-1 min-w-[140px] border border-line-subtle rounded px-4 py-3 font-mono text-xs hover:border-brand hover:text-brand-text flex items-center justify-center gap-2"
           >
             <Pictogram name="report_it" size={18} />
             {t('ps_offer')}
@@ -208,7 +208,7 @@ export default function PeerSync({ siteId = null, onComplete }) {
           <button
             type="button"
             onClick={startJoin}
-            className="flex-1 min-w-[140px] border border-steel-lighter rounded px-4 py-3 font-mono text-xs hover:border-amber hover:text-amber flex items-center justify-center gap-2"
+            className="flex-1 min-w-[140px] border border-line-subtle rounded px-4 py-3 font-mono text-xs hover:border-brand hover:text-brand-text flex items-center justify-center gap-2"
           >
             <Pictogram name="exit_arrow" size={18} />
             {t('ps_collect')}
@@ -219,7 +219,7 @@ export default function PeerSync({ siteId = null, onComplete }) {
       {/* Show my code */}
       {(stage === STAGE.HOST_SHOW || stage === STAGE.JOIN_SHOW) && (
         <>
-          <p className="font-mono text-[11px] text-concrete mb-3">
+          <p className="font-mono text-[11px] text-ink-tertiary mb-3">
             {stage === STAGE.HOST_SHOW ? t('bd_host_step1') : t('bd_join_step2')}
           </p>
 
@@ -238,7 +238,7 @@ export default function PeerSync({ siteId = null, onComplete }) {
                 setCopied(false)
               }
             }}
-            className="w-full border border-steel-lighter rounded py-2 font-mono text-[11px] text-concrete hover:border-amber hover:text-amber mb-3"
+            className="w-full border border-line-subtle rounded py-2 font-mono text-[11px] text-ink-tertiary hover:border-brand hover:text-brand-text mb-3"
           >
             {copied ? t('bd_copied') : t('bd_copy_code')}
           </button>
@@ -247,17 +247,17 @@ export default function PeerSync({ siteId = null, onComplete }) {
             <button
               type="button"
               onClick={() => setStage(STAGE.HOST_SCAN)}
-              className="w-full bg-amber text-steel font-bold text-xs uppercase py-2.5 rounded mb-3"
+              className="w-full bg-brand text-ink-onBrand font-bold text-xs uppercase py-2.5 rounded mb-3"
             >
               {t('bd_host_step2')}
             </button>
           )}
 
           {stage === STAGE.JOIN_SHOW && (
-            <p className="font-mono text-[11px] text-concrete text-center mb-3">{t('bd_waiting_buddy')}</p>
+            <p className="font-mono text-[11px] text-ink-tertiary text-center mb-3">{t('bd_waiting_buddy')}</p>
           )}
 
-          <button type="button" onClick={reset} className="w-full font-mono text-[11px] text-concrete underline">
+          <button type="button" onClick={reset} className="w-full font-mono text-[11px] text-ink-tertiary underline">
             {t('cancel_label')}
           </button>
         </>
@@ -266,7 +266,7 @@ export default function PeerSync({ siteId = null, onComplete }) {
       {/* Scan their code */}
       {(stage === STAGE.HOST_SCAN || stage === STAGE.JOIN_SCAN) && (
         <>
-          <p className="font-mono text-[11px] text-concrete mb-3">
+          <p className="font-mono text-[11px] text-ink-tertiary mb-3">
             {stage === STAGE.JOIN_SCAN ? t('bd_join_step1') : t('bd_host_step2')}
           </p>
 
@@ -275,7 +275,7 @@ export default function PeerSync({ siteId = null, onComplete }) {
             onResult={(value) => (stage === STAGE.JOIN_SCAN ? consumeOffer(value) : consumeAnswer(value))}
           />
 
-          <label className="font-mono text-[10px] uppercase tracking-widest text-concrete block mt-4 mb-2">
+          <label className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary block mt-4 mb-2">
             {t('bd_paste_instead')}
           </label>
           <textarea
@@ -283,18 +283,18 @@ export default function PeerSync({ siteId = null, onComplete }) {
             onChange={(e) => setPasted(e.target.value)}
             placeholder={t('bd_paste_placeholder')}
             rows={2}
-            className="w-full bg-steel border border-steel-lighter rounded px-3 py-2 font-mono text-[10px] focus:border-amber outline-none"
+            className="w-full bg-surface-0 border border-line-subtle rounded px-3 py-2 font-mono text-[10px] focus:border-brand outline-none"
           />
           <button
             type="button"
             onClick={() => (stage === STAGE.JOIN_SCAN ? consumeOffer(pasted) : consumeAnswer(pasted))}
             disabled={pasted.trim().length < 20}
-            className="w-full bg-amber text-steel font-bold text-xs uppercase py-2.5 rounded mt-2 disabled:opacity-40"
+            className="w-full bg-brand text-ink-onBrand font-bold text-xs uppercase py-2.5 rounded mt-2 disabled:opacity-40"
           >
             {t('bd_use_code')}
           </button>
 
-          <button type="button" onClick={reset} className="w-full font-mono text-[11px] text-concrete underline mt-3">
+          <button type="button" onClick={reset} className="w-full font-mono text-[11px] text-ink-tertiary underline mt-3">
             {t('cancel_label')}
           </button>
         </>
@@ -313,7 +313,7 @@ export default function PeerSync({ siteId = null, onComplete }) {
             <Counter label={t('hz_eyebrow')} value={progress.hazards} />
           </div>
 
-          <p className="font-mono text-[10px] text-concrete mt-4">{t('ps_exchanging')}</p>
+          <p className="font-mono text-[10px] text-ink-tertiary mt-4">{t('ps_exchanging')}</p>
         </div>
       )}
 
@@ -337,7 +337,7 @@ export default function PeerSync({ siteId = null, onComplete }) {
           <button
             type="button"
             onClick={reset}
-            className="w-full bg-amber text-steel font-bold text-xs uppercase py-2.5 rounded"
+            className="w-full bg-brand text-ink-onBrand font-bold text-xs uppercase py-2.5 rounded"
           >
             {t('done_label')}
           </button>
@@ -349,9 +349,9 @@ export default function PeerSync({ siteId = null, onComplete }) {
 
 function Counter({ label, value, accent }) {
   return (
-    <div className="bg-steel rounded p-3">
-      <p className={`font-display font-bold text-2xl ${accent ? 'text-amber' : 'text-chalk'}`}>{value}</p>
-      <p className="font-mono text-[9px] text-concrete uppercase tracking-widest mt-0.5 leading-tight">{label}</p>
+    <div className="bg-surface-0 rounded p-3">
+      <p className={`font-display font-bold text-2xl ${accent ? 'text-brand-text' : 'text-ink'}`}>{value}</p>
+      <p className="font-mono text-[9px] text-ink-tertiary uppercase tracking-widest mt-0.5 leading-tight">{label}</p>
     </div>
   )
 }

@@ -100,32 +100,32 @@ export default function QrScanner({ onResult, height = 260, hint }) {
 
   if (error) {
     return (
-      <div className="border border-steel-lighter rounded-lg p-5 flex items-start gap-3">
+      <div className="border border-line-subtle rounded-lg p-5 flex items-start gap-3">
         <Pictogram name="warning" size={24} />
-        <p className="text-xs text-concrete leading-relaxed">{t(error)}</p>
+        <p className="text-xs text-ink-tertiary leading-relaxed">{t(error)}</p>
       </div>
     )
   }
 
   return (
     <div
-      className="relative rounded-lg overflow-hidden border border-steel-lighter bg-steel"
+      className="relative rounded-lg overflow-hidden border border-line-subtle bg-surface-0"
       style={{ height }}
     >
       <video ref={videoRef} playsInline muted autoPlay className="absolute inset-0 w-full h-full object-cover" />
 
       {!ready && (
         <div className="absolute inset-0 flex items-center justify-center">
-          <p className="font-mono text-[10px] uppercase tracking-widest text-concrete">{t('ar_starting')}</p>
+          <p className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary">{t('ar_starting')}</p>
         </div>
       )}
 
       {/* Framing guide */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="border-2 border-amber rounded-lg" style={{ width: height * 0.6, height: height * 0.6 }} />
+        <div className="border-2 border-brand rounded-lg" style={{ width: height * 0.6, height: height * 0.6 }} />
       </div>
 
-      <p className="absolute bottom-2 inset-x-0 text-center font-mono text-[10px] text-chalk pointer-events-none">
+      <p className="absolute bottom-2 inset-x-0 text-center font-mono text-[10px] text-ink pointer-events-none">
         {hint || t('bd_scan_now')}
       </p>
     </div>

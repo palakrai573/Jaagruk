@@ -7,7 +7,7 @@ export default function LanguageSwitcher({ className = '' }) {
     <select
       value={lang}
       onChange={(e) => setLang(e.target.value)}
-      className={`bg-steel-light border border-steel-lighter rounded px-2 py-1.5 text-xs font-mono text-chalk focus:border-amber outline-none ${className}`}
+      className={`bg-surface-1 border border-line-subtle rounded px-2 py-1.5 text-xs font-mono text-ink focus:border-brand outline-none ${className}`}
       aria-label="Select language"
     >
       {LANGUAGES.map((l) => (

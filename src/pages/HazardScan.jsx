@@ -57,12 +57,12 @@ export default function HazardScan() {
 
   return (
     <div className="max-w-5xl mx-auto px-5 py-10">
-      <p className="font-mono text-amber text-xs tracking-[0.2em] uppercase mb-3">{t('scan_eyebrow')}</p>
+      <p className="font-mono text-brand-text text-xs tracking-[0.2em] uppercase mb-3">{t('scan_eyebrow')}</p>
       <h1 className="font-display font-bold text-4xl md:text-5xl uppercase mb-2">{t('scan_title')}</h1>
-      <p className="text-concrete mb-8 max-w-xl">{t('scan_desc')}</p>
+      <p className="text-ink-tertiary mb-8 max-w-xl">{t('scan_desc')}</p>
 
       {!imageSrc && (
-        <div className="border-2 border-dashed border-steel-lighter rounded-lg p-14 text-center bg-steel-light">
+        <div className="border-2 border-dashed border-line-subtle rounded-lg p-14 text-center bg-surface-1">
           <input
             ref={fileInputRef}
             type="file"
@@ -73,17 +73,17 @@ export default function HazardScan() {
           />
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="bg-amber text-steel font-display font-bold text-xl uppercase px-8 py-4 rounded hover:bg-white transition-colors"
+            className="bg-brand text-ink-onBrand font-display font-bold text-xl uppercase px-8 py-4 rounded hover:bg-white transition-colors"
           >
             {t('scan_open')}
           </button>
-          <p className="text-concrete text-xs mt-4 font-mono">{t('scan_hint')}</p>
+          <p className="text-ink-tertiary text-xs mt-4 font-mono">{t('scan_hint')}</p>
         </div>
       )}
 
       {imageSrc && (
         <div className="grid md:grid-cols-[1.3fr_1fr] gap-8">
-          <div className="relative rounded-lg overflow-hidden border border-steel-lighter bg-steel-light">
+          <div className="relative rounded-lg overflow-hidden border border-line-subtle bg-surface-1">
             <img ref={imgRef} src={imageSrc} alt="Captured work area" className="w-full block" />
             {result?.hazards?.map((h, i) => (
               <HazardBox key={i} hazard={h} />
@@ -93,7 +93,7 @@ export default function HazardScan() {
                 <button
                   onClick={runScan}
                   disabled={loading}
-                  className="flex-1 bg-amber text-steel font-display font-bold text-lg uppercase py-3 rounded disabled:opacity-60"
+                  className="flex-1 bg-brand text-ink-onBrand font-display font-bold text-lg uppercase py-3 rounded disabled:opacity-60"
                 >
                   {loading ? t('scan_analyzing') : t('scan_run')}
                 </button>
@@ -102,7 +102,7 @@ export default function HazardScan() {
                     setImageSrc(null)
                     setResult(null)
                   }}
-                  className="px-4 border border-concrete rounded text-sm font-mono"
+                  className="px-4 border border-line rounded text-sm font-mono"
                 >
                   {t('scan_retake')}
                 </button>
@@ -113,38 +113,38 @@ export default function HazardScan() {
           <div>
             {error === 'NO_KEY' && (
               <div className="bg-hazard/10 border border-hazard rounded p-4 text-sm">
-                <p className="font-bold text-hazard mb-1">{t('scan_no_key_title')}</p>
-                <p className="text-concrete">
+                <p className="font-bold text-hazard-text mb-1">{t('scan_no_key_title')}</p>
+                <p className="text-ink-tertiary">
                   {t('scan_no_key_body')}{' '}
-                  <Link to="/settings" className="text-amber underline">
+                  <Link to="/settings" className="text-brand-text underline">
                     {t('nav_settings')}
                   </Link>
                 </p>
               </div>
             )}
             {error && error !== 'NO_KEY' && (
-              <div className="bg-hazard/10 border border-hazard rounded p-4 text-sm text-hazard">{error}</div>
+              <div className="bg-hazard/10 border border-hazard rounded p-4 text-sm text-hazard-text">{error}</div>
             )}
 
             {result && (
               <div className="space-y-6">
                 <RiskGauge score={result.riskScore || 0} />
-                <p className="text-sm text-concrete leading-relaxed border-t border-steel-lighter pt-4">
+                <p className="text-sm text-ink-tertiary leading-relaxed border-t border-line-subtle pt-4">
                   {result.summary}
                 </p>
                 <div className="space-y-3">
                   {(result.hazards || []).length === 0 && (
-                    <p className="font-mono text-safe text-sm">{t('scan_no_hazards')}</p>
+                    <p className="font-mono text-safe-text text-sm">{t('scan_no_hazards')}</p>
                   )}
                   {(result.hazards || []).map((h, i) => (
-                    <div key={i} className="bg-steel-light border-l-4 rounded p-3" style={{ borderColor: severityColor[h.severity] || '#8B8F94' }}>
+                    <div key={i} className="bg-surface-1 border-l-4 rounded p-3" style={{ borderColor: severityColor[h.severity] || '#8B8F94' }}>
                       <div className="flex items-center justify-between mb-1">
                         <span className="font-bold text-sm uppercase">{h.label}</span>
                         <span className="font-mono text-[10px] uppercase tracking-widest" style={{ color: severityColor[h.severity] }}>
                           {h.severity}
                         </span>
                       </div>
-                      <p className="text-xs text-concrete">{h.description}</p>
+                      <p className="text-xs text-ink-tertiary">{h.description}</p>
                     </div>
                   ))}
                 </div>
@@ -153,7 +153,7 @@ export default function HazardScan() {
                     setImageSrc(null)
                     setResult(null)
                   }}
-                  className="w-full border border-concrete rounded py-3 font-mono text-sm hover:border-amber hover:text-amber"
+                  className="w-full border border-line rounded py-3 font-mono text-sm hover:border-brand hover:text-brand-text"
                 >
                   {t('scan_another')}
                 </button>

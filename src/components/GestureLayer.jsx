@@ -173,16 +173,16 @@ export default function GestureLayer({ enabled = false, onStatusChange }) {
       {/* Status toast */}
       {!dismissedNotice && (status === GESTURE_STATUS.LOADING || status === GESTURE_STATUS.DEGRADED || failed) && (
         <div
-          className="fixed bottom-24 md:bottom-6 left-1/2 -translate-x-1/2 z-50 max-w-[90vw] bg-steel-light border border-steel-lighter rounded-lg px-4 py-3 flex items-start gap-3 shadow-2xl fade-in"
+          className="fixed bottom-24 md:bottom-6 left-1/2 -translate-x-1/2 z-50 max-w-[90vw] bg-surface-2-light border border-line-lighter rounded-lg px-4 py-3 flex items-start gap-3 shadow-2xl fade-in"
           role="status"
         >
           <Pictogram name={failed ? 'warning' : status === GESTURE_STATUS.DEGRADED ? 'slow' : 'gloves'} size={22} />
-          <p className="text-xs text-concrete leading-relaxed max-w-xs">{t(gestureStatusKey(status))}</p>
+          <p className="text-xs text-ink-tertiary leading-relaxed max-w-xs">{t(gestureStatusKey(status))}</p>
           <button
             type="button"
             onClick={() => setDismissedNotice(true)}
             aria-label={t('close_label')}
-            className="text-concrete hover:text-chalk leading-none shrink-0"
+            className="text-ink-tertiary hover:text-ink leading-none shrink-0"
           >
             ×
           </button>
@@ -192,11 +192,11 @@ export default function GestureLayer({ enabled = false, onStatusChange }) {
       {/* Live hint while tracking, so the user knows the two ways to confirm */}
       {running && (
         <div
-          className="fixed top-24 left-1/2 -translate-x-1/2 z-40 bg-steel/85 border border-amber/40 rounded-full px-3 py-1.5 flex items-center gap-2 pointer-events-none fade-in"
+          className="fixed top-24 left-1/2 -translate-x-1/2 z-40 bg-surface-2/95 border border-brand/40 rounded-full px-3 py-1.5 flex items-center gap-2 pointer-events-none fade-in"
           aria-hidden="true"
         >
-          <span className="w-1.5 h-1.5 rounded-full bg-amber live-dot" />
-          <span className="font-mono text-[10px] uppercase tracking-widest text-amber">{t('gesture_running')}</span>
+          <span className="w-1.5 h-1.5 rounded-full bg-brand live-dot" />
+          <span className="font-mono text-[10px] uppercase tracking-widest text-brand-text">{t('gesture_running')}</span>
         </div>
       )}
     </>

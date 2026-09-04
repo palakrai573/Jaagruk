@@ -336,7 +336,7 @@ export function Heatmap({ heatmap, cellSize = 10, gap = 2 }) {
       </svg>
 
       <div className="flex items-center justify-between gap-4 mt-3 flex-wrap">
-        <span className="font-mono text-[10px] text-concrete">
+        <span className="font-mono text-[10px] text-ink-tertiary">
           {heatmap.activeDays} / {heatmap.totalDays} {t('ch_active_days')}
         </span>
         <span className="flex items-center gap-1.5" aria-hidden="true">
@@ -370,7 +370,7 @@ export function StackedBar({ segments = [], height = 12, showLegend = true }) {
   const total = parts.reduce((s, seg) => s + seg.value, 0)
 
   if (total === 0) {
-    return <div className="rounded-full bg-steel-lighter" aria-hidden="true" style={{ height }} />
+    return <div className="rounded-full bg-surface-3" aria-hidden="true" style={{ height }} />
   }
 
   const shown = parts
@@ -398,10 +398,10 @@ export function StackedBar({ segments = [], height = 12, showLegend = true }) {
       {showLegend && (
         <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3">
           {shown.map((seg) => (
-            <span key={seg.label} className="font-mono text-[10px] flex items-center gap-1.5 text-concrete">
+            <span key={seg.label} className="font-mono text-[10px] flex items-center gap-1.5 text-ink-tertiary">
               <span className="w-2 h-2 rounded-sm shrink-0" style={{ background: seg.color }} />
               {seg.label}
-              <span className="text-chalk">{Math.round(seg.pct)}%</span>
+              <span className="text-ink">{Math.round(seg.pct)}%</span>
             </span>
           ))}
         </div>
@@ -555,7 +555,7 @@ export function Skeleton({ className = '', height, width, rounded = 'rounded' })
 
 export function SkeletonCard({ lines = 3 }) {
   return (
-    <div className="bg-steel-light border border-steel-lighter rounded-lg p-5">
+    <div className="bg-surface-1 border border-line-subtle rounded-lg p-5">
       <Skeleton height={28} width="45%" className="mb-3" />
       {Array.from({ length: lines }).map((_, i) => (
         <Skeleton key={i} height={10} width={`${90 - i * 12}%`} className="mb-2" />
@@ -572,13 +572,13 @@ export function SkeletonCard({ lines = 3 }) {
 export function StatCard({ label, value, suffix = '', series, trend: trendValue, accent, warn, pictogram, delay = 0 }) {
   return (
     <div
-      className="bg-steel-light border border-steel-lighter rounded-lg p-4 rise-in"
+      className="bg-surface-1 border border-line-subtle rounded-lg p-4 rise-in"
       style={{ animationDelay: `${delay}ms` }}
     >
       <div className="flex items-start justify-between gap-2 mb-1">
         <span
           className={`font-display font-bold text-3xl leading-none ${
-            warn ? 'text-hazard' : accent ? 'text-amber' : 'text-chalk'
+            warn ? 'text-hazard' : accent ? 'text-brand-text' : 'text-ink'
           }`}
         >
           <AnimatedNumber value={value} suffix={suffix} />
@@ -586,7 +586,7 @@ export function StatCard({ label, value, suffix = '', series, trend: trendValue,
         {trendValue && <TrendPill trend={trendValue} />}
       </div>
 
-      <p className="font-mono text-[9px] text-concrete uppercase tracking-widest leading-tight mb-2">{label}</p>
+      <p className="font-mono text-[9px] text-ink-tertiary uppercase tracking-widest leading-tight mb-2">{label}</p>
 
       {series && series.length > 0 && <Sparkline values={series} width={100} height={26} />}
       {pictogram}

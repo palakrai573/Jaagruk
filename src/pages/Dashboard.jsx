@@ -225,16 +225,16 @@ export default function Dashboard() {
     <div className="max-w-5xl mx-auto px-5 py-10">
       <div className="flex items-start justify-between gap-4 mb-8 flex-wrap">
         <div>
-          <p className="font-mono text-amber text-xs tracking-[0.2em] uppercase mb-2">{t('dash_eyebrow')}</p>
+          <p className="font-mono text-brand-text text-xs tracking-[0.2em] uppercase mb-2">{t('dash_eyebrow')}</p>
           <h1 className="font-display font-bold text-4xl md:text-5xl uppercase leading-none">
             {t('db_readiness_title')}
           </h1>
           {worker ? (
-            <p className="text-concrete mt-2">{worker.name}</p>
+            <p className="text-ink-tertiary mt-2">{worker.name}</p>
           ) : (
-            <p className="text-concrete mt-2 text-sm">
+            <p className="text-ink-tertiary mt-2 text-sm">
               {t('cert_sign_in_why')}{' '}
-              <Link to="/start" className="text-amber underline">
+              <Link to="/start" className="text-brand-text underline">
                 {t('ob_sign_in')}
               </Link>
             </p>
@@ -244,7 +244,7 @@ export default function Dashboard() {
         <div className="flex items-center gap-3 shrink-0">
           {loadedAt > 0 && (
             <span
-              className="font-mono text-[10px] text-concrete flex items-center gap-1.5"
+              className="font-mono text-[10px] text-ink-tertiary flex items-center gap-1.5"
               aria-live="polite"
             >
               <span
@@ -260,7 +260,7 @@ export default function Dashboard() {
             type="button"
             onClick={() => load(true)}
             disabled={refreshing}
-            className="font-mono text-[10px] uppercase tracking-widest border border-steel-lighter rounded px-3 py-2 text-concrete hover:border-amber hover:text-amber disabled:opacity-50"
+            className="font-mono text-[10px] uppercase tracking-widest border border-line-subtle rounded px-3 py-2 text-ink-tertiary hover:border-brand hover:text-brand-text disabled:opacity-50"
           >
             {t('db_refresh')}
           </button>
@@ -270,7 +270,7 @@ export default function Dashboard() {
       {storage && !storage.persistent && (
         <div className="bg-hazard/10 border border-hazard/40 rounded p-3 mb-6 flex items-start gap-3 fade-in">
           <Pictogram name="warning" size={22} />
-          <p className="text-xs text-concrete leading-relaxed">{t('db_storage_temp')}</p>
+          <p className="text-xs text-ink-tertiary leading-relaxed">{t('db_storage_temp')}</p>
         </div>
       )}
 
@@ -278,12 +278,21 @@ export default function Dashboard() {
         <EmptyState t={t} />
       ) : (
         <>
-          {/* Hero */}
-          <div className="bg-steel-light border border-steel-lighter rounded-lg p-6 mb-5 flex items-center gap-8 flex-wrap rise-in">
-            <ReadinessRing readiness={compliance?.avgReadiness ?? 0} size={148} showBreakdown={false} />
+          {/* Hero.
+              Was `flex items-center gap-8 flex-wrap` with a `min-w-[260px]` child.
+              At a 320px viewport the container is 280px wide and this card's inner
+              box is 232px after p-6, so that minimum overflowed by 28px — a real
+              horizontal scrollbar on the smallest phones we target.
 
-            <div className="flex-1 min-w-[260px]">
-              <div className="grid grid-cols-2 gap-x-6 gap-y-5">
+              Now stacks in a column below sm and the child is min-w-0, so the grid
+              inside can shrink instead of forcing the parent wider. */}
+          <div className="bg-surface-1 border border-line-subtle rounded-xl p-5 md:p-6 mb-5 flex flex-col sm:flex-row sm:items-center gap-6 md:gap-8 rise-in">
+            <div className="shrink-0 self-center">
+              <ReadinessRing readiness={compliance?.avgReadiness ?? 0} size={148} showBreakdown={false} />
+            </div>
+
+            <div className="flex-1 min-w-0 w-full">
+              <div className="grid grid-cols-2 gap-x-4 sm:gap-x-6 gap-y-5">
                 <Metric
                   label={t('cert_domains_passed')}
                   value={compliance?.passedCount ?? 0}
@@ -296,12 +305,17 @@ export default function Dashboard() {
               </div>
 
               {seriesValues.length > 1 && (
-                <div className="mt-5 pt-5 border-t border-steel-lighter flex items-center justify-between gap-4">
-                  <div>
-                    <p className="font-mono text-[9px] uppercase tracking-widest text-concrete mb-1">{t('db_trend')}</p>
+                <div className="mt-5 pt-5 border-t border-line-subtle flex items-center justify-between gap-4">
+                  <div className="min-w-0">
+                    <p className="font-mono text-2xs uppercase tracking-widest text-ink-tertiary mb-1.5">
+                      {t('db_trend')}
+                    </p>
                     <TrendPill trend={readinessTrend} />
                   </div>
-                  <Sparkline values={smoothed} width={160} height={38} label={t('db_trend')} />
+                  {/* Sparkline shrinks rather than pushing the row wide. */}
+                  <div className="shrink-0">
+                    <Sparkline values={smoothed} width={140} height={38} label={t('db_trend')} />
+                  </div>
                 </div>
               )}
             </div>
@@ -316,11 +330,11 @@ export default function Dashboard() {
                     <RadarChart axes={radarAxesData} size={272} />
                   </div>
                   {weakest && weakest.effectiveReadiness < PASS_THRESHOLD && (
-                    <div className="mt-4 pt-4 border-t border-steel-lighter flex items-center justify-between gap-3 flex-wrap">
+                    <div className="mt-4 pt-4 border-t border-line-subtle flex items-center justify-between gap-3 flex-wrap">
                       <span className="flex items-center gap-2 min-w-0">
                         <Pictogram name="warning" size={20} />
                         <span className="min-w-0">
-                          <span className="block font-mono text-[9px] uppercase tracking-widest text-concrete">
+                          <span className="block font-mono text-[9px] uppercase tracking-widest text-ink-tertiary">
                             {t('db_weakest')}
                           </span>
                           <span className="block text-xs font-bold truncate">{weakest.domain}</span>
@@ -328,7 +342,7 @@ export default function Dashboard() {
                       </span>
                       <Link
                         to="/train"
-                        className="font-mono text-[10px] uppercase tracking-widest text-amber underline shrink-0"
+                        className="font-mono text-[10px] uppercase tracking-widest text-brand-text underline shrink-0"
                       >
                         {t('nav_train')} →
                       </Link>
@@ -347,7 +361,7 @@ export default function Dashboard() {
                   <DecayCurve points={decayPoints} width={276} height={110} threshold={PASS_THRESHOLD} />
                   <Link
                     to="/refresher"
-                    className="inline-block mt-4 bg-amber text-steel font-bold text-[11px] uppercase px-4 py-2 rounded"
+                    className="inline-block mt-4 bg-brand text-ink-onBrand font-bold text-[11px] uppercase px-4 py-2 rounded"
                   >
                     {t('rf_start')}
                   </Link>
@@ -373,7 +387,7 @@ export default function Dashboard() {
                     ]}
                   />
                   {distribution.slow > 0 && (
-                    <p className="text-[11px] text-concrete mt-4 leading-relaxed">{t('as_hesitation_body')}</p>
+                    <p className="text-[11px] text-ink-tertiary mt-4 leading-relaxed">{t('as_hesitation_body')}</p>
                   )}
                 </>
               ) : (
@@ -383,7 +397,7 @@ export default function Dashboard() {
 
             <Panel title={t('db_consistency')} hint={t('db_consistency_hint')} delay={260}>
               <Heatmap heatmap={heatmap} />
-              <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-steel-lighter">
+              <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-line-subtle">
                 <Metric label={t('db_streak')} value={heatmap.currentStreak} suffix="d" accent />
                 <Metric label={t('db_longest_streak')} value={heatmap.longestStreak} suffix="d" />
               </div>
@@ -392,7 +406,7 @@ export default function Dashboard() {
 
           {/* Per-domain retention */}
           <Panel title={t('db_by_domain')} hint={t('cert_decay_note')} delay={320} className="mb-5">
-            <div className="-mx-5 divide-y divide-steel-lighter border-t border-steel-lighter">
+            <div className="-mx-5 divide-y divide-line-subtle border-t border-line-subtle">
               {retention.map((row) => (
                 <DomainRow key={row.domain} row={row} series={perDomainSeries.get(row.domain) || []} t={t} />
               ))}
@@ -427,7 +441,7 @@ export default function Dashboard() {
                     clearLog()
                     load(true)
                   }}
-                  className="font-mono text-xs text-concrete hover:text-hazard underline"
+                  className="font-mono text-xs text-ink-tertiary hover:text-hazard underline"
                 >
                   {t('dash_clear')}
                 </button>
@@ -460,7 +474,7 @@ export default function Dashboard() {
             {/* Without this, filtering silently hides rows with no explanation of
                 how many were dropped. */}
             {modeFilter !== 'all' && attempts.length > 0 && (
-              <p className="font-mono text-[10px] text-concrete mb-3" aria-live="polite">
+              <p className="font-mono text-[10px] text-ink-tertiary mb-3" aria-live="polite">
                 {t('db_showing')} {filteredAttempts.length} / {attempts.length}
               </p>
             )}
@@ -483,31 +497,31 @@ export default function Dashboard() {
                   .map((entry, i) => (
                     <div
                       key={`legacy-${i}`}
-                      className="bg-steel-light/40 border border-steel-lighter rounded p-4 flex items-center justify-between gap-3"
+                      className="bg-surface-1/40 border border-line-subtle rounded p-4 flex items-center justify-between gap-3"
                     >
                       <div className="min-w-0">
                         <p className="font-bold text-sm">
                           {entry.type === 'scan' ? t('dash_hazard_scan') : t('dash_scenario_training')}
                         </p>
-                        <p className="font-mono text-[10px] text-concrete">
+                        <p className="font-mono text-[10px] text-ink-tertiary">
                           <RelativeTime timestamp={entry.timestamp} /> · {t('as_grade_unknown')}
                         </p>
                       </div>
-                      <span className="font-mono text-concrete text-sm shrink-0">
+                      <span className="font-mono text-ink-tertiary text-sm shrink-0">
                         {entry.type === 'scan' ? `${entry.riskScore}/100` : `${Math.max(0, entry.score ?? 0)}%`}
                       </span>
                     </div>
                   ))}
 
               {filteredAttempts.length === 0 && modeFilter !== 'all' && (
-                <p className="font-mono text-xs text-concrete text-center py-8">{t('db_no_data')}</p>
+                <p className="font-mono text-xs text-ink-tertiary text-center py-8">{t('db_no_data')}</p>
               )}
             </div>
           </section>
         </>
       )}
 
-      <p className="font-mono text-[10px] text-concrete text-center mt-12 leading-relaxed">
+      <p className="font-mono text-[10px] text-ink-tertiary text-center mt-12 leading-relaxed">
         {t('db_all_local')}
         {pending > 0 && ` · ${pending} ${t('db_pending_sync')}`}
       </p>
@@ -522,25 +536,25 @@ export default function Dashboard() {
 function Panel({ title, hint, children, delay = 0, className = '' }) {
   return (
     <section
-      className={`bg-steel-light border border-steel-lighter rounded-lg p-5 rise-in ${className}`}
+      className={`bg-surface-1 border border-line-subtle rounded-lg p-5 rise-in ${className}`}
       style={{ animationDelay: `${delay}ms` }}
     >
       <h2 className="font-display font-bold text-lg uppercase leading-tight mb-1">{title}</h2>
-      {hint && <p className="text-[11px] text-concrete mb-4 leading-relaxed">{hint}</p>}
+      {hint && <p className="text-[11px] text-ink-tertiary mb-4 leading-relaxed">{hint}</p>}
       {children}
     </section>
   )
 }
 
 function Metric({ label, value, suffix = '', accent, warn }) {
-  const color = warn ? 'text-hazard' : accent ? 'text-amber' : 'text-chalk'
+  const color = warn ? 'text-hazard-text' : accent ? 'text-brand-text' : 'text-ink'
   return (
     <div>
       <p className={`font-display font-bold text-3xl leading-none ${color}`}>
         <AnimatedNumber value={value} />
         {suffix}
       </p>
-      <p className="font-mono text-[9px] text-concrete uppercase tracking-widest mt-1.5 leading-tight">{label}</p>
+      <p className="font-mono text-[9px] text-ink-tertiary uppercase tracking-widest mt-1.5 leading-tight">{label}</p>
     </div>
   )
 }
@@ -549,7 +563,7 @@ function NoData({ t }) {
   return (
     <div className="py-10 text-center">
       <Pictogram name="warning" size={30} className="mx-auto mb-3 opacity-40" />
-      <p className="font-mono text-[11px] text-concrete">{t('db_no_data')}</p>
+      <p className="font-mono text-[11px] text-ink-tertiary">{t('db_no_data')}</p>
     </div>
   )
 }
@@ -561,7 +575,7 @@ function FilterChip({ active, onClick, label, count }) {
       onClick={onClick}
       aria-pressed={active}
       className={`shrink-0 font-mono text-[10px] uppercase tracking-widest rounded-full px-3 py-1.5 border transition-colors ${
-        active ? 'border-amber bg-amber/10 text-amber' : 'border-steel-lighter text-concrete hover:border-amber'
+        active ? 'border-brand bg-brand-subtle text-brand-text' : 'border-line-subtle text-ink-tertiary hover:border-brand'
       }`}
     >
       {label}
@@ -583,7 +597,7 @@ function DomainRow({ row, series, t }) {
     <div className="px-5 py-4 flex items-center gap-4 flex-wrap row-hover">
       <div className="min-w-0 flex-1">
         <p className="font-bold text-sm truncate">{row.domain}</p>
-        <p className="font-mono text-[10px] text-concrete mt-1">
+        <p className="font-mono text-[10px] text-ink-tertiary mt-1">
           {!row.attempted && t('rf_never_trained')}
           {row.attempted && row.lastPassAt > 0 && (
             <>
@@ -591,8 +605,8 @@ function DomainRow({ row, series, t }) {
             </>
           )}
           {row.attempted && row.lastPassAt === 0 && t('db_never')}
-          {row.due && <span className="text-hazard"> · {t('rf_due_now')}</span>}
-          {row.hesitation && <span className="text-amber"> · {t('db_flagged_slow')}</span>}
+          {row.due && <span className="text-hazard-text"> · {t('rf_due_now')}</span>}
+          {row.hesitation && <span className="text-brand-text"> · {t('db_flagged_slow')}</span>}
         </p>
       </div>
 
@@ -601,7 +615,7 @@ function DomainRow({ row, series, t }) {
 
       {/* Progress toward the pass mark */}
       <div className="w-20 shrink-0">
-        <div className="h-1.5 bg-steel rounded-full overflow-hidden">
+        <div className="h-1.5 bg-surface-inset rounded-full overflow-hidden">
           <div
             className="h-full rounded-full"
             style={{ width: `${value}%`, background: color, transition: 'width 800ms cubic-bezier(0.22,1,0.36,1)' }}
@@ -620,7 +634,7 @@ function DomainRow({ row, series, t }) {
           )}
         </span>
         {decayed && (
-          <p className="font-mono text-[9px] text-concrete leading-none">
+          <p className="font-mono text-[9px] text-ink-tertiary leading-none">
             {t('db_decayed_from')} {row.baseReadiness}%
           </p>
         )}
@@ -639,7 +653,7 @@ function AttemptRow({ attempt, t, expanded, onToggle }) {
   const hasDetail = (attempt.steps || []).length > 0
 
   return (
-    <div className="bg-steel-light border border-steel-lighter rounded overflow-hidden row-hover">
+    <div className="bg-surface-1 border border-line-subtle rounded overflow-hidden row-hover">
       <button
         type="button"
         onClick={hasDetail ? onToggle : undefined}
@@ -655,7 +669,7 @@ function AttemptRow({ attempt, t, expanded, onToggle }) {
               {SCENARIO_TITLE[attempt.scenarioId] || attempt.domain || attempt.scenarioId}
             </span>
           </p>
-          <p className="font-mono text-[10px] text-concrete mt-0.5">
+          <p className="font-mono text-[10px] text-ink-tertiary mt-0.5">
             <RelativeTime timestamp={attempt.at} />
             {' · '}
             {t(MODE_LABEL[attempt.mode] || 'db_mode_solo')}
@@ -674,13 +688,13 @@ function AttemptRow({ attempt, t, expanded, onToggle }) {
             <span className="font-mono font-bold text-lg" style={{ color }}>
               {attempt.readiness}%
             </span>
-            <p className="font-mono text-[9px] text-concrete leading-none">
+            <p className="font-mono text-[9px] text-ink-tertiary leading-none">
               {attempt.accuracyPct}% / {attempt.speedPct}%
             </p>
           </div>
           {hasDetail && (
             <span
-              className="text-concrete text-xs transition-transform"
+              className="text-ink-tertiary text-xs transition-transform"
               style={{ transform: expanded ? 'rotate(90deg)' : 'none' }}
               aria-hidden="true"
             >
@@ -694,16 +708,16 @@ function AttemptRow({ attempt, t, expanded, onToggle }) {
           slowed them down, which a single percentage cannot tell them. */}
       {expanded && hasDetail && (
         <div className="px-4 pb-4 fade-in">
-          <div className="border-t border-steel-lighter pt-3 space-y-2">
+          <div className="border-t border-line-subtle pt-3 space-y-2">
             {attempt.steps.map((step, i) => (
               <div key={step.stepId || i} className="flex items-center gap-3">
                 <Pictogram name={step.correct ? 'correct' : 'incorrect'} size={16} />
-                <span className="font-mono text-[10px] text-concrete w-16 shrink-0">
+                <span className="font-mono text-[10px] text-ink-tertiary w-16 shrink-0">
                   {t('sc_decision')} {i + 1}
                 </span>
 
                 {/* Reaction time against that step's own target */}
-                <div className="flex-1 h-1.5 bg-steel rounded-full overflow-hidden">
+                <div className="flex-1 h-1.5 bg-surface-inset rounded-full overflow-hidden">
                   <div
                     className="h-full rounded-full"
                     style={{
@@ -718,7 +732,7 @@ function AttemptRow({ attempt, t, expanded, onToggle }) {
                   style={{ color: gradeTextColor(step.grade) }}
                 >
                   {step.latencyMs ? formatLatency(step.latencyMs) : '—'}
-                  {step.targetMs ? <span className="text-concrete"> /{Math.round(step.targetMs / 1000)}s</span> : null}
+                  {step.targetMs ? <span className="text-ink-tertiary"> /{Math.round(step.targetMs / 1000)}s</span> : null}
                 </span>
               </div>
             ))}
@@ -735,18 +749,18 @@ function AttemptRow({ attempt, t, expanded, onToggle }) {
 
 function EmptyState({ t }) {
   return (
-    <div className="border border-steel-lighter rounded-lg p-12 text-center rise-in">
+    <div className="border border-line-subtle rounded-lg p-12 text-center rise-in">
       <Pictogram name="ppe" size={54} className="mx-auto mb-5" />
       <h2 className="font-display font-bold text-2xl uppercase mb-2">{t('dash_empty')}</h2>
-      <p className="text-concrete text-sm max-w-sm mx-auto mb-7 leading-relaxed">{t('list_desc')}</p>
+      <p className="text-ink-tertiary text-sm max-w-sm mx-auto mb-7 leading-relaxed">{t('list_desc')}</p>
 
       <div className="flex gap-3 justify-center flex-wrap">
-        <Link to="/train" className="bg-amber text-steel font-display font-bold uppercase px-6 py-3 rounded">
+        <Link to="/train" className="bg-brand text-ink-onBrand font-display font-bold uppercase px-6 py-3 rounded">
           {t('home_cta_train')}
         </Link>
         <Link
           to="/buddy"
-          className="border border-concrete rounded px-6 py-3 font-mono text-sm hover:border-amber hover:text-amber"
+          className="border border-line rounded px-6 py-3 font-mono text-sm hover:border-brand hover:text-brand-text"
         >
           {t('nav_buddy')}
         </Link>

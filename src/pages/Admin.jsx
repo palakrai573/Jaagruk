@@ -104,7 +104,7 @@ function Gate({ onUnlock, t }) {
       <h1 className="font-display font-bold text-2xl uppercase text-center mb-2">
         {needsSetup ? t('ad_gate_set_title') : t('ad_gate_title')}
       </h1>
-      <p className="text-concrete text-sm text-center mb-8">
+      <p className="text-ink-tertiary text-sm text-center mb-8">
         {needsSetup ? t('ad_gate_set_body') : t('ad_gate_enter')}
       </p>
 
@@ -118,7 +118,7 @@ function Gate({ onUnlock, t }) {
         }}
         placeholder="••••"
         autoFocus
-        className="w-full bg-steel border border-steel-lighter rounded px-4 py-3 font-mono text-2xl tracking-[0.4em] text-center focus:border-amber outline-none mb-4"
+        className="w-full bg-surface-inset border border-line-subtle rounded px-4 py-3 font-mono text-2xl tracking-[0.4em] text-center focus:border-brand outline-none mb-4"
       />
 
       {needsSetup && (
@@ -128,28 +128,28 @@ function Gate({ onUnlock, t }) {
           value={confirm}
           onChange={(e) => setConfirm(e.target.value.replace(/\D/g, '').slice(0, 6))}
           placeholder="••••"
-          className="w-full bg-steel border border-steel-lighter rounded px-4 py-3 font-mono text-2xl tracking-[0.4em] text-center focus:border-amber outline-none mb-4"
+          className="w-full bg-surface-inset border border-line-subtle rounded px-4 py-3 font-mono text-2xl tracking-[0.4em] text-center focus:border-brand outline-none mb-4"
         />
       )}
 
-      {error && <p className="text-xs text-hazard text-center mb-4">{t(error)}</p>}
+      {error && <p className="text-xs text-hazard-text text-center mb-4">{t(error)}</p>}
 
       <button
         type="button"
         onClick={submit}
         disabled={busy || pin.length < 4}
-        className="w-full bg-amber text-steel font-display font-bold uppercase py-3 rounded disabled:opacity-40"
+        className="w-full bg-brand text-ink-onBrand font-display font-bold uppercase py-3 rounded disabled:opacity-40"
       >
         {needsSetup ? t('save_label') : t('ad_gate_unlock')}
       </button>
 
       <div className="bg-hazard/10 border border-hazard/40 rounded p-3 mt-8 flex items-start gap-3">
         <Pictogram name="warning" size={20} />
-        <p className="text-[11px] text-concrete leading-relaxed">{t('ad_auth_warning')}</p>
+        <p className="text-[11px] text-ink-tertiary leading-relaxed">{t('ad_auth_warning')}</p>
       </div>
 
       <div className="text-center mt-6">
-        <Link to="/" className="font-mono text-xs text-concrete underline">
+        <Link to="/" className="font-mono text-xs text-ink-tertiary underline">
           {t('nav_home')}
         </Link>
       </div>
@@ -309,13 +309,13 @@ function Console({ t, onLock }) {
     <div className="max-w-5xl mx-auto px-5 py-10">
       <div className="flex items-start justify-between gap-4 mb-3 flex-wrap">
         <div>
-          <p className="font-mono text-amber text-xs tracking-[0.2em] uppercase mb-2">{t('admin_eyebrow')}</p>
+          <p className="font-mono text-brand-text text-xs tracking-[0.2em] uppercase mb-2">{t('admin_eyebrow')}</p>
           <h1 className="font-display font-bold text-4xl md:text-5xl uppercase">{t('admin_title')}</h1>
         </div>
         <button
           type="button"
           onClick={onLock}
-          className="font-mono text-[10px] uppercase tracking-widest border border-steel-lighter rounded px-3 py-2 text-concrete hover:border-amber hover:text-amber shrink-0"
+          className="font-mono text-[10px] uppercase tracking-widest border border-line-subtle rounded px-3 py-2 text-ink-tertiary hover:border-brand hover:text-brand-text shrink-0"
         >
           {t('ad_gate_lock')}
         </button>
@@ -323,7 +323,7 @@ function Console({ t, onLock }) {
 
       <div className="bg-hazard/10 border border-hazard/40 rounded p-3 mb-8 flex items-start gap-3">
         <Pictogram name="warning" size={20} />
-        <p className="text-[11px] text-concrete leading-relaxed">{t('ad_auth_warning')}</p>
+        <p className="text-[11px] text-ink-tertiary leading-relaxed">{t('ad_auth_warning')}</p>
       </div>
 
       {notice && (
@@ -357,7 +357,7 @@ function Console({ t, onLock }) {
               if (item.id === 'ledger' && !chain) runChainCheck()
             }}
             className={`flex items-center gap-2 rounded px-3 py-2 font-mono text-[11px] uppercase tracking-widest whitespace-nowrap shrink-0 ${
-              tab === item.id ? 'bg-amber text-steel font-bold' : 'text-concrete border border-steel-lighter'
+              tab === item.id ? 'bg-brand text-ink-onBrand font-bold' : 'text-ink-tertiary border border-line-subtle'
             }`}
           >
             <Pictogram name={item.pictogram} size={16} />
@@ -366,7 +366,7 @@ function Console({ t, onLock }) {
         ))}
       </div>
 
-      {loading && <p className="font-mono text-xs text-concrete uppercase tracking-widest">{t('loading_label')}</p>}
+      {loading && <p className="font-mono text-xs text-ink-tertiary uppercase tracking-widest">{t('loading_label')}</p>}
 
       {/* ---------------- compliance ---------------- */}
       {!loading && tab === 'compliance' && (
@@ -384,20 +384,20 @@ function Console({ t, onLock }) {
                 return (
                   <div
                     key={domain}
-                    className="bg-steel-light border border-steel-lighter rounded p-3 flex items-center justify-between gap-3 flex-wrap"
+                    className="bg-surface-1 border border-line-subtle rounded p-3 flex items-center justify-between gap-3 flex-wrap"
                   >
                     <span className="text-sm font-bold min-w-0 flex-1 truncate">{domain}</span>
                     <span className="flex items-center gap-4 shrink-0">
                       {flagged > 0 && (
-                        <span className="font-mono text-[10px] text-amber flex items-center gap-1">
+                        <span className="font-mono text-[10px] text-brand-text flex items-center gap-1">
                           <Pictogram name="slow" size={14} />
                           {flagged}
                         </span>
                       )}
-                      <span className="font-mono text-[10px] text-concrete">
+                      <span className="font-mono text-[10px] text-ink-tertiary">
                         {scores.length} {t('ad_ledger_records')}
                       </span>
-                      <span className="font-mono text-amber font-bold text-sm w-12 text-end">
+                      <span className="font-mono text-brand-text font-bold text-sm w-12 text-end">
                         {avg !== null ? `${avg}%` : '—'}
                       </span>
                     </span>
@@ -416,13 +416,13 @@ function Console({ t, onLock }) {
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder={t('admin_search')}
-                  className="bg-steel-light border border-steel-lighter rounded px-3 py-2 text-sm font-mono focus:border-amber outline-none"
+                  className="bg-surface-1 border border-line-subtle rounded px-3 py-2 text-sm font-mono focus:border-brand outline-none"
                 />
                 <button
                   type="button"
                   onClick={exportCsv}
                   disabled={certs.length === 0}
-                  className="bg-amber text-steel font-bold text-xs uppercase px-4 py-2 rounded disabled:opacity-40"
+                  className="bg-brand text-ink-onBrand font-bold text-xs uppercase px-4 py-2 rounded disabled:opacity-40"
                 >
                   {t('admin_export_csv')}
                 </button>
@@ -430,11 +430,11 @@ function Console({ t, onLock }) {
             </div>
 
             {filteredCerts.length === 0 ? (
-              <p className="text-concrete font-mono text-sm border border-steel-lighter rounded-lg p-8 text-center">
+              <p className="text-ink-tertiary font-mono text-sm border border-line-subtle rounded-lg p-8 text-center">
                 {t('admin_no_certs')}
               </p>
             ) : (
-              <div className="border border-steel-lighter rounded-lg divide-y divide-steel-lighter">
+              <div className="border border-line-subtle rounded-lg divide-y divide-line-subtle">
                 {filteredCerts.map((c) => (
                   <div key={c.hash} className="p-4 flex items-center justify-between gap-3 flex-wrap">
                     <div className="min-w-0 flex-1">
@@ -442,15 +442,15 @@ function Console({ t, onLock }) {
                         {c.hesitationCount > 0 && <Pictogram name="slow" size={15} />}
                         <span className="truncate">{c.workerName}</span>
                       </p>
-                      <p className="font-mono text-[10px] text-concrete mt-0.5 break-all">
+                      <p className="font-mono text-[10px] text-ink-tertiary mt-0.5 break-all">
                         {c.certId} · #{c.seq} · {new Date(c.issuedAt).toLocaleDateString()}
                       </p>
                     </div>
                     <div className="flex items-center gap-3 shrink-0">
-                      <span className="font-mono text-amber font-bold">{c.avgReadiness}%</span>
+                      <span className="font-mono text-brand-text font-bold">{c.avgReadiness}%</span>
                       <Link
                         to={`/verify/${c.certId}`}
-                        className="font-mono text-[10px] uppercase border border-steel-lighter rounded px-2.5 py-1.5 text-concrete hover:border-amber hover:text-amber"
+                        className="font-mono text-[10px] uppercase border border-line-subtle rounded px-2.5 py-1.5 text-ink-tertiary hover:border-brand hover:text-brand-text"
                       >
                         {t('vf_check_now')}
                       </Link>
@@ -488,15 +488,15 @@ function Console({ t, onLock }) {
       {!loading && tab === 'hesitation' && (
         <section>
           <h2 className="font-display font-bold text-2xl uppercase mb-2">{t('ad_tab_hesitation')}</h2>
-          <p className="text-sm text-concrete mb-6 leading-relaxed max-w-2xl">{t('ad_hesitation_desc')}</p>
+          <p className="text-sm text-ink-tertiary mb-6 leading-relaxed max-w-2xl">{t('ad_hesitation_desc')}</p>
 
           {risks.length === 0 ? (
-            <div className="border border-steel-lighter rounded-lg p-10 text-center">
+            <div className="border border-line-subtle rounded-lg p-10 text-center">
               <Pictogram name="correct" size={40} className="mx-auto mb-4" />
-              <p className="text-concrete text-sm">{t('ad_hesitation_none')}</p>
+              <p className="text-ink-tertiary text-sm">{t('ad_hesitation_none')}</p>
             </div>
           ) : (
-            <div className="border border-steel-lighter rounded-lg divide-y divide-steel-lighter">
+            <div className="border border-line-subtle rounded-lg divide-y divide-line-subtle">
               {risks.map((risk) => (
                 <div key={risk.workerId || 'unknown'} className="p-4">
                   <div className="flex items-center justify-between gap-3 mb-2 flex-wrap">
@@ -504,11 +504,11 @@ function Console({ t, onLock }) {
                       <Pictogram name="slow" size={18} />
                       {workerName(risk.workerId)}
                     </p>
-                    <span className="font-mono text-xs text-hazard shrink-0">
+                    <span className="font-mono text-xs text-hazard-text shrink-0">
                       {t('ad_worst_pause')}: {formatLatency(risk.worstLatencyMs)}
                     </span>
                   </div>
-                  <p className="font-mono text-[10px] text-concrete">
+                  <p className="font-mono text-[10px] text-ink-tertiary">
                     {risk.domains.join(' · ')} — {new Date(risk.at).toLocaleDateString()}
                   </p>
                 </div>
@@ -535,7 +535,7 @@ function Console({ t, onLock }) {
           {/* Bearing clusters — where reports pile up in the real space */}
           {hazards.length > 0 && (
             <div className="mb-8">
-              <h3 className="font-mono text-[10px] uppercase tracking-widest text-concrete mb-3">
+              <h3 className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary mb-3">
                 {t('ad_zone_clusters')}
               </h3>
               <div className="flex flex-wrap gap-2">
@@ -544,12 +544,12 @@ function Console({ t, onLock }) {
                   .map((cluster) => (
                     <span
                       key={cluster.key}
-                      className="font-mono text-[10px] border border-steel-lighter rounded px-2.5 py-1.5 flex items-center gap-2"
+                      className="font-mono text-[10px] border border-line-subtle rounded px-2.5 py-1.5 flex items-center gap-2"
                       style={{ color: cluster.highCount > 0 ? 'rgb(var(--hazard-text))' : 'rgb(var(--text-tertiary))' }}
                     >
                       {cluster.zoneName || t('hz_no_direction')}
                       {cluster.centreBearing !== null && ` ${Math.round(cluster.centreBearing)}°`}
-                      <span className="text-chalk font-bold">{cluster.count}</span>
+                      <span className="text-ink font-bold">{cluster.count}</span>
                     </span>
                   ))}
               </div>
@@ -557,9 +557,9 @@ function Console({ t, onLock }) {
           )}
 
           {hazards.length === 0 ? (
-            <div className="border border-steel-lighter rounded-lg p-10 text-center">
+            <div className="border border-line-subtle rounded-lg p-10 text-center">
               <Pictogram name="correct" size={40} className="mx-auto mb-4" />
-              <p className="text-concrete text-sm">{t('ad_hazards_none')}</p>
+              <p className="text-ink-tertiary text-sm">{t('ad_hazards_none')}</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -579,16 +579,16 @@ function Console({ t, onLock }) {
             <button
               type="button"
               onClick={runChainCheck}
-              className="bg-amber text-steel font-bold text-xs uppercase px-4 py-2 rounded"
+              className="bg-brand text-ink-onBrand font-bold text-xs uppercase px-4 py-2 rounded"
             >
               {t('ad_ledger_verify')}
             </button>
           </div>
 
-          {!chain && <p className="font-mono text-xs text-concrete">{t('loading_label')}</p>}
+          {!chain && <p className="font-mono text-xs text-ink-tertiary">{t('loading_label')}</p>}
 
           {chain && chain.length === 0 && (
-            <p className="text-concrete font-mono text-sm border border-steel-lighter rounded-lg p-8 text-center">
+            <p className="text-ink-tertiary font-mono text-sm border border-line-subtle rounded-lg p-8 text-center">
               {t('ad_ledger_empty')}
             </p>
           )}
@@ -609,13 +609,13 @@ function Console({ t, onLock }) {
                       ? t('ad_ledger_intact')
                       : `${t('ad_ledger_intact_to')} #${Math.max(0, chain.firstBrokenIndex)}`}
                   </p>
-                  <p className="font-mono text-[10px] text-concrete">
+                  <p className="font-mono text-[10px] text-ink-tertiary">
                     {chain.verifiedCount}/{chain.length} {t('ad_ledger_records')}
                   </p>
                   {chain.issues.length > 0 && (
                     <ul className="mt-3 space-y-1">
                       {chain.issues.map((issue) => (
-                        <li key={issue} className="text-[11px] text-concrete flex items-start gap-2">
+                        <li key={issue} className="text-[11px] text-ink-tertiary flex items-start gap-2">
                           <Pictogram name="warning" size={13} />
                           {t(`chain_${issue}`)}
                         </li>
@@ -625,7 +625,7 @@ function Console({ t, onLock }) {
                 </div>
               </div>
 
-              <div className="border border-steel-lighter rounded-lg divide-y divide-steel-lighter">
+              <div className="border border-line-subtle rounded-lg divide-y divide-line-subtle">
                 {chain.results.map((entry) => (
                   <div key={entry.record.hash} className="p-3 flex items-center justify-between gap-3 flex-wrap">
                     <span className="flex items-center gap-3 min-w-0 flex-1">
@@ -635,13 +635,13 @@ function Console({ t, onLock }) {
                           #{entry.record.seq}{' '}
                           {entry.described?.kind === 'genesis' ? '· genesis' : `· ${entry.described?.workerName}`}
                         </span>
-                        <span className="block font-mono text-[9px] text-concrete break-all">
+                        <span className="block font-mono text-[9px] text-ink-tertiary break-all">
                           {entry.record.hash.slice(0, 28)}
                         </span>
                       </span>
                     </span>
                     {!entry.ok && (
-                      <span className="font-mono text-[9px] text-hazard shrink-0 text-end">
+                      <span className="font-mono text-[9px] text-hazard-text shrink-0 text-end">
                         {entry.issues
                           .filter((i) => i !== CHAIN_STATUS.OK)
                           .map((i) => t(`chain_${i}`))
@@ -656,7 +656,7 @@ function Console({ t, onLock }) {
         </section>
       )}
 
-      <p className="text-[11px] text-concrete mt-12 leading-relaxed border-t border-steel-lighter pt-6">
+      <p className="text-[11px] text-ink-tertiary mt-12 leading-relaxed border-t border-line-subtle pt-6">
         {t('ad_statutory_note')}
       </p>
     </div>
@@ -668,11 +668,11 @@ function Console({ t, onLock }) {
 /* ================================================================== */
 
 function Stat({ label, value, accent, warn }) {
-  const color = warn ? 'text-hazard' : accent ? 'text-amber' : 'text-chalk'
+  const color = warn ? 'text-hazard-text' : accent ? 'text-brand-text' : 'text-ink'
   return (
-    <div className="bg-steel-light border border-steel-lighter rounded-lg p-4">
+    <div className="bg-surface-1 border border-line-subtle rounded-lg p-4">
       <p className={`font-display font-bold text-3xl ${color}`}>{value}</p>
-      <p className="font-mono text-[9px] text-concrete uppercase tracking-widest mt-1 leading-tight">{label}</p>
+      <p className="font-mono text-[9px] text-ink-tertiary uppercase tracking-widest mt-1 leading-tight">{label}</p>
     </div>
   )
 }
@@ -681,11 +681,11 @@ function SyncPanel({ t, queue, siteId, onSync, onExport, onImportClick, onPeerCo
   const endpoint = getSyncEndpoint()
 
   return (
-    <section className="border-t border-steel-lighter pt-8">
+    <section className="border-t border-line-subtle pt-8">
       <h2 className="font-display font-bold text-xl uppercase mb-4">{t('st_sync_title')}</h2>
 
       {queue && (
-        <p className="font-mono text-[11px] text-concrete mb-4">
+        <p className="font-mono text-[11px] text-ink-tertiary mb-4">
           {queue.total} {t('ad_sync_pending')}
           {!endpoint && ` · ${t('ad_sync_no_endpoint')}`}
         </p>
@@ -695,14 +695,14 @@ function SyncPanel({ t, queue, siteId, onSync, onExport, onImportClick, onPeerCo
         <button
           type="button"
           onClick={onExport}
-          className="bg-amber text-steel font-bold text-xs uppercase px-4 py-2.5 rounded"
+          className="bg-brand text-ink-onBrand font-bold text-xs uppercase px-4 py-2.5 rounded"
         >
           {t('ad_export_dgms')}
         </button>
         <button
           type="button"
           onClick={onImportClick}
-          className="border border-concrete rounded px-4 py-2.5 font-mono text-xs hover:border-amber hover:text-amber"
+          className="border border-line rounded px-4 py-2.5 font-mono text-xs hover:border-brand hover:text-brand-text"
         >
           {t('ad_import_bundle')}
         </button>
@@ -710,7 +710,7 @@ function SyncPanel({ t, queue, siteId, onSync, onExport, onImportClick, onPeerCo
           type="button"
           onClick={onSync}
           disabled={!endpoint}
-          className="border border-concrete rounded px-4 py-2.5 font-mono text-xs hover:border-amber hover:text-amber disabled:opacity-40"
+          className="border border-line rounded px-4 py-2.5 font-mono text-xs hover:border-brand hover:text-brand-text disabled:opacity-40"
         >
           {t('ad_sync_now')}
         </button>
@@ -723,7 +723,7 @@ function SyncPanel({ t, queue, siteId, onSync, onExport, onImportClick, onPeerCo
       */}
       <PeerSync siteId={siteId} onComplete={onPeerComplete} />
 
-      <p className="text-[11px] text-concrete mt-4 leading-relaxed max-w-2xl">{t('ad_gossip_desc')}</p>
+      <p className="text-[11px] text-ink-tertiary mt-4 leading-relaxed max-w-2xl">{t('ad_gossip_desc')}</p>
     </section>
   )
 }
@@ -741,7 +741,7 @@ function HazardCard({ report, t, onChange, reporter }) {
 
   return (
     <div
-      className="bg-steel-light border rounded-lg p-4"
+      className="bg-surface-1 border rounded-lg p-4"
       style={{
         borderColor:
           report.status === HAZARD_STATUS.OPEN
@@ -764,28 +764,28 @@ function HazardCard({ report, t, onChange, reporter }) {
             </span>
           </div>
 
-          <p className="font-mono text-[10px] text-concrete mb-2">
+          <p className="font-mono text-[10px] text-ink-tertiary mb-2">
             {new Date(report.at).toLocaleString()}
             {report.zoneName && ` · ${report.zoneName}`}
             {report.bearing !== null && ` · ${report.bearing}°`}
             {reporter && reporter !== '—' && ` · ${reporter}`}
           </p>
 
-          {report.note && <p className="text-xs text-concrete leading-relaxed mb-2">{report.note}</p>}
+          {report.note && <p className="text-xs text-ink-tertiary leading-relaxed mb-2">{report.note}</p>}
 
           {report.photo && (
-            <img src={report.photo} alt="" className="rounded border border-steel-lighter max-h-40 mb-2" />
+            <img src={report.photo} alt="" className="rounded border border-line-subtle max-h-40 mb-2" />
           )}
           {report.voice && (
             // eslint-disable-next-line jsx-a11y/media-has-caption
             <audio controls src={report.voice} className="w-full h-8 mb-2" />
           )}
           {report.mediaDropped && (
-            <p className="font-mono text-[9px] text-amber mb-2">{t('hz_storage_full')}</p>
+            <p className="font-mono text-[9px] text-brand-text mb-2">{t('hz_storage_full')}</p>
           )}
 
           <div className="flex items-center gap-2 flex-wrap mt-3">
-            <span className="font-mono text-[9px] uppercase tracking-widest text-concrete me-2">
+            <span className="font-mono text-[9px] uppercase tracking-widest text-ink-tertiary me-2">
               {t(`hz_status_${report.status}`)}
             </span>
             {transitions.map((next) => (
@@ -793,7 +793,7 @@ function HazardCard({ report, t, onChange, reporter }) {
                 key={next}
                 type="button"
                 onClick={() => onChange(report.id, next)}
-                className="font-mono text-[9px] uppercase border border-steel-lighter rounded px-2 py-1 text-concrete hover:border-amber hover:text-amber"
+                className="font-mono text-[9px] uppercase border border-line-subtle rounded px-2 py-1 text-ink-tertiary hover:border-brand hover:text-brand-text"
               >
                 {t(ACTION_LABEL[next] || 'save_label')}
               </button>

@@ -73,34 +73,18 @@ export default {
 
         ore: token('ore'),
 
-        // ---- Legacy aliases ----
-        // The previous palette maps onto tokens so pages not yet migrated keep
-        // working and become theme-aware for free. Deleted once nothing uses them.
-        steel: {
-          DEFAULT: token('surface-0'),
-          light: token('surface-1'),
-          lighter: token('border-default'),
-        },
-
-        // `amber` maps to BRAND, not to `warning`, and that is deliberate.
+        // The legacy palette (steel / amber / concrete / chalk) used to be aliased
+        // here so unmigrated pages kept working during the phased rebuild. Every
+        // reference is now gone — verified across src including comments, dynamic
+        // strings and utilities like accent-* — so the aliases are deleted rather
+        // than left as a second way to say the same thing.
         //
-        // In the old palette amber was the accent: eyebrows, links, values, active
-        // states, primary buttons. Mapping it to `warning` preserved the colour but
-        // broke two things at once. Semantically it made every accent read as a
-        // caution signal. Practically it was a light-theme contrast failure —
-        // `text-amber` resolved to raw ISO yellow, which on a light surface reaches
-        // about 1.9:1 and is unreadable.
-        //
-        // `brand` measures 7.71:1 on dark and 5.15:1 on light, so this single line
-        // fixes accent contrast across every unmigrated page. Genuine caution now
-        // uses `warning-*` explicitly, which is what a migrated file does.
-        amber: {
-          DEFAULT: token('brand'),
-          dim: token('brand-border'),
-        },
-
-        concrete: token('text-tertiary'),
-        chalk: token('text-primary'),
+        // Worth recording why `amber` was NOT simply mapped to `warning` on the way
+        // out: in the old palette amber was the accent, not a caution signal, and
+        // mapping it to raw ISO yellow made every accent both semantically wrong
+        // and, as text on a light surface, about 1.9:1 — unreadable. It was mapped
+        // to `brand` (7.71:1 dark, 5.15:1 light) for the migration, and call sites
+        // now name `brand-*` or `warning-*` explicitly according to meaning.
       },
 
       fontFamily: {

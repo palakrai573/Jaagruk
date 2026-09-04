@@ -167,7 +167,7 @@ export default function Onboarding() {
   if (loading) {
     return (
       <div className="max-w-md mx-auto px-5 py-20 text-center">
-        <p className="font-mono text-xs text-concrete uppercase tracking-widest">{t('loading_label')}</p>
+        <p className="font-mono text-xs text-ink-tertiary uppercase tracking-widest">{t('loading_label')}</p>
       </div>
     )
   }
@@ -190,12 +190,12 @@ export default function Onboarding() {
                 aria-pressed={lang === l.code}
                 className={`rounded-lg border py-5 px-3 text-center transition-colors ${
                   lang === l.code
-                    ? 'border-amber bg-amber/10 text-amber'
-                    : 'border-steel-lighter text-chalk hover:border-amber'
+                    ? 'border-brand bg-brand-subtle text-brand-text'
+                    : 'border-line-subtle text-ink hover:border-brand'
                 }`}
               >
                 <span className="block text-xl mb-1">{l.native}</span>
-                <span className="block font-mono text-[10px] uppercase tracking-widest text-concrete">{l.label}</span>
+                <span className="block font-mono text-[10px] uppercase tracking-widest text-ink-tertiary">{l.label}</span>
               </button>
             ))}
           </div>
@@ -203,7 +203,7 @@ export default function Onboarding() {
           <button
             type="button"
             onClick={confirmLanguage}
-            className="w-full bg-amber text-steel font-display font-bold text-lg uppercase py-4 rounded flex items-center justify-center gap-3"
+            className="w-full bg-brand text-ink-onBrand font-display font-bold text-lg uppercase py-4 rounded flex items-center justify-center gap-3"
           >
             <Pictogram name="correct" size={26} />
             {t('next_label')}
@@ -255,7 +255,7 @@ export default function Onboarding() {
               onChange={(e) => setName(e.target.value)}
               placeholder={t('ob_name_placeholder')}
               autoComplete="name"
-              className="w-full bg-steel border border-steel-lighter rounded px-4 py-3 text-base focus:border-amber outline-none"
+              className="w-full bg-surface-0 border border-line-subtle rounded px-4 py-3 text-base focus:border-brand outline-none"
             />
           </Field>
 
@@ -267,7 +267,7 @@ export default function Onboarding() {
               onChange={(e) => setPhone(e.target.value)}
               placeholder="98765 43210"
               autoComplete="tel"
-              className="w-full bg-steel border border-steel-lighter rounded px-4 py-3 font-mono text-base focus:border-amber outline-none"
+              className="w-full bg-surface-0 border border-line-subtle rounded px-4 py-3 font-mono text-base focus:border-brand outline-none"
             />
           </Field>
 
@@ -279,7 +279,7 @@ export default function Onboarding() {
               onChange={(e) => setPin(e.target.value.replace(/\D/g, '').slice(0, 6))}
               placeholder="••••"
               autoComplete="new-password"
-              className="w-full bg-steel border border-steel-lighter rounded px-4 py-3 font-mono text-2xl tracking-[0.4em] text-center focus:border-amber outline-none"
+              className="w-full bg-surface-0 border border-line-subtle rounded px-4 py-3 font-mono text-2xl tracking-[0.4em] text-center focus:border-brand outline-none"
             />
           </Field>
 
@@ -291,7 +291,7 @@ export default function Onboarding() {
               onChange={(e) => setPinConfirm(e.target.value.replace(/\D/g, '').slice(0, 6))}
               placeholder="••••"
               autoComplete="new-password"
-              className="w-full bg-steel border border-steel-lighter rounded px-4 py-3 font-mono text-2xl tracking-[0.4em] text-center focus:border-amber outline-none"
+              className="w-full bg-surface-0 border border-line-subtle rounded px-4 py-3 font-mono text-2xl tracking-[0.4em] text-center focus:border-brand outline-none"
             />
           </Field>
 
@@ -300,9 +300,9 @@ export default function Onboarding() {
               type="checkbox"
               checked={isSupervisor}
               onChange={(e) => setIsSupervisor(e.target.checked)}
-              className="w-5 h-5 accent-amber"
+              className="w-5 h-5 accent-brand"
             />
-            <span className="text-sm text-concrete">{t('site_eyebrow')}</span>
+            <span className="text-sm text-ink-tertiary">{t('site_eyebrow')}</span>
           </label>
 
           <ErrorList errors={errors} t={t} />
@@ -311,7 +311,7 @@ export default function Onboarding() {
             <button
               type="button"
               onClick={() => setStage(STAGE.WHO)}
-              className="border border-concrete rounded px-5 py-3 font-mono text-sm hover:border-amber hover:text-amber"
+              className="border border-line rounded px-5 py-3 font-mono text-sm hover:border-brand hover:text-brand-text"
             >
               {t('back_label')}
             </button>
@@ -319,7 +319,7 @@ export default function Onboarding() {
               type="button"
               onClick={submitRegistration}
               disabled={busy}
-              className="flex-1 bg-amber text-steel font-display font-bold text-lg uppercase py-3 rounded disabled:opacity-50"
+              className="flex-1 bg-brand text-ink-onBrand font-display font-bold text-lg uppercase py-3 rounded disabled:opacity-50"
             >
               {busy ? t('loading_label') : t('ob_create_account')}
             </button>
@@ -343,12 +343,12 @@ export default function Onboarding() {
                     setSignInError(null)
                     setSignInPin('')
                   }}
-                  className="w-full text-start bg-steel-light border border-steel-lighter rounded-lg p-4 hover:border-amber flex items-center gap-4"
+                  className="w-full text-start bg-surface-1 border border-line-subtle rounded-lg p-4 hover:border-brand flex items-center gap-4"
                 >
                   <Pictogram name={w.role === ROLE.SUPERVISOR ? 'report_it' : 'ppe'} size={32} />
                   <span className="min-w-0">
                     <span className="block font-bold text-sm truncate">{w.name}</span>
-                    {w.phone && <span className="block font-mono text-[11px] text-concrete">{w.phone}</span>}
+                    {w.phone && <span className="block font-mono text-[11px] text-ink-tertiary">{w.phone}</span>}
                   </span>
                 </button>
               ))}
@@ -357,7 +357,7 @@ export default function Onboarding() {
 
           {selectedWorker && (
             <>
-              <div className="bg-steel-light border border-steel-lighter rounded-lg p-4 mb-6 flex items-center gap-4">
+              <div className="bg-surface-1 border border-line-subtle rounded-lg p-4 mb-6 flex items-center gap-4">
                 <Pictogram name={selectedWorker.role === ROLE.SUPERVISOR ? 'report_it' : 'ppe'} size={34} />
                 <span className="font-bold">{selectedWorker.name}</span>
               </div>
@@ -374,7 +374,7 @@ export default function Onboarding() {
                   placeholder="••••"
                   autoComplete="current-password"
                   autoFocus
-                  className="w-full bg-steel border border-steel-lighter rounded px-4 py-3 font-mono text-2xl tracking-[0.4em] text-center focus:border-amber outline-none"
+                  className="w-full bg-surface-0 border border-line-subtle rounded px-4 py-3 font-mono text-2xl tracking-[0.4em] text-center focus:border-brand outline-none"
                 />
               </Field>
 
@@ -382,7 +382,7 @@ export default function Onboarding() {
                 <div className="bg-hazard/10 border border-hazard/40 rounded p-3 mb-4">
                   <p className="text-xs text-hazard">{t(`err_${signInError}`)}</p>
                   {signInError === 'PIN_WRONG' && (
-                    <p className="font-mono text-[10px] text-concrete mt-1">
+                    <p className="font-mono text-[10px] text-ink-tertiary mt-1">
                       {attemptsRemaining(selectedWorker.id)} {t('err_attempts_left')}
                     </p>
                   )}
@@ -402,7 +402,7 @@ export default function Onboarding() {
                     setSelectedWorker(null)
                     setSignInError(null)
                   }}
-                  className="border border-concrete rounded px-5 py-3 font-mono text-sm hover:border-amber hover:text-amber"
+                  className="border border-line rounded px-5 py-3 font-mono text-sm hover:border-brand hover:text-brand-text"
                 >
                   {t('back_label')}
                 </button>
@@ -410,7 +410,7 @@ export default function Onboarding() {
                   type="button"
                   onClick={submitSignIn}
                   disabled={busy || lockMs > 0 || signInPin.length < 4}
-                  className="flex-1 bg-amber text-steel font-display font-bold text-lg uppercase py-3 rounded disabled:opacity-50"
+                  className="flex-1 bg-brand text-ink-onBrand font-display font-bold text-lg uppercase py-3 rounded disabled:opacity-50"
                 >
                   {busy ? t('loading_label') : t('ob_sign_in')}
                 </button>
@@ -422,7 +422,7 @@ export default function Onboarding() {
             <button
               type="button"
               onClick={() => setStage(STAGE.WHO)}
-              className="w-full border border-concrete rounded px-5 py-3 font-mono text-sm hover:border-amber hover:text-amber"
+              className="w-full border border-line rounded px-5 py-3 font-mono text-sm hover:border-brand hover:text-brand-text"
             >
               {t('back_label')}
             </button>
@@ -434,30 +434,30 @@ export default function Onboarding() {
       {stage === STAGE.DONE && current && (
         <section className="text-center">
           <Pictogram name="correct" size={64} className="mx-auto mb-5" />
-          <p className="font-mono text-[10px] uppercase tracking-widest text-concrete mb-2">{t('ob_signed_in_as')}</p>
+          <p className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary mb-2">{t('ob_signed_in_as')}</p>
           <h1 className="font-display font-bold text-3xl uppercase mb-1">{current.name}</h1>
           {current.role === ROLE.SUPERVISOR && (
-            <p className="font-mono text-[11px] text-amber mb-6">{t('site_eyebrow')}</p>
+            <p className="font-mono text-[11px] text-brand-text mb-6">{t('site_eyebrow')}</p>
           )}
 
           <div className="grid gap-3 mt-8">
             <button
               type="button"
               onClick={() => navigate('/train')}
-              className="w-full bg-amber text-steel font-display font-bold text-lg uppercase py-4 rounded"
+              className="w-full bg-brand text-ink-onBrand font-display font-bold text-lg uppercase py-4 rounded"
             >
               {t('home_cta_train')}
             </button>
             <Link
               to="/certification"
-              className="w-full border border-concrete rounded py-3 font-mono text-sm hover:border-amber hover:text-amber"
+              className="w-full border border-line rounded py-3 font-mono text-sm hover:border-brand hover:text-brand-text"
             >
               {t('nav_cert')}
             </Link>
             <button
               type="button"
               onClick={signOut}
-              className="font-mono text-[11px] text-concrete hover:text-hazard underline mt-2"
+              className="font-mono text-[11px] text-ink-tertiary hover:text-hazard underline mt-2"
             >
               {t('ob_sign_out')}
             </button>
@@ -480,7 +480,7 @@ function StageDots({ stage }) {
       {order.map((s, i) => (
         <span
           key={s}
-          className={`h-1.5 rounded-full transition-all ${i <= activeIndex ? 'bg-amber w-8' : 'bg-steel-lighter w-4'}`}
+          className={`h-1.5 rounded-full transition-all ${i <= activeIndex ? 'bg-brand w-8' : 'bg-surface-3 w-4'}`}
         />
       ))}
     </div>
@@ -492,7 +492,7 @@ function Heading({ pictogram, title, subtitle }) {
     <div className="text-center mb-8">
       <Pictogram name={pictogram} size={52} className="mx-auto mb-4" />
       <h1 className="font-display font-bold text-2xl uppercase leading-tight">{title}</h1>
-      {subtitle && <p className="text-concrete text-sm mt-2">{subtitle}</p>}
+      {subtitle && <p className="text-ink-tertiary text-sm mt-2">{subtitle}</p>}
     </div>
   )
 }
@@ -505,14 +505,14 @@ function BigChoice({ pictogram, label, onClick, disabled, hint }) {
       disabled={disabled}
       className={`w-full text-start rounded-lg border p-5 flex items-center gap-4 transition-colors ${
         disabled
-          ? 'border-steel-lighter opacity-50 cursor-default'
-          : 'border-steel-lighter hover:border-amber bg-steel-light'
+          ? 'border-line-subtle opacity-50 cursor-default'
+          : 'border-line-subtle hover:border-brand bg-surface-1'
       }`}
     >
       <Pictogram name={pictogram} size={44} />
       <span className="min-w-0">
         <span className="block font-bold">{label}</span>
-        {hint && <span className="block font-mono text-[11px] text-concrete mt-0.5">{hint}</span>}
+        {hint && <span className="block font-mono text-[11px] text-ink-tertiary mt-0.5">{hint}</span>}
       </span>
     </button>
   )
@@ -521,9 +521,9 @@ function BigChoice({ pictogram, label, onClick, disabled, hint }) {
 function Field({ label, hint, children }) {
   return (
     <div className="mb-5">
-      <label className="font-mono text-[10px] uppercase tracking-widest text-concrete block mb-2">{label}</label>
+      <label className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary block mb-2">{label}</label>
       {children}
-      {hint && <p className="text-[11px] text-concrete mt-2 leading-relaxed">{hint}</p>}
+      {hint && <p className="text-[11px] text-ink-tertiary mt-2 leading-relaxed">{hint}</p>}
     </div>
   )
 }
@@ -544,11 +544,11 @@ function ErrorList({ errors, t }) {
 
 function GuestExit({ t }) {
   return (
-    <div className="text-center border-t border-steel-lighter pt-6">
-      <Link to="/train" className="font-mono text-xs text-concrete hover:text-amber underline">
+    <div className="text-center border-t border-line-subtle pt-6">
+      <Link to="/train" className="font-mono text-xs text-ink-tertiary hover:text-brand-text underline">
         {t('ob_continue_guest')}
       </Link>
-      <p className="text-[11px] text-concrete mt-2 leading-relaxed">{t('ob_guest_note')}</p>
+      <p className="text-[11px] text-ink-tertiary mt-2 leading-relaxed">{t('ob_guest_note')}</p>
     </div>
   )
 }

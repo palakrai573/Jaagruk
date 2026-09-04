@@ -258,16 +258,16 @@ export default function BuddyDrill() {
   if (stage !== STAGE.DRILL) {
     return (
       <div className="max-w-md mx-auto px-5 py-10">
-        <p className="font-mono text-amber text-xs tracking-[0.2em] uppercase mb-3">{t('bd_eyebrow')}</p>
+        <p className="font-mono text-brand-text text-xs tracking-[0.2em] uppercase mb-3">{t('bd_eyebrow')}</p>
         <h1 className="font-display font-bold text-3xl uppercase mb-3">{t('bd_title')}</h1>
-        <p className="text-concrete text-sm mb-8 leading-relaxed">{t('bd_desc')}</p>
+        <p className="text-ink-tertiary text-sm mb-8 leading-relaxed">{t('bd_desc')}</p>
 
         {error && (
           <div className="bg-hazard/10 border border-hazard/40 rounded p-3 mb-6 flex items-start gap-3">
             <Pictogram name="warning" size={20} />
             <div>
               <p className="text-xs text-hazard">{t(error)}</p>
-              {error === 'bd_failed' && <p className="text-[11px] text-concrete mt-1">{t('bd_failed_hint')}</p>}
+              {error === 'bd_failed' && <p className="text-[11px] text-ink-tertiary mt-1">{t('bd_failed_hint')}</p>}
             </div>
           </div>
         )}
@@ -277,23 +277,23 @@ export default function BuddyDrill() {
             <RoleButton pictogram="alarm" label={t('bd_i_host')} hint={t('bd_host_step1')} onClick={startHost} />
             <RoleButton pictogram="buddy" label={t('bd_i_join')} hint={t('bd_join_step1')} onClick={startJoin} />
 
-            <div className="border-t border-steel-lighter pt-5 mt-3">
+            <div className="border-t border-line-subtle pt-5 mt-3">
               <button
                 type="button"
                 onClick={startLoopback}
-                className="w-full border border-steel-lighter rounded-lg p-4 text-start hover:border-amber flex items-center gap-4"
+                className="w-full border border-line-subtle rounded-lg p-4 text-start hover:border-brand flex items-center gap-4"
               >
                 <Pictogram name="report_it" size={32} />
                 <span className="min-w-0">
                   <span className="block font-bold text-sm">{t('bd_same_device')}</span>
-                  <span className="block text-[11px] text-concrete mt-1 leading-relaxed">
+                  <span className="block text-[11px] text-ink-tertiary mt-1 leading-relaxed">
                     {t('bd_same_device_note')}
                   </span>
                 </span>
               </button>
             </div>
 
-            <p className="text-[11px] text-concrete mt-4 leading-relaxed text-center">{t('bd_failed_hint')}</p>
+            <p className="text-[11px] text-ink-tertiary mt-4 leading-relaxed text-center">{t('bd_failed_hint')}</p>
           </div>
         )}
 
@@ -319,7 +319,7 @@ export default function BuddyDrill() {
                   setCopied(false)
                 }
               }}
-              className="w-full border border-steel-lighter rounded px-4 py-2.5 font-mono text-xs text-concrete hover:border-amber hover:text-amber mb-6"
+              className="w-full border border-line-subtle rounded px-4 py-2.5 font-mono text-xs text-ink-tertiary hover:border-brand hover:text-brand-text mb-6"
             >
               {copied ? t('bd_copied') : t('bd_copy_code')}
             </button>
@@ -328,14 +328,14 @@ export default function BuddyDrill() {
               <button
                 type="button"
                 onClick={() => setStage(STAGE.HOST_SCAN)}
-                className="w-full bg-amber text-steel font-display font-bold uppercase py-3 rounded mb-4"
+                className="w-full bg-brand text-ink-onBrand font-display font-bold uppercase py-3 rounded mb-4"
               >
                 {t('bd_host_step2')}
               </button>
             )}
 
             {stage === STAGE.JOIN_SHOW && (
-              <p className="font-mono text-xs text-concrete text-center mb-4" aria-live="polite">
+              <p className="font-mono text-xs text-ink-tertiary text-center mb-4" aria-live="polite">
                 {/* ICE negotiation can take several seconds. Saying "waiting for
                     buddy" through it reads as nothing happening, so the handshake
                     gets its own state. */}
@@ -347,7 +347,7 @@ export default function BuddyDrill() {
               </p>
             )}
 
-            <button type="button" onClick={reset} className="w-full font-mono text-xs text-concrete underline">
+            <button type="button" onClick={reset} className="w-full font-mono text-xs text-ink-tertiary underline">
               {t('cancel_label')}
             </button>
           </>
@@ -368,7 +368,7 @@ export default function BuddyDrill() {
             />
 
             <div className="mt-5">
-              <label className="font-mono text-[10px] uppercase tracking-widest text-concrete block mb-2">
+              <label className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary block mb-2">
                 {t('bd_paste_instead')}
               </label>
               <textarea
@@ -376,7 +376,7 @@ export default function BuddyDrill() {
                 onChange={(e) => setPasted(e.target.value)}
                 placeholder={t('bd_paste_placeholder')}
                 rows={3}
-                className="w-full bg-steel border border-steel-lighter rounded px-3 py-2 font-mono text-[11px] focus:border-amber outline-none"
+                className="w-full bg-surface-0 border border-line-subtle rounded px-3 py-2 font-mono text-[11px] focus:border-brand outline-none"
               />
               <button
                 type="button"
@@ -385,13 +385,13 @@ export default function BuddyDrill() {
                   else consumeAnswer(pasted)
                 }}
                 disabled={pasted.trim().length < 20}
-                className="w-full bg-amber text-steel font-bold text-xs uppercase py-3 rounded mt-3 disabled:opacity-40"
+                className="w-full bg-brand text-ink-onBrand font-bold text-xs uppercase py-3 rounded mt-3 disabled:opacity-40"
               >
                 {t('bd_use_code')}
               </button>
             </div>
 
-            <button type="button" onClick={reset} className="w-full font-mono text-xs text-concrete underline mt-5">
+            <button type="button" onClick={reset} className="w-full font-mono text-xs text-ink-tertiary underline mt-5">
               {t('cancel_label')}
             </button>
           </>
@@ -409,7 +409,7 @@ export default function BuddyDrill() {
   if (finished && result) {
     return (
       <div className="max-w-md mx-auto px-5 py-12 text-center">
-        <p className="font-mono text-amber text-xs tracking-[0.2em] uppercase mb-3">
+        <p className="font-mono text-brand-text text-xs tracking-[0.2em] uppercase mb-3">
           {phase === BUDDY_PHASE.ABORTED ? t('bd_phase_aborted') : t('bd_phase_debrief')}
         </p>
         <h1 className="font-display font-bold text-2xl uppercase mb-8">{t('bd_your_score')}</h1>
@@ -423,7 +423,7 @@ export default function BuddyDrill() {
           />
         </div>
 
-        <div className="border border-steel-lighter rounded-lg divide-y divide-steel-lighter text-start mb-6">
+        <div className="border border-line-subtle rounded-lg divide-y divide-line-subtle text-start mb-6">
           <Row
             label={t('bd_you_are')}
             value={result.role === BUDDY_ROLE.CASUALTY ? t('bd_role_casualty') : t('bd_role_responder')}
@@ -438,18 +438,18 @@ export default function BuddyDrill() {
         </div>
 
         {drill?.buddy?.result ? (
-          <div className="bg-steel-light border border-steel-lighter rounded-lg p-4 mb-6 text-start">
-            <p className="font-mono text-[10px] uppercase tracking-widest text-concrete mb-2">{t('bd_buddy_score')}</p>
-            <p className="font-display font-bold text-2xl text-amber">{drill.buddy.result.readiness}%</p>
+          <div className="bg-surface-1 border border-line-subtle rounded-lg p-4 mb-6 text-start">
+            <p className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary mb-2">{t('bd_buddy_score')}</p>
+            <p className="font-display font-bold text-2xl text-brand-text">{drill.buddy.result.readiness}%</p>
           </div>
         ) : (
-          <p className="font-mono text-[11px] text-concrete mb-6">{t('bd_waiting_score')}</p>
+          <p className="font-mono text-[11px] text-ink-tertiary mb-6">{t('bd_waiting_score')}</p>
         )}
 
         {result.partial && (
-          <div className="bg-amber/10 border border-amber/40 rounded p-4 mb-6 text-start flex items-start gap-3">
+          <div className="bg-brand-subtle border border-brand/40 rounded p-4 mb-6 text-start flex items-start gap-3">
             <Pictogram name="warning" size={24} />
-            <p className="text-xs text-concrete leading-relaxed">{t('bd_partial_note')}</p>
+            <p className="text-xs text-ink-tertiary leading-relaxed">{t('bd_partial_note')}</p>
           </div>
         )}
 
@@ -459,11 +459,11 @@ export default function BuddyDrill() {
           <button
             type="button"
             onClick={reset}
-            className="w-full bg-amber text-steel font-display font-bold uppercase py-3 rounded"
+            className="w-full bg-brand text-ink-onBrand font-display font-bold uppercase py-3 rounded"
           >
             {t('done_label')}
           </button>
-          <Link to="/dashboard" className="font-mono text-xs text-concrete underline">
+          <Link to="/dashboard" className="font-mono text-xs text-ink-tertiary underline">
             {t('sc_dashboard')}
           </Link>
         </div>
@@ -475,10 +475,10 @@ export default function BuddyDrill() {
     <div className="max-w-2xl mx-auto px-5 py-10">
       {/* Status strip */}
       <div className="flex items-center justify-between gap-3 mb-6 flex-wrap">
-        <p className="font-mono text-amber text-xs tracking-[0.2em] uppercase">{t(`bd_phase_${phase}`)}</p>
+        <p className="font-mono text-brand-text text-xs tracking-[0.2em] uppercase">{t(`bd_phase_${phase}`)}</p>
         <span className="flex items-center gap-3">
           {loopback && (
-            <span className="font-mono text-[10px] uppercase text-amber border border-amber/50 rounded px-2 py-1">
+            <span className="font-mono text-[10px] uppercase text-brand-text border border-brand/50 rounded px-2 py-1">
               {t('bd_same_device')}
             </span>
           )}
@@ -493,10 +493,10 @@ export default function BuddyDrill() {
 
       {/* Role */}
       {drill?.myRole && (
-        <div className="bg-steel-light border border-steel-lighter rounded-lg p-4 mb-6 flex items-center gap-4">
+        <div className="bg-surface-1 border border-line-subtle rounded-lg p-4 mb-6 flex items-center gap-4">
           <Pictogram name={drill.myRole === BUDDY_ROLE.CASUALTY ? 'confined_space' : 'buddy'} size={38} />
           <div>
-            <p className="font-mono text-[10px] uppercase tracking-widest text-concrete">{t('bd_you_are')}</p>
+            <p className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary">{t('bd_you_are')}</p>
             <p className="font-bold">
               {drill.myRole === BUDDY_ROLE.CASUALTY ? t('bd_role_casualty') : t('bd_role_responder')}
             </p>
@@ -517,11 +517,11 @@ export default function BuddyDrill() {
 
       {/* Monitoring */}
       {phase === BUDDY_PHASE.MONITORING && (
-        <div className="border border-steel-lighter rounded-lg p-6 mb-6">
-          <p className="text-sm text-concrete mb-5 leading-relaxed">{t('bd_monitoring_note')}</p>
+        <div className="border border-line-subtle rounded-lg p-6 mb-6">
+          <p className="text-sm text-ink-tertiary mb-5 leading-relaxed">{t('bd_monitoring_note')}</p>
 
           <div className="flex items-center justify-between gap-3 mb-5 flex-wrap">
-            <span className="font-mono text-[11px] text-concrete">
+            <span className="font-mono text-[11px] text-ink-tertiary">
               {t('bd_checkins_label')}: {drill?.checkIns?.made ?? 0} / {CHECK_IN_ROUNDS}
             </span>
             {(drill?.checkIns?.missed ?? 0) > 0 && (
@@ -541,7 +541,7 @@ export default function BuddyDrill() {
                 type="button"
                 onClick={() => drillRef.current?.checkIn()}
                 data-gesture-target="checkin"
-                className="w-full bg-amber text-steel font-display font-bold text-lg uppercase py-4 rounded"
+                className="w-full bg-brand text-ink-onBrand font-display font-bold text-lg uppercase py-4 rounded"
               >
                 {t('bd_checkin_btn')}
               </button>
@@ -572,16 +572,16 @@ export default function BuddyDrill() {
       )}
 
       {phase === BUDDY_PHASE.DISTRESS && drill?.myRole === BUDDY_ROLE.CASUALTY && !step && (
-        <div className="border border-steel-lighter rounded-lg p-6 mb-6 text-center">
+        <div className="border border-line-subtle rounded-lg p-6 mb-6 text-center">
           <Pictogram name="gas" size={44} className="mx-auto mb-4" />
-          <p className="text-sm text-concrete">{t('bd_phase_distress')}</p>
+          <p className="text-sm text-ink-tertiary">{t('bd_phase_distress')}</p>
         </div>
       )}
 
       {/* Decision */}
       {step && (
         <>
-          <div className="bg-steel-light border border-steel-lighter rounded-lg p-6 mb-6">
+          <div className="bg-surface-1 border border-line-subtle rounded-lg p-6 mb-6">
             <div className="flex items-start gap-4">
               <Pictogram name={step.pictogram} size={pictogramMode ? 56 : 34} />
               <p className="leading-relaxed text-lg">{t(step.promptKey)}</p>
@@ -611,7 +611,7 @@ export default function BuddyDrill() {
               latencyMs={feedbackMeta?.latencyMs}
               targetMs={feedbackMeta?.targetMs}
             >
-              <p className="font-mono text-xs text-concrete text-center">{t('bd_waiting_buddy')}</p>
+              <p className="font-mono text-xs text-ink-tertiary text-center">{t('bd_waiting_buddy')}</p>
             </FeedbackPanel>
           )}
         </>
@@ -619,7 +619,7 @@ export default function BuddyDrill() {
 
       {/* Waiting */}
       {!step && phase !== BUDDY_PHASE.MONITORING && phase !== BUDDY_PHASE.DISTRESS && (
-        <p className="font-mono text-xs text-concrete text-center py-8">{t('bd_waiting_buddy')}</p>
+        <p className="font-mono text-xs text-ink-tertiary text-center py-8">{t('bd_waiting_buddy')}</p>
       )}
 
       <button
@@ -627,7 +627,7 @@ export default function BuddyDrill() {
         onClick={() => {
           drillRef.current?.abort('user')
         }}
-        className="w-full font-mono text-xs text-concrete hover:text-hazard underline mt-8"
+        className="w-full font-mono text-xs text-ink-tertiary hover:text-hazard underline mt-8"
       >
         {t('bd_end_drill')}
       </button>
@@ -644,12 +644,12 @@ function RoleButton({ pictogram, label, hint, onClick }) {
     <button
       type="button"
       onClick={onClick}
-      className="w-full text-start rounded-lg border border-steel-lighter bg-steel-light p-5 flex items-center gap-4 hover:border-amber"
+      className="w-full text-start rounded-lg border border-line-subtle bg-surface-1 p-5 flex items-center gap-4 hover:border-brand"
     >
       <Pictogram name={pictogram} size={42} />
       <span className="min-w-0">
         <span className="block font-bold">{label}</span>
-        <span className="block font-mono text-[11px] text-concrete mt-1">{hint}</span>
+        <span className="block font-mono text-[11px] text-ink-tertiary mt-1">{hint}</span>
       </span>
     </button>
   )
@@ -658,7 +658,7 @@ function RoleButton({ pictogram, label, hint, onClick }) {
 function StepLabel({ index, text }) {
   return (
     <div className="flex items-center gap-3 mb-5">
-      <span className="w-8 h-8 rounded-full bg-amber text-steel font-display font-bold flex items-center justify-center shrink-0">
+      <span className="w-8 h-8 rounded-full bg-brand text-ink-onBrand font-display font-bold flex items-center justify-center shrink-0">
         {index}
       </span>
       <p className="font-bold text-sm">{text}</p>
@@ -669,7 +669,7 @@ function StepLabel({ index, text }) {
 function Row({ label, value }) {
   return (
     <div className="px-4 py-3 flex items-center justify-between gap-3">
-      <span className="font-mono text-[10px] uppercase tracking-widest text-concrete">{label}</span>
+      <span className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary">{label}</span>
       <span className="text-sm font-bold">{value}</span>
     </div>
   )

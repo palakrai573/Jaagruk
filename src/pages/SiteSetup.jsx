@@ -174,21 +174,21 @@ export default function SiteSetup() {
   if (loading) {
     return (
       <div className="max-w-3xl mx-auto px-5 py-20 text-center">
-        <p className="font-mono text-xs text-concrete uppercase tracking-widest">{t('loading_label')}</p>
+        <p className="font-mono text-xs text-ink-tertiary uppercase tracking-widest">{t('loading_label')}</p>
       </div>
     )
   }
 
   return (
     <div className="max-w-3xl mx-auto px-5 py-10">
-      <p className="font-mono text-amber text-xs tracking-[0.2em] uppercase mb-3">{t('site_eyebrow')}</p>
+      <p className="font-mono text-brand-text text-xs tracking-[0.2em] uppercase mb-3">{t('site_eyebrow')}</p>
       <h1 className="font-display font-bold text-4xl md:text-5xl uppercase mb-3">{t('site_title')}</h1>
-      <p className="text-concrete mb-6 max-w-xl leading-relaxed">{t('site_desc')}</p>
+      <p className="text-ink-tertiary mb-6 max-w-xl leading-relaxed">{t('site_desc')}</p>
 
       {worker && worker.role !== ROLE.SUPERVISOR && (
-        <div className="bg-amber/10 border border-amber/40 rounded p-3 mb-6 flex items-start gap-3">
+        <div className="bg-brand-subtle border border-brand/40 rounded p-3 mb-6 flex items-start gap-3">
           <Pictogram name="warning" size={22} />
-          <p className="text-xs text-concrete leading-relaxed">{t('ad_auth_warning')}</p>
+          <p className="text-xs text-ink-tertiary leading-relaxed">{t('ad_auth_warning')}</p>
         </div>
       )}
 
@@ -216,7 +216,7 @@ export default function SiteSetup() {
 
       {/* Site name */}
       <div className="mb-8">
-        <label className="font-mono text-[10px] uppercase tracking-widest text-concrete block mb-2">
+        <label className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary block mb-2">
           {t('site_name_label')}
         </label>
         <input
@@ -224,7 +224,7 @@ export default function SiteSetup() {
           value={site?.name || ''}
           onChange={(e) => setSite((prev) => ({ ...prev, name: e.target.value }))}
           onBlur={(e) => handleRenameSite(e.target.value)}
-          className="w-full bg-steel border border-steel-lighter rounded px-4 py-3 text-sm focus:border-amber outline-none"
+          className="w-full bg-surface-0 border border-line-subtle rounded px-4 py-3 text-sm focus:border-brand outline-none"
         />
       </div>
 
@@ -233,7 +233,7 @@ export default function SiteSetup() {
         <h2 className="font-display font-bold text-2xl uppercase mb-4">{t('site_zones')}</h2>
 
         {(!site?.zones || site.zones.length === 0) && (
-          <p className="text-sm text-concrete border border-steel-lighter rounded-lg p-6 text-center mb-4">
+          <p className="text-sm text-ink-tertiary border border-line-subtle rounded-lg p-6 text-center mb-4">
             {t('site_no_zones')}
           </p>
         )}
@@ -243,7 +243,7 @@ export default function SiteSetup() {
             <div
               key={zone.id}
               className={`rounded-lg border p-4 flex items-center justify-between gap-3 flex-wrap ${
-                zone.id === activeZoneId ? 'border-amber bg-amber/5' : 'border-steel-lighter bg-steel-light'
+                zone.id === activeZoneId ? 'border-brand bg-brand-subtle' : 'border-line-subtle bg-surface-1'
               }`}
             >
               <button
@@ -254,7 +254,7 @@ export default function SiteSetup() {
                 <Pictogram name="assembly_point" size={26} />
                 <span className="min-w-0">
                   <span className="block font-bold text-sm truncate">{zone.name}</span>
-                  <span className="block font-mono text-[10px] text-concrete">
+                  <span className="block font-mono text-[10px] text-ink-tertiary">
                     {(zone.anchors || []).length} {t('site_anchors_count')}
                   </span>
                 </span>
@@ -270,7 +270,7 @@ export default function SiteSetup() {
                       await refresh()
                     }
                   }}
-                  className="font-mono text-[10px] uppercase border border-steel-lighter rounded px-2.5 py-1.5 text-concrete hover:border-amber hover:text-amber"
+                  className="font-mono text-[10px] uppercase border border-line-subtle rounded px-2.5 py-1.5 text-ink-tertiary hover:border-brand hover:text-brand-text"
                 >
                   {t('save_label')}
                 </button>
@@ -284,7 +284,7 @@ export default function SiteSetup() {
                     if (activeZoneId === zone.id) setActiveZoneId(null)
                     await refresh()
                   }}
-                  className="font-mono text-[10px] uppercase border border-steel-lighter rounded px-2.5 py-1.5 text-concrete hover:border-hazard hover:text-hazard"
+                  className="font-mono text-[10px] uppercase border border-line-subtle rounded px-2.5 py-1.5 text-ink-tertiary hover:border-hazard hover:text-hazard"
                 >
                   ✕
                 </button>
@@ -299,12 +299,12 @@ export default function SiteSetup() {
             value={newZoneName}
             onChange={(e) => setNewZoneName(e.target.value)}
             placeholder={t('site_zone_name_prompt')}
-            className="flex-1 bg-steel border border-steel-lighter rounded px-4 py-2.5 text-sm focus:border-amber outline-none"
+            className="flex-1 bg-surface-0 border border-line-subtle rounded px-4 py-2.5 text-sm focus:border-brand outline-none"
           />
           <button
             type="button"
             onClick={handleCreateZone}
-            className="bg-amber text-steel font-bold text-xs uppercase px-4 py-2.5 rounded shrink-0"
+            className="bg-brand text-ink-onBrand font-bold text-xs uppercase px-4 py-2.5 rounded shrink-0"
           >
             {t('site_new_zone')}
           </button>
@@ -319,7 +319,7 @@ export default function SiteSetup() {
             <button
               type="button"
               onClick={() => setMarking((m) => !m)}
-              className="font-mono text-[10px] uppercase tracking-widest border border-steel-lighter rounded px-3 py-2 text-concrete hover:border-amber hover:text-amber"
+              className="font-mono text-[10px] uppercase tracking-widest border border-line-subtle rounded px-3 py-2 text-ink-tertiary hover:border-brand hover:text-brand-text"
             >
               {marking ? t('close_label') : t('site_start_marking')}
             </button>
@@ -337,7 +337,7 @@ export default function SiteSetup() {
                 onFallback={() => setMarking(false)}
               />
 
-              <div className="bg-steel-light border border-steel-lighter rounded-lg p-5 mb-4">
+              <div className="bg-surface-1 border border-line-subtle rounded-lg p-5 mb-4">
                 <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
                   <p className="text-sm">{t('site_aim_and_tap')}</p>
                   <span
@@ -356,7 +356,7 @@ export default function SiteSetup() {
                   value={pendingLabel}
                   onChange={(e) => setPendingLabel(e.target.value)}
                   placeholder={t('site_marked')}
-                  className="w-full bg-steel border border-steel-lighter rounded px-4 py-2.5 text-sm mb-4 focus:border-amber outline-none"
+                  className="w-full bg-surface-0 border border-line-subtle rounded px-4 py-2.5 text-sm mb-4 focus:border-brand outline-none"
                 />
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -367,10 +367,10 @@ export default function SiteSetup() {
                         key={type}
                         type="button"
                         onClick={() => handleDropAnchor(type)}
-                        className="rounded-lg border border-steel-lighter bg-steel p-3 flex flex-col items-center gap-2 hover:border-amber"
+                        className="rounded-lg border border-line-subtle bg-surface-0 p-3 flex flex-col items-center gap-2 hover:border-brand"
                       >
                         <Pictogram name={meta.pictogram} size={34} />
-                        <span className="font-mono text-[10px] text-center leading-tight text-concrete">
+                        <span className="font-mono text-[10px] text-center leading-tight text-ink-tertiary">
                           {t(meta.labelKey)}
                         </span>
                       </button>
@@ -383,13 +383,13 @@ export default function SiteSetup() {
                 )}
               </div>
 
-              <p className="text-[11px] text-concrete leading-relaxed">{t('site_scan_note')}</p>
+              <p className="text-[11px] text-ink-tertiary leading-relaxed">{t('site_scan_note')}</p>
             </>
           )}
 
           {/* Anchor list */}
           {(activeZone.anchors || []).length > 0 && (
-            <div className="border border-steel-lighter rounded-lg divide-y divide-steel-lighter mt-4">
+            <div className="border border-line-subtle rounded-lg divide-y divide-line-subtle mt-4">
               {activeZone.anchors.map((anchor) => {
                 const meta = anchorMeta(anchor.type)
                 return (
@@ -398,7 +398,7 @@ export default function SiteSetup() {
                       <Pictogram name={meta.pictogram} size={26} />
                       <span className="min-w-0">
                         <span className="block text-sm truncate">{anchor.label}</span>
-                        <span className="block font-mono text-[10px] text-concrete">
+                        <span className="block font-mono text-[10px] text-ink-tertiary">
                           {Math.round(anchor.bearing)}° · {Math.round(anchor.elevation)}°
                         </span>
                       </span>
@@ -409,7 +409,7 @@ export default function SiteSetup() {
                         await deleteAnchor(siteId, activeZone.id, anchor.id)
                         await refresh()
                       }}
-                      className="font-mono text-[10px] uppercase text-concrete hover:text-hazard shrink-0"
+                      className="font-mono text-[10px] uppercase text-ink-tertiary hover:text-hazard shrink-0"
                     >
                       ✕
                     </button>
@@ -422,16 +422,16 @@ export default function SiteSetup() {
       )}
 
       {/* Sharing */}
-      <section className="border-t border-steel-lighter pt-8">
+      <section className="border-t border-line-subtle pt-8">
         <h2 className="font-display font-bold text-xl uppercase mb-3">{t('site_export_scan')}</h2>
-        <p className="text-xs text-concrete mb-4 leading-relaxed max-w-xl">{t('site_scan_note')}</p>
+        <p className="text-xs text-ink-tertiary mb-4 leading-relaxed max-w-xl">{t('site_scan_note')}</p>
 
         <div className="flex gap-3 flex-wrap">
           <button
             type="button"
             onClick={handleExport}
             disabled={!summary?.scanned}
-            className="bg-amber text-steel font-bold text-xs uppercase px-4 py-2.5 rounded disabled:opacity-40"
+            className="bg-brand text-ink-onBrand font-bold text-xs uppercase px-4 py-2.5 rounded disabled:opacity-40"
           >
             {t('site_export_scan')}
           </button>
@@ -450,7 +450,7 @@ export default function SiteSetup() {
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="border border-concrete rounded px-4 py-2.5 font-mono text-xs hover:border-amber hover:text-amber"
+            className="border border-line rounded px-4 py-2.5 font-mono text-xs hover:border-brand hover:text-brand-text"
           >
             {t('site_import_scan')}
           </button>
@@ -462,9 +462,9 @@ export default function SiteSetup() {
 
 function Stat({ label, value, accent }) {
   return (
-    <div className="bg-steel-light border border-steel-lighter rounded-lg p-4 text-center">
-      <p className={`font-display font-bold text-2xl ${accent ? 'text-amber' : 'text-chalk'}`}>{value}</p>
-      <p className="font-mono text-[9px] text-concrete uppercase tracking-widest mt-1 leading-tight">{label}</p>
+    <div className="bg-surface-1 border border-line-subtle rounded-lg p-4 text-center">
+      <p className={`font-display font-bold text-2xl ${accent ? 'text-brand-text' : 'text-ink'}`}>{value}</p>
+      <p className="font-mono text-[9px] text-ink-tertiary uppercase tracking-widest mt-1 leading-tight">{label}</p>
     </div>
   )
 }

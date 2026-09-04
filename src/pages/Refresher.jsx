@@ -205,13 +205,13 @@ export default function Refresher() {
     return (
       <div className="max-w-2xl mx-auto px-5 py-10">
         <div className="flex items-center justify-between gap-3 mb-6 flex-wrap">
-          <p className="font-mono text-amber text-xs tracking-[0.2em] uppercase">
+          <p className="font-mono text-brand-text text-xs tracking-[0.2em] uppercase">
             {t('rf_eyebrow')} · {stepIndex + 1}/{active.steps.length}
           </p>
           <button
             type="button"
             onClick={closeQuiz}
-            className="font-mono text-[10px] uppercase tracking-widest text-concrete hover:text-hazard"
+            className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary hover:text-hazard"
           >
             {t('cancel_label')}
           </button>
@@ -222,7 +222,7 @@ export default function Refresher() {
           {active.domain}
         </h1>
 
-        <div className="bg-steel-light border border-steel-lighter rounded-lg p-6 mb-6">
+        <div className="bg-surface-1 border border-line-subtle rounded-lg p-6 mb-6">
           <div className="flex items-start gap-4">
             {pictogramMode && <Pictogram name={step.pictogram} size={54} />}
             <p className="leading-relaxed text-lg">{step.prompt}</p>
@@ -255,7 +255,7 @@ export default function Refresher() {
             <button
               onClick={advance}
               data-gesture-target="continue"
-              className="w-full bg-amber text-steel font-display font-bold text-lg uppercase py-3 rounded"
+              className="w-full bg-brand text-ink-onBrand font-display font-bold text-lg uppercase py-3 rounded"
             >
               {stepIndex + 1 < active.steps.length ? t('sc_continue') : t('done_label')}
             </button>
@@ -274,7 +274,7 @@ export default function Refresher() {
         <h1 className="font-display font-bold text-2xl uppercase mb-2">
           {outcome.passed ? t('rf_passed') : t('rf_failed')}
         </h1>
-        <p className="text-concrete text-sm mb-8">{active.domain}</p>
+        <p className="text-ink-tertiary text-sm mb-8">{active.domain}</p>
 
         <div className="flex justify-center mb-8">
           <ReadinessRing
@@ -286,16 +286,16 @@ export default function Refresher() {
         </div>
 
         {outcome.hesitation && (
-          <div className="bg-amber/10 border border-amber/40 rounded-lg p-4 mb-6 text-start flex items-start gap-3">
+          <div className="bg-brand-subtle border border-brand/40 rounded-lg p-4 mb-6 text-start flex items-start gap-3">
             <Pictogram name="slow" size={28} />
-            <p className="text-xs text-concrete leading-relaxed">{t('as_hesitation_body')}</p>
+            <p className="text-xs text-ink-tertiary leading-relaxed">{t('as_hesitation_body')}</p>
           </div>
         )}
 
         <button
           type="button"
           onClick={closeQuiz}
-          className="w-full bg-amber text-steel font-display font-bold text-lg uppercase py-3 rounded"
+          className="w-full bg-brand text-ink-onBrand font-display font-bold text-lg uppercase py-3 rounded"
         >
           {t('done_label')}
         </button>
@@ -307,19 +307,19 @@ export default function Refresher() {
 
   return (
     <div className="max-w-3xl mx-auto px-5 py-10">
-      <p className="font-mono text-amber text-xs tracking-[0.2em] uppercase mb-3">{t('rf_eyebrow')}</p>
+      <p className="font-mono text-brand-text text-xs tracking-[0.2em] uppercase mb-3">{t('rf_eyebrow')}</p>
       <h1 className="font-display font-bold text-4xl md:text-5xl uppercase mb-3">{t('rf_title')}</h1>
-      <p className="text-concrete mb-8 max-w-xl leading-relaxed">{t('rf_desc')}</p>
+      <p className="text-ink-tertiary mb-8 max-w-xl leading-relaxed">{t('rf_desc')}</p>
 
-      {loading && <p className="font-mono text-xs text-concrete uppercase tracking-widest">{t('loading_label')}</p>}
+      {loading && <p className="font-mono text-xs text-ink-tertiary uppercase tracking-widest">{t('loading_label')}</p>}
 
       {!loading && !worker && (
-        <div className="border border-steel-lighter rounded-lg p-6 mb-8 flex items-start gap-4">
+        <div className="border border-line-subtle rounded-lg p-6 mb-8 flex items-start gap-4">
           <Pictogram name="warning" size={32} />
           <div>
             <p className="text-sm mb-2">{t('cert_sign_in_first')}</p>
-            <p className="text-xs text-concrete mb-3 leading-relaxed">{t('cert_sign_in_why')}</p>
-            <Link to="/start" className="font-mono text-xs text-amber underline">
+            <p className="text-xs text-ink-tertiary mb-3 leading-relaxed">{t('cert_sign_in_why')}</p>
+            <Link to="/start" className="font-mono text-xs text-brand-text underline">
               {t('ob_sign_in')}
             </Link>
           </div>
@@ -327,12 +327,12 @@ export default function Refresher() {
       )}
 
       {!loading && worker && attemptedCount === 0 && (
-        <div className="border border-steel-lighter rounded-lg p-8 text-center mb-8">
+        <div className="border border-line-subtle rounded-lg p-8 text-center mb-8">
           <Pictogram name="ppe" size={40} className="mx-auto mb-4" />
-          <p className="text-sm text-concrete mb-4">{t('rf_never_trained')}</p>
+          <p className="text-sm text-ink-tertiary mb-4">{t('rf_never_trained')}</p>
           <Link
             to="/train"
-            className="inline-block bg-amber text-steel font-display font-bold uppercase px-6 py-3 rounded"
+            className="inline-block bg-brand text-ink-onBrand font-display font-bold uppercase px-6 py-3 rounded"
           >
             {t('home_cta_train')}
           </Link>
@@ -350,7 +350,7 @@ export default function Refresher() {
             {due.map((entry) => (
               <div
                 key={entry.domain}
-                className="bg-steel-light border border-amber/50 rounded-lg p-4 flex items-center justify-between gap-4 flex-wrap"
+                className="bg-surface-1 border border-brand/50 rounded-lg p-4 flex items-center justify-between gap-4 flex-wrap"
               >
                 <div className="min-w-0">
                   <p className="font-bold text-sm">{entry.domain}</p>
@@ -363,7 +363,7 @@ export default function Refresher() {
                 <button
                   type="button"
                   onClick={() => startQuiz(entry.domain)}
-                  className="bg-amber text-steel font-bold text-xs uppercase px-4 py-2.5 rounded shrink-0"
+                  className="bg-brand text-ink-onBrand font-bold text-xs uppercase px-4 py-2.5 rounded shrink-0"
                 >
                   {t('rf_start')}
                 </button>
@@ -384,22 +384,22 @@ export default function Refresher() {
       {!loading && attemptedCount > 0 && (
         <section className="mb-10">
           <h2 className="font-display font-bold text-2xl uppercase mb-2">{t('db_by_domain')}</h2>
-          <p className="text-xs text-concrete mb-4 leading-relaxed max-w-xl">{t('cert_decay_note')}</p>
+          <p className="text-xs text-ink-tertiary mb-4 leading-relaxed max-w-xl">{t('cert_decay_note')}</p>
 
-          <div className="border border-steel-lighter rounded-lg divide-y divide-steel-lighter">
+          <div className="border border-line-subtle rounded-lg divide-y divide-line-subtle">
             {overview.map((row) => (
               <RetentionRow key={row.domain} row={row} t={t} onStart={() => startQuiz(row.domain)} />
             ))}
           </div>
 
-          <p className="font-mono text-[10px] text-concrete mt-3">
+          <p className="font-mono text-[10px] text-ink-tertiary mt-3">
             {t('rf_next_in')}: {INTERVALS_DAYS.join(' / ')} {t('rf_days')}
           </p>
         </section>
       )}
 
       {/* Reminders */}
-      <section className="border-t border-steel-lighter pt-8">
+      <section className="border-t border-line-subtle pt-8">
         <h2 className="font-display font-bold text-xl uppercase mb-3">{t('rf_enable_reminders')}</h2>
 
         {notifyState === 'granted' && (
@@ -410,19 +410,19 @@ export default function Refresher() {
         )}
         {notifyState === 'denied' && <p className="font-mono text-xs text-hazard mb-3">{t('rf_reminders_blocked')}</p>}
         {notifyState === 'unsupported' && (
-          <p className="font-mono text-xs text-concrete mb-3">{t('rf_reminders_unsupported')}</p>
+          <p className="font-mono text-xs text-ink-tertiary mb-3">{t('rf_reminders_unsupported')}</p>
         )}
         {notifyState === 'default' && (
           <button
             type="button"
             onClick={enableReminders}
-            className="border border-concrete rounded px-5 py-2.5 font-mono text-xs hover:border-amber hover:text-amber mb-3"
+            className="border border-line rounded px-5 py-2.5 font-mono text-xs hover:border-brand hover:text-brand-text mb-3"
           >
             {t('rf_enable_reminders')}
           </button>
         )}
 
-        <p className="text-[11px] text-concrete leading-relaxed max-w-xl">{t('rf_web_limit')}</p>
+        <p className="text-[11px] text-ink-tertiary leading-relaxed max-w-xl">{t('rf_web_limit')}</p>
       </section>
     </div>
   )
@@ -439,7 +439,7 @@ function RetentionRow({ row, t, onStart }) {
     <div className="p-4 flex items-center justify-between gap-4 flex-wrap">
       <div className="min-w-0 flex-1">
         <p className="font-bold text-sm truncate">{row.domain}</p>
-        <p className="font-mono text-[10px] text-concrete mt-1">
+        <p className="font-mono text-[10px] text-ink-tertiary mt-1">
           {!row.attempted && t('rf_never_trained')}
           {row.attempted && row.due && <span className="text-hazard">{t('rf_due_now')}</span>}
           {row.attempted && !row.due && row.daysUntil !== null && (
@@ -447,7 +447,7 @@ function RetentionRow({ row, t, onStart }) {
               {t('rf_next_in')} {Math.max(0, Math.ceil(row.daysUntil))} {t('rf_days')}
             </span>
           )}
-          {row.hesitation && <span className="text-amber"> · {t('db_flagged_slow')}</span>}
+          {row.hesitation && <span className="text-brand-text"> · {t('db_flagged_slow')}</span>}
         </p>
       </div>
 
@@ -456,7 +456,7 @@ function RetentionRow({ row, t, onStart }) {
           {row.attempted ? `${effective}%` : '—'}
         </span>
         {decayed && (
-          <p className="font-mono text-[10px] text-concrete">
+          <p className="font-mono text-[10px] text-ink-tertiary">
             {t('db_decayed_from')} {row.baseReadiness}%
           </p>
         )}
@@ -466,7 +466,7 @@ function RetentionRow({ row, t, onStart }) {
         <button
           type="button"
           onClick={onStart}
-          className="font-mono text-[10px] uppercase tracking-widest border border-steel-lighter rounded px-3 py-2 text-concrete hover:border-amber hover:text-amber shrink-0"
+          className="font-mono text-[10px] uppercase tracking-widest border border-line-subtle rounded px-3 py-2 text-ink-tertiary hover:border-brand hover:text-brand-text shrink-0"
         >
           {t('rf_start')}
         </button>
