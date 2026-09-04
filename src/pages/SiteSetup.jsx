@@ -20,6 +20,7 @@ import { getActiveSiteId, getCurrentWorker, ROLE } from '../lib/identity.js'
 import { downloadBundle, readBundleFile } from '../lib/sync.js'
 import ARDrill from '../components/ARDrill.jsx'
 import Pictogram from '../lib/pictograms.jsx'
+import { Dialog, useConfirm, usePrompt, useToast, Skeleton } from '../components/ui/index.js'
 import { useLanguage } from '../context/LanguageContext.jsx'
 
 /**
@@ -55,6 +56,11 @@ const MARKABLE = [
 ]
 
 export default function SiteSetup() {
+  // Declared before the body so the handlers below can close over them.
+  const toast = useToast()
+  const { confirm, dialogProps: confirmProps } = useConfirm()
+  const { prompt, dialogProps: promptProps } = usePrompt()
+
   const { t } = useLanguage()
   const fileInputRef = useRef(null)
   const viewRef = useRef({ heading: 0, elevation: 0, headingSource: HEADING_SOURCE.NONE })
@@ -169,18 +175,75 @@ export default function SiteSetup() {
     }
   }
 
+  /* ---------------- zone actions ---------------- */
+
+  /**
+   * Rename. Replaces window.prompt, which could not be translated and could not
+   * validate — an empty name or 200 characters was accepted silently.
+   */
+  const renameZonePrompt = async (zone) => {
+    const next = await prompt({
+      title: t('site_zone_name_prompt'),
+      initial: zone.name,
+      confirmLabel: t('save_label'),
+      cancelLabel: t('cancel_label'),
+      maxLength: 40,
+    })
+    // null means cancelled. An empty result is impossible: the confirm button
+    // stays disabled until the trimmed value is usable.
+    if (next === null) return
+    await renameZone(siteId, zone.id, next)
+    await refresh()
+    toast.success(t('site_zone_renamed'))
+  }
+
+  /**
+   * Delete. Destroys every anchor in the zone, so it is a `danger` dialog naming
+   * the zone and the anchor count — window.confirm could say neither, and could
+   * not distinguish this from clearing a log.
+   */
+  const deleteZoneConfirm = async (zone) => {
+    const anchorCount = zone.anchors?.length || 0
+    const agreed = await confirm({
+      tone: 'danger',
+      title: t('site_delete_zone'),
+      body: `${zone.name} — ${anchorCount} ${t('m_anchors')}`,
+      confirmLabel: t('delete_label'),
+      cancelLabel: t('cancel_label'),
+    })
+    if (!agreed) return
+    await deleteZone(siteId, zone.id)
+    if (activeZoneId === zone.id) setActiveZoneId(null)
+    await refresh()
+    toast.success(t('site_zone_deleted'))
+  }
+
   /* ---------------- render ---------------- */
 
   if (loading) {
+    // Skeleton matching the real layout, so content does not jump in when it
+    // arrives. Replaces a centred "Loading…".
     return (
-      <div className="max-w-3xl mx-auto px-5 py-20 text-center">
-        <p className="font-mono text-xs text-ink-tertiary uppercase tracking-widest">{t('loading_label')}</p>
+      <div className="max-w-3xl mx-auto px-5 py-10">
+        <Skeleton className="h-2.5 w-24 mb-4" />
+        <Skeleton className="h-9 w-2/3 mb-4" />
+        <Skeleton className="h-3 w-full max-w-xl mb-8" />
+        <Skeleton className="h-56 w-full mb-6" rounded="lg" />
+        <div className="space-y-2.5">
+          {Array.from({ length: 3 }, (_, i) => (
+            <Skeleton key={i} className="h-16 w-full" rounded="lg" />
+          ))}
+        </div>
       </div>
     )
   }
 
   return (
     <div className="max-w-3xl mx-auto px-5 py-10">
+      {/* One Dialog element per hook, rendered once at the page root. The hooks
+          hold the promise resolver, so these must stay mounted. */}
+      <Dialog {...confirmProps} />
+      <Dialog {...promptProps} />
       <p className="font-mono text-brand-text text-xs tracking-[0.2em] uppercase mb-3">{t('site_eyebrow')}</p>
       <h1 className="font-display font-bold text-4xl md:text-5xl uppercase mb-3">{t('site_title')}</h1>
       <p className="text-ink-tertiary mb-6 max-w-xl leading-relaxed">{t('site_desc')}</p>
@@ -260,33 +323,24 @@ export default function SiteSetup() {
                 </span>
               </button>
 
+              {/* 44px targets. These were 26px tall, which on a phone held in a
+                  gloved hand put "rename" and "delete this zone and every anchor
+                  in it" within a thumb-width of each other. */}
               <div className="flex gap-2 shrink-0">
                 <button
                   type="button"
-                  onClick={async () => {
-                    const next = window.prompt(t('site_zone_name_prompt'), zone.name)
-                    if (next !== null) {
-                      await renameZone(siteId, zone.id, next)
-                      await refresh()
-                    }
-                  }}
-                  className="font-mono text-[10px] uppercase border border-line-subtle rounded px-2.5 py-1.5 text-ink-tertiary hover:border-brand hover:text-brand-text"
+                  onClick={() => renameZonePrompt(zone)}
+                  className="font-mono text-2xs uppercase border border-line-subtle rounded-lg px-3 min-h-[44px] flex items-center text-ink-tertiary hover:border-brand hover:text-brand-text transition-colors duration-fast"
                 >
-                  {t('save_label')}
+                  {t('rename_label')}
                 </button>
                 <button
                   type="button"
-                  onClick={async () => {
-                    // Deleting a zone destroys every anchor in it, so it needs a
-                    // confirmation the supervisor cannot fat-finger past.
-                    if (!window.confirm(`${t('site_delete_zone')} — ${zone.name}?`)) return
-                    await deleteZone(siteId, zone.id)
-                    if (activeZoneId === zone.id) setActiveZoneId(null)
-                    await refresh()
-                  }}
-                  className="font-mono text-[10px] uppercase border border-line-subtle rounded px-2.5 py-1.5 text-ink-tertiary hover:border-hazard hover:text-hazard"
+                  onClick={() => deleteZoneConfirm(zone)}
+                  aria-label={`${t('site_delete_zone')} — ${zone.name}`}
+                  className="font-mono text-sm border border-line-subtle rounded-lg px-3 min-h-[44px] min-w-[44px] flex items-center justify-center text-ink-tertiary hover:border-hazard hover:text-hazard-text transition-colors duration-fast"
                 >
-                  ✕
+                  <span aria-hidden="true">✕</span>
                 </button>
               </div>
             </div>

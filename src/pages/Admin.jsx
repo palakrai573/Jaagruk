@@ -32,6 +32,7 @@ import {
   SYNC_STATUS,
 } from '../lib/sync.js'
 import PeerSync from '../components/PeerSync.jsx'
+import { Dialog, Button } from '../components/ui/index.js'
 import Pictogram from '../lib/pictograms.jsx'
 import { useLanguage } from '../context/LanguageContext.jsx'
 
@@ -173,6 +174,9 @@ function Console({ t, onLock }) {
   const [hazards, setHazards] = useState([])
   const [hzStats, setHzStats] = useState(null)
   const [chain, setChain] = useState(null)
+  // Holds a parsed bundle between choosing the file and choosing whether to trust
+  // its signers. Non-null means the trust dialog is open.
+  const [pendingImport, setPendingImport] = useState(null)
   const [queue, setQueue] = useState(null)
   const [notice, setNotice] = useState(null)
   const [search, setSearch] = useState('')
@@ -264,13 +268,33 @@ function Console({ t, onLock }) {
     flash('ok', 'ad_export_dgms')
   }
 
+  /**
+   * Import needs THREE outcomes, which is why this is not useConfirm.
+   *
+   * It previously used window.confirm, where OK meant "trust these signers" and
+   * Cancel meant "import anyway, without trusting". That is a genuine trap: a
+   * supervisor pressing Cancel to back out of an import got the records imported
+   * regardless, and trusting a signing key is the decision that determines whether
+   * this device will treat another site's certificates as genuine.
+   *
+   * Now: trust and import / import without trusting / cancel entirely. The file is
+   * parsed first so a malformed bundle fails before anything is asked.
+   */
   const importBundle = async (file) => {
     try {
       const bundle = await readBundleFile(file)
-      // Trusting a new signer is a real decision, so it is an explicit prompt
-      // rather than a silent default.
-      const trust = window.confirm(t('ad_import_trust'))
-      await importDgmsBundle(bundle, { trustSigners: trust })
+      setPendingImport(bundle)
+    } catch {
+      flash('error', 'ad_import_failed')
+    }
+  }
+
+  const runImport = async (trustSigners) => {
+    const bundle = pendingImport
+    setPendingImport(null)
+    if (!bundle) return
+    try {
+      await importDgmsBundle(bundle, { trustSigners })
       flash('ok', 'ad_import_done')
       await refresh()
       setChain(null)
@@ -326,15 +350,38 @@ function Console({ t, onLock }) {
         <p className="text-[11px] text-ink-tertiary leading-relaxed">{t('ad_auth_warning')}</p>
       </div>
 
+      {/* Import trust. Three outcomes, so the two actions are rendered as children
+          and only Cancel uses the dialog's own cancel slot — that way backing out
+          genuinely backs out, which window.confirm could not express. */}
+      <Dialog
+        open={!!pendingImport}
+        onClose={() => setPendingImport(null)}
+        title={t('ad_import_trust')}
+        cancelLabel={t('cancel_label')}
+      >
+        <div className="flex flex-col gap-2.5">
+          <Button onClick={() => runImport(true)} size="md" fullWidth>
+            {t('trust_label')}
+          </Button>
+          <Button onClick={() => runImport(false)} variant="secondary" size="md" fullWidth>
+            {t('trust_skip_label')}
+          </Button>
+        </div>
+      </Dialog>
+
       {notice && (
         <div
-          className={`rounded p-3 mb-6 flex items-center gap-3 ${
-            notice.kind === 'ok' ? 'bg-safe/10 border border-safe/40' : 'bg-hazard/10 border border-hazard/40'
+          className={`rounded-xl p-3 mb-6 flex items-center gap-3 border ${
+            notice.kind === 'ok'
+              ? 'bg-safe-subtle border-safe-border'
+              : 'bg-hazard-subtle border-hazard-border'
           }`}
           role="status"
         >
           <Pictogram name={notice.kind === 'ok' ? 'correct' : 'warning'} size={20} />
-          <p className="text-xs">{t(notice.key)}</p>
+          <p className={`text-xs ${notice.kind === 'ok' ? 'text-safe-text' : 'text-hazard-text'}`}>
+            {t(notice.key)}
+          </p>
         </div>
       )}
 

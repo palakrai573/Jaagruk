@@ -538,31 +538,11 @@ export function RelativeTime({ timestamp, className = '' }) {
   )
 }
 
-/* ================================================================== */
-/* Skeleton                                                            */
-/* ================================================================== */
-
-/** Shimmer placeholder. Beats a bare "Loading…" because the layout does not jump. */
-export function Skeleton({ className = '', height, width, rounded = 'rounded' }) {
-  return (
-    <span
-      className={`skeleton block ${rounded} ${className}`}
-      style={{ height, width }}
-      aria-hidden="true"
-    />
-  )
-}
-
-export function SkeletonCard({ lines = 3 }) {
-  return (
-    <div className="bg-surface-1 border border-line-subtle rounded-lg p-5">
-      <Skeleton height={28} width="45%" className="mb-3" />
-      {Array.from({ length: lines }).map((_, i) => (
-        <Skeleton key={i} height={10} width={`${90 - i * 12}%`} className="mb-2" />
-      ))}
-    </div>
-  )
-}
+// NOTE: Skeleton and SkeletonCard used to be defined here as well as in
+// ui/Feedback.jsx — two implementations of the same thing with different prop
+// shapes (height/width vs className), which is how a codebase ends up with two
+// visual languages for "loading". Removed; every consumer imports the ui
+// primitives instead.
 
 /* ================================================================== */
 /* StatCard                                                            */

@@ -171,7 +171,7 @@ export default function App() {
                   }
                 >
                   {t(item.key)}
-                  {item.to === '/refresher' && dueCount > 0 && <Badge count={dueCount} />}
+                  {item.to === '/refresher' && dueCount > 0 && <CountBadge count={dueCount} />}
                 </NavLink>
               ))}
             </nav>
@@ -273,7 +273,7 @@ export default function App() {
                     bar items are flex-1 and wide, so a corner offset would put the
                     badge nowhere near the thing it counts. */}
                 {item.to === '/refresher' && dueCount > 0 && (
-                  <Badge count={dueCount} className="top-1.5 end-[calc(50%-1.25rem)]" />
+                  <CountBadge count={dueCount} className="top-1.5 end-[calc(50%-1.25rem)]" />
                 )}
               </>
             )}
@@ -401,7 +401,7 @@ export default function App() {
  *
  * Logical `end-*` throughout, never `right-*`, so it mirrors for Urdu.
  */
-function Badge({ count, className = '-top-1 -end-1' }) {
+function CountBadge({ count, className = '-top-1 -end-1' }) {
   return (
     <span
       className={`absolute ${className} min-w-[16px] h-4 px-1 rounded-full bg-hazard text-white font-mono text-[9px] font-bold flex items-center justify-center tabular-nums`}

@@ -35,11 +35,20 @@ import {
   StackedBar,
   DecayCurve,
   RelativeTime,
-  Skeleton,
-  SkeletonCard,
 } from '../components/Charts.jsx'
 import Pictogram from '../lib/pictograms.jsx'
 import { ReadinessRing } from '../components/DrillUI.jsx'
+// Skeleton and SkeletonCard used to come from Charts.jsx, which had its own
+// implementations competing with the ui primitives. One of each now.
+import {
+  Button,
+  Dialog,
+  useConfirm,
+  useToast,
+  Skeleton,
+  SkeletonCard,
+  EmptyState,
+} from '../components/ui/index.js'
 import { useLanguage } from '../context/LanguageContext.jsx'
 
 /**
@@ -76,6 +85,8 @@ const SCENARIO_TITLE = SCENARIOS.reduce((acc, s) => {
 
 export default function Dashboard() {
   const { t } = useLanguage()
+  const toast = useToast()
+  const { confirm, dialogProps } = useConfirm()
 
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
@@ -199,20 +210,41 @@ export default function Dashboard() {
 
   const hasData = attempts.length > 0 || legacyLog.length > 0
 
+  /**
+   * Clearing the log is irreversible, so it gets a `danger` dialog stating how
+   * many entries go. window.confirm could show neither the count nor any
+   * indication that this was destructive rather than routine.
+   */
+  const clearLogConfirm = async () => {
+    const agreed = await confirm({
+      tone: 'danger',
+      title: t('dash_clear'),
+      body: `${legacyLog.length} ${t('db_recent')}`,
+      confirmLabel: t('clear_label'),
+      cancelLabel: t('cancel_label'),
+    })
+    if (!agreed) return
+    clearLog()
+    await load(true)
+    toast.success(t('dash_log_cleared'))
+  }
+
   /* ---------------- loading ---------------- */
 
   if (loading) {
+    // The shared Skeleton takes classes rather than height/width props, which is
+    // what the Charts.jsx copy accepted. Same visual result, one implementation.
     return (
       <div className="max-w-5xl mx-auto px-5 py-10">
-        <Skeleton height={14} width={140} className="mb-4" />
-        <Skeleton height={48} width="60%" className="mb-8" />
+        <Skeleton className="h-3.5 w-36 mb-4" />
+        <Skeleton className="h-12 w-3/5 mb-8" />
         <div className="grid md:grid-cols-2 gap-5 mb-5">
-          <SkeletonCard lines={4} />
-          <SkeletonCard lines={4} />
+          <SkeletonCard />
+          <SkeletonCard />
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[0, 1, 2, 3].map((i) => (
-            <SkeletonCard key={i} lines={1} />
+            <SkeletonCard key={i} />
           ))}
         </div>
       </div>
@@ -223,6 +255,9 @@ export default function Dashboard() {
 
   return (
     <div className="max-w-5xl mx-auto px-5 py-10">
+      {/* Must stay mounted: the hook holds the promise resolver. */}
+      <Dialog {...dialogProps} />
+
       <div className="flex items-start justify-between gap-4 mb-8 flex-wrap">
         <div>
           <p className="font-mono text-brand-text text-xs tracking-[0.2em] uppercase mb-2">{t('dash_eyebrow')}</p>
@@ -275,7 +310,7 @@ export default function Dashboard() {
       )}
 
       {!hasData ? (
-        <EmptyState t={t} />
+        <DashboardEmpty t={t} />
       ) : (
         <>
           {/* Hero.
@@ -436,12 +471,10 @@ export default function Dashboard() {
               {legacyLog.length > 0 && (
                 <button
                   type="button"
-                  onClick={() => {
-                    if (!window.confirm(t('dash_clear'))) return
-                    clearLog()
-                    load(true)
-                  }}
-                  className="font-mono text-xs text-ink-tertiary hover:text-hazard underline"
+                  onClick={clearLogConfirm}
+                  className="font-mono text-2xs uppercase tracking-widest text-ink-tertiary hover:text-hazard-text
+                             border border-line-subtle hover:border-hazard rounded-lg px-3 min-h-[40px]
+                             flex items-center transition-colors duration-fast"
                 >
                   {t('dash_clear')}
                 </button>
@@ -747,24 +780,29 @@ function AttemptRow({ attempt, t, expanded, onToggle }) {
 /* Empty state                                                         */
 /* ================================================================== */
 
-function EmptyState({ t }) {
+/**
+ * Was a local EmptyState shadowing the shared primitive of the same name, with
+ * hand-rolled buttons. Now composes the shared one, so an empty Dashboard looks
+ * like an empty anything-else.
+ */
+function DashboardEmpty({ t }) {
   return (
-    <div className="border border-line-subtle rounded-lg p-12 text-center rise-in">
-      <Pictogram name="ppe" size={54} className="mx-auto mb-5" />
-      <h2 className="font-display font-bold text-2xl uppercase mb-2">{t('dash_empty')}</h2>
-      <p className="text-ink-tertiary text-sm max-w-sm mx-auto mb-7 leading-relaxed">{t('list_desc')}</p>
-
-      <div className="flex gap-3 justify-center flex-wrap">
-        <Link to="/train" className="bg-brand text-ink-onBrand font-display font-bold uppercase px-6 py-3 rounded">
-          {t('home_cta_train')}
-        </Link>
-        <Link
-          to="/buddy"
-          className="border border-line rounded px-6 py-3 font-mono text-sm hover:border-brand hover:text-brand-text"
-        >
-          {t('nav_buddy')}
-        </Link>
-      </div>
+    <div className="border border-line-subtle rounded-xl rise-in">
+      <EmptyState
+        icon={<Pictogram name="ppe" size={54} />}
+        title={t('dash_empty')}
+        body={t('list_desc')}
+        action={
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Button to="/train" size="md">
+              {t('home_cta_train')}
+            </Button>
+            <Button to="/buddy" variant="secondary" size="md">
+              {t('nav_buddy')}
+            </Button>
+          </div>
+        }
+      />
     </div>
   )
 }

@@ -29,6 +29,7 @@ export function Dialog({
   confirmLabel,
   cancelLabel,
   onConfirm,
+  confirmDisabled = false,
   busy = false,
   dismissible = true,
 }) {
@@ -100,6 +101,7 @@ export function Dialog({
                 size="md"
                 onClick={onConfirm}
                 loading={busy}
+                disabled={confirmDisabled}
                 className="sm:w-auto w-full"
               >
                 {confirmLabel}
@@ -150,6 +152,81 @@ export function useConfirm() {
       ...state.options,
       onClose: () => settle(false),
       onConfirm: () => settle(true),
+    },
+  }
+}
+
+/**
+ * Promise-based text prompt, replacing window.prompt.
+ *
+ * Same reasons as useConfirm — untranslatable, unstyleable, main-thread blocking —
+ * plus one more that matters here: window.prompt cannot validate. Renaming a zone
+ * to an empty string, or to 200 characters, was accepted silently. This trims,
+ * enforces a length, and keeps the confirm button disabled until the value is
+ * usable, so the failure is prevented rather than reported.
+ *
+ *   const { prompt, dialogProps } = usePrompt()
+ *   const name = await prompt({ title, initial: zone.name, confirmLabel, cancelLabel })
+ *   if (name === null) return   // cancelled, distinct from empty
+ */
+export function usePrompt() {
+  const [state, setState] = useState({ open: false, options: {}, value: '' })
+  const resolverRef = useRef(null)
+
+  const prompt = useCallback((options = {}) => {
+    setState({ open: true, options, value: options.initial ?? '' })
+    return new Promise((resolve) => {
+      resolverRef.current = resolve
+    })
+  }, [])
+
+  const settle = useCallback((result) => {
+    setState({ open: false, options: {}, value: '' })
+    const resolve = resolverRef.current
+    resolverRef.current = null
+    resolve?.(result)
+  }, [])
+
+  const { maxLength = 60, minLength = 1 } = state.options
+  const trimmed = state.value.trim()
+  const valid = trimmed.length >= minLength && trimmed.length <= maxLength
+
+  return {
+    prompt,
+    value: state.value,
+    valid,
+    dialogProps: {
+      open: state.open,
+      title: state.options.title,
+      body: state.options.body,
+      confirmLabel: state.options.confirmLabel,
+      cancelLabel: state.options.cancelLabel,
+      // Cancel resolves null; an empty confirm is impossible because the button
+      // is disabled. So null unambiguously means "the user backed out".
+      onClose: () => settle(null),
+      onConfirm: () => (valid ? settle(trimmed) : undefined),
+      confirmDisabled: !valid,
+      children: (
+        <div>
+          <input
+            type="text"
+            value={state.value}
+            onChange={(e) => setState((s) => ({ ...s, value: e.target.value.slice(0, maxLength) }))}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && valid) settle(trimmed)
+            }}
+            maxLength={maxLength}
+            autoFocus
+            aria-label={state.options.title || ''}
+            className="w-full bg-surface-inset border border-line rounded-lg px-4 py-3 text-base text-ink
+                       placeholder:text-ink-disabled outline-none focus:border-brand
+                       focus-visible:outline-2 focus-visible:outline-offset-1 min-h-touch"
+          />
+          <p className="font-mono text-2xs text-ink-tertiary mt-2 text-end tabular-nums">
+            {trimmed.length}/{maxLength}
+          </p>
+        </div>
+      ),
     },
   }
 }

@@ -113,7 +113,7 @@ export default function Settings() {
       <h1 className="font-display font-bold text-4xl uppercase mb-8">{t('set_title')}</h1>
 
       {/* ---------------- session ---------------- */}
-      <Card>
+      <Panel>
         <SectionTitle pictogram={worker ? 'ppe' : 'buddy'} title={t('ob_signed_in_as')} />
         {worker ? (
           <div className="flex items-center justify-between gap-3 flex-wrap">
@@ -139,10 +139,10 @@ export default function Settings() {
             {t('ob_sign_in')}
           </Link>
         )}
-      </Card>
+      </Panel>
 
       {/* ---------------- accessibility modes ---------------- */}
-      <Card>
+      <Panel>
         <SectionTitle pictogram="listen" title={t('st_modes_title')} />
 
         <Toggle
@@ -180,10 +180,10 @@ export default function Settings() {
           t={t}
           last
         />
-      </Card>
+      </Panel>
 
       {/* ---------------- language ---------------- */}
-      <Card>
+      <Panel>
         <SectionTitle pictogram="assembly_point" title={t('set_language_label')} />
 
         <div className="grid grid-cols-3 gap-2 mb-5">
@@ -229,10 +229,10 @@ export default function Settings() {
             )
           })}
         </div>
-      </Card>
+      </Panel>
 
       {/* ---------------- AI provider ---------------- */}
-      <Card>
+      <Panel>
         <SectionTitle pictogram="report_it" title={t('set_provider_label')} />
 
         <div className="grid grid-cols-2 gap-3 mb-3">
@@ -283,10 +283,10 @@ export default function Settings() {
           <p>• Gemini: aistudio.google.com/apikey</p>
           <p>• OpenAI: platform.openai.com/api-keys</p>
         </div>
-      </Card>
+      </Panel>
 
       {/* ---------------- storage ---------------- */}
-      <Card>
+      <Panel>
         <SectionTitle pictogram="lockout" title={t('db_all_local')} />
 
         {storage && (
@@ -337,10 +337,10 @@ export default function Settings() {
         >
           {t('ad_sync_pending')}
         </button>
-      </Card>
+      </Panel>
 
       {/* ---------------- central upload ---------------- */}
-      <Card>
+      <Panel>
         <SectionTitle pictogram="alarm" title={t('st_sync_title')} />
         <p className="text-xs text-ink-tertiary mb-4 leading-relaxed">{t('st_sync_hint')}</p>
 
@@ -360,10 +360,10 @@ export default function Settings() {
         >
           {endpointSaved ? t('set_saved') : t('save_label')}
         </button>
-      </Card>
+      </Panel>
 
       {/* ---------------- danger zone ---------------- */}
-      <Card danger>
+      <Panel danger>
         <SectionTitle pictogram="do_not_enter" title={t('st_reset_device')} />
         <p className="text-xs text-ink-tertiary mb-4 leading-relaxed">{t('st_reset_warning')}</p>
 
@@ -382,18 +382,27 @@ export default function Settings() {
         >
           {resetting ? t('loading_label') : t('st_reset_device')}
         </button>
-      </Card>
+      </Panel>
     </div>
   )
 }
 
 /* ================================================================== */
 
-function Card({ children, danger }) {
+/**
+ * A settings section panel.
+ *
+ * Named Panel, not Card. It was called Card and shadowed the shared Card
+ * primitive — same name, different component, which is how someone importing the
+ * primitive into this file later gets a silent surprise. This one is specific to
+ * Settings: fixed padding, a bottom margin, and a danger variant for the reset
+ * section. The shared Card is a composition with no padding of its own.
+ */
+function Panel({ children, danger }) {
   return (
     <div
-      className={`rounded-lg p-6 mb-6 ${
-        danger ? 'bg-hazard/5 border border-hazard/40' : 'bg-surface-1 border border-line-subtle'
+      className={`rounded-xl p-5 md:p-6 mb-6 border ${
+        danger ? 'bg-hazard-subtle border-hazard-border' : 'bg-surface-1 border-line-subtle'
       }`}
     >
       {children}
