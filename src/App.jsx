@@ -115,23 +115,49 @@ export default function App() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* No flex-wrap: at ~380px the previous header wrapped the nav onto a second
-          row, which made the sticky bar change height as you scrolled. The
-          wordmark truncates instead. */}
+      {/*
+        HEADER WIDTH BUDGET — the reason this markup is specific.
+
+        The container is max-w-5xl to stay aligned with the page content below, so
+        after px-5 there is only ~984px of usable width however wide the viewport
+        is. An earlier version put seven nav items in here plus the session chip,
+        theme toggle and language select, which needs roughly 1190px. The overflow
+        did not merely look tight: the wordmark's parent had `min-w-0 shrink` while
+        the wordmark span itself had `shrink-0`, so flex collapsed the parent, the
+        text overflowed a box with no clipping, and the nav — positioned against
+        that collapsed width — rendered on top of the letters. "JAAGRUK" appeared
+        as "J" + the Home pill + "RUK".
+
+        Fixed by removing the cause rather than clipping the symptom:
+          - the wordmark never shrinks (shrink-0). The brand is not the thing that
+            gets crushed when space runs out.
+          - desktop nav carries the same FOUR primary destinations as the mobile
+            bottom bar, which fits in ~368px and is more coherent besides. The
+            secondary destinations are in the footer and in Home's Explore grid,
+            so nothing became unreachable.
+          - the right-hand control group is min-w-0, so if anything must compress
+            it is the controls, not the identity.
+
+        No flex-wrap, deliberately: it previously let the nav drop onto a second row
+        at ~380px, which made the sticky bar change height as you scrolled.
+      */}
       <header className="border-b border-line-subtle sticky top-0 bg-surface-0/90 backdrop-blur-md z-sticky">
-        <div className="max-w-5xl mx-auto px-5 h-16 flex items-center justify-between gap-3">
-          <NavLink to="/" className="flex items-baseline gap-2.5 min-w-0 shrink">
-            <span className="font-display text-2xl tracking-wide text-brand-text font-bold shrink-0">
+        <div className="max-w-5xl mx-auto px-5 h-16 flex items-center justify-between gap-4">
+          {/* Wordmark only — no tagline.
+              With the tagline the widest language (English) came to 970px against
+              984px usable: it fitted, but on 14px of headroom, which is inside the
+              margin of error for font metrics across devices. The footer already
+              carries brand and tagline together, and a header's job is navigation,
+              so dropping it here buys ~144px of real headroom instead. */}
+          <NavLink to="/" className="flex items-center shrink-0" aria-label={t('app_name')}>
+            <span className="font-display text-2xl tracking-wide text-brand-text font-bold leading-none">
               {t('app_name')}
-            </span>
-            <span className="font-mono text-2xs text-ink-tertiary uppercase tracking-widest hidden lg:inline truncate">
-              {t('app_tagline')}
             </span>
           </NavLink>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 min-w-0">
             <nav className="hidden md:flex gap-1 font-mono text-sm">
-              {[...PRIMARY_NAV, ...SECONDARY_NAV].slice(0, 7).map((item) => (
+              {PRIMARY_NAV.map((item) => (
                 <NavLink
                   key={item.to}
                   to={item.to}
@@ -243,7 +269,12 @@ export default function App() {
                 />
                 <Pictogram name={item.pictogram} size={22} />
                 <span className="leading-none truncate max-w-full">{t(item.key)}</span>
-                {item.to === '/refresher' && dueCount > 0 && <Badge count={dueCount} />}
+                {/* Centred over the icon rather than at the item's far edge: the
+                    bar items are flex-1 and wide, so a corner offset would put the
+                    badge nowhere near the thing it counts. */}
+                {item.to === '/refresher' && dueCount > 0 && (
+                  <Badge count={dueCount} className="top-1.5 end-[calc(50%-1.25rem)]" />
+                )}
               </>
             )}
           </NavLink>
@@ -360,11 +391,20 @@ export default function App() {
 
 /* ================================================================== */
 
-/** Count badge. `end-0` not `right-0`, so it mirrors for Urdu. */
-function Badge({ count }) {
+/**
+ * Count badge.
+ *
+ * Position is passed in rather than fixed, because the two call sites have
+ * different geometry: a desktop nav pill is small and the badge belongs just
+ * outside its corner, while a mobile bar item is `flex-1` and therefore wide, so
+ * the same offset would strand the badge far from the icon it refers to.
+ *
+ * Logical `end-*` throughout, never `right-*`, so it mirrors for Urdu.
+ */
+function Badge({ count, className = '-top-1 -end-1' }) {
   return (
     <span
-      className="absolute top-1 end-2 min-w-[16px] h-4 px-1 rounded-full bg-hazard text-white font-mono text-[9px] font-bold flex items-center justify-center tabular-nums"
+      className={`absolute ${className} min-w-[16px] h-4 px-1 rounded-full bg-hazard text-white font-mono text-[9px] font-bold flex items-center justify-center tabular-nums`}
       aria-hidden="true"
     >
       {count > 9 ? '9+' : count}
