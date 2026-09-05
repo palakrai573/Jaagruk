@@ -531,9 +531,14 @@ npm run verify       # every gate below, then the build
 | --- | --- |
 | `npm run a11y` | 16 structural accessibility and responsive checks over every `.jsx`: accessible names, form labelling, decorative SVG, focus order, reduced-motion escapes, the 320 px width budget, RTL logical properties and mirrored glyphs, live regions, field-tier touch targets, theme-blind colour literals, heading order. |
 | `npm run a11y:selftest` | Plants one instance of each fault in a synthetic file and asserts every check catches it. Exists because the first version of the accessible-name check passed a button that had no name — `/<[^>]*>/` stops at the `>` inside `onClick={() => …}`, leaking handler source into what the check read as label text. |
-| `npm run i18n` | English text stored in another language's slot, values written in the wrong script, and fallback chains that do not end in a fully covered language. Self-tests against the four nav labels that historically held English in the Santali slot. |
-| `npm run translit` | Ol Chiki → Devanagari transliteration: 14 hand-derived words, then all 246 Ol Chiki strings in the app, asserting no Ol Chiki survives and no vowel sign is left unattached. |
-| `npm run santali:worksheet` | Regenerates `docs/santali-worksheet.csv` — the 332 untranslated Santali strings with English and Hindi source, ordered by consequence. |
+| `npm run i18n` | English text stored in another language's slot; values written in the wrong script; figures dropped in translation (compared across numeral systems, so Bengali ৪ counts as 4); characters outside a shipped font subset, which render as a permanent box offline while failing nothing in the build; fallback chains that do not end in a fully covered language. Self-tests against the four nav labels that historically held English in the Santali slot. |
+| `npm run translit` | Ol Chiki → Devanagari transliteration: 14 hand-derived words, then all 583 Ol Chiki strings in the app, asserting no Ol Chiki survives and no vowel sign is left unattached. |
+| `npm run santali:worksheet` | Regenerates `docs/santali-worksheet.csv` — all 573 Santali strings with English and Hindi source, the current Ol Chiki, and which file to correct it in, ordered by consequence. |
+
+**On Santali specifically:** coverage is 100%, verification is 0%. Those are tracked
+separately on purpose — `SANTALI_VERIFIED` in `src/lib/i18nSantali.js` is what the in-app
+notice reads, not the coverage percentage, so reaching 100% does not silence the warning.
+Scenario prose is not machine-authored and resolves to Hindi.
 
 These are static checks. They cannot see rendered layout, so the device matrix in
 `docs/DEPLOYMENT.md` §10 is still required before a demo.

@@ -47,11 +47,19 @@ for (const rel of ['src/lib/i18n.js', 'src/lib/i18nJaagruk.js']) {
   for (const m of src.matchAll(/^\s{2}([a-zA-Z][\w]*):\s*\{/gm)) keys.add(m[1])
 }
 
+/* A bare acronym is script-neutral and correctly identical across languages.
+ * "AR" is the one that matters here: transliterated to Ol Chiki it becomes ᱟᱨ,
+ * which is the Santali word for "and" — so the faithful rendering is the confusing
+ * one. Deliberately narrow: uppercase Latin and digits only, no spaces, 5 chars
+ * max, so it cannot quietly cover a real English word. */
+const ACRONYM = /^[A-Z0-9]{1,5}$/
+
 console.log(`=== 1. NO ENGLISH TEXT IN A NON-ENGLISH SLOT (${keys.size} keys) ===`)
 const copies = []
 for (const key of keys) {
   const en = t(key, 'en')
   if (!en || en === key) continue
+  if (ACRONYM.test(en)) continue
   for (const { code } of LANGUAGES) {
     if (code === 'en') continue
     // t() applies the fallback chain, so an identical result may simply be the
@@ -85,7 +93,55 @@ for (const key of keys) {
 if (wrongScript.length === 0) ok('every authored value contains its own script')
 else fail(`values in the wrong script (${wrongScript.length}):\n       ` + wrongScript.slice(0, 15).join('\n       '))
 
-console.log('\n=== 3. FALLBACK CHAINS TERMINATE IN FULL COVERAGE ===')
+console.log('\n=== 3. FIGURES SURVIVE TRANSLATION ===')
+/* A translation may reword anything, but it must not drop a figure, because a
+ * figure is the part that cannot be paraphrased: "4 to 6 digits" without the 4 and
+ * the 6 is not a rule, "Mines Act 1952" without 1952 cites nothing, and "all 5
+ * domains" without the 5 is not a threshold. These are exactly what a bulk
+ * authoring pass loses quietly, and every language in this app writes numerals the
+ * same way, so the comparison is sound.
+ *
+ * Acronyms are deliberately NOT checked. Indic scripts transliterate them —
+ * Hindi writes AI as एआई and API as एपीआई — so requiring the Latin form would fail
+ * 158 correct translations and teach everyone to ignore this check. */
+const NUMBER = /\d+/g
+
+/* Bengali writes 4 as ৪ and Odia as ୪, which is correct and idiomatic — a naive
+ * substring test reads that as a dropped figure and flagged 15 perfectly good
+ * translations. Digits are folded to Latin before comparing, so the check asks
+ * whether the FIGURE is present, not which numeral system renders it. */
+const DIGIT_BASES = [0x0966, 0x09e6, 0x0b66, 0x0660, 0x06f0, 0x0a66, 0x0be6, 0x0c66, 0x0ce6, 0x0d66, 0x1c50]
+const foldDigits = (s) =>
+  [...String(s)]
+    .map((ch) => {
+      const code = ch.codePointAt(0)
+      for (const base of DIGIT_BASES) {
+        if (code >= base && code <= base + 9) return String(code - base)
+      }
+      return ch
+    })
+    .join('')
+
+const dropped = []
+for (const key of keys) {
+  const en = t(key, 'en')
+  if (!en) continue
+  const wanted = [...new Set(en.match(NUMBER) || [])]
+  if (!wanted.length) continue
+  for (const { code } of LANGUAGES) {
+    if (code === 'en') continue
+    const value = t(key, code)
+    // Only judge an authored value; a fallback is a coverage matter, not this.
+    if (!value || value === en || value === t(key, fallbackLanguage(code))) continue
+    const folded = foldDigits(value)
+    const missing = wanted.filter((tok) => !folded.includes(tok))
+    if (missing.length) dropped.push(`${key} [${code}] lost ${missing.join(', ')}`)
+  }
+}
+if (dropped.length === 0) ok('every figure is carried through')
+else fail(`dropped figures (${dropped.length}):\n       ` + dropped.slice(0, 20).join('\n       '))
+
+console.log('\n=== 4. FALLBACK CHAINS TERMINATE IN FULL COVERAGE ===')
 const coverage = Object.fromEntries(allCoverage().map((c) => [c.code, c.percent]))
 for (const [lang, chain] of Object.entries(LANGUAGE_FALLBACK)) {
   const last = chain[chain.length - 1]
@@ -99,7 +155,46 @@ for (const [lang, chain] of Object.entries(LANGUAGE_FALLBACK)) {
     )
 }
 
-console.log('\n=== 4. COVERAGE REPORT ===')
+console.log('\n=== 5. EVERY GLYPH IS IN A SHIPPED FONT SUBSET ===')
+/* The app self-hosts one subset per script and precaches only some of them, so a
+ * character outside those subsets renders as a box — on a device with no network,
+ * permanently. Nothing in static review shows that, and nothing in the build fails,
+ * which makes it exactly the kind of fault worth a gate.
+ *
+ * Checked per language against the subset that language ships, plus ASCII and the
+ * handful of shared punctuation marks the Latin subset carries. */
+const SUBSET = {
+  hi: [[0x0900, 0x097f]],
+  sat: [[0x1c50, 0x1c7f]],
+  bn: [[0x0980, 0x09ff]],
+  or: [[0x0b00, 0x0b7f]],
+  ur: [[0x0600, 0x06ff], [0xfb50, 0xfdff], [0xfe70, 0xfeff]],
+}
+// Punctuation and marks that come with the Latin subset.
+const SHARED = new Set([
+  0x2013, 0x2014, 0x2018, 0x2019, 0x201c, 0x201d, 0x2026, 0x2713, 0x00b7, 0x00a0,
+  0x0964, 0x0965, // danda and double danda, used by several Indic scripts
+  0x200c, 0x200d, // ZWNJ / ZWJ, needed for correct Indic shaping
+])
+
+const boxes = new Map()
+for (const key of keys) {
+  for (const [code, ranges] of Object.entries(SUBSET)) {
+    const value = t(key, code)
+    if (!value || value === t(key, 'en')) continue
+    for (const ch of value) {
+      const c = ch.codePointAt(0)
+      if (c < 0x80 || SHARED.has(c)) continue
+      if (ranges.some(([lo, hi]) => c >= lo && c <= hi)) continue
+      const label = `[${code}] U+${c.toString(16).toUpperCase().padStart(4, '0')} ${ch}`
+      boxes.set(label, (boxes.get(label) || 0) + 1)
+    }
+  }
+}
+if (boxes.size === 0) ok('no character falls outside its language\u2019s shipped subset')
+else fail(`characters with no glyph in the shipped fonts (${boxes.size}):\n       ` + [...boxes].map(([l, n]) => `${l} \u00d7${n}`).slice(0, 15).join('\n       '))
+
+console.log('\n=== 6. COVERAGE REPORT ===')
 for (const c of allCoverage()) {
   const flag = c.percent === 100 ? '   ' : c.percent >= 92 ? ' · ' : ' ! '
   console.log(
@@ -109,7 +204,7 @@ for (const c of allCoverage()) {
   )
 }
 
-console.log('\n=== 5. SELF-TEST ===')
+console.log('\n=== 7. SELF-TEST ===')
 /* Checks 1 and 2 pass because the faults they look for were fixed. That is not
  * the same as the checks working. These are the four values that actually sat in
  * the `sat` slot before this gate existed, plus a wrong-script case, run through
@@ -153,6 +248,24 @@ for (const [key, lang, value] of goodSamples) {
   }
 }
 console.log(`  ${caught}/${HISTORICAL_BAD.length} historical faults still detected`)
+
+/* Check 3 needs its own proof, because it passes only after digit folding was
+ * added — and a folding bug that folded too eagerly would also make it pass. */
+const figureCases = [
+  ['4 to 6 digits', 'ᱯᱤᱱ 4 ᱠᱷᱚᱱ 6', false, 'Latin figures present'],
+  ['4 to 6 digits', '৪ থেকে ৬ সংখ্যা', false, 'Bengali numerals count as the same figures'],
+  ['4 to 6 digits', 'ᱯᱤᱱ ᱚᱞ ᱢᱮ', true, 'figures genuinely missing'],
+  ['Mines Act 1952', 'ᱠᱷᱟᱰ ᱠᱟᱱᱩᱱ 1952', false, 'statute year preserved'],
+  ['Mines Act 1952', 'ᱠᱷᱟᱰ ᱠᱟᱱᱩᱱ', true, 'statute year dropped'],
+]
+for (const [en, translated, shouldFail, note] of figureCases) {
+  const wanted = [...new Set(en.match(NUMBER) || [])]
+  const folded = foldDigits(translated)
+  const missing = wanted.filter((tok) => !folded.includes(tok))
+  const didFail = missing.length > 0
+  if (didFail === shouldFail) ok(`figures: ${note}`)
+  else fail(`figure check wrong on "${translated}" — ${note}`)
+}
 
 console.log(failures === 0 ? '\nI18N GATE PASSED' : `\n${failures} failures`)
 process.exit(failures === 0 ? 0 : 1)

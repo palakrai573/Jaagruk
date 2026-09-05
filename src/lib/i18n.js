@@ -1,5 +1,25 @@
-import { JAAGRUK_STRINGS, coverageFor, COVERAGE_NOTICE, CONTENT_NOTICE } from './i18nJaagruk.js'
+import {
+  JAAGRUK_STRINGS,
+  coverageFor,
+  COVERAGE_NOTICE,
+  UNVERIFIED_NOTICE,
+  CONTENT_NOTICE,
+} from './i18nJaagruk.js'
+import { SANTALI_STRINGS, SANTALI_VERIFIED, SANTALI_REVIEW } from './i18nSantali.js'
 import { LS, lsGet, lsSet } from './local.js'
+
+export { SANTALI_VERIFIED, SANTALI_REVIEW }
+
+/**
+ * Per-language overlays, merged on lookup.
+ *
+ * Santali lives in its own file because 332 of its 573 strings were written in one
+ * pass and need reviewing as a unit. Merging here rather than editing 332 entries
+ * across two large dictionaries keeps the review diff readable.
+ */
+const OVERLAY = {
+  sat: SANTALI_STRINGS,
+}
 
 // Supported languages. Santali ('sat') is included because the official
 // problem statement specifically names Hindi + Santali localisation.
@@ -291,6 +311,11 @@ export function t(key, lang) {
   if (!entry) return key
   const direct = entry[lang]
   if (typeof direct === 'string' && direct.length > 0) return direct
+  // Overlay comes after the main dictionaries, so a value authored inline always
+  // wins. A reviewer correcting a string in i18n.js does not have to also delete
+  // the overlay entry.
+  const overlaid = OVERLAY[lang]?.[key]
+  if (typeof overlaid === 'string' && overlaid.length > 0) return overlaid
   for (const alt of FALLBACK[lang] || []) {
     const value = entry[alt]
     if (typeof value === 'string' && value.length > 0) return value
@@ -315,14 +340,33 @@ export function hasKey(key) {
  * notice is accurate without anyone maintaining a list by hand.
  */
 export function translationCoverage(lang) {
-  return coverageFor(lang, [STRINGS, JAAGRUK_STRINGS])
+  const overlay = OVERLAY[lang]
+  return coverageFor(lang, [STRINGS, JAAGRUK_STRINGS], overlay)
 }
 
-/** Below this, the UI tells the user some screens will appear in English. */
+/** Below this, the UI tells the user some screens will appear in another language. */
 export const COVERAGE_NOTICE_THRESHOLD = 92
+
+/**
+ * Languages whose strings exist but have not been checked by a speaker of the
+ * language. Kept SEPARATE from coverage on purpose.
+ *
+ * Coverage and correctness are different claims, and conflating them is how an app
+ * ends up lying. Santali is now at 100% coverage, so a threshold on the percentage
+ * would have silenced the notice the moment the last string was written — leaving
+ * the app quietly presenting unreviewed machine-authored safety text as finished
+ * translation. The flag lives with the strings, in i18nSantali.js, and clears only
+ * when a reviewer is recorded there.
+ */
+const UNVERIFIED = { sat: !SANTALI_VERIFIED }
+
+export function isUnverifiedTranslation(lang) {
+  return !!UNVERIFIED[lang]
+}
 
 export function isPartiallyTranslated(lang) {
   if (lang === 'en') return false
+  if (isUnverifiedTranslation(lang)) return true
   return translationCoverage(lang).percent < COVERAGE_NOTICE_THRESHOLD
 }
 
@@ -346,8 +390,16 @@ export function scenarioContentIsEnglish(lang, scenarioId, translations) {
   return true
 }
 
-/** Header notice text, in the user's own language. */
+/**
+ * Header notice text, in the user's own language.
+ *
+ * Picks the message that matches the actual situation: unreviewed text is a
+ * different warning from missing text, and a language can be in either state.
+ */
 export function coverageNotice(lang) {
+  if (isUnverifiedTranslation(lang)) {
+    return UNVERIFIED_NOTICE[lang] || UNVERIFIED_NOTICE.en
+  }
   return COVERAGE_NOTICE[lang] || COVERAGE_NOTICE.en
 }
 

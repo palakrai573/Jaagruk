@@ -308,15 +308,31 @@ slot; the audit counts any non-empty value, so they reported coverage that did n
 `npm run i18n` now fails on English-in-another-slot, values written in the wrong script, and
 fallback chains that do not end in a fully covered language.
 
-**Not done, deliberately — Santali to 100%.** Coverage is 42% (241/573 strings, no scenario
-content). Filling the remaining 332 slots with machine-produced Ol Chiki would show 100% and
-would be the wrong thing to ship: this is safety training content, and a confident-looking
-wrong instruction is more dangerous than a declared gap, because the gap falls back to a
-language the worker can read while the wrong instruction teaches the wrong reaction.
+**Done — Santali UI to 100%, with verification tracked separately from coverage.** The 332
+missing strings are written, in `src/lib/i18nSantali.js`, against the glossary already
+established by the existing 241 so the terminology is at least internally consistent.
 
-`npm run santali:worksheet` generates `docs/santali-worksheet.csv` — all 332 keys with
-English and Hindi source, ordered by consequence (drill and hazard instructions first,
-supervisor dashboards last) for native-speaker review.
+The part that took the thinking was not the writing. Filling the last slot would have taken
+coverage to 100%, and `isPartiallyTranslated()` keyed off coverage — so the "translation in
+progress" notice would have **disappeared**, leaving the app quietly presenting unchecked
+machine-authored safety text as a finished translation. Coverage and correctness are
+different claims. So `SANTALI_VERIFIED` now lives with the strings and the notice reads that
+flag instead; 100% coverage with 0% verification shows a warning that says exactly that, and
+tells the worker to follow the safety signs if the wording is unclear.
+
+Four checks were added to `npm run i18n` for the failure modes a bulk authoring pass
+actually has: figures silently dropped (compared across numeral systems, so Bengali ৪ counts
+as 4), characters outside a shipped font subset (which render as a permanent box offline and
+fail nothing in the build), English left in a translated slot, and values written in the
+wrong script.
+
+**Still not machine-authored, deliberately — scenario content.** None of the 6 modules has
+Santali and they resolve to Hindi. Drill prose is where a wrong verb changes what a worker
+physically does, which is a different risk from a mislabelled dashboard tab.
+
+`npm run santali:worksheet` regenerates `docs/santali-worksheet.csv`: all 573 strings with
+English and Hindi source, the current Santali, and which file to correct it in, ordered by
+consequence.
 
 ---
 

@@ -1,333 +1,573 @@
-﻿group,key,english,hindi,santali_ol_chiki,reviewer_note
-1 · Drill and hazard instructions,ar_camera_denied,Camera permission was refused. Allow camera access in your browser settings to use the AR drill.,कैमरा अनुमति नहीं मिली। एआर ड्रिल के लिए ब्राउज़र सेटिंग्स में कैमरा अनुमति दें।,,
-1 · Drill and hazard instructions,ar_camera_in_use,The camera is being used by another app. Close it and try again.,कैमरा दूसरे ऐप में चल रहा है। उसे बंद करके फिर कोशिश करें।,,
-1 · Drill and hazard instructions,ar_camera_missing,No camera was found on this device.,इस डिवाइस पर कैमरा नहीं मिला।,,
-1 · Drill and hazard instructions,ar_camera_unknown,The camera could not start.,कैमरा शुरू नहीं हो सका।,,
-1 · Drill and hazard instructions,ar_camera_unsupported,This browser cannot open the camera.,यह ब्राउज़र कैमरा नहीं खोल सकता।,,
-1 · Drill and hazard instructions,ar_enable_motion,Allow motion access,मोशन अनुमति दें,,
-1 · Drill and hazard instructions,ar_generic_zone,This site has not been scanned. Showing a generic layout — ask your supervisor to run Site Setup.,यह साइट स्कैन नहीं हुई। सामान्य लेआउट दिख रहा है — सुपरवाइज़र से साइट सेटअप कराएं।,,
-1 · Drill and hazard instructions,ar_no_compass_body,"This device has no usable compass, so markers cannot be anchored to real directions. The 3D view teaches the same decisions.","इस डिवाइस में उपयोगी कंपास नहीं है, इसलिए मार्कर असली दिशा से नहीं जुड़ सकते। 3D व्यू वही निर्णय सिखाता है।",,
-1 · Drill and hazard instructions,ar_no_compass_title,No motion sensor,मोशन सेंसर नहीं,,
-1 · Drill and hazard instructions,ar_permission_body,Jaagruk uses the compass to keep hazard markers pointing at the real thing.,जागरुक कंपास से खतरा मार्कर को असली जगह पर रखता है।,,
-1 · Drill and hazard instructions,ar_permission_title,Motion access needed,मोशन अनुमति चाहिए,,
-1 · Drill and hazard instructions,ar_relative_heading,No compass reading — markers may drift. Face the main exit and re-centre.,कंपास रीडिंग नहीं — मार्कर खिसक सकते हैं। मुख्य निकास की ओर मुड़ें और री-सेंटर करें।,,
-1 · Drill and hazard instructions,ar_retry,Retry camera,कैमरा फिर आज़माएं,,
-1 · Drill and hazard instructions,as_AUDIO,The microphone could not be opened.,माइक्रोफ़ोन नहीं खुला।,,
-1 · Drill and hazard instructions,as_grade_unknown,Not timed,समय नहीं लिया,,
-1 · Drill and hazard instructions,as_NETWORK,Speech recognition needs a connection on this device.,इस डिवाइस पर वाक् पहचान को कनेक्शन चाहिए।,,
-1 · Drill and hazard instructions,as_NO_MATCH,"Did not catch that. Say ""one"" or ""two"", or tap.","समझ नहीं आया। ""एक"" या ""दो"" बोलें, या टैप करें।",,
-1 · Drill and hazard instructions,as_NO_SPEECH,Heard nothing. Try again closer to the phone.,कुछ सुना नहीं। फ़ोन के पास बोलें।,,
-1 · Drill and hazard instructions,as_PERMISSION_DENIED,"Microphone permission was refused, so voice answers are off.","माइक्रोफ़ोन अनुमति नहीं मिली, इसलिए आवाज़ से उत्तर बंद है।",,
-1 · Drill and hazard instructions,as_UNKNOWN,Voice input had a problem. Tap instead.,आवाज़ में दिक्कत हुई। टैप करें।,,
-1 · Drill and hazard instructions,as_UNSUPPORTED,This browser cannot listen for spoken answers.,यह ब्राउज़र बोले गए उत्तर नहीं सुन सकता।,,
-1 · Drill and hazard instructions,bd_bad_code,That code could not be read. Scan it again.,यह कोड पढ़ा नहीं गया। फिर स्कैन करें।,,
-1 · Drill and hazard instructions,bd_buddy_score,Your buddy’s result,आपके बडी का परिणाम,,
-1 · Drill and hazard instructions,bd_checkin_done,Check-in recorded,जांच दर्ज हुई,,
-1 · Drill and hazard instructions,bd_checkin_missed,Missed check-in,जांच छूट गई,,
-1 · Drill and hazard instructions,bd_checkins_label,Check-ins,जांच,,
-1 · Drill and hazard instructions,bd_copied,Copied,कॉपी हो गया,,
-1 · Drill and hazard instructions,bd_copy_code,Copy code,कोड कॉपी करें,,
-1 · Drill and hazard instructions,bd_desc,"The buddy system is two people watching each other. It cannot be practised alone, so this drill needs two phones — connected directly to each other, with no internet.","बडी सिस्टम का मतलब दो लोग एक-दूसरे का ध्यान रखें। यह अकेले नहीं सीखा जा सकता, इसलिए इस ड्रिल के लिए दो फ़ोन चाहिए — बिना इंटरनेट, सीधे जुड़े हुए।",,
-1 · Drill and hazard instructions,bd_end_drill,End drill,ड्रिल खत्म करें,,
-1 · Drill and hazard instructions,bd_failed,Could not connect,जुड़ नहीं सका,,
-1 · Drill and hazard instructions,bd_failed_hint,"Both phones must be on the same wifi or hotspot. Check that, then try again.","दोनों फ़ोन एक ही वाईफ़ाई या हॉटस्पॉट पर होने चाहिए। जांचें, फिर कोशिश करें।",,
-1 · Drill and hazard instructions,bd_host_step1,Show this code to your buddy,यह कोड अपने बडी को दिखाएं,,
-1 · Drill and hazard instructions,bd_host_step2,Now scan the code they show you,अब उनका दिखाया कोड स्कैन करें,,
-1 · Drill and hazard instructions,bd_join_step1,Scan your buddy’s code,अपने बडी का कोड स्कैन करें,,
-1 · Drill and hazard instructions,bd_join_step2,Show this code back to them,यह कोड उन्हें दिखाएं,,
-1 · Drill and hazard instructions,bd_monitoring_note,Stay alert. You will be asked to check on each other at intervals — and one of you is about to have a problem.,सतर्क रहें। आपसे समय-समय पर एक-दूसरे की जांच करने को कहा जाएगा — और आप में से एक को दिक्कत होने वाली है।,,
-1 · Drill and hazard instructions,bd_no_webrtc,This browser cannot make a direct phone-to-phone connection.,यह ब्राउज़र फ़ोन-से-फ़ोन सीधा कनेक्शन नहीं बना सकता।,,
-1 · Drill and hazard instructions,bd_notice_time,Time to notice,ध्यान देने का समय,,
-1 · Drill and hazard instructions,bd_partial_note,"This drill ended early, so it is recorded as incomplete and does not count toward certification.","यह ड्रिल जल्दी खत्म हुई, इसलिए अपूर्ण दर्ज है और प्रमाणन में नहीं गिनी जाएगी।",,
-1 · Drill and hazard instructions,bd_paste_instead,Or paste the code as text,या कोड टेक्स्ट में पेस्ट करें,,
-1 · Drill and hazard instructions,bd_paste_placeholder,Paste JGKP1… here,JGKP1… यहाँ पेस्ट करें,,
-1 · Drill and hazard instructions,bd_phase_aborted,Drill ended early,ड्रिल जल्दी खत्म,,
-1 · Drill and hazard instructions,bd_phase_briefing,Before entry,प्रवेश से पहले,,
-1 · Drill and hazard instructions,bd_phase_debrief,Drill complete,ड्रिल पूर्ण,,
-1 · Drill and hazard instructions,bd_phase_distress,Something is wrong,कुछ गलत है,,
-1 · Drill and hazard instructions,bd_phase_entry,At the opening,प्रवेश द्वार पर,,
-1 · Drill and hazard instructions,bd_phase_monitoring,Inside — stay in contact,अंदर — संपर्क बनाए रखें,,
-1 · Drill and hazard instructions,bd_phase_response,Respond,प्रतिक्रिया दें,,
-1 · Drill and hazard instructions,bd_qr_unsupported,This browser cannot scan QR codes. Copy and paste the code text instead.,यह ब्राउज़र QR स्कैन नहीं कर सकता। कोड टेक्स्ट कॉपी-पेस्ट करें।,,
-1 · Drill and hazard instructions,bd_role_casualty,the worker inside,अंदर का श्रमिक,,
-1 · Drill and hazard instructions,bd_role_responder,the buddy watching,निगरानी करने वाला बडी,,
-1 · Drill and hazard instructions,bd_same_device,Practise on one device,एक डिवाइस पर अभ्यास,,
-1 · Drill and hazard instructions,bd_same_device_note,"Opens a practice run between two browser tabs. Useful for learning the flow, but it is not the real two-person drill.","दो ब्राउज़र टैब के बीच अभ्यास चलाता है। प्रवाह समझने के लिए उपयोगी, लेकिन यह असली दो-व्यक्ति ड्रिल नहीं है।",,
-1 · Drill and hazard instructions,bd_saved,Result saved to your record,परिणाम आपके रिकॉर्ड में सहेजा गया,,
-1 · Drill and hazard instructions,bd_title,Buddy system drill,बडी सिस्टम ड्रिल,,
-1 · Drill and hazard instructions,bd_use_code,Use this code,यह कोड इस्तेमाल करें,,
-1 · Drill and hazard instructions,bd_waiting_score,Waiting for your buddy’s result…,बडी के परिणाम का इंतज़ार…,,
-1 · Drill and hazard instructions,buddy_fb_cas_right,"Correct. Signalling early is what makes rescue possible. A worker who says nothing is found, not saved.","सही। जल्दी संकेत देना ही बचाव संभव बनाता है। जो कुछ नहीं कहता, वह मिलता है — बचता नहीं।",,
-1 · Drill and hazard instructions,buddy_fb_cas_wrong,Dizziness in a confined space is oxygen deficiency or gas exposure. Those seconds were your only chance to tell anyone — after that nobody knows you are in trouble.,सीमित स्थान में चक्कर आना ऑक्सीजन की कमी या गैस संपर्क है। वे सेकंड किसी को बताने का एकमात्र मौका थे — उसके बाद किसी को पता नहीं चलेगा।,,
-1 · Drill and hazard instructions,buddy_fb_entry_right,"Correct. A stand-by attendant outside the space is a requirement, not a courtesy. Without one, nobody can raise the alarm.","सही। स्थान के बाहर स्टैंड-बाय अटेंडेंट अनिवार्य है, शिष्टाचार नहीं। उसके बिना कोई अलार्म नहीं बजा सकता।",,
-1 · Drill and hazard instructions,buddy_fb_entry_wrong,"Two people inside a gas-filled space is two casualties. The whole point of the attendant is that they stay outside, uncontaminated, able to call rescue.",गैस भरे स्थान में दो लोग अंदर = दो हताहत। अटेंडेंट का पूरा मकसद यही है कि वे बाहर सुरक्षित रहें और बचाव बुला सकें।,,
-1 · Drill and hazard instructions,buddy_fb_ppe_right,"Correct. Once gas is confirmed, respiratory protection rated for that gas is mandatory for everyone entering.","सही। गैस की पुष्टि होने पर, प्रवेश करने वाले सभी के लिए उस गैस के लिए रेटेड श्वसन सुरक्षा अनिवार्य है।",,
-1 · Drill and hazard instructions,buddy_fb_ppe_wrong,"A dust mask filters particles, not gas. In a confined space with confirmed gas it offers no protection at all — you would be unconscious before you noticed.","धूल मास्क कण छानता है, गैस नहीं। पुष्ट गैस वाले सीमित स्थान में यह कोई सुरक्षा नहीं देता — आप बेहोश हो जाएंगे, पता भी नहीं चलेगा।",,
-1 · Drill and hazard instructions,buddy_fb_resp1_right,Correct. Raising the alarm from outside is the only action that helps. It is counter-instinctive and it is what saves both of you.,सही। बाहर से अलार्म बजाना ही एकमात्र मददगार कार्रवाई है। यह सहज प्रवृत्ति के विरुद्ध है और यही दोनों को बचाता है।,,
-1 · Drill and hazard instructions,buddy_fb_resp1_wrong,This is the mistake that turns one casualty into two. Most confined-space deaths are would-be rescuers. The gas that dropped your buddy will drop you in the same seconds.,"यही गलती एक हताहत को दो बना देती है। सीमित स्थान की अधिकतर मौतें बचाने गए लोगों की होती हैं। जिस गैस ने बडी को गिराया, वही आपको भी गिराएगी।",,
-1 · Drill and hazard instructions,buddy_fb_resp2_right,Correct. Holding the entry and briefing the trained team is the highest-value thing you can do. You are the only person who knows exactly where they went down.,सही। प्रवेश रोकना और प्रशिक्षित दल को जानकारी देना सबसे मूल्यवान काम है। आप ही जानते हैं वे ठीक कहाँ गिरे।,,
-1 · Drill and hazard instructions,buddy_fb_resp2_wrong,"A dust mask does nothing against gas. Four minutes of waiting feels unbearable, but entering unprotected takes the one person who knows where your buddy is.","धूल मास्क गैस के सामने बेकार है। चार मिनट रुकना असहनीय लगता है, लेकिन बिना सुरक्षा जाने से वह एक व्यक्ति भी चला जाएगा जिसे पता है बडी कहाँ है।",,
-1 · Drill and hazard instructions,err_attempts_left,attempts left,प्रयास बाकी,,
-1 · Drill and hazard instructions,err_LOCKED_OUT,Too many wrong attempts. Wait before trying again.,बहुत बार गलत। फिर कोशिश करने से पहले रुकें।,,
-1 · Drill and hazard instructions,err_NAME_TOO_LONG,That name is too long.,यह नाम बहुत लंबा है।,,
-1 · Drill and hazard instructions,err_NAME_TOO_SHORT,Please enter at least 2 characters.,कम से कम 2 अक्षर लिखें।,,
-1 · Drill and hazard instructions,err_PHONE_INVALID,"Enter a 10-digit phone number, or leave it blank.","10 अंकों का नंबर लिखें, या खाली छोड़ दें।",,
-1 · Drill and hazard instructions,err_PHONE_TAKEN,That phone number is already registered at this site.,यह नंबर इस साइट पर पहले से पंजीकृत है।,,
-1 · Drill and hazard instructions,err_PIN_FORMAT,The PIN must be 4 to 6 digits.,पिन 4 से 6 अंकों का होना चाहिए।,,
-1 · Drill and hazard instructions,err_PIN_MISMATCH,The two PINs do not match.,दोनों पिन मेल नहीं खाते।,,
-1 · Drill and hazard instructions,err_PIN_TOO_SIMPLE,Pick a less obvious PIN — not 1234 or all the same digit.,कम स्पष्ट पिन चुनें — 1234 या एक ही अंक नहीं।,,
-1 · Drill and hazard instructions,err_WORKER_NOT_FOUND,That worker record no longer exists on this phone.,यह रिकॉर्ड अब इस फ़ोन पर नहीं है।,,
-1 · Drill and hazard instructions,gesture_degraded,This phone is struggling to keep up — tapping will be faster.,यह फ़ोन साथ नहीं दे पा रहा — टैप करना तेज़ होगा।,,
-1 · Drill and hazard instructions,gesture_error,Hand tracking could not start.,हाथ ट्रैकिंग शुरू नहीं हो सकी।,,
-1 · Drill and hazard instructions,gesture_idle,Hand tracking off,हाथ ट्रैकिंग बंद,,
-1 · Drill and hazard instructions,gesture_loading,Loading hand tracking…,हाथ ट्रैकिंग लोड हो रही है…,,
-1 · Drill and hazard instructions,gesture_model_failed,"The hand-tracking model could not be downloaded. Connect once, then it works offline.","हाथ ट्रैकिंग मॉडल डाउनलोड नहीं हुआ। एक बार कनेक्ट करें, फिर यह ऑफ़लाइन चलेगा।",,
-1 · Drill and hazard instructions,gesture_no_camera,No front camera available.,सामने का कैमरा उपलब्ध नहीं।,,
-1 · Drill and hazard instructions,gesture_permission_denied,"Camera permission was refused, so hand tracking is off.","कैमरा अनुमति नहीं मिली, इसलिए हाथ ट्रैकिंग बंद है।",,
-1 · Drill and hazard instructions,gesture_unsupported,This browser cannot run hand tracking.,यह ब्राउज़र हाथ ट्रैकिंग नहीं चला सकता।,,
-1 · Drill and hazard instructions,hz_cat_loto,Work without lockout,लॉकआउट बिना काम,,
-1 · Drill and hazard instructions,hz_location_note,"Direction is recorded instead of GPS, because GPS does not work underground.","GPS की जगह दिशा दर्ज होती है, क्योंकि GPS भूमिगत काम नहीं करता।",,
-1 · Drill and hazard instructions,hz_MIC_DENIED,Microphone permission was refused.,माइक्रोफ़ोन अनुमति नहीं मिली।,,
-1 · Drill and hazard instructions,hz_MIC_UNSUPPORTED,This device cannot record audio.,यह डिवाइस ऑडियो रिकॉर्ड नहीं कर सकता।,,
-1 · Drill and hazard instructions,hz_no_direction,Direction not available,दिशा उपलब्ध नहीं,,
-1 · Drill and hazard instructions,hz_none_yet,You have not reported anything yet.,आपने अभी कुछ रिपोर्ट नहीं किया।,,
-1 · Drill and hazard instructions,hz_note_optional,Add a note (optional),नोट जोड़ें (वैकल्पिक),,
-1 · Drill and hazard instructions,hz_note_placeholder,"Where exactly, and what is wrong?","ठीक कहाँ, और क्या गलत है?",,
-1 · Drill and hazard instructions,hz_photo_failed,That image could not be read. Try another photo.,यह छवि पढ़ी नहीं गई। दूसरी फोटो आज़माएं।,,
-1 · Drill and hazard instructions,hz_photo_optional,A photo helps but is not required,फोटो मददगार है पर ज़रूरी नहीं,,
-1 · Drill and hazard instructions,hz_RECORD_FAILED,The recording failed. Try again.,रिकॉर्डिंग विफल। फिर कोशिश करें।,,
-1 · Drill and hazard instructions,hz_status_acknowledged,Seen by safety officer,सुरक्षा अधिकारी ने देखा,,
-1 · Drill and hazard instructions,hz_status_dismissed,Closed without action,बिना कार्रवाई बंद,,
-1 · Drill and hazard instructions,hz_storage_full,"This phone is out of storage, so the report is only held for this session. Ask your supervisor to sync soon.","इस फ़ोन में जगह नहीं है, इसलिए रिपोर्ट सिर्फ़ इस सत्र तक रहेगी। सुपरवाइज़र से जल्द सिंक कराएं।",,
-1 · Drill and hazard instructions,hz_submitting,Sending…,भेजा जा रहा है…,,
-1 · Drill and hazard instructions,hz_voice_remove,Remove voice note,आवाज़ हटाएं,,
-1 · Drill and hazard instructions,hz_zone_label,Zone,ज़ोन,,
-1 · Drill and hazard instructions,sc_complete,Scenario Complete,परिदृश्य पूर्ण,,
-1 · Drill and hazard instructions,sc_continue,Continue,जारी रखें,,
-1 · Drill and hazard instructions,sc_dashboard,View Dashboard,डैशबोर्ड देखें,,
-1 · Drill and hazard instructions,sc_decision,Decision,निर्णय,,
-1 · Drill and hazard instructions,sc_finish,Finish Scenario,परिदृश्य समाप्त करें,,
-1 · Drill and hazard instructions,sc_more,More Scenarios,और परिदृश्य,,
-1 · Drill and hazard instructions,sc_of,of,में से,,
-1 · Drill and hazard instructions,sc_safe,Safe choice,सुरक्षित विकल्प,,
-1 · Drill and hazard instructions,sc_trainer_thinking,AI trainer is thinking…,एआई ट्रेनर सोच रहा है…,,
-1 · Drill and hazard instructions,sc_unsafe,Unsafe choice,असुरक्षित विकल्प,,
-1 · Drill and hazard instructions,scan_analyzing,Analyzing…,विश्लेषण हो रहा है…,,
-1 · Drill and hazard instructions,scan_another,Scan Another Photo,दूसरी फोटो स्कैन करें,,
-1 · Drill and hazard instructions,scan_desc,"Upload or capture a photo of a work area. The AI inspector marks hazards directly on the image, the way a safety officer would during a floor walk.","कार्यक्षेत्र की तस्वीर अपलोड करें या कैद करें। एआई इंस्पेक्टर तस्वीर पर सीधे खतरों को चिह्नित करता है, ठीक वैसे जैसे कोई सुरक्षा अधिकारी फ्लोर वॉक के दौरान करता है।",,
-1 · Drill and hazard instructions,scan_eyebrow,Hazard Scan,खतरा स्कैन,,
-1 · Drill and hazard instructions,scan_hint,Works with any work-area or training photo.,किसी भी कार्यक्षेत्र या प्रशिक्षण फोटो के साथ काम करता है।,,
-1 · Drill and hazard instructions,scan_no_hazards,No hazards detected.,कोई खतरा नहीं मिला।,,
-1 · Drill and hazard instructions,scan_no_key_body,Add a free Gemini or OpenAI key in Settings to run inspections.,निरीक्षण चलाने के लिए सेटिंग्स में एक मुफ्त Gemini या OpenAI कुंजी जोड़ें।,,
-1 · Drill and hazard instructions,scan_no_key_title,No API key set,कोई एपीआई कुंजी सेट नहीं है,,
-1 · Drill and hazard instructions,scan_open,Open Camera / Upload Photo,कैमरा खोलें / फोटो अपलोड करें,,
-1 · Drill and hazard instructions,scan_retake,Retake,फिर से लें,,
-1 · Drill and hazard instructions,scan_run,Run AI Inspection,एआई निरीक्षण चलाएं,,
-1 · Drill and hazard instructions,scan_title,Point. Capture. Inspect.,दिखाएं। कैद करें। जांचें।,,
-2 · Worker-facing flows,home_cta_scan,Scan a Hazard,खतरा स्कैन करें,,
-2 · Worker-facing flows,home_cta_train,Start Simulator,सिम्युलेटर शुरू करें,,
-2 · Worker-facing flows,home_eyebrow,Jharkhand · Mining & Manufacturing Safety,झारखंड · खनन एवं विनिर्माण सुरक्षा,,
-2 · Worker-facing flows,home_how,How it works,यह कैसे काम करता है,,
-2 · Worker-facing flows,home_l1_body,"A supervisor marks where the exits and extinguishers really are, once. After that every drill overlays hazards in the correct real direction, so you learn the route you would actually run.","सुपरवाइज़र एक बार चिह्नित करता है कि निकास और अग्निशामक कहाँ हैं। इसके बाद हर ड्रिल खतरों को सही असली दिशा में दिखाती है, ताकि आप वही रास्ता सीखें जिससे आप वास्तव में भागेंगे।",,
-2 · Worker-facing flows,home_l1_title,Trained in your own corridor,आपके ही गलियारे में प्रशिक्षण,,
-2 · Worker-facing flows,home_l2_body,"Knowing the right answer is not the same as producing it in four seconds. Every decision is timed, and a correct-but-slow answer is flagged for a repeat instead of quietly passed.","सही उत्तर जानना और चार सेकंड में देना एक बात नहीं है। हर निर्णय का समय मापा जाता है, और सही-पर-धीमा उत्तर चुपचाप पास नहीं होता, दोहराने के लिए चिह्नित होता है।",,
-2 · Worker-facing flows,home_l2_title,Timed like a real emergency,असली आपात स्थिति जैसा समय,,
-2 · Worker-facing flows,home_l3_body,"Each certificate links to the one before it by cryptographic hash. The QR carries the whole signed record, so an inspector can verify it standing at the pit head with no signal at all.","हर प्रमाणपत्र क्रिप्टोग्राफिक हैश से पिछले से जुड़ा होता है। QR में पूरा हस्ताक्षरित रिकॉर्ड होता है, इसलिए निरीक्षक बिना किसी सिग्नल के खदान मुहाने पर खड़े होकर इसे जांच सकता है।",,
-2 · Worker-facing flows,home_l3_title,A certificate that cannot be quietly edited,ऐसा प्रमाणपत्र जिसे चुपचाप बदला नहीं जा सकता,,
-2 · Worker-facing flows,home_l4_body,"Spot a blocked exit an hour after the drill? One photo and a tap puts it on the safety officer’s board. Readiness also decays if you stop refreshing, so a certificate means competence today rather than a date in the past.","ड्रिल के एक घंटे बाद अवरुद्ध निकास दिखा? एक फोटो और एक टैप उसे सुरक्षा अधिकारी के बोर्ड पर डाल देता है। रिफ्रेशर छोड़ने पर तैयारी घटती है, इसलिए प्रमाणपत्र का मतलब आज की योग्यता है, बीती तारीख नहीं।",,
-2 · Worker-facing flows,home_l4_title,Every trained worker becomes a sensor,हर प्रशिक्षित श्रमिक एक सेंसर बनता है,,
-2 · Worker-facing flows,home_problem_ref,"Built for SIH problem statement 26041 — Government of Jharkhand, Department of Higher & Technical Education.","SIH समस्या कथन 26041 के लिए बनाया गया — झारखंड सरकार, उच्च एवं तकनीकी शिक्षा विभाग।",,
-2 · Worker-facing flows,home_stat1_l,Most mining and factory-floor accidents trace back to a hazard someone recognized too late — or never at all.,अधिकांश खनन और फैक्ट्री दुर्घटनाएं किसी खतरे से जुड़ी होती हैं जिसे किसी ने बहुत देर से पहचाना — या कभी नहीं पहचाना।,,
-2 · Worker-facing flows,home_stat1_n,Preventable,रोका जा सकता है,,
-2 · Worker-facing flows,home_stat2_l,"That's how fast a worker needs to spot exposed wiring, an unguarded machine, or a missing gas alarm.","इतनी ही जल्दी एक श्रमिक को खुली तार, बिना गार्ड वाली मशीन, या गायब गैस अलार्म पहचानना होता है।",,
-2 · Worker-facing flows,home_stat2_n,Seconds,सेकंड,,
-2 · Worker-facing flows,home_stat3_l,"No AR headset, no simulator lab. A phone camera and an AI inspector cover what the classroom can't.","कोई एआर हेडसेट नहीं, कोई सिम्युलेटर लैब नहीं। एक फोन कैमरा और एआई इंस्पेक्टर वह करते हैं जो क्लासरूम नहीं कर सकता।",,
-2 · Worker-facing flows,home_stat3_n,Zero cost,शून्य लागत,,
-2 · Worker-facing flows,home_step1_b,"Photograph a real work area, or a training photo. Our AI inspector scans it against mining and factory safety standards.",किसी वास्तविक कार्यक्षेत्र या प्रशिक्षण फोटो को कैद करें। हमारा एआई इंस्पेक्टर इसे खनन और फैक्ट्री सुरक्षा मानकों के विरुद्ध जांचता है।,,
-2 · Worker-facing flows,home_step1_e,Step one,चरण एक,,
-2 · Worker-facing flows,home_step1_t,Point your camera,अपना कैमरा दिखाएं,,
-2 · Worker-facing flows,home_step2_b,"Hazards are marked directly on the image with severity and a plain-language explanation — helmet missing, wiring exposed, guard removed.","खतरों को सीधे तस्वीर पर गंभीरता और सरल भाषा में स्पष्टीकरण के साथ चिह्नित किया जाता है — हेलमेट गायब, तार खुली, गार्ड हटाया गया।",,
-2 · Worker-facing flows,home_step2_e,Step two,चरण दो,,
-2 · Worker-facing flows,home_step2_t,See what it sees,देखें कि यह क्या देखता है,,
-2 · Worker-facing flows,home_step3_b,Run branching shaft and factory-floor scenarios with a voice-guided AI trainer that reacts to your choices in real time.,एक आवाज-निर्देशित एआई ट्रेनर के साथ शाखायुक्त शाफ्ट और फैक्ट्री-फ्लोर परिदृश्य चलाएं जो आपके विकल्पों पर वास्तविक समय में प्रतिक्रिया देता है।,,
-2 · Worker-facing flows,home_step3_e,Step three,चरण तीन,,
-2 · Worker-facing flows,home_step3_t,Train the reflex,प्रतिक्रिया को प्रशिक्षित करें,,
-2 · Worker-facing flows,home_title_1,Every shift,हर शिफ्ट,,
-2 · Worker-facing flows,home_title_2,should end,का अंत होना चाहिए,,
-2 · Worker-facing flows,home_title_3,the same way.,एक ही तरह से।,,
-2 · Worker-facing flows,ob_continue_guest,Continue without signing in,साइन इन किए बिना जारी रखें,,
-2 · Worker-facing flows,ob_guest_note,"You can train without an account, but a certificate needs a named worker record.","आप बिना खाते के प्रशिक्षण कर सकते हैं, लेकिन प्रमाणपत्र के लिए नामित रिकॉर्ड चाहिए।",,
-2 · Worker-facing flows,ob_name_placeholder,Enter your full name,अपना पूरा नाम लिखें,,
-2 · Worker-facing flows,ob_no_workers,No one is registered on this phone yet.,इस फ़ोन पर अभी कोई पंजीकृत नहीं है।,,
-2 · Worker-facing flows,ob_phone_why,Only used to find your record on a shared phone. Never sent anywhere.,साझा फ़ोन पर आपका रिकॉर्ड ढूंढने के लिए ही। कहीं नहीं भेजा जाता।,,
-2 · Worker-facing flows,ob_pin_why,Your PIN lets you sign in underground with no signal. It stays on this phone.,आपका पिन बिना सिग्नल भूमिगत साइन इन करने देता है। यह इसी फ़ोन पर रहता है।,,
-2 · Worker-facing flows,set_eyebrow,Settings,सेटिंग्स,,
-2 · Worker-facing flows,set_getting_key,Getting a free key:,मुफ्त कुंजी प्राप्त करना:,,
-2 · Worker-facing flows,set_key_hint1,Stored only in your browser's local storage. Never sent anywhere except directly to,केवल आपके ब्राउज़र के लोकल स्टोरेज में सहेजा गया। सीधे इसके अलावा कहीं नहीं भेजा जाता,,
-2 · Worker-facing flows,set_key_label,API Key,एपीआई कुंजी,,
-2 · Worker-facing flows,set_key_placeholder,Paste your API key,अपनी एपीआई कुंजी पेस्ट करें,,
-2 · Worker-facing flows,set_language_label,App Language,ऐप की भाषा,,
-2 · Worker-facing flows,set_provider_hint,Gemini has the most generous free tier — recommended for a hackathon demo.,Gemini का मुफ्त टियर सबसे उदार है — हैकाथॉन डेमो के लिए अनुशंसित।,,
-2 · Worker-facing flows,set_provider_label,Provider,प्रदाता,,
-2 · Worker-facing flows,set_save,Save Settings,सेटिंग्स सहेजें,,
-2 · Worker-facing flows,set_saved,Saved ✓,सहेजा गया ✓,,
-2 · Worker-facing flows,set_title,AI Provider,एआई प्रदाता,,
-2 · Worker-facing flows,site_aim_and_tap,"Aim at the object, then tap what it is","वस्तु की ओर करें, फिर बताएं वह क्या है",,
-2 · Worker-facing flows,site_anchors_count,markers,मार्कर,,
-2 · Worker-facing flows,site_delete_zone,Delete zone,ज़ोन हटाएं,,
-2 · Worker-facing flows,site_desc,"Walk the area once and mark where the exits, extinguishers and hazards really are. Every worker who opens a drill in this zone then sees them in the right direction.","क्षेत्र में एक बार घूमें और चिह्नित करें कि निकास, अग्निशामक और खतरे वास्तव में कहाँ हैं। इस ज़ोन में ड्रिल खोलने वाला हर श्रमिक उन्हें सही दिशा में देखेगा।",,
-2 · Worker-facing flows,site_export_scan,Share this scan,यह स्कैन साझा करें,,
-2 · Worker-facing flows,site_eyebrow,Supervisor,सुपरवाइज़र,,
-2 · Worker-facing flows,site_heading_now,Facing,दिशा,,
-2 · Worker-facing flows,site_import_done,Scan loaded,स्कैन लोड हो गया,,
-2 · Worker-facing flows,site_import_scan,Load a scan,स्कैन लोड करें,,
-2 · Worker-facing flows,site_marked,Marked,चिह्नित,,
-2 · Worker-facing flows,site_name_label,Site name,साइट का नाम,,
-2 · Worker-facing flows,site_new_zone,New zone,नया ज़ोन,,
-2 · Worker-facing flows,site_no_zones,No zones yet. Create one to start marking anchors.,अभी कोई ज़ोन नहीं। एंकर चिह्नित करने के लिए एक बनाएं।,,
-2 · Worker-facing flows,site_scan_note,"Markers are anchored to compass direction, not depth. Steel structures can distort the compass — re-centre if markers look wrong.","मार्कर कंपास दिशा से जुड़े हैं, गहराई से नहीं। स्टील ढांचे कंपास बिगाड़ सकते हैं — गलत लगे तो री-सेंटर करें।",,
-2 · Worker-facing flows,site_start_marking,Mark anchors,एंकर चिह्नित करें,,
-2 · Worker-facing flows,site_title,Scan your site,अपनी साइट स्कैन करें,,
-2 · Worker-facing flows,site_zone_name_prompt,Name this zone (e.g. Shaft Corridor B),इस ज़ोन का नाम (जैसे शाफ्ट कॉरिडोर B),,
-2 · Worker-facing flows,site_zones,Zones,ज़ोन,,
-2 · Worker-facing flows,st_ar_hint,Overlays hazards on your real surroundings instead of a 3D model.,3D मॉडल के बजाय आपके असली परिवेश पर खतरे दिखाता है।,,
-2 · Worker-facing flows,st_ENDPOINT_INVALID,That is not a valid URL.,यह मान्य URL नहीं है।,,
-2 · Worker-facing flows,st_ENDPOINT_NOT_HTTPS,The upload URL must use https.,अपलोड URL https होना चाहिए।,,
-2 · Worker-facing flows,st_gesture_hint,"Uses the front camera to track your hand, so you can select without touching the screen. Needs a one-time download.","सामने के कैमरे से हाथ ट्रैक करता है, जिससे स्क्रीन छुए बिना चुन सकते हैं। एक बार डाउनलोड चाहिए।",,
-2 · Worker-facing flows,st_pictogram_hint,Shows standard safety signs with spoken instructions instead of text.,पाठ के बजाय मानक सुरक्षा चिह्न और बोले गए निर्देश दिखाता है।,,
-2 · Worker-facing flows,st_reset_confirm,Type ERASE to confirm,पुष्टि के लिए ERASE लिखें,,
-2 · Worker-facing flows,st_reset_device,Erase everything on this device,इस डिवाइस से सब मिटाएं,,
-2 · Worker-facing flows,st_reset_warning,"This deletes every worker record, certificate and hazard report stored here, including the signing key. Export a bundle first.","यह यहाँ सहेजे सभी श्रमिक रिकॉर्ड, प्रमाणपत्र और खतरा रिपोर्ट मिटा देगा, हस्ताक्षर कुंजी सहित। पहले बंडल निर्यात करें।",,
-2 · Worker-facing flows,st_sync_hint,"Leave this blank and nothing ever leaves the device. If your organisation runs a collection endpoint, paste its https URL here.","खाली छोड़ें तो डिवाइस से कुछ बाहर नहीं जाता। यदि आपके संगठन का संग्रह एंडपॉइंट है, उसका https URL यहाँ डालें।",,
-2 · Worker-facing flows,st_sync_title,Central upload (optional),केंद्रीय अपलोड (वैकल्पिक),,
-2 · Worker-facing flows,st_voice_check,Voice availability on this device,इस डिवाइस पर आवाज़ उपलब्धता,,
-2 · Worker-facing flows,st_voice_hint,"Say ""one"" or ""two"" instead of tapping. Works with gloves on.","टैप के बजाय ""एक"" या ""दो"" बोलें। दस्ताने पहने भी काम करता है।",,
-2 · Worker-facing flows,st_voice_missing,no voice installed,कोई आवाज़ इंस्टॉल नहीं,,
-3 · Certification and records,cert_chain_position,Ledger position,लेजर स्थिति,,
-3 · Certification and records,cert_decay_note,"This is your score as it stands today, not on the day you passed. It falls if you skip refreshers.","यह आज का स्कोर है, पास होने के दिन का नहीं। रिफ्रेशर छोड़ने पर यह गिरता है।",,
-3 · Certification and records,cert_desc,Pass all 5 safety domains to unlock a verifiable QR certificate.,सत्यापन योग्य क्यूआर प्रमाणपत्र अनलॉक करने के लिए सभी 5 सुरक्षा डोमेन पास करें।,,
-3 · Certification and records,cert_domains_passed,Domains Passed,पास किए गए डोमेन,,
-3 · Certification and records,cert_eligible_title,You're eligible! Generate your certificate,आप पात्र हैं! अपना प्रमाणपत्र बनाएं,,
-3 · Certification and records,cert_existing_note,You already hold a certificate. Issuing again records a fresh readiness snapshot.,आपके पास प्रमाणपत्र है। दोबारा जारी करने पर नई तैयारी दर्ज होगी।,,
-3 · Certification and records,cert_eyebrow,Certification,प्रमाणन,,
-3 · Certification and records,cert_issue_again,Issue an updated certificate,अद्यतन प्रमाणपत्र जारी करें,,
-3 · Certification and records,cert_issue_btn,Generate Certificate,प्रमाणपत्र बनाएं,,
-3 · Certification and records,cert_issued_label,Certificate Issued,प्रमाणपत्र जारी किया गया,,
-3 · Certification and records,cert_not_attempted,Not attempted,प्रयास नहीं किया गया,,
-3 · Certification and records,cert_not_eligible,Complete and pass every domain to unlock your certificate. Head to the,अपना प्रमाणपत्र अनलॉक करने के लिए हर डोमेन पूरा करें और पास करें। यहां जाएं:,,
-3 · Certification and records,cert_pass_threshold,Pass threshold:,उत्तीर्ण सीमा:,,
-3 · Certification and records,cert_prev_hash,Links to,जुड़ा है,,
-3 · Certification and records,cert_print,Print / Save PDF,प्रिंट / पीडीएफ सहेजें,,
-3 · Certification and records,cert_record_hash,Record hash,रिकॉर्ड हैश,,
-3 · Certification and records,cert_retry_needed,Retry needed,दोबारा प्रयास आवश्यक,,
-3 · Certification and records,cert_sign_in_first,Sign in to claim a certificate,प्रमाणपत्र के लिए साइन इन करें,,
-3 · Certification and records,cert_sign_in_why,"A certificate names a specific worker, so it needs a signed-in record rather than an anonymous session.","प्रमाणपत्र में विशिष्ट श्रमिक का नाम होता है, इसलिए इसे साइन-इन रिकॉर्ड चाहिए, गुमनाम सत्र नहीं।",,
-3 · Certification and records,cert_title,Your Safety Certificate,आपका सुरक्षा प्रमाणपत्र,,
-3 · Certification and records,cert_view_verification,View Verification Page,सत्यापन पृष्ठ देखें,,
-3 · Certification and records,cert_weak_crypto,"This device could not use hardware-grade signing, so certificates it issues carry a weaker signature. Verification still detects tampering.","यह डिवाइस हार्डवेयर-स्तर हस्ताक्षर नहीं कर सका, इसलिए इससे जारी प्रमाणपत्रों का हस्ताक्षर कमज़ोर है। सत्यापन अब भी छेड़छाड़ पकड़ता है।",,
-3 · Certification and records,chain_BAD_HASH,Record was altered after signing,हस्ताक्षर के बाद रिकॉर्ड बदला गया,,
-3 · Certification and records,chain_BAD_SIGNATURE,Signature does not verify,हस्ताक्षर सत्यापित नहीं,,
-3 · Certification and records,chain_BROKEN_LINK,Record does not link to the one before it,रिकॉर्ड पिछले से नहीं जुड़ता,,
-3 · Certification and records,chain_DOMAIN_MISMATCH,Record covers a different set of domains,रिकॉर्ड अलग डोमेन सेट का है,,
-3 · Certification and records,chain_FORK,Two records claim the same position,दो रिकॉर्ड एक ही स्थान का दावा करते हैं,,
-3 · Certification and records,chain_SEQ_GAP,A record is missing from the sequence,क्रम में एक रिकॉर्ड गायब,,
-3 · Certification and records,chain_UNKNOWN_SIGNER,Signed by a device this phone does not know,अज्ञात डिवाइस द्वारा हस्ताक्षरित,,
-3 · Certification and records,chain_UNSUPPORTED_VERSION,Record uses a newer format,रिकॉर्ड नए फॉर्मेट में है,,
-3 · Certification and records,verify_eyebrow,Certificate Verification,प्रमाणपत्र सत्यापन,,
-3 · Certification and records,verify_invalid,Certificate Not Found,प्रमाणपत्र नहीं मिला,,
-3 · Certification and records,verify_invalid_desc,This certificate ID does not match any issued certificate on this device.,यह प्रमाणपत्र आईडी इस डिवाइस पर जारी किए गए किसी भी प्रमाणपत्र से मेल नहीं खाती।,,
-3 · Certification and records,verify_issued,Issued,जारी किया गया,,
-4 · Supervisor surfaces,ad_auth_warning,"This PIN is a local speed bump, not real authorization. A production deployment needs server-issued roles — see the architecture notes.","यह पिन स्थानीय अवरोध है, वास्तविक प्राधिकरण नहीं। उत्पादन परिनियोजन के लिए सर्वर-जारी भूमिकाएं चाहिए।",,
-4 · Supervisor surfaces,ad_export_dgms,Export compliance bundle,अनुपालन बंडल निर्यात करें,,
-4 · Supervisor surfaces,ad_gate_enter,Enter supervisor PIN,सुपरवाइज़र पिन लिखें,,
-4 · Supervisor surfaces,ad_gate_lock,Lock dashboard,डैशबोर्ड लॉक करें,,
-4 · Supervisor surfaces,ad_gate_set_body,No PIN is set yet. Choose one to protect this dashboard on a shared phone.,अभी कोई पिन नहीं है। साझा फ़ोन पर इस डैशबोर्ड की सुरक्षा के लिए एक चुनें।,,
-4 · Supervisor surfaces,ad_gate_set_title,Set a supervisor PIN,सुपरवाइज़र पिन सेट करें,,
-4 · Supervisor surfaces,ad_gate_title,Supervisor access,सुपरवाइज़र पहुंच,,
-4 · Supervisor surfaces,ad_gate_unlock,Unlock,खोलें,,
-4 · Supervisor surfaces,ad_gate_wrong,Wrong PIN.,गलत पिन।,,
-4 · Supervisor surfaces,ad_gossip_desc,"When the pit has no network, connect to a supervisor phone and pass the records across directly. They upload when they surface.","जब खदान में नेटवर्क न हो, सुपरवाइज़र फ़ोन से जुड़ें और रिकॉर्ड सीधे भेजें। वे ऊपर आकर अपलोड कर देंगे।",,
-4 · Supervisor surfaces,ad_gossip_title,Hand off to a nearby phone,पास के फ़ोन को सौंपें,,
-4 · Supervisor surfaces,ad_hazard_ack,Acknowledge,स्वीकार करें,,
-4 · Supervisor surfaces,ad_hazard_dismiss,Dismiss,खारिज करें,,
-4 · Supervisor surfaces,ad_hazard_reopen,Reopen,फिर खोलें,,
-4 · Supervisor surfaces,ad_hazard_resolve,Mark fixed,ठीक चिह्नित करें,,
-4 · Supervisor surfaces,ad_hazards_none,No hazard reports yet.,अभी कोई खतरा रिपोर्ट नहीं।,,
-4 · Supervisor surfaces,ad_hesitation_desc,These workers answered correctly but slowly. On paper they passed; under pressure they are the ones who freeze. Target them for a repeat drill.,इन श्रमिकों ने सही पर धीमे उत्तर दिए। कागज़ पर वे पास हैं; दबाव में यही रुक जाते हैं। इन्हें दोबारा ड्रिल कराएं।,,
-4 · Supervisor surfaces,ad_hesitation_none,No hesitation flags on record.,कोई हिचकिचाहट दर्ज नहीं।,,
-4 · Supervisor surfaces,ad_import_bundle,Import a bundle,बंडल आयात करें,,
-4 · Supervisor surfaces,ad_import_done,Import complete,आयात पूर्ण,,
-4 · Supervisor surfaces,ad_import_failed,That file is not a Jaagruk bundle.,यह फ़ाइल जागरुक बंडल नहीं है।,,
-4 · Supervisor surfaces,ad_import_trust,Also trust the signing devices in this bundle,इस बंडल के हस्ताक्षर डिवाइस पर भी भरोसा करें,,
-4 · Supervisor surfaces,ad_ledger_empty,No certificates have been issued on this device.,इस डिवाइस पर कोई प्रमाणपत्र जारी नहीं हुआ।,,
-4 · Supervisor surfaces,ad_ledger_intact,All records intact,सभी रिकॉर्ड अक्षुण्ण,,
-4 · Supervisor surfaces,ad_ledger_intact_to,Chain intact up to record,रिकॉर्ड तक चेन अक्षुण्ण,,
-4 · Supervisor surfaces,ad_ledger_records,records,रिकॉर्ड,,
-4 · Supervisor surfaces,ad_ledger_verify,Verify the whole ledger,पूरा लेजर सत्यापित करें,,
-4 · Supervisor surfaces,ad_oldest_open,"oldest open, days","सबसे पुराना खुला, दिन",,
-4 · Supervisor surfaces,ad_open_high,open high-severity,खुले उच्च-गंभीरता,,
-4 · Supervisor surfaces,ad_statutory_note,"Export formatted for Mines Act 1952 and Factories Act 1948 record-keeping. Readiness is reported as of the export date, not the original test date.","खान अधिनियम 1952 और कारखाना अधिनियम 1948 के अभिलेख हेतु निर्यात। तैयारी निर्यात तिथि की है, मूल परीक्षा तिथि की नहीं।",,
-4 · Supervisor surfaces,ad_sync_done,Sync complete,सिंक पूर्ण,,
-4 · Supervisor surfaces,ad_sync_failed,Sync failed. Records are safe and queued.,सिंक विफल। रिकॉर्ड सुरक्षित और कतार में हैं।,,
-4 · Supervisor surfaces,ad_sync_no_endpoint,"No upload URL is configured, so records stay on this device.","कोई अपलोड URL सेट नहीं है, इसलिए रिकॉर्ड इसी डिवाइस पर रहेंगे।",,
-4 · Supervisor surfaces,ad_sync_now,Sync now,अभी सिंक करें,,
-4 · Supervisor surfaces,ad_sync_offline,This device is offline. Records will go up automatically later.,यह डिवाइस ऑफ़लाइन है। रिकॉर्ड बाद में अपने आप जाएंगे।,,
-4 · Supervisor surfaces,ad_sync_pending,records waiting,रिकॉर्ड बाकी,,
-4 · Supervisor surfaces,ad_tab_compliance,Compliance,अनुपालन,,
-4 · Supervisor surfaces,ad_tab_hazards,Hazard board,खतरा बोर्ड,,
-4 · Supervisor surfaces,ad_tab_hesitation,Hesitation risk,हिचकिचाहट जोखिम,,
-4 · Supervisor surfaces,ad_tab_ledger,Ledger,लेजर,,
-4 · Supervisor surfaces,ad_tab_verify,Verify a QR,QR सत्यापित करें,,
-4 · Supervisor surfaces,ad_worst_pause,Longest pause,सबसे लंबा ठहराव,,
-4 · Supervisor surfaces,ad_zone_clusters,Where reports cluster,रिपोर्टें कहाँ जमा हैं,,
-4 · Supervisor surfaces,admin_certified_workers,Certified Workers,प्रमाणित श्रमिक,,
-4 · Supervisor surfaces,admin_domain_breakdown,Domain-wise Average,डोमेन-वार औसत,,
-4 · Supervisor surfaces,admin_export_csv,Export CSV,सीएसवी निर्यात करें,,
-4 · Supervisor surfaces,admin_eyebrow,Admin,एडमिन,,
-4 · Supervisor surfaces,admin_no_certs,No certificates issued yet.,अभी तक कोई प्रमाणपत्र जारी नहीं किया गया।,,
-4 · Supervisor surfaces,admin_search,Search by name…,नाम से खोजें…,,
-4 · Supervisor surfaces,admin_title,Compliance Dashboard,अनुपालन डैशबोर्ड,,
-4 · Supervisor surfaces,admin_total_certs,Certificates Issued,जारी प्रमाणपत्र,,
-4 · Supervisor surfaces,db_by_domain,By safety domain,सुरक्षा क्षेत्र अनुसार,,
-4 · Supervisor surfaces,db_consistency_hint,Short sessions every few days beat one long session. The gaps are what the score reacts to.,हर कुछ दिन में छोटे सत्र एक लंबे सत्र से बेहतर हैं। स्कोर इन अंतरालों पर प्रतिक्रिया देता है।,,
-4 · Supervisor surfaces,db_decayed_from,was,था,,
-4 · Supervisor surfaces,db_flagged_slow,Flagged for slow reaction,धीमी प्रतिक्रिया के लिए चिह्नित,,
-4 · Supervisor surfaces,db_last_passed,Last passed,अंतिम पास,,
-4 · Supervisor surfaces,db_mode_ar,AR,एआर,,
-4 · Supervisor surfaces,db_mode_buddy,Buddy,बडी,,
-4 · Supervisor surfaces,db_mode_refresher,Refresher,रिफ्रेशर,,
-4 · Supervisor surfaces,db_mode_solo,Solo,अकेले,,
-4 · Supervisor surfaces,db_radar_hint,Certification needs all five above the line. A dent in the shape is the one to work on next.,"प्रमाणन के लिए पाँचों को रेखा से ऊपर होना चाहिए। आकृति में जो हिस्सा दबा है, अगला काम वही है।",,
-4 · Supervisor surfaces,db_radar_title,Readiness across all five domains,सभी पाँच क्षेत्रों में तैयारी,,
-4 · Supervisor surfaces,db_reaction_hint,"Every decision you have made, grouped by how fast you made it.","आपके सभी निर्णय, इस आधार पर समूहित कि आपने कितनी तेज़ी से लिए।",,
-4 · Supervisor surfaces,db_showing,showing,दिखा रहा है,,
-4 · Supervisor surfaces,db_storage_temp,"This browser will not let Jaagruk store data permanently, so your progress lasts only for this session.","यह ब्राउज़र जागरुक को स्थायी रूप से डेटा सहेजने नहीं देता, इसलिए प्रगति सिर्फ़ इस सत्र तक रहेगी।",,
-5 · Other,anchor_loto,Lockout panel,लॉकआउट पैनल,,
-5 · Other,ch_decay_label,Readiness if you do not refresh,रिफ्रेश न करने पर तैयारी,,
-5 · Other,ch_falls_below,Drops below the pass mark in,पास अंक से नीचे गिरेगा,,
-5 · Other,chat_greeting,"Hi! I'm the Jaagruk assistant. Ask me anything about how this app works — AR drills, reaction-time scoring, the buddy drill, certificates, hazard reports, or anything you're unsure about.","नमस्ते! मैं जागरुक सहायक हूं। यह ऐप कैसे काम करता है — खतरा स्कैनिंग, परिदृश्य, सेटिंग्स, या जो भी आपको समझ न आए, मुझसे कुछ भी पूछें।",,
-5 · Other,chat_no_key,Add a free API key in Settings first so I can respond — go to the Settings tab and paste a Gemini key.,पहले सेटिंग्स में एक मुफ्त एपीआई कुंजी जोड़ें ताकि मैं जवाब दे सकूं — सेटिंग्स टैब पर जाएं और Gemini कुंजी पेस्ट करें।,,
-5 · Other,chat_placeholder,Ask about this app…,इस ऐप के बारे में पूछें…,,
-5 · Other,dash_clear,Clear log,लॉग साफ़ करें,,
-5 · Other,dash_empty,No activity yet. Run a hazard scan or scenario to see your record here.,अभी तक कोई गतिविधि नहीं। अपना रिकॉर्ड यहां देखने के लिए खतरा स्कैन या परिदृश्य चलाएं।,,
-5 · Other,dash_eyebrow,Progress,प्रगति,,
-5 · Other,dash_hazard_scan,Hazard Scan,खतरा स्कैन,,
-5 · Other,dash_scenario_training,Scenario Training,परिदृश्य प्रशिक्षण,,
-5 · Other,dash_sessions,Sessions,सत्र,,
-5 · Other,list_desc,"Branching, voice-guided scenarios built from real mining and factory-floor situations. Every choice is scored — this is your safety reflex, tested.","वास्तविक खनन और फैक्ट्री-फ्लोर स्थितियों से बने शाखायुक्त, आवाज-निर्देशित परिदृश्य। हर विकल्प का स्कोर होता है — यह आपकी सुरक्षा प्रतिक्रिया की परीक्षा है।",,
-5 · Other,list_eyebrow,Simulator,सिम्युलेटर,,
-5 · Other,list_points,decision points,निर्णय बिंदु,,
-5 · Other,list_title,Choose a scenario,एक परिदृश्य चुनें,,
-5 · Other,rf_failed,Not passed — this comes back in two days,पास नहीं — यह दो दिन में फिर आएगा,,
-5 · Other,rf_overdue_by,overdue by,देर से,,
-5 · Other,rf_reminders_blocked,Notifications are blocked in your browser settings.,ब्राउज़र सेटिंग्स में सूचनाएं अवरुद्ध हैं।,,
-5 · Other,rf_reminders_on,Reminders on,रिमाइंडर चालू,,
-5 · Other,rf_reminders_unsupported,This browser cannot show reminders.,यह ब्राउज़र रिमाइंडर नहीं दिखा सकता।,,
-5 · Other,rf_web_limit,Reminders appear when you open the app. A phone cannot be woken on a schedule from a web page — the installed Android build can.,रिमाइंडर ऐप खोलने पर दिखते हैं। वेब पेज से फ़ोन को समय पर जगाया नहीं जा सकता — इंस्टॉल किया Android बिल्ड कर सकता है।,,
-5 · Other,vf_in_ledger,Present in this phone’s ledger and correctly linked,इस फ़ोन के लेजर में मौजूद और सही जुड़ा,,
-5 · Other,vf_not_in_ledger,Not in this phone’s ledger — verified from the QR alone,इस फ़ोन के लेजर में नहीं — केवल QR से सत्यापित,,
-5 · Other,vf_paste_placeholder,Paste JGK1… here,JGK1… यहाँ पेस्ट करें,,
-5 · Other,vf_scan_or_paste,"Scan a certificate QR, or paste its code","प्रमाणपत्र QR स्कैन करें, या कोड पेस्ट करें",,
-5 · Other,vf_signer_known,Signing device is known to this phone,हस्ताक्षर करने वाला डिवाइस ज्ञात है,,
-5 · Other,vf_signer_unknown,"Signature is valid, but this phone has not met the issuing device. Confirm the site before accepting.","हस्ताक्षर वैध है, पर यह फ़ोन जारीकर्ता डिवाइस को नहीं जानता। स्वीकार करने से पहले साइट की पुष्टि करें।",,
-5 · Other,vf_unreadable,That is not a Jaagruk certificate.,यह जागरुक प्रमाणपत्र नहीं है।,,
+﻿group,key,english,hindi,santali_current,santali_corrected,reviewer_note,edit_in_file
+1 · Drill and hazard instructions,ar_aim_prompt,Point the phone at the correct marker and hold,फ़ोन सही मार्कर पर रखें और स्थिर रखें,ᱯᱷᱚᱱ ᱴᱷᱤᱠ ᱢᱟᱨᱠᱚᱨ ᱛᱮ ᱫᱚᱦᱚᱭ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,ar_camera_denied,Camera permission was refused. Allow camera access in your browser settings to use the AR drill.,कैमरा अनुमति नहीं मिली। एआर ड्रिल के लिए ब्राउज़र सेटिंग्स में कैमरा अनुमति दें।,ᱠᱮᱢᱨᱟ ᱦᱩᱠᱩᱢ ᱵᱟᱝ ᱧᱟᱢ ᱞᱮᱱᱟ ᱾ AR ᱛᱟᱞᱤᱢ ᱞᱟᱹᱜᱤᱫ ᱵᱨᱟᱣᱡᱚᱨ ᱥᱮᱴᱤᱝᱥ ᱨᱮ ᱠᱮᱢᱨᱟ ᱵᱚᱞᱚ ᱮᱢ ᱢᱮ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,ar_camera_in_use,The camera is being used by another app. Close it and try again.,कैमरा दूसरे ऐप में चल रहा है। उसे बंद करके फिर कोशिश करें।,ᱠᱮᱢᱨᱟ ᱮᱴᱟᱜ ᱮᱯ ᱨᱮ ᱠᱟᱹᱢᱤ ᱠᱟᱱᱟ ᱾ ᱚᱱᱟ ᱵᱚᱸᱫᱚᱭ ᱠᱟᱛᱮ ᱫᱚᱦᱲᱟ ᱠᱩᱨᱩᱢᱩᱴᱩᱭ ᱢᱮ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,ar_camera_missing,No camera was found on this device.,इस डिवाइस पर कैमरा नहीं मिला।,ᱱᱚᱶᱟ ᱡᱤᱱᱤᱥ ᱨᱮ ᱠᱮᱢᱨᱟ ᱵᱟᱝ ᱧᱟᱢ ᱞᱮᱱᱟ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,ar_camera_unknown,The camera could not start.,कैमरा शुरू नहीं हो सका।,ᱠᱮᱢᱨᱟ ᱵᱟᱝ ᱮᱦᱚᱵ ᱦᱩᱭ ᱞᱮᱱᱟ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,ar_camera_unsupported,This browser cannot open the camera.,यह ब्राउज़र कैमरा नहीं खोल सकता।,ᱱᱚᱶᱟ ᱵᱨᱟᱣᱡᱚᱨ ᱠᱮᱢᱨᱟ ᱵᱟᱝ ᱡᱷᱤᱡ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,ar_enable_motion,Allow motion access,मोशन अनुमति दें,ᱢᱳᱥᱚᱱ ᱵᱚᱞᱚ ᱮᱢ ᱢᱮ,,,i18nSantali.js
+1 · Drill and hazard instructions,ar_generic_zone,This site has not been scanned. Showing a generic layout — ask your supervisor to run Site Setup.,यह साइट स्कैन नहीं हुई। सामान्य लेआउट दिख रहा है — सुपरवाइज़र से साइट सेटअप कराएं।,ᱱᱚᱶᱟ ᱴᱷᱟᱶ ᱵᱟᱝ ᱥᱠᱮᱱ ᱦᱩᱭ ᱟᱠᱟᱱᱟ ᱾ ᱥᱟᱫᱷᱟᱨᱚᱱ ᱱᱚᱠᱥᱟ ᱩᱫᱩᱜ ᱠᱟᱱᱟ — ᱥᱩᱯᱚᱨᱣᱟᱭᱡᱚᱨ ᱛᱮ ᱴᱷᱟᱶ ᱥᱟᱡᱟᱣ ᱠᱟᱹᱢᱤ ᱠᱟᱠᱷᱟᱨ ᱢᱮ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,ar_no_compass_body,"This device has no usable compass, so markers cannot be anchored to real directions. The 3D view teaches the same decisions.","इस डिवाइस में उपयोगी कंपास नहीं है, इसलिए मार्कर असली दिशा से नहीं जुड़ सकते। 3D व्यू वही निर्णय सिखाता है।","ᱱᱚᱶᱟ ᱡᱤᱱᱤᱥ ᱨᱮ ᱠᱟᱹᱢᱤᱭᱟᱜ ᱠᱚᱢᱯᱟᱥ ᱵᱟᱝ, ᱚᱱᱟᱛᱮ ᱢᱟᱨᱠᱚᱨ ᱠᱚ ᱥᱟᱹᱨᱤ ᱦᱚᱨ ᱨᱮ ᱵᱟᱝ ᱡᱚᱲᱟᱣ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ ᱾ 3D ᱧᱮᱞ ᱚᱱᱟ ᱜᱮ ᱴᱷᱮᱭᱟᱣ ᱠᱚ ᱦᱚᱠᱚᱭᱟ ᱾",,,i18nSantali.js
+1 · Drill and hazard instructions,ar_no_compass_title,No motion sensor,मोशन सेंसर नहीं,ᱢᱳᱥᱚᱱ ᱥᱮᱱᱥᱚᱨ ᱵᱟᱝ,,,i18nSantali.js
+1 · Drill and hazard instructions,ar_permission_body,Jaagruk uses the compass to keep hazard markers pointing at the real thing.,जागरुक कंपास से खतरा मार्कर को असली जगह पर रखता है।,ᱡᱟᱜᱨᱩᱠ ᱠᱚᱢᱯᱟᱥ ᱛᱮ ᱡᱚᱠᱷᱚᱢ ᱢᱟᱨᱠᱚᱨ ᱠᱚ ᱥᱟᱹᱨᱤ ᱡᱤᱱᱤᱥ ᱛᱮ ᱩᱫᱩᱜ ᱮᱫᱟᱭ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,ar_permission_title,Motion access needed,मोशन अनुमति चाहिए,ᱢᱳᱥᱚᱱ ᱵᱚᱞᱚ ᱞᱟᱹᱠᱛᱤ,,,i18nSantali.js
+1 · Drill and hazard instructions,ar_recentre,Re-centre,री-सेंटर,ᱫᱚᱦᱲᱟ ᱛᱷᱤᱠ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,ar_relative_heading,No compass reading — markers may drift. Face the main exit and re-centre.,कंपास रीडिंग नहीं — मार्कर खिसक सकते हैं। मुख्य निकास की ओर मुड़ें और री-सेंटर करें।,ᱠᱚᱢᱯᱟᱥ ᱯᱟᱲᱦᱟᱣ ᱵᱟᱝ — ᱢᱟᱨᱠᱚᱨ ᱠᱚ ᱚᱲᱟᱜᱚᱜᱼᱟ ᱾ ᱢᱟᱲᱟᱝ ᱚᱰᱚᱠ ᱦᱚᱨ ᱛᱮ ᱜᱩᱨᱮᱭ ᱠᱟᱛᱮ ᱫᱚᱦᱲᱟ ᱛᱷᱤᱠ ᱢᱮ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,ar_retry,Retry camera,कैमरा फिर आज़माएं,ᱠᱮᱢᱨᱟ ᱫᱚᱦᱲᱟ ᱠᱩᱨᱩᱢᱩᱴᱩᱭ,,,i18nSantali.js
+1 · Drill and hazard instructions,ar_rotate_portrait,Hold the phone upright for accurate markers,सटीक मार्कर के लिए फ़ोन सीधा रखें,ᱯᱷᱚᱱ ᱥᱚᱡᱷᱮ ᱫᱚᱦᱚᱭ ᱢᱮ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,ar_starting,Starting camera…,कैमरा शुरू हो रहा है…,ᱠᱮᱢᱨᱟ ᱮᱦᱚᱵ ᱠᱟᱱᱟ…,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,ar_turn_around,Turn around to find it,ढूंढने के लिए घूमें,ᱧᱟᱢ ᱞᱟᱹᱜᱤᱫ ᱜᱩᱨᱮᱭ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,ar_unavailable,AR view unavailable,एआर व्यू उपलब्ध नहीं,AR ᱧᱮᱞ ᱵᱟᱝ ᱦᱮᱸᱡᱚᱜ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,ar_use_3d,Use 3D view,3D व्यू इस्तेमाल करें,3D ᱧᱮᱞ ᱵᱮᱵᱷᱟᱨ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,ar_use_ar,Use camera AR,कैमरा एआर इस्तेमाल करें,ᱠᱮᱢᱨᱟ AR ᱵᱮᱵᱷᱟᱨ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,as_accuracy,Correct answers,सही उत्तर,ᱴᱷᱤᱠ ᱛᱮᱞᱟ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,as_AUDIO,The microphone could not be opened.,माइक्रोफ़ोन नहीं खुला।,ᱢᱟᱭᱠ ᱵᱟᱝ ᱡᱷᱤᱡ ᱦᱩᱭ ᱞᱮᱱᱟ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,as_decide_now,Decide now,अभी निर्णय लें,ᱛᱮᱦᱮᱸ ᱜᱮ ᱴᱷᱤᱠᱟᱹᱣ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,as_grade_fast,Decisive,निर्णायक,ᱞᱚᱜᱚᱱ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,as_grade_normal,Acceptable,स्वीकार्य,ᱦᱩᱭᱩᱜᱼᱟ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,as_grade_slow,Hesitated,हिचकिचाहट,ᱴᱷᱤᱠᱟᱹᱣ ᱠᱮᱫᱟᱢ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,as_grade_unknown,Not timed,समय नहीं लिया,ᱚᱠᱛᱚ ᱵᱟᱝ ᱞᱮᱠᱷᱟ,,,i18nSantali.js
+1 · Drill and hazard instructions,as_hesitation_body,"In a real emergency that pause is the gap between walking out and being carried out. This is flagged for a repeat, not because you were wrong.","असली आपात स्थिति में वह ठहराव खुद चलकर निकलने और उठाकर ले जाने के बीच का अंतर है। इसे दोहराने के लिए चिह्नित किया गया है, गलती के कारण नहीं।",ᱥᱟᱹᱨᱤ ᱡᱚᱠᱷᱚᱢ ᱨᱮ ᱚᱱᱟ ᱫᱮᱨᱤ ᱡᱤᱭᱚᱸ ᱟᱨ ᱢᱚᱨᱚᱸ ᱛᱟᱞᱟ ᱨᱮᱭᱟᱜ ᱯᱷᱟᱨᱟᱠ ᱠᱟᱱᱟ ᱾,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,as_hesitation_title,"You knew it, but you were slow","आपको पता था, पर देर हुई","ᱟᱢ ᱵᱟᱰᱟᱭ ᱠᱟᱫᱟᱢ, ᱢᱮᱱᱠᱷᱟᱱ ᱫᱮᱨᱤ ᱦᱩᱭ ᱮᱱᱟ",,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,as_listen_again,Read it aloud again,फिर सुनाएं,ᱫᱚᱦᱲᱟ ᱟᱸᱡᱚᱢ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,as_listening,Listening…,सुन रहा है…,ᱟᱸᱡᱚᱢ ᱠᱟᱱᱟ…,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,as_NETWORK,Speech recognition needs a connection on this device.,इस डिवाइस पर वाक् पहचान को कनेक्शन चाहिए।,ᱱᱚᱶᱟ ᱡᱤᱱᱤᱥ ᱨᱮ ᱨᱚᱲ ᱵᱟᱰᱟᱭ ᱞᱟᱹᱜᱤᱫ ᱡᱚᱲᱟᱣ ᱞᱟᱹᱠᱛᱤ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,as_NO_MATCH,"Did not catch that. Say ""one"" or ""two"", or tap.","समझ नहीं आया। ""एक"" या ""दो"" बोलें, या टैप करें।","ᱵᱟᱝ ᱟᱸᱡᱚᱢ ᱞᱮᱱᱟ ᱾ ""ᱢᱤᱫ"" ᱥᱮ ""ᱵᱟᱨ"" ᱨᱚᱲ ᱢᱮ, ᱥᱮ ᱛᱚᱯᱟᱣ ᱢᱮ ᱾",,,i18nSantali.js
+1 · Drill and hazard instructions,as_NO_SPEECH,Heard nothing. Try again closer to the phone.,कुछ सुना नहीं। फ़ोन के पास बोलें।,ᱪᱮᱫ ᱦᱚᱸ ᱵᱟᱝ ᱟᱸᱡᱚᱢ ᱞᱮᱱᱟ ᱾ ᱯᱷᱚᱱ ᱱᱟᱜᱟᱢ ᱨᱮ ᱨᱚᱲ ᱢᱮ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,as_PERMISSION_DENIED,"Microphone permission was refused, so voice answers are off.","माइक्रोफ़ोन अनुमति नहीं मिली, इसलिए आवाज़ से उत्तर बंद है।","ᱢᱟᱭᱠ ᱦᱩᱠᱩᱢ ᱵᱟᱝ ᱧᱟᱢ ᱞᱮᱱᱟ, ᱚᱱᱟᱛᱮ ᱨᱚᱲ ᱛᱮ ᱛᱮᱞᱟ ᱵᱚᱸᱫᱚ ᱾",,,i18nSantali.js
+1 · Drill and hazard instructions,as_readiness,Readiness,तैयारी,ᱛᱮᱭᱟᱨᱤ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,as_say_one_or_two,"Say ""one"" or ""two""","""एक"" या ""दो"" बोलें","""ᱢᱤᱫ"" ᱥᱮ ""ᱵᱟᱨ"" ᱨᱚᱲ",,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,as_speak_answer,Speak your answer,बोलकर उत्तर दें,ᱨᱚᱲ ᱠᱟᱛᱮ ᱛᱮᱞᱟ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,as_speed,Reaction speed,प्रतिक्रिया गति,ᱛᱮᱞᱟ ᱞᱚᱜᱚᱱ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,as_target_time,Target,लक्ष्य,ᱞᱟᱠᱷᱟᱭ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,as_time_pressure,You are being timed,आपका समय गिना जा रहा है,ᱟᱢᱟᱜ ᱚᱠᱛᱚ ᱞᱮᱠᱷᱟ ᱠᱟᱱᱟ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,as_UNKNOWN,Voice input had a problem. Tap instead.,आवाज़ में दिक्कत हुई। टैप करें।,ᱨᱚᱲ ᱵᱚᱞᱚ ᱨᱮ ᱫᱩᱠ ᱦᱩᱭ ᱮᱱᱟ ᱾ ᱛᱚᱯᱟᱣ ᱢᱮ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,as_UNSUPPORTED,This browser cannot listen for spoken answers.,यह ब्राउज़र बोले गए उत्तर नहीं सुन सकता।,ᱱᱚᱶᱟ ᱵᱨᱟᱣᱡᱚᱨ ᱨᱚᱲ ᱛᱮᱞᱟ ᱵᱟᱝ ᱟᱸᱡᱚᱢ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,as_your_time,Your time,आपका समय,ᱟᱢᱟᱜ ᱚᱠᱛᱚ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,bd_acknowledge,I see it — respond,मैंने देखा — प्रतिक्रिया दें,ᱧᱮᱞ ᱠᱮᱫᱟᱹᱧ — ᱛᱮᱞᱟᱭ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,bd_bad_code,That code could not be read. Scan it again.,यह कोड पढ़ा नहीं गया। फिर स्कैन करें।,ᱱᱚᱶᱟ ᱠᱚᱰ ᱵᱟᱝ ᱯᱟᱲᱦᱟᱣ ᱦᱩᱭ ᱞᱮᱱᱟ ᱾ ᱫᱚᱦᱲᱟ ᱥᱠᱮᱱ ᱢᱮ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,bd_buddy_down,YOUR BUDDY IS DOWN,आपका बडी गिर गया है,ᱟᱢᱟᱜ ᱡᱚᱲᱟᱣ ᱜᱤᱛᱤᱡ ᱟᱠᱟᱱᱟ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,bd_buddy_quiet,No word from your buddy,बडी से कोई खबर नहीं,ᱡᱚᱲᱟᱣ ᱠᱷᱚᱵᱚᱨ ᱵᱟᱝ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,bd_buddy_responsive,Buddy responding,बडी जवाब दे रहा है,ᱡᱚᱲᱟᱣ ᱛᱮᱞᱟ ᱮᱫᱟᱭ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,bd_buddy_score,Your buddy’s result,आपके बडी का परिणाम,ᱟᱢᱟᱜ ᱡᱚᱲᱟᱣ ᱨᱮᱭᱟᱜ ᱯᱷᱚᱞ,,,i18nSantali.js
+1 · Drill and hazard instructions,bd_checkin_btn,Buddy is OK,बडी ठीक है,ᱡᱚᱲᱟᱣ ᱴᱷᱤᱠ ᱜᱮᱭᱟ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,bd_checkin_done,Check-in recorded,जांच दर्ज हुई,ᱧᱮᱞ ᱨᱮᱠᱚᱰ ᱦᱩᱭ ᱮᱱᱟ,,,i18nSantali.js
+1 · Drill and hazard instructions,bd_checkin_missed,Missed check-in,जांच छूट गई,ᱧᱮᱞ ᱵᱟᱹᱰᱨᱟᱹ ᱮᱱᱟ,,,i18nSantali.js
+1 · Drill and hazard instructions,bd_checkin_now,Check on your buddy now,अभी अपने बडी की जांच करें,ᱛᱮᱦᱮᱸ ᱡᱚᱲᱟᱣ ᱧᱮᱞ ᱢᱮ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,bd_checkins_label,Check-ins,जांच,ᱧᱮᱞ ᱠᱚ,,,i18nSantali.js
+1 · Drill and hazard instructions,bd_connected,Connected to your buddy,बडी से जुड़ गए,ᱡᱚᱲᱟᱣ ᱦᱩᱭ ᱮᱱᱟ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,bd_connecting,Connecting…,जुड़ रहा है…,ᱡᱚᱲᱟᱣ ᱠᱟᱱᱟ…,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,bd_copied,Copied,कॉपी हो गया,ᱠᱚᱯᱤ ᱦᱩᱭ ᱮᱱᱟ,,,i18nSantali.js
+1 · Drill and hazard instructions,bd_copy_code,Copy code,कोड कॉपी करें,ᱠᱚᱰ ᱠᱚᱯᱤ ᱢᱮ,,,i18nSantali.js
+1 · Drill and hazard instructions,bd_desc,"The buddy system is two people watching each other. It cannot be practised alone, so this drill needs two phones — connected directly to each other, with no internet.","बडी सिस्टम का मतलब दो लोग एक-दूसरे का ध्यान रखें। यह अकेले नहीं सीखा जा सकता, इसलिए इस ड्रिल के लिए दो फ़ोन चाहिए — बिना इंटरनेट, सीधे जुड़े हुए।","ᱡᱚᱲᱟᱣ ᱥᱤᱥᱴᱚᱢ ᱫᱚ ᱵᱟᱨᱭᱟ ᱦᱚᱲ ᱢᱤᱫ ᱢᱤᱫᱟᱜ ᱧᱮᱞ ᱠᱟᱱᱟ ᱾ ᱱᱚᱶᱟ ᱮᱠᱞᱟ ᱛᱮ ᱵᱟᱝ ᱛᱟᱞᱤᱢ ᱦᱩᱭ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ, ᱚᱱᱟᱛᱮ ᱱᱚᱶᱟ ᱛᱟᱞᱤᱢ ᱞᱟᱹᱜᱤᱫ ᱵᱟᱨᱭᱟ ᱯᱷᱚᱱ ᱞᱟᱹᱠᱛᱤ — ᱤᱱᱴᱚᱨᱱᱮᱴ ᱵᱟᱝ ᱠᱟᱛᱮ, ᱥᱚᱡᱷᱮ ᱡᱚᱲᱟᱣ ᱾",,,i18nSantali.js
+1 · Drill and hazard instructions,bd_disconnected,Your buddy dropped out,आपका बडी डिस्कनेक्ट हो गया,ᱡᱚᱲᱟᱣ ᱛᱩᱴᱟᱹᱣ ᱮᱱᱟ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,bd_end_drill,End drill,ड्रिल खत्म करें,ᱛᱟᱞᱤᱢ ᱢᱩᱪᱟᱹᱫ,,,i18nSantali.js
+1 · Drill and hazard instructions,bd_eyebrow,Two-person drill,दो-व्यक्ति ड्रिल,ᱵᱟᱨᱭᱟ ᱦᱚᱲ ᱛᱟᱞᱤᱢ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,bd_failed,Could not connect,जुड़ नहीं सका,ᱵᱟᱝ ᱡᱚᱲᱟᱣ ᱦᱩᱭ ᱞᱮᱱᱟ,,,i18nSantali.js
+1 · Drill and hazard instructions,bd_failed_hint,"Both phones must be on the same wifi or hotspot. Check that, then try again.","दोनों फ़ोन एक ही वाईफ़ाई या हॉटस्पॉट पर होने चाहिए। जांचें, फिर कोशिश करें।",ᱵᱟᱨᱭᱟ ᱯᱷᱚᱱ ᱢᱤᱫ ᱣᱟᱭᱯᱷᱟᱭ ᱥᱮ ᱦᱚᱴᱥᱯᱚᱴ ᱨᱮ ᱛᱟᱦᱮᱸᱱ ᱞᱟᱹᱠᱛᱤ ᱾ ᱚᱱᱟ ᱧᱮᱞ ᱠᱟᱛᱮ ᱫᱚᱦᱲᱟ ᱠᱩᱨᱩᱢᱩᱴᱩᱭ ᱢᱮ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,bd_host_step1,Show this code to your buddy,यह कोड अपने बडी को दिखाएं,ᱱᱚᱶᱟ ᱠᱚᱰ ᱟᱢᱟᱜ ᱡᱚᱲᱟᱣ ᱛᱮ ᱩᱫᱩᱜ ᱢᱮ,,,i18nSantali.js
+1 · Drill and hazard instructions,bd_host_step2,Now scan the code they show you,अब उनका दिखाया कोड स्कैन करें,ᱱᱤᱛᱚᱜ ᱩᱱᱤ ᱩᱫᱩᱜ ᱠᱟᱱ ᱠᱚᱰ ᱥᱠᱮᱱ ᱢᱮ,,,i18nSantali.js
+1 · Drill and hazard instructions,bd_i_host,Start a drill,ड्रिल शुरू करें,ᱛᱟᱞᱤᱢ ᱮᱦᱚᱵ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,bd_i_join,Join my buddy,बडी से जुड़ें,ᱡᱚᱲᱟᱣ ᱥᱟᱶ ᱢᱮᱥᱟᱣ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,bd_join_step1,Scan your buddy’s code,अपने बडी का कोड स्कैन करें,ᱟᱢᱟᱜ ᱡᱚᱲᱟᱣ ᱨᱮᱭᱟᱜ ᱠᱚᱰ ᱥᱠᱮᱱ ᱢᱮ,,,i18nSantali.js
+1 · Drill and hazard instructions,bd_join_step2,Show this code back to them,यह कोड उन्हें दिखाएं,ᱱᱚᱶᱟ ᱠᱚᱰ ᱩᱱᱤ ᱛᱮ ᱫᱚᱦᱲᱟ ᱩᱫᱩᱜ ᱢᱮ,,,i18nSantali.js
+1 · Drill and hazard instructions,bd_monitoring_note,Stay alert. You will be asked to check on each other at intervals — and one of you is about to have a problem.,सतर्क रहें। आपसे समय-समय पर एक-दूसरे की जांच करने को कहा जाएगा — और आप में से एक को दिक्कत होने वाली है।,ᱦᱩᱥᱤᱭᱟᱨ ᱛᱟᱦᱮᱸᱱ ᱢᱮ ᱾ ᱚᱠᱛᱚ ᱚᱠᱛᱚ ᱨᱮ ᱢᱤᱫ ᱢᱤᱫᱟᱜ ᱧᱮᱞ ᱞᱟᱹᱜᱤᱫ ᱠᱟᱠᱷᱟᱨ ᱦᱩᱭᱩᱜᱼᱟ — ᱟᱨ ᱟᱯᱮ ᱠᱷᱚᱱ ᱢᱤᱫ ᱦᱚᱲ ᱨᱮ ᱫᱩᱠ ᱦᱩᱭᱩᱜᱼᱟ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,bd_no_webrtc,This browser cannot make a direct phone-to-phone connection.,यह ब्राउज़र फ़ोन-से-फ़ोन सीधा कनेक्शन नहीं बना सकता।,ᱱᱚᱶᱟ ᱵᱨᱟᱣᱡᱚᱨ ᱯᱷᱚᱱ ᱠᱷᱚᱱ ᱯᱷᱚᱱ ᱥᱚᱡᱷᱮ ᱡᱚᱲᱟᱣ ᱵᱟᱝ ᱛᱮᱭᱟᱨ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,bd_notice_time,Time to notice,ध्यान देने का समय,ᱧᱮᱞ ᱚᱠᱛᱚ,,,i18nSantali.js
+1 · Drill and hazard instructions,bd_partial_note,"This drill ended early, so it is recorded as incomplete and does not count toward certification.","यह ड्रिल जल्दी खत्म हुई, इसलिए अपूर्ण दर्ज है और प्रमाणन में नहीं गिनी जाएगी।","ᱱᱚᱶᱟ ᱛᱟᱞᱤᱢ ᱞᱟᱦᱟ ᱢᱩᱪᱟᱹᱫ ᱮᱱᱟ, ᱚᱱᱟᱛᱮ ᱟᱫᱷᱟ ᱞᱮᱠᱟ ᱨᱮᱠᱚᱰ ᱦᱩᱭ ᱟᱠᱟᱱᱟ ᱟᱨ ᱥᱚᱨᱴᱤᱯᱤᱠᱮᱴ ᱨᱮ ᱵᱟᱝ ᱞᱮᱠᱷᱟᱜᱼᱟ ᱾",,,i18nSantali.js
+1 · Drill and hazard instructions,bd_paste_instead,Or paste the code as text,या कोड टेक्स्ट में पेस्ट करें,ᱥᱮ ᱠᱚᱰ ᱚᱞ ᱞᱮᱠᱟ ᱮᱢ ᱢᱮ,,,i18nSantali.js
+1 · Drill and hazard instructions,bd_paste_placeholder,Paste JGKP1… here,JGKP1… यहाँ पेस्ट करें,JGKP1… ᱱᱚᱰᱮ ᱮᱢ ᱢᱮ,,,i18nSantali.js
+1 · Drill and hazard instructions,bd_phase_aborted,Drill ended early,ड्रिल जल्दी खत्म,ᱛᱟᱞᱤᱢ ᱞᱟᱦᱟ ᱢᱩᱪᱟᱹᱫ,,,i18nSantali.js
+1 · Drill and hazard instructions,bd_phase_briefing,Before entry,प्रवेश से पहले,ᱵᱚᱞᱚ ᱞᱟᱦᱟ,,,i18nSantali.js
+1 · Drill and hazard instructions,bd_phase_debrief,Drill complete,ड्रिल पूर्ण,ᱛᱟᱞᱤᱢ ᱦᱩᱭ ᱮᱱᱟ,,,i18nSantali.js
+1 · Drill and hazard instructions,bd_phase_distress,Something is wrong,कुछ गलत है,ᱪᱮᱫ ᱵᱷᱩᱞ ᱠᱟᱱᱟ,,,i18nSantali.js
+1 · Drill and hazard instructions,bd_phase_entry,At the opening,प्रवेश द्वार पर,ᱵᱚᱞᱚ ᱫᱩᱣᱟᱹᱨ ᱨᱮ,,,i18nSantali.js
+1 · Drill and hazard instructions,bd_phase_monitoring,Inside — stay in contact,अंदर — संपर्क बनाए रखें,ᱵᱷᱤᱛᱤᱨ — ᱡᱚᱲᱟᱣ ᱫᱚᱦᱚᱭ ᱢᱮ,,,i18nSantali.js
+1 · Drill and hazard instructions,bd_phase_response,Respond,प्रतिक्रिया दें,ᱛᱮᱞᱟ ᱢᱮ,,,i18nSantali.js
+1 · Drill and hazard instructions,bd_qr_unsupported,This browser cannot scan QR codes. Copy and paste the code text instead.,यह ब्राउज़र QR स्कैन नहीं कर सकता। कोड टेक्स्ट कॉपी-पेस्ट करें।,ᱱᱚᱶᱟ ᱵᱨᱟᱣᱡᱚᱨ QR ᱵᱟᱝ ᱥᱠᱮᱱ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ ᱾ ᱠᱚᱰ ᱚᱞ ᱠᱚᱯᱤ ᱠᱟᱛᱮ ᱮᱢ ᱢᱮ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,bd_role_casualty,the worker inside,अंदर का श्रमिक,ᱵᱷᱤᱛᱤᱨ ᱨᱮᱱ ᱠᱟᱹᱢᱤ ᱦᱚᱲ,,,i18nSantali.js
+1 · Drill and hazard instructions,bd_role_responder,the buddy watching,निगरानी करने वाला बडी,ᱧᱮᱞ ᱠᱟᱱ ᱡᱚᱲᱟᱣ,,,i18nSantali.js
+1 · Drill and hazard instructions,bd_same_device,Practise on one device,एक डिवाइस पर अभ्यास,ᱢᱤᱫ ᱡᱤᱱᱤᱥ ᱨᱮ ᱛᱟᱞᱤᱢ,,,i18nSantali.js
+1 · Drill and hazard instructions,bd_same_device_note,"Opens a practice run between two browser tabs. Useful for learning the flow, but it is not the real two-person drill.","दो ब्राउज़र टैब के बीच अभ्यास चलाता है। प्रवाह समझने के लिए उपयोगी, लेकिन यह असली दो-व्यक्ति ड्रिल नहीं है।","ᱵᱟᱨᱭᱟ ᱵᱨᱟᱣᱡᱚᱨ ᱴᱮᱵ ᱛᱟᱞᱟ ᱨᱮ ᱛᱟᱞᱤᱢ ᱮᱦᱚᱵᱚᱜᱼᱟ ᱾ ᱦᱚᱨ ᱵᱟᱰᱟᱭ ᱞᱟᱹᱜᱤᱫ ᱵᱮᱥ, ᱢᱮᱱᱠᱷᱟᱱ ᱱᱚᱶᱟ ᱥᱟᱹᱨᱤ ᱵᱟᱨᱭᱟ ᱦᱚᱲ ᱛᱟᱞᱤᱢ ᱵᱟᱝ ᱠᱟᱱᱟ ᱾",,,i18nSantali.js
+1 · Drill and hazard instructions,bd_saved,Result saved to your record,परिणाम आपके रिकॉर्ड में सहेजा गया,ᱯᱷᱚᱞ ᱟᱢᱟᱜ ᱨᱮᱠᱚᱰ ᱨᱮ ᱥᱟᱸᱪᱟᱣ ᱮᱱᱟ,,,i18nSantali.js
+1 · Drill and hazard instructions,bd_scan_now,Scan code,कोड स्कैन करें,ᱠᱚᱰ ᱥᱠᱟᱱ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,bd_title,Buddy system drill,बडी सिस्टम ड्रिल,ᱡᱚᱲᱟᱣ ᱥᱤᱥᱴᱚᱢ ᱛᱟᱞᱤᱢ,,,i18nSantali.js
+1 · Drill and hazard instructions,bd_use_code,Use this code,यह कोड इस्तेमाल करें,ᱱᱚᱶᱟ ᱠᱚᱰ ᱵᱮᱵᱷᱟᱨ ᱢᱮ,,,i18nSantali.js
+1 · Drill and hazard instructions,bd_waiting_buddy,Waiting for your buddy…,बडी का इंतज़ार…,ᱡᱚᱲᱟᱣ ᱠᱩᱨᱩᱢᱩᱴᱩ ᱠᱟᱱᱟ…,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,bd_waiting_score,Waiting for your buddy’s result…,बडी के परिणाम का इंतज़ार…,ᱟᱢᱟᱜ ᱡᱚᱲᱟᱣ ᱨᱮᱭᱟᱜ ᱯᱷᱚᱞ ᱠᱩᱨᱩᱢᱩᱴᱩ ᱠᱟᱱᱟ…,,,i18nSantali.js
+1 · Drill and hazard instructions,bd_you_are,You are,आप हैं,ᱟᱢ ᱠᱟᱱᱟᱢ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,bd_your_score,Your result,आपका परिणाम,ᱟᱢᱟᱜ ᱯᱷᱚᱞ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,buddy_cas_continue,Push through — it will pass,सहते रहें — ठीक हो जाएगा,ᱠᱟᱹᱢᱤ ᱛᱮᱭᱟᱨ — ᱴᱷᱤᱠ ᱦᱩᱭᱩᱜᱼᱟ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,buddy_cas_signal,Signal your buddy and move to the exit,बडी को संकेत दें और निकास की ओर बढ़ें,ᱡᱚᱲᱟᱣ ᱠᱚ ᱠᱷᱚᱵᱚᱨ ᱮᱢ ᱟᱨ ᱚᱰᱚᱠ ᱛᱮ ᱪᱟᱞᱟᱜ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,buddy_entry_alone,Yes — the two of us is enough,हाँ — हम दोनों काफ़ी हैं,ᱦᱟᱸ — ᱟᱞᱮ ᱵᱟᱨᱭᱟ ᱜᱮ ᱵᱟᱹᱲᱛᱤ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,buddy_entry_attendant,No — wait for the attendant outside,नहीं — बाहर अटेंडेंट का इंतज़ार करें,ᱵᱟᱝ — ᱵᱟᱦᱨᱮ ᱦᱚᱲ ᱠᱩᱨᱩᱢᱩᱴᱩᱭ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,buddy_fb_cas_right,"Correct. Signalling early is what makes rescue possible. A worker who says nothing is found, not saved.","सही। जल्दी संकेत देना ही बचाव संभव बनाता है। जो कुछ नहीं कहता, वह मिलता है — बचता नहीं।","ᱴᱷᱤᱠ ᱾ ᱞᱟᱦᱟ ᱛᱮ ᱠᱷᱚᱵᱚᱨ ᱮᱢ ᱜᱮ ᱵᱟᱺᱪᱟᱣ ᱦᱩᱭ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ ᱾ ᱡᱟᱦᱟᱸ ᱠᱟᱹᱢᱤ ᱦᱚᱲ ᱪᱮᱫ ᱦᱚᱸ ᱵᱟᱝ ᱞᱟᱭᱮᱫᱟᱭ, ᱩᱱᱤ ᱧᱟᱢᱚᱜᱼᱟ, ᱵᱟᱺᱪᱟᱣ ᱵᱟᱝ ᱾",,,i18nSantali.js
+1 · Drill and hazard instructions,buddy_fb_cas_wrong,Dizziness in a confined space is oxygen deficiency or gas exposure. Those seconds were your only chance to tell anyone — after that nobody knows you are in trouble.,सीमित स्थान में चक्कर आना ऑक्सीजन की कमी या गैस संपर्क है। वे सेकंड किसी को बताने का एकमात्र मौका थे — उसके बाद किसी को पता नहीं चलेगा।,ᱛᱮᱸᱜᱚᱱ ᱡᱟᱭᱜᱟ ᱨᱮ ᱵᱚᱦᱚᱜ ᱜᱩᱨ ᱫᱚ ᱚᱠᱥᱤᱡᱚᱱ ᱠᱚᱢ ᱥᱮ ᱜᱮᱥ ᱛᱮ ᱦᱩᱭᱩᱜᱼᱟ ᱾ ᱚᱱᱟ ᱥᱮᱠᱮᱸᱰ ᱠᱚ ᱜᱮ ᱡᱟᱦᱟᱸ ᱦᱚᱲ ᱛᱮ ᱞᱟᱭ ᱞᱟᱹᱜᱤᱫ ᱢᱤᱫ ᱜᱮ ᱚᱠᱛᱚ ᱛᱟᱦᱮᱸᱠᱟᱱᱟ — ᱚᱱᱟ ᱛᱟᱭᱚᱢ ᱚᱠᱚᱭ ᱦᱚᱸ ᱵᱟᱝ ᱵᱟᱰᱟᱭᱟ ᱡᱮ ᱟᱢ ᱫᱩᱠ ᱨᱮ ᱢᱮᱱᱟᱢᱟ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,buddy_fb_entry_right,"Correct. A stand-by attendant outside the space is a requirement, not a courtesy. Without one, nobody can raise the alarm.","सही। स्थान के बाहर स्टैंड-बाय अटेंडेंट अनिवार्य है, शिष्टाचार नहीं। उसके बिना कोई अलार्म नहीं बजा सकता।","ᱴᱷᱤᱠ ᱾ ᱡᱟᱭᱜᱟ ᱵᱟᱦᱨᱮ ᱢᱤᱫ ᱧᱮᱞᱚᱜᱤᱡ ᱛᱟᱦᱮᱸᱱ ᱫᱚ ᱠᱟᱱᱩᱱ ᱠᱟᱱᱟ, ᱟᱹᱰᱤ ᱵᱮᱥ ᱠᱟᱹᱢᱤ ᱵᱟᱝ ᱾ ᱩᱱᱤ ᱵᱟᱝ ᱛᱟᱦᱮᱸᱠᱷᱟᱱ ᱚᱠᱚᱭ ᱦᱚᱸ ᱟᱞᱟᱨᱢ ᱵᱟᱝ ᱮᱢ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ ᱾",,,i18nSantali.js
+1 · Drill and hazard instructions,buddy_fb_entry_wrong,"Two people inside a gas-filled space is two casualties. The whole point of the attendant is that they stay outside, uncontaminated, able to call rescue.",गैस भरे स्थान में दो लोग अंदर = दो हताहत। अटेंडेंट का पूरा मकसद यही है कि वे बाहर सुरक्षित रहें और बचाव बुला सकें।,ᱜᱮᱥ ᱯᱮᱨᱮᱡ ᱡᱟᱭᱜᱟ ᱨᱮ ᱵᱟᱨᱭᱟ ᱦᱚᱲ ᱵᱚᱞᱚ ᱫᱚ ᱵᱟᱨᱭᱟ ᱜᱷᱟᱭᱚᱞ ᱠᱟᱱᱟ ᱾ ᱧᱮᱞᱚᱜᱤᱡ ᱨᱮᱭᱟᱜ ᱢᱩᱬᱩᱛ ᱜᱮ ᱱᱚᱶᱟ ᱠᱟᱱᱟ ᱡᱮ ᱩᱱᱤ ᱵᱟᱦᱨᱮ ᱨᱠᱷᱟ ᱛᱮ ᱛᱟᱦᱮᱸᱱᱟ ᱟᱨ ᱵᱟᱺᱪᱟᱣ ᱠᱟᱠᱷᱟᱨ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,buddy_fb_ppe_right,"Correct. Once gas is confirmed, respiratory protection rated for that gas is mandatory for everyone entering.","सही। गैस की पुष्टि होने पर, प्रवेश करने वाले सभी के लिए उस गैस के लिए रेटेड श्वसन सुरक्षा अनिवार्य है।","ᱴᱷᱤᱠ ᱾ ᱜᱮᱥ ᱥᱟᱹᱨᱤ ᱦᱩᱭ ᱛᱟᱭᱚᱢ, ᱚᱱᱟ ᱜᱮᱥ ᱞᱟᱹᱜᱤᱫ ᱥᱟᱶᱦᱮᱫ ᱥᱟᱶᱥ ᱨᱠᱷᱟ ᱡᱚᱛᱚ ᱵᱚᱞᱚ ᱦᱚᱲ ᱞᱟᱹᱜᱤᱫ ᱠᱟᱱᱩᱱ ᱠᱟᱱᱟ ᱾",,,i18nSantali.js
+1 · Drill and hazard instructions,buddy_fb_ppe_wrong,"A dust mask filters particles, not gas. In a confined space with confirmed gas it offers no protection at all — you would be unconscious before you noticed.","धूल मास्क कण छानता है, गैस नहीं। पुष्ट गैस वाले सीमित स्थान में यह कोई सुरक्षा नहीं देता — आप बेहोश हो जाएंगे, पता भी नहीं चलेगा।","ᱫᱷᱩᱲᱤ ᱢᱟᱥᱠ ᱫᱚ ᱫᱷᱩᱲᱤ ᱪᱷᱟᱱᱟᱣᱮᱫᱟ, ᱜᱮᱥ ᱵᱟᱝ ᱾ ᱜᱮᱥ ᱥᱟᱹᱨᱤ ᱠᱟᱱ ᱛᱮᱸᱜᱚᱱ ᱡᱟᱭᱜᱟ ᱨᱮ ᱱᱚᱶᱟ ᱛᱤᱱᱟᱹᱜ ᱦᱚᱸ ᱨᱠᱷᱟ ᱵᱟᱝ ᱮᱢᱟ — ᱵᱟᱰᱟᱭ ᱞᱟᱦᱟ ᱜᱮ ᱟᱢ ᱜᱤᱛᱤᱡᱚᱜᱼᱟᱢ ᱾",,,i18nSantali.js
+1 · Drill and hazard instructions,buddy_fb_resp1_right,Correct. Raising the alarm from outside is the only action that helps. It is counter-instinctive and it is what saves both of you.,सही। बाहर से अलार्म बजाना ही एकमात्र मददगार कार्रवाई है। यह सहज प्रवृत्ति के विरुद्ध है और यही दोनों को बचाता है।,ᱴᱷᱤᱠ ᱾ ᱵᱟᱦᱨᱮ ᱠᱷᱚᱱ ᱟᱞᱟᱨᱢ ᱮᱢ ᱜᱮ ᱢᱤᱫ ᱜᱚᱲᱚ ᱠᱟᱹᱢᱤ ᱠᱟᱱᱟ ᱾ ᱢᱚᱱ ᱨᱮ ᱵᱟᱝ ᱦᱮᱡᱚᱜᱼᱟ ᱢᱮᱱᱠᱷᱟᱱ ᱱᱚᱶᱟ ᱜᱮ ᱟᱯᱮ ᱵᱟᱨᱭᱟ ᱛᱮ ᱵᱟᱺᱪᱟᱣᱮᱫᱟ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,buddy_fb_resp1_wrong,This is the mistake that turns one casualty into two. Most confined-space deaths are would-be rescuers. The gas that dropped your buddy will drop you in the same seconds.,"यही गलती एक हताहत को दो बना देती है। सीमित स्थान की अधिकतर मौतें बचाने गए लोगों की होती हैं। जिस गैस ने बडी को गिराया, वही आपको भी गिराएगी।","ᱱᱚᱶᱟ ᱵᱷᱩᱞ ᱜᱮ ᱢᱤᱫ ᱜᱷᱟᱭᱚᱞ ᱠᱷᱚᱱ ᱵᱟᱨᱭᱟ ᱛᱮᱭᱟᱨᱮᱫᱟ ᱾ ᱛᱮᱸᱜᱚᱱ ᱡᱟᱭᱜᱟ ᱨᱮᱱ ᱟᱭᱢᱟ ᱜᱚᱡᱚᱜ ᱦᱚᱲ ᱫᱚ ᱵᱟᱺᱪᱟᱣ ᱪᱟᱞᱟᱜ ᱦᱚᱲ ᱠᱚ ᱠᱟᱱᱟ ᱾ ᱚᱠᱟ ᱜᱮᱥ ᱟᱢᱟᱜ ᱡᱚᱲᱟᱣ ᱜᱤᱛᱤᱡ ᱠᱮᱫᱮᱭᱟ, ᱚᱱᱟ ᱜᱮᱥ ᱮᱱᱟᱜ ᱥᱮᱠᱮᱸᱰ ᱨᱮ ᱟᱢ ᱦᱚᱸ ᱜᱤᱛᱤᱡ ᱢᱮᱭᱟ ᱾",,,i18nSantali.js
+1 · Drill and hazard instructions,buddy_fb_resp2_right,Correct. Holding the entry and briefing the trained team is the highest-value thing you can do. You are the only person who knows exactly where they went down.,सही। प्रवेश रोकना और प्रशिक्षित दल को जानकारी देना सबसे मूल्यवान काम है। आप ही जानते हैं वे ठीक कहाँ गिरे।,ᱴᱷᱤᱠ ᱾ ᱵᱚᱞᱚ ᱫᱩᱣᱟᱹᱨ ᱫᱚᱦᱚᱭ ᱟᱨ ᱛᱟᱞᱤᱢ ᱦᱩᱭ ᱠᱟᱱ ᱫᱚᱞ ᱛᱮ ᱠᱷᱚᱵᱚᱨ ᱮᱢ ᱜᱮ ᱡᱟᱥᱛᱤ ᱵᱮᱥ ᱠᱟᱹᱢᱤ ᱠᱟᱱᱟ ᱾ ᱟᱢ ᱜᱮ ᱢᱤᱫ ᱦᱚᱲ ᱠᱟᱱᱟᱢ ᱡᱮ ᱵᱟᱰᱟᱭᱮᱫᱟᱢ ᱩᱱᱤ ᱚᱠᱟ ᱨᱮ ᱜᱤᱛᱤᱡ ᱮᱱᱟᱭ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,buddy_fb_resp2_wrong,"A dust mask does nothing against gas. Four minutes of waiting feels unbearable, but entering unprotected takes the one person who knows where your buddy is.","धूल मास्क गैस के सामने बेकार है। चार मिनट रुकना असहनीय लगता है, लेकिन बिना सुरक्षा जाने से वह एक व्यक्ति भी चला जाएगा जिसे पता है बडी कहाँ है।","ᱫᱷᱩᱲᱤ ᱢᱟᱥᱠ ᱜᱮᱥ ᱟᱹᱭᱩᱨ ᱨᱮ ᱪᱮᱫ ᱦᱚᱸ ᱵᱟᱝ ᱠᱟᱹᱢᱤᱭᱟ ᱾ ᱯᱩᱱ ᱢᱤᱱᱤᱴ ᱠᱩᱨᱩᱢᱩᱴᱩ ᱫᱚ ᱟᱹᱰᱤ ᱫᱩᱠ ᱞᱟᱹᱜᱤᱫᱟ, ᱢᱮᱱᱠᱷᱟᱱ ᱨᱠᱷᱟ ᱵᱟᱝ ᱠᱟᱛᱮ ᱵᱚᱞᱚ ᱠᱷᱟᱱ ᱚᱱᱟ ᱢᱤᱫ ᱦᱚᱲ ᱦᱚᱸ ᱪᱟᱞᱟᱜᱼᱟ ᱡᱟᱦᱟᱭ ᱵᱟᱰᱟᱭᱮᱫᱟᱭ ᱡᱚᱲᱟᱣ ᱚᱠᱟ ᱨᱮ ᱢᱮᱱᱟᱭᱟ ᱾",,,i18nSantali.js
+1 · Drill and hazard instructions,buddy_ppe_dust,A dust mask — it is right here,धूल मास्क — यही पास है,ᱫᱷᱩᱲᱤ ᱢᱟᱥᱠ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,buddy_ppe_scba,Breathing apparatus rated for this gas,इस गैस के लिए रेटेड श्वास उपकरण,ᱜᱮᱥ ᱞᱟᱹᱜᱤᱫ ᱥᱟᱶᱦᱮᱫ ᱥᱟᱶᱥ ᱡᱤᱱᱤᱥ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,buddy_resp_alarm,"Stay out, raise the alarm, call rescue","बाहर रहें, अलार्म बजाएं, बचाव बुलाएं","ᱵᱟᱦᱨᱮ ᱛᱟᱦᱮᱸᱱ, ᱟᱞᱟᱨᱢ ᱨᱩᱭ, ᱩᱫᱷᱟᱹᱨ ᱠᱚ ᱦᱟᱠᱟᱣ",,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,buddy_resp_dustmask,Put on a dust mask and go in now,धूल मास्क पहनकर अभी अंदर जाएं,ᱫᱷᱩᱲᱤ ᱢᱟᱥᱠ ᱛᱩᱞᱟᱹ ᱟᱨ ᱵᱚᱞᱚᱭ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,buddy_resp_rush,Go in and pull them out,अंदर जाकर उन्हें बाहर खींचें,ᱵᱷᱤᱛᱤᱨ ᱛᱮ ᱪᱟᱞᱟᱜ ᱟᱨ ᱚᱰᱚᱠ ᱦᱟᱛᱟᱣ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,buddy_resp_wait,Hold the entry and guide the rescue team in,प्रवेश रोकें और बचाव दल को रास्ता दिखाएं,ᱵᱚᱞᱚ ᱡᱟᱭᱜᱟ ᱫᱚᱦᱚᱭ ᱟᱨ ᱩᱫᱷᱟᱹᱨ ᱫᱟᱞ ᱠᱚ ᱦᱚᱨ ᱩᱫᱩᱜ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,buddy_step_casualty,Your head is swimming and your vision is blurring. What do you do with the seconds you have?,आपका सिर घूम रहा है और नज़र धुंधली हो रही है। बचे सेकंडों में आप क्या करते हैं?,ᱟᱢᱟᱜ ᱵᱚᱦᱚᱜ ᱜᱩᱨ ᱮᱫᱟᱭ ᱟᱨ ᱧᱮᱞ ᱛᱩᱲ ᱮᱫᱟᱭ ᱾ ᱛᱤᱱᱟᱹᱜ ᱠᱚᱨᱟᱣ?,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,buddy_step_entry,Your buddy is ready but the stand-by attendant has stepped away. Do you go in?,आपका बडी तैयार है लेकिन स्टैंड-बाय अटेंडेंट चला गया है। क्या आप अंदर जाते हैं?,ᱡᱚᱲᱟᱣ ᱛᱮᱭᱟᱨ ᱜᱮᱭᱟ ᱢᱮᱱᱠᱷᱟᱱ ᱵᱟᱦᱨᱮᱭᱟᱜ ᱦᱚᱲ ᱵᱟᱝ ᱾ ᱵᱚᱞᱚᱭ ᱟᱢ?,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,buddy_step_ppe,Gas has been detected in the shaft. Which mask do you both put on before entry?,शाफ्ट में गैस मिली है। प्रवेश से पहले आप दोनों कौन सा मास्क पहनते हैं?,ᱥᱟᱯᱷᱴ ᱨᱮ ᱜᱮᱥ ᱧᱟᱢ ᱟᱠᱟᱱᱟ ᱾ ᱵᱚᱞᱚ ᱞᱟᱦᱟ ᱚᱠᱟ ᱢᱟᱥᱠ ᱛᱩᱞᱟᱹᱭ ᱠᱟᱱᱟ?,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,buddy_step_resp1,Your buddy has collapsed inside. What is your first action?,आपका बडी अंदर गिर गया है। आपकी पहली कार्रवाई क्या है?,ᱟᱢᱟᱜ ᱡᱚᱲᱟᱣ ᱵᱷᱤᱛᱤᱨ ᱨᱮ ᱜᱤᱛᱤᱡ ᱮᱱᱟ ᱾ ᱢᱟᱲᱟᱝ ᱠᱟᱹᱢᱤ ᱪᱮᱫ?,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,buddy_step_resp2,The alarm is raised. Rescue is four minutes away. What now?,अलार्म बज गया। बचाव दल चार मिनट दूर है। अब क्या?,ᱟᱞᱟᱨᱢ ᱨᱩᱭ ᱮᱱᱟ ᱾ ᱩᱫᱷᱟᱹᱨ ᱫᱟᱞ ᱯᱩᱱ ᱢᱤᱱᱤᱴ ᱥᱟᱶ ᱦᱮᱡᱚᱜᱼᱟ ᱾ ᱛᱮᱦᱮᱸ ᱪᱮᱫ?,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,err_attempts_left,attempts left,प्रयास बाकी,ᱠᱩᱨᱩᱢᱩᱴᱩ ᱵᱟᱠᱤ,,,i18nSantali.js
+1 · Drill and hazard instructions,err_LOCKED_OUT,Too many wrong attempts. Wait before trying again.,बहुत बार गलत। फिर कोशिश करने से पहले रुकें।,ᱟᱭᱢᱟ ᱫᱷᱟᱣ ᱵᱷᱩᱞ ᱮᱱᱟ ᱾ ᱫᱚᱦᱲᱟ ᱠᱩᱨᱩᱢᱩᱴᱩ ᱞᱟᱦᱟ ᱛᱷᱤᱨ ᱢᱮ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,err_NAME_TOO_LONG,That name is too long.,यह नाम बहुत लंबा है।,ᱱᱚᱶᱟ ᱧᱩᱛᱩᱢ ᱟᱹᱰᱤ ᱡᱤᱞᱤᱧ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,err_NAME_TOO_SHORT,Please enter at least 2 characters.,कम से कम 2 अक्षर लिखें।,ᱠᱚᱢ ᱛᱮ ᱠᱚᱢ 2 ᱟᱹᱠᱷᱚᱨ ᱚᱞ ᱢᱮ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,err_PHONE_INVALID,"Enter a 10-digit phone number, or leave it blank.","10 अंकों का नंबर लिखें, या खाली छोड़ दें।","10 ᱮᱞ ᱯᱷᱚᱱ ᱱᱟᱢᱵᱚᱨ ᱚᱞ ᱢᱮ, ᱥᱮ ᱠᱷᱟᱞᱤ ᱵᱟᱰᱟᱭ ᱢᱮ ᱾",,,i18nSantali.js
+1 · Drill and hazard instructions,err_PHONE_TAKEN,That phone number is already registered at this site.,यह नंबर इस साइट पर पहले से पंजीकृत है।,ᱱᱚᱶᱟ ᱱᱟᱢᱵᱚᱨ ᱱᱚᱶᱟ ᱴᱷᱟᱶ ᱨᱮ ᱢᱟᱲᱟᱝ ᱠᱷᱚᱱ ᱨᱮᱠᱚᱰ ᱟᱠᱟᱱᱟ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,err_PIN_FORMAT,The PIN must be 4 to 6 digits.,पिन 4 से 6 अंकों का होना चाहिए।,ᱯᱤᱱ 4 ᱠᱷᱚᱱ 6 ᱮᱞ ᱛᱟᱦᱮᱸᱱ ᱞᱟᱹᱠᱛᱤ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,err_PIN_MISMATCH,The two PINs do not match.,दोनों पिन मेल नहीं खाते।,ᱵᱟᱨᱭᱟ ᱯᱤᱱ ᱵᱟᱝ ᱢᱮᱞᱟᱣ ᱠᱟᱱᱟ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,err_PIN_TOO_SIMPLE,Pick a less obvious PIN — not 1234 or all the same digit.,कम स्पष्ट पिन चुनें — 1234 या एक ही अंक नहीं।,ᱟᱹᱰᱤ ᱥᱚᱦᱚᱡ ᱯᱤᱱ ᱵᱟᱝ ᱵᱟᱪᱷᱟᱣ ᱢᱮ — 1234 ᱥᱮ ᱡᱚᱛᱚ ᱢᱤᱫ ᱮᱞ ᱵᱟᱝ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,err_PIN_WRONG,Wrong PIN.,गलत पिन।,ᱵᱷᱩᱞ ᱯᱤᱱ ᱾,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,err_WORKER_NOT_FOUND,That worker record no longer exists on this phone.,यह रिकॉर्ड अब इस फ़ोन पर नहीं है।,ᱱᱚᱶᱟ ᱠᱟᱹᱢᱤ ᱦᱚᱲ ᱨᱮᱠᱚᱰ ᱱᱚᱶᱟ ᱯᱷᱚᱱ ᱨᱮ ᱵᱟᱝ ᱢᱮᱱᱟᱜᱼᱟ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,gesture_degraded,This phone is struggling to keep up — tapping will be faster.,यह फ़ोन साथ नहीं दे पा रहा — टैप करना तेज़ होगा।,ᱱᱚᱶᱟ ᱯᱷᱚᱱ ᱥᱟᱶ ᱵᱟᱝ ᱮᱢ ᱫᱟᱲᱮᱭᱮᱫᱟ — ᱛᱚᱯᱟᱣ ᱡᱟᱥᱛᱤ ᱞᱚᱜᱚᱱ ᱦᱩᱭᱩᱜᱼᱟ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,gesture_error,Hand tracking could not start.,हाथ ट्रैकिंग शुरू नहीं हो सकी।,ᱛᱤ ᱴᱨᱮᱠᱤᱝ ᱵᱟᱝ ᱮᱦᱚᱵ ᱦᱩᱭ ᱞᱮᱱᱟ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,gesture_idle,Hand tracking off,हाथ ट्रैकिंग बंद,ᱛᱤ ᱴᱨᱮᱠᱤᱝ ᱵᱚᱸᱫᱚ,,,i18nSantali.js
+1 · Drill and hazard instructions,gesture_loading,Loading hand tracking…,हाथ ट्रैकिंग लोड हो रही है…,ᱛᱤ ᱴᱨᱮᱠᱤᱝ ᱞᱟᱫᱮᱫ ᱠᱟᱱᱟ…,,,i18nSantali.js
+1 · Drill and hazard instructions,gesture_model_failed,"The hand-tracking model could not be downloaded. Connect once, then it works offline.","हाथ ट्रैकिंग मॉडल डाउनलोड नहीं हुआ। एक बार कनेक्ट करें, फिर यह ऑफ़लाइन चलेगा।","ᱛᱤ ᱴᱨᱮᱠᱤᱝ ᱢᱳᱰᱮᱞ ᱵᱟᱝ ᱰᱟᱣᱱᱞᱳᱰ ᱦᱩᱭ ᱞᱮᱱᱟ ᱾ ᱢᱤᱫ ᱫᱷᱟᱣ ᱡᱚᱲᱟᱣ ᱢᱮ, ᱚᱱᱟ ᱛᱟᱭᱚᱢ ᱚᱯᱷᱞᱟᱭᱤᱱ ᱠᱟᱹᱢᱤᱭᱟ ᱾",,,i18nSantali.js
+1 · Drill and hazard instructions,gesture_no_camera,No front camera available.,सामने का कैमरा उपलब्ध नहीं।,ᱢᱟᱲᱟᱝ ᱠᱮᱢᱨᱟ ᱵᱟᱝ ᱢᱮᱱᱟᱜᱼᱟ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,gesture_permission_denied,"Camera permission was refused, so hand tracking is off.","कैमरा अनुमति नहीं मिली, इसलिए हाथ ट्रैकिंग बंद है।","ᱠᱮᱢᱨᱟ ᱦᱩᱠᱩᱢ ᱵᱟᱝ ᱧᱟᱢ ᱞᱮᱱᱟ, ᱚᱱᱟᱛᱮ ᱛᱤ ᱴᱨᱮᱠᱤᱝ ᱵᱚᱸᱫᱚ ᱾",,,i18nSantali.js
+1 · Drill and hazard instructions,gesture_running,"Point to aim, pinch or hold to select","इशारा करें, चुनने के लिए चुटकी या स्थिर रखें","ᱩᱫᱩᱜ ᱢᱮ, ᱵᱟᱪᱷᱟᱣ ᱞᱟᱹᱜᱤᱫ ᱛᱤᱠᱤᱧ",,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,gesture_unsupported,This browser cannot run hand tracking.,यह ब्राउज़र हाथ ट्रैकिंग नहीं चला सकता।,ᱱᱚᱶᱟ ᱵᱨᱟᱣᱡᱚᱨ ᱛᱤ ᱴᱨᱮᱠᱤᱝ ᱵᱟᱝ ᱮᱦᱚᱵ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,hz_add_photo,Take a photo,फोटो लें,ᱯᱷᱚᱴᱚ ᱦᱟᱛᱟᱣ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,hz_add_voice,Say what is wrong,बोलकर बताएं क्या गलत है,ᱨᱚᱲ ᱠᱟᱛᱮ ᱞᱟᱭ ᱢᱮ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,hz_cat_blocked_exit,Exit is blocked,निकास अवरुद्ध है,ᱚᱰᱚᱠ ᱦᱚᱨ ᱵᱚᱸᱫᱚ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,hz_cat_dust,Too much dust,बहुत धूल,ᱟᱭᱢᱟ ᱫᱷᱩᱲᱤ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,hz_cat_equipment,Damaged equipment,क्षतिग्रस्त उपकरण,ᱦᱟᱹᱲᱤᱭᱟᱜ ᱡᱤᱱᱤᱥ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,hz_cat_extinguisher,Extinguisher missing or empty,अग्निशामक गायब या खाली,ᱥᱮᱸᱜᱮᱞ ᱦᱩᱭᱩᱠ ᱵᱟᱝ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,hz_cat_gas,Gas smell,गैस की गंध,ᱜᱮᱥ ᱥᱟᱶ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,hz_cat_guard,Machine guard missing,मशीन गार्ड गायब,ᱢᱮᱥᱤᱱ ᱜᱟᱨᱰ ᱵᱟᱝ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,hz_cat_load,Unstable stacked load,अस्थिर ढेर,ᱴᱷᱟᱶ ᱵᱟᱝ ᱛᱟᱦᱮᱸᱱ ᱡᱤᱱᱤᱥ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,hz_cat_loto,Work without lockout,लॉकआउट बिना काम,ᱞᱚᱠᱟᱣᱴ ᱵᱟᱝ ᱠᱟᱛᱮ ᱠᱟᱹᱢᱤ,,,i18nSantali.js
+1 · Drill and hazard instructions,hz_cat_other,Something else,कुछ और,ᱮᱴᱟᱜ ᱡᱤᱱᱤᱥ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,hz_cat_ppe,Someone without PPE,कोई बिना PPE,ᱡᱟᱦᱟᱸ ᱦᱚᱲ PPE ᱵᱟᱝ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,hz_cat_wiring,Exposed wiring,खुली तार,ᱡᱷᱤᱡ ᱛᱟᱨ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,hz_desc,One photo and a tap. It reaches your safety officer without you having to write anything or find anyone.,"एक फोटो और एक टैप। यह आपके सुरक्षा अधिकारी तक पहुंच जाएगा, कुछ लिखने या किसी को खोजने की ज़रूरत नहीं।",ᱢᱤᱫ ᱯᱷᱚᱴᱚ ᱟᱨ ᱢᱤᱫ ᱛᱚᱯᱟᱣ ᱾ ᱱᱚᱶᱟ ᱨᱠᱷᱟ ᱟᱯᱷᱤᱥᱚᱨ ᱛᱮ ᱥᱮᱴᱮᱨᱚᱜᱼᱟ ᱾,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,hz_eyebrow,Near-miss report,निकट-चूक रिपोर्ट,ᱡᱚᱠᱷᱚᱢ ᱠᱷᱚᱵᱚᱨ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,hz_facing,Facing,दिशा,ᱦᱚᱨ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,hz_how_bad,How dangerous is it?,यह कितना खतरनाक है?,ᱱᱚᱶᱟ ᱛᱤᱱᱟᱹᱜ ᱡᱚᱠᱷᱚᱢ?,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,hz_location,Location,स्थान,ᱴᱷᱟᱶ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,hz_location_note,"Direction is recorded instead of GPS, because GPS does not work underground.","GPS की जगह दिशा दर्ज होती है, क्योंकि GPS भूमिगत काम नहीं करता।","GPS ᱡᱟᱭᱜᱟ ᱨᱮ ᱦᱚᱨ ᱨᱮᱠᱚᱰ ᱦᱩᱭᱩᱜᱼᱟ, ᱪᱮᱫᱟᱜ ᱥᱮ GPS ᱞᱟᱛᱟᱨ ᱨᱮ ᱵᱟᱝ ᱠᱟᱹᱢᱤᱭᱟ ᱾",,,i18nSantali.js
+1 · Drill and hazard instructions,hz_MIC_DENIED,Microphone permission was refused.,माइक्रोफ़ोन अनुमति नहीं मिली।,ᱢᱟᱭᱠ ᱦᱩᱠᱩᱢ ᱵᱟᱝ ᱧᱟᱢ ᱞᱮᱱᱟ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,hz_MIC_UNSUPPORTED,This device cannot record audio.,यह डिवाइस ऑडियो रिकॉर्ड नहीं कर सकता।,ᱱᱚᱶᱟ ᱡᱤᱱᱤᱥ ᱨᱚᱲ ᱵᱟᱝ ᱨᱮᱠᱚᱰ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,hz_my_reports,Your reports,आपकी रिपोर्टें,ᱟᱢᱟᱜ ᱠᱷᱚᱵᱚᱨ ᱠᱚ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,hz_no_direction,Direction not available,दिशा उपलब्ध नहीं,ᱦᱚᱨ ᱵᱟᱝ ᱢᱮᱱᱟᱜᱼᱟ,,,i18nSantali.js
+1 · Drill and hazard instructions,hz_none_yet,You have not reported anything yet.,आपने अभी कुछ रिपोर्ट नहीं किया।,ᱟᱢ ᱛᱮᱦᱮᱸ ᱦᱟᱹᱵᱤᱡ ᱪᱮᱫ ᱦᱚᱸ ᱵᱟᱝ ᱠᱷᱚᱵᱚᱨ ᱮᱢ ᱠᱮᱫᱟᱢ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,hz_note_optional,Add a note (optional),नोट जोड़ें (वैकल्पिक),ᱢᱤᱫ ᱠᱟᱛᱷᱟ ᱮᱢ ᱢᱮ (ᱢᱚᱬᱮ ᱛᱮ),,,i18nSantali.js
+1 · Drill and hazard instructions,hz_note_placeholder,"Where exactly, and what is wrong?","ठीक कहाँ, और क्या गलत है?","ᱴᱷᱤᱠ ᱚᱠᱟ ᱨᱮ, ᱟᱨ ᱪᱮᱫ ᱵᱷᱩᱞ ᱠᱟᱱᱟ?",,,i18nSantali.js
+1 · Drill and hazard instructions,hz_photo_failed,That image could not be read. Try another photo.,यह छवि पढ़ी नहीं गई। दूसरी फोटो आज़माएं।,ᱱᱚᱶᱟ ᱪᱤᱛᱟᱹᱨ ᱵᱟᱝ ᱯᱟᱲᱦᱟᱣ ᱦᱩᱭ ᱞᱮᱱᱟ ᱾ ᱮᱴᱟᱜ ᱯᱷᱚᱴᱚ ᱠᱩᱨᱩᱢᱩᱴᱩᱭ ᱢᱮ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,hz_photo_optional,A photo helps but is not required,फोटो मददगार है पर ज़रूरी नहीं,ᱯᱷᱚᱴᱚ ᱜᱚᱲᱚᱭᱟ ᱢᱮᱱᱠᱷᱟᱱ ᱞᱟᱹᱠᱛᱤ ᱵᱟᱝ,,,i18nSantali.js
+1 · Drill and hazard instructions,hz_pick_what,What did you see?,आपने क्या देखा?,ᱟᱢ ᱪᱮᱫ ᱧᱮᱞ ᱠᱮᱫᱟᱢ?,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,hz_RECORD_FAILED,The recording failed. Try again.,रिकॉर्डिंग विफल। फिर कोशिश करें।,ᱨᱮᱠᱚᱰᱤᱝ ᱵᱟᱝ ᱦᱩᱭ ᱞᱮᱱᱟ ᱾ ᱫᱚᱦᱲᱟ ᱠᱩᱨᱩᱢᱩᱴᱩᱭ ᱢᱮ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,hz_report_another,Report another,दूसरी रिपोर्ट करें,ᱮᱴᱟᱜ ᱠᱷᱚᱵᱚᱨ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,hz_retake_photo,Take another,दूसरी लें,ᱮᱴᱟᱜ ᱦᱟᱛᱟᱣ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,hz_sev_high,Someone could be hurt today,आज कोई घायल हो सकता है,ᱛᱮᱦᱮᱸ ᱡᱟᱦᱟᱸ ᱦᱚᱲ ᱜᱷᱟᱭᱚᱞ ᱦᱩᱭ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,hz_sev_low,Worth noting,ध्यान देने योग्य,ᱧᱮᱞ ᱞᱟᱹᱠᱛᱤ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,hz_sev_medium,Needs fixing,ठीक करना ज़रूरी,ᱴᱷᱤᱠ ᱞᱟᱹᱠᱛᱤ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,hz_status_acknowledged,Seen by safety officer,सुरक्षा अधिकारी ने देखा,ᱨᱠᱷᱟ ᱚᱯᱷᱤᱥᱚᱨ ᱧᱮᱞ ᱠᱮᱫᱟᱭ,,,i18nSantali.js
+1 · Drill and hazard instructions,hz_status_dismissed,Closed without action,बिना कार्रवाई बंद,ᱠᱟᱹᱢᱤ ᱵᱟᱝ ᱠᱟᱛᱮ ᱵᱚᱸᱫᱚ,,,i18nSantali.js
+1 · Drill and hazard instructions,hz_status_open,Open,खुला,ᱡᱷᱤᱡ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,hz_status_resolved,Fixed,ठीक हो गया,ᱴᱷᱤᱠ ᱮᱱᱟ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,hz_stop_recording,Stop,रोकें,ᱛᱷᱤᱨ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,hz_storage_full,"This phone is out of storage, so the report is only held for this session. Ask your supervisor to sync soon.","इस फ़ोन में जगह नहीं है, इसलिए रिपोर्ट सिर्फ़ इस सत्र तक रहेगी। सुपरवाइज़र से जल्द सिंक कराएं।","ᱱᱚᱶᱟ ᱯᱷᱚᱱ ᱨᱮ ᱡᱟᱭᱜᱟ ᱵᱟᱝ, ᱚᱱᱟᱛᱮ ᱠᱷᱚᱵᱚᱨ ᱱᱚᱶᱟ ᱥᱮᱥᱚᱱ ᱦᱟᱹᱵᱤᱡ ᱜᱮ ᱛᱟᱦᱮᱸᱱᱟ ᱾ ᱥᱩᱯᱚᱨᱣᱟᱭᱡᱚᱨ ᱛᱮ ᱞᱟᱦᱟ ᱥᱤᱸᱠ ᱠᱟᱠᱷᱟᱨ ᱢᱮ ᱾",,,i18nSantali.js
+1 · Drill and hazard instructions,hz_submit,Send report,रिपोर्ट भेजें,ᱠᱷᱚᱵᱚᱨ ᱠᱩᱞ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,hz_submitting,Sending…,भेजा जा रहा है…,ᱠᱩᱞ ᱠᱟᱱᱟ…,,,i18nSantali.js
+1 · Drill and hazard instructions,hz_thanks_body,Saved on this phone and queued for your safety officer. It will sync by itself when this phone finds a network.,इस फ़ोन पर सहेजा गया और सुरक्षा अधिकारी के लिए कतार में। नेटवर्क मिलने पर यह अपने आप सिंक हो जाएगा।,ᱱᱚᱶᱟ ᱯᱷᱚᱱ ᱨᱮ ᱥᱟᱸᱪᱟᱣ ᱮᱱᱟ ᱾ ᱱᱮᱴᱣᱟᱨᱠ ᱧᱟᱢ ᱠᱟᱛᱮ ᱟᱡ ᱛᱮ ᱜᱮ ᱥᱤᱸᱠ ᱦᱩᱭᱩᱜᱼᱟ ᱾,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,hz_thanks_title,Report filed,रिपोर्ट दर्ज हुई,ᱠᱷᱚᱵᱚᱨ ᱚᱞ ᱮᱱᱟ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,hz_title,Report what you saw,जो देखा वह बताएं,ᱡᱟᱦᱟᱸ ᱧᱮᱞ ᱠᱮᱫᱟᱢ ᱚᱱᱟ ᱞᱟᱭ ᱢᱮ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,hz_voice_remove,Remove voice note,आवाज़ हटाएं,ᱨᱚᱲ ᱚᱜᱟᱲ ᱢᱮ,,,i18nSantali.js
+1 · Drill and hazard instructions,hz_voice_saved,Voice note added,आवाज़ जोड़ी गई,ᱨᱚᱲ ᱥᱮᱞᱮᱫ ᱮᱱᱟ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,hz_zone_label,Zone,ज़ोन,ᱡᱚᱱ,,,i18nSantali.js
+1 · Drill and hazard instructions,sc_complete,Scenario Complete,परिदृश्य पूर्ण,ᱥᱮᱱᱟᱨᱤᱭᱚ ᱦᱩᱭ ᱮᱱᱟ,,,i18nSantali.js
+1 · Drill and hazard instructions,sc_continue,Continue,जारी रखें,ᱟᱶᱜᱟ ᱪᱟᱞᱟᱜ ᱢᱮ,,,i18nSantali.js
+1 · Drill and hazard instructions,sc_dashboard,View Dashboard,डैशबोर्ड देखें,ᱰᱮᱥᱵᱚᱨᱰ ᱧᱮᱞ ᱢᱮ,,,i18nSantali.js
+1 · Drill and hazard instructions,sc_decision,Decision,निर्णय,ᱴᱷᱮᱭᱟᱣ,,,i18nSantali.js
+1 · Drill and hazard instructions,sc_finish,Finish Scenario,परिदृश्य समाप्त करें,ᱥᱮᱱᱟᱨᱤᱭᱚ ᱢᱩᱪᱟᱹᱫ ᱢᱮ,,,i18nSantali.js
+1 · Drill and hazard instructions,sc_more,More Scenarios,और परिदृश्य,ᱟᱨᱦᱚ ᱥᱮᱱᱟᱨᱤᱭᱚ,,,i18nSantali.js
+1 · Drill and hazard instructions,sc_of,of,में से,ᱠᱷᱚᱱ,,,i18nSantali.js
+1 · Drill and hazard instructions,sc_safe,Safe choice,सुरक्षित विकल्प,ᱨᱠᱷᱟ ᱵᱟᱪᱷᱟᱣ,,,i18nSantali.js
+1 · Drill and hazard instructions,sc_trainer_thinking,AI trainer is thinking…,एआई ट्रेनर सोच रहा है…,AI ᱛᱟᱞᱤᱢᱤᱭᱟᱹ ᱵᱷᱟᱵᱤᱡ ᱠᱟᱱᱟ…,,,i18nSantali.js
+1 · Drill and hazard instructions,sc_unsafe,Unsafe choice,असुरक्षित विकल्प,ᱵᱟᱝ ᱨᱠᱷᱟ ᱵᱟᱪᱷᱟᱣ,,,i18nSantali.js
+1 · Drill and hazard instructions,scan_again_label,Scan another,दूसरा स्कैन करें,ᱮᱴᱟᱜ ᱥᱠᱮᱱ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,scan_analyzing,Analyzing…,विश्लेषण हो रहा है…,ᱧᱮᱞ ᱠᱟᱱᱟ…,,,i18nSantali.js
+1 · Drill and hazard instructions,scan_another,Scan Another Photo,दूसरी फोटो स्कैन करें,ᱮᱴᱟᱜ ᱯᱷᱚᱴᱚ ᱥᱠᱮᱱ ᱢᱮ,,,i18nSantali.js
+1 · Drill and hazard instructions,scan_desc,"Upload or capture a photo of a work area. The AI inspector marks hazards directly on the image, the way a safety officer would during a floor walk.","कार्यक्षेत्र की तस्वीर अपलोड करें या कैद करें। एआई इंस्पेक्टर तस्वीर पर सीधे खतरों को चिह्नित करता है, ठीक वैसे जैसे कोई सुरक्षा अधिकारी फ्लोर वॉक के दौरान करता है।","ᱠᱟᱹᱢᱤ ᱡᱟᱭᱜᱟ ᱨᱮᱭᱟᱜ ᱯᱷᱚᱴᱚ ᱟᱯᱞᱳᱰ ᱥᱮ ᱦᱟᱛᱟᱣ ᱢᱮ ᱾ AI ᱧᱮᱞᱚᱜᱤᱡ ᱪᱤᱛᱟᱹᱨ ᱨᱮ ᱜᱮ ᱡᱚᱠᱷᱚᱢ ᱠᱚ ᱪᱤᱱᱦᱟᱹᱭᱮᱫᱟ, ᱡᱮᱞᱮᱠᱟ ᱨᱠᱷᱟ ᱚᱯᱷᱤᱥᱚᱨ ᱡᱟᱭᱜᱟ ᱧᱮᱞ ᱚᱠᱛᱚ ᱨᱮ ᱠᱟᱹᱢᱤᱭᱮᱫᱟᱭ ᱾",,,i18nSantali.js
+1 · Drill and hazard instructions,scan_eyebrow,Hazard Scan,खतरा स्कैन,ᱡᱚᱠᱷᱚᱢ ᱥᱠᱮᱱ,,,i18nSantali.js
+1 · Drill and hazard instructions,scan_hint,Works with any work-area or training photo.,किसी भी कार्यक्षेत्र या प्रशिक्षण फोटो के साथ काम करता है।,ᱡᱟᱦᱟᱸ ᱠᱟᱹᱢᱤ ᱡᱟᱭᱜᱟ ᱥᱮ ᱛᱟᱞᱤᱢ ᱯᱷᱚᱴᱚ ᱥᱟᱶ ᱠᱟᱹᱢᱤᱭᱟ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,scan_no_hazards,No hazards detected.,कोई खतरा नहीं मिला।,ᱡᱟᱦᱟᱸ ᱡᱚᱠᱷᱚᱢ ᱵᱟᱝ ᱧᱟᱢ ᱞᱮᱱᱟ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,scan_no_key_body,Add a free Gemini or OpenAI key in Settings to run inspections.,निरीक्षण चलाने के लिए सेटिंग्स में एक मुफ्त Gemini या OpenAI कुंजी जोड़ें।,ᱧᱮᱞ ᱠᱟᱹᱢᱤ ᱮᱦᱚᱵ ᱞᱟᱹᱜᱤᱫ ᱥᱮᱴᱤᱝᱥ ᱨᱮ ᱢᱤᱫ ᱢᱩᱯᱷᱚᱛ Gemini ᱥᱮ OpenAI ᱠᱩᱸᱡᱤ ᱮᱢ ᱢᱮ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,scan_no_key_title,No API key set,कोई एपीआई कुंजी सेट नहीं है,API ᱠᱩᱸᱡᱤ ᱵᱟᱝ ᱛᱮᱭᱟᱨ,,,i18nSantali.js
+1 · Drill and hazard instructions,scan_open,Open Camera / Upload Photo,कैमरा खोलें / फोटो अपलोड करें,ᱠᱮᱢᱨᱟ ᱡᱷᱤᱡ / ᱯᱷᱚᱴᱚ ᱟᱯᱞᱳᱰ,,,i18nSantali.js
+1 · Drill and hazard instructions,scan_retake,Retake,फिर से लें,ᱫᱚᱦᱲᱟ ᱦᱟᱛᱟᱣ,,,i18nSantali.js
+1 · Drill and hazard instructions,scan_run,Run AI Inspection,एआई निरीक्षण चलाएं,AI ᱧᱮᱞ ᱠᱟᱹᱢᱤ ᱮᱦᱚᱵ ᱢᱮ,,,i18nSantali.js
+1 · Drill and hazard instructions,scan_title,Point. Capture. Inspect.,दिखाएं। कैद करें। जांचें।,ᱩᱫᱩᱜ ᱢᱮ ᱾ ᱦᱟᱛᱟᱣ ᱢᱮ ᱾ ᱧᱮᱞ ᱢᱮ ᱾,,,i18nSantali.js
+2 · Worker-facing flows,chat_greeting,"Hi! I'm the Jaagruk assistant. Ask me anything about how this app works — AR drills, reaction-time scoring, the buddy drill, certificates, hazard reports, or anything you're unsure about.","नमस्ते! मैं जागरुक सहायक हूं। यह ऐप कैसे काम करता है — खतरा स्कैनिंग, परिदृश्य, सेटिंग्स, या जो भी आपको समझ न आए, मुझसे कुछ भी पूछें।","ᱡᱚᱦᱟᱨ! ᱤᱧ ᱡᱟᱜᱨᱩᱠ ᱜᱚᱲᱚ ᱠᱟᱱᱟᱹᱧ ᱾ ᱱᱚᱶᱟ ᱮᱯ ᱪᱮᱫ ᱞᱮᱠᱟ ᱠᱟᱹᱢᱤᱭᱟ — AR ᱛᱟᱞᱤᱢ, ᱚᱠᱛᱚ ᱞᱮᱠᱷᱟ, ᱡᱚᱲᱟᱣ ᱛᱟᱞᱤᱢ, ᱯᱚᱨᱢᱟᱱ, ᱡᱚᱠᱷᱚᱢ ᱠᱷᱚᱵᱚᱨ, ᱥᱮ ᱡᱟᱦᱟᱸ ᱠᱟᱛᱷᱟ ᱵᱟᱝ ᱵᱩᱡᱷᱟᱹᱣ ᱠᱷᱟᱱ — ᱤᱧ ᱛᱮ ᱠᱩᱠᱞᱤ ᱢᱮ ᱾",,,i18nSantali.js
+2 · Worker-facing flows,chat_no_key,Add a free API key in Settings first so I can respond — go to the Settings tab and paste a Gemini key.,पहले सेटिंग्स में एक मुफ्त एपीआई कुंजी जोड़ें ताकि मैं जवाब दे सकूं — सेटिंग्स टैब पर जाएं और Gemini कुंजी पेस्ट करें।,ᱢᱟᱲᱟᱝ ᱥᱮᱴᱤᱝᱥ ᱨᱮ ᱢᱤᱫ ᱢᱩᱯᱷᱚᱛ API ᱠᱩᱸᱡᱤ ᱮᱢ ᱢᱮ ᱚᱱᱟᱛᱮ ᱤᱧ ᱛᱮᱞᱟ ᱫᱟᱲᱮᱭᱟᱜᱼᱟᱹᱧ — ᱥᱮᱴᱤᱝᱥ ᱴᱮᱵ ᱛᱮ ᱪᱟᱞᱟᱜ ᱠᱟᱛᱮ Gemini ᱠᱩᱸᱡᱤ ᱮᱢ ᱢᱮ ᱾,,,i18nSantali.js
+2 · Worker-facing flows,chat_placeholder,Ask about this app…,इस ऐप के बारे में पूछें…,ᱱᱚᱶᱟ ᱮᱯ ᱵᱟᱵᱚᱛ ᱠᱩᱠᱞᱤ ᱢᱮ…,,,i18nSantali.js
+2 · Worker-facing flows,chat_send,Send,भेजें,ᱠᱩᱞ ᱢᱮ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,chat_thinking,Thinking…,सोच रहा हूं…,ᱵᱷᱟᱵᱤᱡ ᱛᱟᱦᱮᱸᱱ…,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,chat_title,Jaagruk Assistant,जागरुक सहायक,ᱡᱟᱜᱨᱩᱠ ᱜᱚᱲᱚ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,home_cta_buddy,Try the buddy drill,बडी ड्रिल आज़माएं,ᱡᱚᱲᱟᱣ ᱛᱟᱞᱤᱢ ᱠᱩᱨᱩᱢᱩᱴᱩᱭ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,home_cta_scan,Scan a Hazard,खतरा स्कैन करें,ᱡᱚᱠᱷᱚᱢ ᱥᱠᱮᱱ ᱢᱮ,,,i18nSantali.js
+2 · Worker-facing flows,home_cta_train,Start Simulator,सिम्युलेटर शुरू करें,ᱥᱤᱢᱩᱞᱮᱴᱚᱨ ᱮᱦᱚᱵ ᱢᱮ,,,i18nSantali.js
+2 · Worker-facing flows,home_desc,"Jaagruk trains workers to recognize hazards before they become accidents, times how fast they react, and certifies them into a record that cannot be quietly edited — on a phone, with no headset and no signal needed.","जागरुक श्रमिकों को दुर्घटना होने से पहले खतरे पहचानना सिखाता है, उनकी प्रतिक्रिया की गति मापता है, और उन्हें ऐसे रिकॉर्ड में प्रमाणित करता है जिसे चुपचाप बदला नहीं जा सकता — फोन पर, बिना हेडसेट और बिना सिग्नल।","ᱡᱟᱜᱨᱩᱠ ᱠᱟᱹᱢᱤ ᱦᱚᱲ ᱠᱚ ᱡᱚᱠᱷᱚᱢ ᱵᱟᱰᱟᱭ ᱛᱟᱞᱤᱢ ᱮᱢᱟᱭ ᱟᱨ ᱚᱠᱛᱚ ᱞᱮᱠᱷᱟᱭ ᱾ ᱯᱷᱚᱱ ᱨᱮ ᱜᱮ, ᱦᱮᱰᱥᱮᱴ ᱟᱨ ᱥᱤᱜᱱᱟᱞ ᱵᱟᱝ ᱞᱟᱹᱠᱛᱤ ᱾",,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,home_explore,Everything in Jaagruk,जागरुक में सब कुछ,ᱡᱟᱜᱨᱩᱠ ᱨᱮ ᱡᱚᱛᱚ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,home_eyebrow,Jharkhand · Mining & Manufacturing Safety,झारखंड · खनन एवं विनिर्माण सुरक्षा,ᱡᱷᱟᱲᱠᱷᱚᱸᱰ · ᱠᱷᱟᱰ ᱟᱨ ᱠᱟᱨᱠᱷᱟᱱᱟ ᱨᱠᱷᱟ,,,i18nSantali.js
+2 · Worker-facing flows,home_footer_note,"Built for Jharkhand’s mines, steel plants and mica units. Works with the network cable pulled out.","झारखंड की खदानों, स्टील प्लांट और अभ्रक इकाइयों के लिए। नेटवर्क के बिना भी काम करता है।",ᱡᱷᱟᱨᱠᱷᱚᱸᱰ ᱨᱮᱱᱟᱜ ᱠᱷᱟᱰᱟᱱ ᱟᱨ ᱠᱟᱹᱨᱠᱷᱟᱱᱟ ᱞᱟᱹᱜᱤᱫ ᱾ ᱱᱮᱴᱣᱟᱨᱠ ᱵᱟᱝ ᱛᱮ ᱦᱚᱸ ᱠᱟᱹᱢᱤᱭᱟ ᱾,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,home_how,How it works,यह कैसे काम करता है,ᱱᱚᱶᱟ ᱪᱮᱫ ᱞᱮᱠᱟ ᱠᱟᱹᱢᱤᱭᱟ,,,i18nSantali.js
+2 · Worker-facing flows,home_l1_body,"A supervisor marks where the exits and extinguishers really are, once. After that every drill overlays hazards in the correct real direction, so you learn the route you would actually run.","सुपरवाइज़र एक बार चिह्नित करता है कि निकास और अग्निशामक कहाँ हैं। इसके बाद हर ड्रिल खतरों को सही असली दिशा में दिखाती है, ताकि आप वही रास्ता सीखें जिससे आप वास्तव में भागेंगे।","ᱥᱩᱯᱚᱨᱣᱟᱭᱡᱚᱨ ᱢᱤᱫ ᱫᱷᱟᱣ ᱪᱤᱱᱦᱟᱹᱭᱮᱫᱟ ᱡᱮ ᱚᱰᱚᱠ ᱟᱨ ᱥᱮᱸᱜᱮᱞ ᱦᱩᱭᱩᱠ ᱚᱠᱟ ᱨᱮ ᱥᱟᱹᱨᱤ ᱢᱮᱱᱟᱜᱼᱟ ᱾ ᱚᱱᱟ ᱛᱟᱭᱚᱢ ᱡᱚᱛᱚ ᱛᱟᱞᱤᱢ ᱡᱚᱠᱷᱚᱢ ᱠᱚ ᱥᱟᱹᱨᱤ ᱦᱚᱨ ᱨᱮ ᱩᱫᱩᱜᱟ, ᱚᱱᱟᱛᱮ ᱟᱢ ᱚᱱᱟ ᱦᱚᱨ ᱜᱮ ᱛᱟᱞᱤᱢᱚᱜᱼᱟᱢ ᱡᱟᱦᱟᱸ ᱛᱮ ᱟᱢ ᱥᱟᱹᱨᱤ ᱛᱮ ᱱᱤᱨᱟᱹᱣᱟᱢ ᱾",,,i18nSantali.js
+2 · Worker-facing flows,home_l1_title,Trained in your own corridor,आपके ही गलियारे में प्रशिक्षण,ᱟᱢᱟᱜ ᱜᱮ ᱦᱚᱨ ᱨᱮ ᱛᱟᱞᱤᱢ,,,i18nSantali.js
+2 · Worker-facing flows,home_l2_body,"Knowing the right answer is not the same as producing it in four seconds. Every decision is timed, and a correct-but-slow answer is flagged for a repeat instead of quietly passed.","सही उत्तर जानना और चार सेकंड में देना एक बात नहीं है। हर निर्णय का समय मापा जाता है, और सही-पर-धीमा उत्तर चुपचाप पास नहीं होता, दोहराने के लिए चिह्नित होता है।","ᱴᱷᱤᱠ ᱛᱮᱞᱟ ᱵᱟᱰᱟᱭ ᱟᱨ ᱚᱱᱟ ᱯᱩᱱ ᱥᱮᱠᱮᱸᱰ ᱨᱮ ᱮᱢ ᱫᱚ ᱢᱤᱫ ᱠᱟᱛᱷᱟ ᱵᱟᱝ ᱾ ᱡᱚᱛᱚ ᱴᱷᱮᱭᱟᱣ ᱨᱮᱭᱟᱜ ᱚᱠᱛᱚ ᱞᱮᱠᱷᱟᱜᱼᱟ, ᱟᱨ ᱴᱷᱤᱠ ᱢᱮᱱᱠᱷᱟᱱ ᱟᱲᱟᱜ ᱛᱮᱞᱟ ᱫᱚ ᱪᱩᱯ ᱠᱟᱛᱮ ᱯᱟᱥ ᱵᱟᱝ, ᱫᱚᱦᱲᱟ ᱞᱟᱹᱜᱤᱫ ᱪᱤᱱᱦᱟᱹᱜᱼᱟ ᱾",,,i18nSantali.js
+2 · Worker-facing flows,home_l2_title,Timed like a real emergency,असली आपात स्थिति जैसा समय,ᱥᱟᱹᱨᱤ ᱡᱚᱠᱷᱚᱢ ᱞᱮᱠᱟ ᱚᱠᱛᱚ,,,i18nSantali.js
+2 · Worker-facing flows,home_l3_body,"Each certificate links to the one before it by cryptographic hash. The QR carries the whole signed record, so an inspector can verify it standing at the pit head with no signal at all.","हर प्रमाणपत्र क्रिप्टोग्राफिक हैश से पिछले से जुड़ा होता है। QR में पूरा हस्ताक्षरित रिकॉर्ड होता है, इसलिए निरीक्षक बिना किसी सिग्नल के खदान मुहाने पर खड़े होकर इसे जांच सकता है।","ᱡᱚᱛᱚ ᱯᱚᱨᱢᱟᱱ ᱟᱭᱟᱜ ᱞᱟᱦᱟᱛᱮ ᱠᱨᱤᱯᱴᱳ ᱦᱮᱥ ᱛᱮ ᱡᱚᱲᱟᱣ ᱟᱠᱟᱱᱟ ᱾ QR ᱨᱮ ᱡᱚᱛᱚ ᱥᱩᱦᱤ ᱨᱮᱠᱚᱰ ᱛᱟᱦᱮᱸᱱᱟ, ᱚᱱᱟᱛᱮ ᱧᱮᱞᱚᱜᱤᱡ ᱠᱷᱟᱰ ᱢᱩᱦᱟᱹᱲ ᱨᱮ ᱛᱮᱸᱜᱚ ᱠᱟᱛᱮ ᱥᱤᱜᱱᱟᱞ ᱵᱟᱝ ᱠᱟᱛᱮ ᱦᱚᱸ ᱡᱟᱹᱨᱩᱭ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ ᱾",,,i18nSantali.js
+2 · Worker-facing flows,home_l3_title,A certificate that cannot be quietly edited,ऐसा प्रमाणपत्र जिसे चुपचाप बदला नहीं जा सकता,ᱚᱱᱟ ᱯᱚᱨᱢᱟᱱ ᱡᱟᱦᱟᱸ ᱪᱩᱯ ᱠᱟᱛᱮ ᱵᱟᱝ ᱵᱚᱫᱚᱞ ᱦᱩᱭᱩᱜᱼᱟ,,,i18nSantali.js
+2 · Worker-facing flows,home_l4_body,"Spot a blocked exit an hour after the drill? One photo and a tap puts it on the safety officer’s board. Readiness also decays if you stop refreshing, so a certificate means competence today rather than a date in the past.","ड्रिल के एक घंटे बाद अवरुद्ध निकास दिखा? एक फोटो और एक टैप उसे सुरक्षा अधिकारी के बोर्ड पर डाल देता है। रिफ्रेशर छोड़ने पर तैयारी घटती है, इसलिए प्रमाणपत्र का मतलब आज की योग्यता है, बीती तारीख नहीं।","ᱛᱟᱞᱤᱢ ᱛᱟᱭᱚᱢ ᱢᱤᱫ ᱴᱟᱲᱟᱝ ᱨᱮ ᱵᱚᱸᱫᱚ ᱚᱰᱚᱠ ᱧᱮᱞ ᱠᱮᱫᱟᱢ? ᱢᱤᱫ ᱯᱷᱚᱴᱚ ᱟᱨ ᱢᱤᱫ ᱛᱚᱯᱟᱣ ᱛᱮ ᱚᱱᱟ ᱨᱠᱷᱟ ᱚᱯᱷᱤᱥᱚᱨ ᱨᱮᱭᱟᱜ ᱵᱚᱨᱰ ᱨᱮ ᱮᱦᱚᱵᱚᱜᱼᱟ ᱾ ᱫᱚᱦᱲᱟ ᱛᱟᱞᱤᱢ ᱵᱟᱹᱰᱨᱟᱹ ᱠᱷᱟᱱ ᱛᱮᱭᱟᱨᱤ ᱦᱚᱸ ᱠᱚᱢ ᱦᱩᱭᱩᱜᱼᱟ, ᱚᱱᱟᱛᱮ ᱯᱚᱨᱢᱟᱱ ᱨᱮᱭᱟᱜ ᱢᱩᱬᱩᱛ ᱛᱮᱦᱮᱸᱟᱜ ᱠᱟᱹᱢᱤ ᱠᱟᱱᱟ, ᱞᱟᱦᱟᱨᱮᱱ ᱢᱟᱦᱟᱸ ᱵᱟᱝ ᱾",,,i18nSantali.js
+2 · Worker-facing flows,home_l4_title,Every trained worker becomes a sensor,हर प्रशिक्षित श्रमिक एक सेंसर बनता है,ᱡᱚᱛᱚ ᱛᱟᱞᱤᱢ ᱦᱩᱭ ᱠᱟᱱ ᱠᱟᱹᱢᱤ ᱦᱚᱲ ᱢᱤᱫ ᱥᱮᱱᱥᱚᱨ ᱦᱩᱭᱩᱜᱼᱟ,,,i18nSantali.js
+2 · Worker-facing flows,home_layers_title,What makes this different,यह अलग क्यों है,ᱱᱚᱶᱟ ᱪᱮᱫ ᱞᱟᱹᱜᱤᱫ ᱟᱞᱜᱟ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,home_not_certified,Not yet certified,अभी प्रमाणित नहीं,ᱛᱮᱦᱮᱸ ᱦᱟᱹᱵᱤᱡ ᱵᱟᱝ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,home_offline_badge,Works with no signal,बिना सिग्नल काम करता है,ᱥᱤᱜᱱᱟᱞ ᱵᱟᱝ ᱛᱟᱦᱮᱸᱠᱷᱟᱱ ᱦᱚᱸ ᱠᱟᱹᱢᱤᱭᱟ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,home_problem_ref,"Built for SIH problem statement 26041 — Government of Jharkhand, Department of Higher & Technical Education.","SIH समस्या कथन 26041 के लिए बनाया गया — झारखंड सरकार, उच्च एवं तकनीकी शिक्षा विभाग।","SIH ᱫᱩᱠ ᱠᱟᱛᱷᱟ 26041 ᱞᱟᱹᱜᱤᱫ ᱛᱮᱭᱟᱨ — ᱡᱷᱟᱲᱠᱷᱚᱸᱰ ᱥᱚᱨᱠᱟᱨ, ᱩᱯᱨᱩᱢ ᱟᱨ ᱴᱮᱠᱱᱤᱠᱟᱞ ᱥᱮᱪᱮᱫ ᱵᱤᱵᱷᱟᱜ ᱾",,,i18nSantali.js
+2 · Worker-facing flows,home_ready_now,Eligible now,अभी पात्र,ᱱᱤᱛᱚᱜ ᱞᱟᱭᱠᱚ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,home_signed_out_body,"Pick your language by hearing it spoken, set a PIN, and start. No email, no account, nothing to remember.","भाषा सुनकर चुनें, पिन सेट करें, और शुरू करें। कोई ईमेल नहीं, कोई खाता नहीं।","ᱯᱟᱹᱨᱥᱤ ᱟᱸᱡᱚᱢ ᱠᱟᱛᱮ ᱵᱟᱪᱷᱟᱣ ᱢᱮ, ᱯᱤᱱ ᱮᱢ ᱢᱮ, ᱟᱨ ᱮᱦᱚᱵ ᱢᱮ ᱾",,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,home_signed_out_title,Two minutes to set up,सेट अप में दो मिनट,ᱵᱟᱨ ᱢᱤᱱᱤᱴ ᱨᱮ ᱛᱮᱭᱟᱨ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,home_stat1_l,Most mining and factory-floor accidents trace back to a hazard someone recognized too late — or never at all.,अधिकांश खनन और फैक्ट्री दुर्घटनाएं किसी खतरे से जुड़ी होती हैं जिसे किसी ने बहुत देर से पहचाना — या कभी नहीं पहचाना।,ᱟᱭᱢᱟ ᱠᱷᱟᱰ ᱟᱨ ᱠᱟᱨᱠᱷᱟᱱᱟ ᱡᱚᱠᱷᱚᱢ ᱫᱚ ᱚᱱᱟ ᱡᱚᱠᱷᱚᱢ ᱥᱟᱶ ᱡᱚᱲᱟᱣ ᱠᱟᱱᱟ ᱡᱟᱦᱟᱸ ᱡᱟᱦᱟᱭ ᱟᱹᱰᱤ ᱞᱟᱦᱟ ᱛᱮ ᱵᱟᱰᱟᱭ ᱠᱮᱫᱟᱭ — ᱥᱮ ᱛᱤᱱᱟᱹᱜ ᱦᱚᱸ ᱵᱟᱝ ᱾,,,i18nSantali.js
+2 · Worker-facing flows,home_stat1_n,Preventable,रोका जा सकता है,ᱨᱚᱠᱚᱴ ᱦᱩᱭ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ,,,i18nSantali.js
+2 · Worker-facing flows,home_stat2_l,"That's how fast a worker needs to spot exposed wiring, an unguarded machine, or a missing gas alarm.","इतनी ही जल्दी एक श्रमिक को खुली तार, बिना गार्ड वाली मशीन, या गायब गैस अलार्म पहचानना होता है।","ᱮᱱᱟᱜ ᱜᱮ ᱞᱚᱜᱚᱱ ᱛᱮ ᱢᱤᱫ ᱠᱟᱹᱢᱤ ᱦᱚᱲ ᱡᱷᱤᱡ ᱛᱟᱨ, ᱜᱟᱨᱰ ᱵᱟᱝ ᱠᱟᱱ ᱢᱮᱥᱤᱱ, ᱥᱮ ᱵᱟᱝ ᱠᱟᱱ ᱜᱮᱥ ᱟᱞᱟᱨᱢ ᱵᱟᱰᱟᱭ ᱞᱟᱹᱠᱛᱤ ᱾",,,i18nSantali.js
+2 · Worker-facing flows,home_stat2_n,Seconds,सेकंड,ᱥᱮᱠᱮᱸᱰ,,,i18nSantali.js
+2 · Worker-facing flows,home_stat3_l,"No AR headset, no simulator lab. A phone camera and an AI inspector cover what the classroom can't.","कोई एआर हेडसेट नहीं, कोई सिम्युलेटर लैब नहीं। एक फोन कैमरा और एआई इंस्पेक्टर वह करते हैं जो क्लासरूम नहीं कर सकता।","ᱡᱟᱦᱟᱸ AR ᱦᱮᱰᱥᱮᱴ ᱵᱟᱝ, ᱡᱟᱦᱟᱸ ᱥᱤᱢᱩᱞᱮᱴᱚᱨ ᱞᱮᱵ ᱵᱟᱝ ᱾ ᱢᱤᱫ ᱯᱷᱚᱱ ᱠᱮᱢᱨᱟ ᱟᱨ ᱢᱤᱫ AI ᱧᱮᱞᱚᱜᱤᱡ ᱚᱱᱟ ᱠᱟᱹᱢᱤ ᱠᱚ ᱠᱟᱹᱢᱤᱭᱮᱫᱟ ᱡᱟᱦᱟᱸ ᱠᱞᱟᱥᱨᱩᱢ ᱵᱟᱝ ᱦᱩᱭ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ ᱾",,,i18nSantali.js
+2 · Worker-facing flows,home_stat3_n,Zero cost,शून्य लागत,ᱡᱟᱦᱟᱸ ᱠᱷᱚᱨᱚᱪ ᱵᱟᱝ,,,i18nSantali.js
+2 · Worker-facing flows,home_status_hint,"Readiness decays if you stop refreshing, so this is today’s figure rather than the day you passed.","रिफ्रेश न करने पर तैयारी घटती है, इसलिए यह आज का आंकड़ा है, पास होने के दिन का नहीं।",ᱫᱚᱦᱲᱟ ᱵᱟᱝ ᱛᱟᱞᱤᱢ ᱠᱷᱟᱱ ᱛᱮᱭᱟᱨᱤ ᱠᱚᱢ ᱦᱩᱭᱩᱜᱼᱟ ᱾,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,home_step1_b,"Photograph a real work area, or a training photo. Our AI inspector scans it against mining and factory safety standards.",किसी वास्तविक कार्यक्षेत्र या प्रशिक्षण फोटो को कैद करें। हमारा एआई इंस्पेक्टर इसे खनन और फैक्ट्री सुरक्षा मानकों के विरुद्ध जांचता है।,"ᱥᱟᱹᱨᱤ ᱠᱟᱹᱢᱤ ᱡᱟᱭᱜᱟ, ᱥᱮ ᱛᱟᱞᱤᱢ ᱯᱷᱚᱴᱚ ᱦᱟᱛᱟᱣ ᱢᱮ ᱾ ᱟᱞᱮᱭᱟᱜ AI ᱧᱮᱞᱚᱜᱤᱡ ᱚᱱᱟ ᱠᱷᱟᱰ ᱟᱨ ᱠᱟᱨᱠᱷᱟᱱᱟ ᱨᱠᱷᱟ ᱠᱟᱱᱩᱱ ᱥᱟᱶ ᱧᱮᱞᱮᱫᱟ ᱾",,,i18nSantali.js
+2 · Worker-facing flows,home_step1_e,Step one,चरण एक,ᱢᱤᱫ ᱫᱷᱟᱯ,,,i18nSantali.js
+2 · Worker-facing flows,home_step1_t,Point your camera,अपना कैमरा दिखाएं,ᱟᱢᱟᱜ ᱠᱮᱢᱨᱟ ᱩᱫᱩᱜ ᱢᱮ,,,i18nSantali.js
+2 · Worker-facing flows,home_step2_b,"Hazards are marked directly on the image with severity and a plain-language explanation — helmet missing, wiring exposed, guard removed.","खतरों को सीधे तस्वीर पर गंभीरता और सरल भाषा में स्पष्टीकरण के साथ चिह्नित किया जाता है — हेलमेट गायब, तार खुली, गार्ड हटाया गया।","ᱡᱚᱠᱷᱚᱢ ᱠᱚ ᱪᱤᱛᱟᱹᱨ ᱨᱮ ᱜᱮ ᱡᱚᱠᱷᱚᱢ ᱢᱟᱨᱟᱝ ᱟᱨ ᱥᱚᱦᱚᱡ ᱟᱹᱲᱟᱹ ᱛᱮ ᱪᱤᱱᱦᱟᱹᱜᱼᱟ — ᱦᱮᱞᱢᱮᱴ ᱵᱟᱝ, ᱛᱟᱨ ᱡᱷᱤᱡ, ᱜᱟᱨᱰ ᱚᱜᱟᱲ ᱟᱠᱟᱱᱟ ᱾",,,i18nSantali.js
+2 · Worker-facing flows,home_step2_e,Step two,चरण दो,ᱵᱟᱨ ᱫᱷᱟᱯ,,,i18nSantali.js
+2 · Worker-facing flows,home_step2_t,See what it sees,देखें कि यह क्या देखता है,ᱧᱮᱞ ᱢᱮ ᱱᱚᱶᱟ ᱪᱮᱫ ᱧᱮᱞᱮᱫᱟ,,,i18nSantali.js
+2 · Worker-facing flows,home_step3_b,Run branching shaft and factory-floor scenarios with a voice-guided AI trainer that reacts to your choices in real time.,एक आवाज-निर्देशित एआई ट्रेनर के साथ शाखायुक्त शाफ्ट और फैक्ट्री-फ्लोर परिदृश्य चलाएं जो आपके विकल्पों पर वास्तविक समय में प्रतिक्रिया देता है।,"ᱢᱤᱫ ᱨᱚᱲ ᱛᱮ ᱦᱚᱠᱚᱭ ᱠᱟᱱ AI ᱛᱟᱞᱤᱢᱤᱭᱟᱹ ᱥᱟᱶ ᱦᱟᱹᱴᱤᱧ ᱦᱟᱹᱴᱤᱧ ᱥᱟᱯᱷᱴ ᱟᱨ ᱠᱟᱨᱠᱷᱟᱱᱟ ᱥᱮᱱᱟᱨᱤᱭᱚ ᱮᱦᱚᱵ ᱢᱮ, ᱡᱟᱦᱟᱸ ᱟᱢᱟᱜ ᱵᱟᱪᱷᱟᱣ ᱨᱮ ᱚᱱᱟ ᱚᱠᱛᱚ ᱨᱮ ᱜᱮ ᱛᱮᱞᱟᱭᱮᱫᱟ ᱾",,,i18nSantali.js
+2 · Worker-facing flows,home_step3_e,Step three,चरण तीन,ᱯᱮ ᱫᱷᱟᱯ,,,i18nSantali.js
+2 · Worker-facing flows,home_step3_t,Train the reflex,प्रतिक्रिया को प्रशिक्षित करें,ᱛᱮᱞᱟ ᱛᱟᱞᱤᱢ ᱢᱮ,,,i18nSantali.js
+2 · Worker-facing flows,home_title_1,Every shift,हर शिफ्ट,ᱡᱚᱛᱚ ᱥᱤᱯᱷᱴ,,,i18nSantali.js
+2 · Worker-facing flows,home_title_2,should end,का अंत होना चाहिए,ᱢᱩᱪᱟᱹᱫ ᱦᱩᱭ ᱞᱟᱹᱠᱛᱤ,,,i18nSantali.js
+2 · Worker-facing flows,home_title_3,the same way.,एक ही तरह से।,ᱢᱤᱫ ᱜᱮ ᱞᱮᱠᱟᱛᱮ ᱾,,,i18nSantali.js
+2 · Worker-facing flows,home_your_status,Where you stand today,आज आपकी स्थिति,ᱛᱮᱦᱮᱸ ᱟᱢᱟᱜ ᱡᱟᱭᱜᱟ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,list_desc,"Branching, voice-guided scenarios built from real mining and factory-floor situations. Every choice is scored — this is your safety reflex, tested.","वास्तविक खनन और फैक्ट्री-फ्लोर स्थितियों से बने शाखायुक्त, आवाज-निर्देशित परिदृश्य। हर विकल्प का स्कोर होता है — यह आपकी सुरक्षा प्रतिक्रिया की परीक्षा है।","ᱥᱟᱹᱨᱤ ᱠᱷᱟᱰ ᱟᱨ ᱠᱟᱨᱠᱷᱟᱱᱟ ᱠᱟᱛᱷᱟ ᱠᱷᱚᱱ ᱛᱮᱭᱟᱨ ᱦᱟᱹᱴᱤᱧ ᱦᱟᱹᱴᱤᱧ, ᱨᱚᱲ ᱛᱮ ᱦᱚᱠᱚᱭ ᱠᱟᱱ ᱥᱮᱱᱟᱨᱤᱭᱚ ᱾ ᱡᱚᱛᱚ ᱵᱟᱪᱷᱟᱣ ᱨᱮᱭᱟᱜ ᱱᱚᱢᱵᱚᱨ ᱦᱩᱭᱩᱜᱼᱟ — ᱱᱚᱶᱟ ᱟᱢᱟᱜ ᱨᱠᱷᱟ ᱛᱮᱞᱟ ᱨᱮᱭᱟᱜ ᱡᱟᱹᱨᱩᱭ ᱠᱟᱱᱟ ᱾",,,i18nSantali.js
+2 · Worker-facing flows,list_eyebrow,Simulator,सिम्युलेटर,ᱥᱤᱢᱩᱞᱮᱴᱚᱨ,,,i18nSantali.js
+2 · Worker-facing flows,list_points,decision points,निर्णय बिंदु,ᱴᱷᱮᱭᱟᱣ ᱴᱷᱟᱶ,,,i18nSantali.js
+2 · Worker-facing flows,list_title,Choose a scenario,एक परिदृश्य चुनें,ᱢᱤᱫ ᱥᱮᱱᱟᱨᱤᱭᱚ ᱵᱟᱪᱷᱟᱣ ᱢᱮ,,,i18nSantali.js
+2 · Worker-facing flows,nav_admin,Admin,एडमिन,ᱮᱰᱢᱤᱱ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,nav_buddy,Buddy Drill,बडी ड्रिल,ᱡᱚᱲᱟᱣ ᱛᱟᱞᱤᱢ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,nav_cert,Certification,प्रमाणन,ᱥᱚᱨᱴᱤᱯᱤᱠᱮᱴ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,nav_dashboard,Dashboard,डैशबोर्ड,ᱰᱮᱥᱵᱚᱨᱰ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,nav_home,Home,होम,ᱚᱲᱟᱜ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,nav_refresher,Refresher,रिफ्रेशर,ᱫᱳᱦᱲᱟ ᱛᱟᱞᱤᱢ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,nav_report,Report Hazard,खतरा रिपोर्ट,ᱡᱚᱠᱷᱚᱢ ᱠᱷᱚᱵᱚᱨ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,nav_scan,Hazard Scan,खतरा स्कैन,ᱡᱚᱠᱷᱚᱢ ᱥᱠᱮᱱ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,nav_settings,Settings,सेटिंग्स,ᱥᱮᱴᱤᱝᱥ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,nav_site,Site Setup,साइट सेटअप,ᱴᱷᱟᱶ ᱥᱟᱡᱟᱣ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,nav_start,Sign In,साइन इन,ᱵᱳᱞᱚ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,nav_train,Simulator,सिम्युलेटर,ᱥᱤᱢᱩᱞᱮᱴᱚᱨ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,ob_choose_pin,Choose a 4-digit PIN,4 अंकों का पिन चुनें,4 ᱮᱞ ᱯᱤᱱ ᱵᱟᱪᱷᱟᱣ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,ob_confirm_pin,Enter the PIN again,पिन दोबारा लिखें,ᱯᱤᱱ ᱫᱚᱦᱲᱟ ᱚᱞ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,ob_continue_guest,Continue without signing in,साइन इन किए बिना जारी रखें,ᱵᱚᱞᱚ ᱵᱟᱝ ᱠᱟᱛᱮ ᱟᱶᱜᱟ ᱪᱟᱞᱟᱜ ᱢᱮ,,,i18nSantali.js
+2 · Worker-facing flows,ob_create_account,Create my record,मेरा रिकॉर्ड बनाएं,ᱤᱧᱟᱜ ᱨᱮᱠᱚᱰ ᱛᱮᱭᱟᱨ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,ob_enter_pin,Enter your PIN,अपना पिन लिखें,ᱟᱢᱟᱜ ᱯᱤᱱ ᱚᱞ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,ob_existing_worker,I have used this before,मैंने पहले इस्तेमाल किया है,ᱤᱧ ᱢᱟᱲᱟᱝ ᱵᱮᱵᱷᱟᱨ ᱠᱮᱫᱟᱹᱧ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,ob_guest_note,"You can train without an account, but a certificate needs a named worker record.","आप बिना खाते के प्रशिक्षण कर सकते हैं, लेकिन प्रमाणपत्र के लिए नामित रिकॉर्ड चाहिए।","ᱟᱢ ᱠᱷᱟᱛᱟ ᱵᱟᱝ ᱠᱟᱛᱮ ᱦᱚᱸ ᱛᱟᱞᱤᱢ ᱫᱟᱲᱮᱭᱟᱜᱼᱟᱢ, ᱢᱮᱱᱠᱷᱟᱱ ᱯᱚᱨᱢᱟᱱ ᱞᱟᱹᱜᱤᱫ ᱧᱩᱛᱩᱢ ᱠᱟᱱ ᱨᱮᱠᱚᱰ ᱞᱟᱹᱠᱛᱤ ᱾",,,i18nSantali.js
+2 · Worker-facing flows,ob_name_placeholder,Enter your full name,अपना पूरा नाम लिखें,ᱟᱢᱟᱜ ᱡᱚᱛᱚ ᱧᱩᱛᱩᱢ ᱚᱞ ᱢᱮ,,,i18nSantali.js
+2 · Worker-facing flows,ob_new_worker,I am new here,मैं नया हूँ,ᱤᱧ ᱱᱟᱶᱟ ᱠᱟᱱᱟᱹᱧ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,ob_no_workers,No one is registered on this phone yet.,इस फ़ोन पर अभी कोई पंजीकृत नहीं है।,ᱱᱚᱶᱟ ᱯᱷᱚᱱ ᱨᱮ ᱛᱮᱦᱮᱸ ᱦᱟᱹᱵᱤᱡ ᱚᱠᱚᱭ ᱦᱚᱸ ᱨᱮᱠᱚᱰ ᱵᱟᱝ ᱾,,,i18nSantali.js
+2 · Worker-facing flows,ob_phone_optional,Phone number (optional),फ़ोन नंबर (वैकल्पिक),ᱯᱷᱚᱱ ᱱᱟᱢᱵᱚᱨ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,ob_phone_why,Only used to find your record on a shared phone. Never sent anywhere.,साझा फ़ोन पर आपका रिकॉर्ड ढूंढने के लिए ही। कहीं नहीं भेजा जाता।,ᱡᱟᱨᱣᱟ ᱯᱷᱚᱱ ᱨᱮ ᱟᱢᱟᱜ ᱨᱮᱠᱚᱰ ᱧᱟᱢ ᱞᱟᱹᱜᱤᱫ ᱜᱮ ᱵᱮᱵᱷᱟᱨᱚᱜᱼᱟ ᱾ ᱛᱤᱱᱟᱹᱜ ᱦᱚᱸ ᱵᱟᱝ ᱠᱩᱞᱚᱜᱼᱟ ᱾,,,i18nSantali.js
+2 · Worker-facing flows,ob_pick_language,Choose your language,अपनी भाषा चुनें,ᱟᱢᱟᱜ ᱯᱟᱹᱨᱥᱤ ᱵᱟᱪᱷᱟᱣ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,ob_pin_why,Your PIN lets you sign in underground with no signal. It stays on this phone.,आपका पिन बिना सिग्नल भूमिगत साइन इन करने देता है। यह इसी फ़ोन पर रहता है।,ᱟᱢᱟᱜ ᱯᱤᱱ ᱛᱮ ᱥᱤᱜᱱᱟᱞ ᱵᱟᱝ ᱠᱟᱛᱮ ᱞᱟᱛᱟᱨ ᱨᱮ ᱵᱚᱞᱚ ᱫᱟᱲᱮᱭᱟᱜᱼᱟᱢ ᱾ ᱱᱚᱶᱟ ᱱᱚᱶᱟ ᱯᱷᱚᱱ ᱨᱮ ᱜᱮ ᱛᱟᱦᱮᱸᱱᱟ ᱾,,,i18nSantali.js
+2 · Worker-facing flows,ob_select_worker,Select your name,अपना नाम चुनें,ᱟᱢᱟᱜ ᱧᱩᱛᱩᱢ ᱵᱟᱪᱷᱟᱣ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,ob_sign_in,Sign in,साइन इन करें,ᱵᱚᱞᱚᱭ ᱢᱮ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,ob_sign_out,Sign out,साइन आउट,ᱵᱟᱦᱨᱮ ᱚᱰᱚᱠ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,ob_signed_in_as,Signed in as,साइन इन:,ᱵᱚᱞᱚ ᱠᱟᱱᱟ:,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,ob_tap_to_hear,Tap a language to hear it,सुनने के लिए भाषा पर टैप करें,ᱟᱹᱲᱟᱹ ᱟᱸᱡᱚᱢ ᱞᱟᱹᱜᱤᱫ ᱛᱚᱯᱟᱣ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,ob_who_are_you,Who is using this phone?,यह फ़ोन कौन इस्तेमाल कर रहा है?,ᱱᱚᱶᱟ ᱯᱷᱚᱱ ᱚᱠᱚᱭ ᱵᱮᱵᱷᱟᱨ ᱮᱫᱟᱭ?,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,ob_your_name,Your name,आपका नाम,ᱟᱢᱟᱜ ᱧᱩᱛᱩᱢ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,rf_days,days,दिन,ᱢᱟᱦᱟᱸ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,rf_desc,"Safety training fades within a week. A ninety-second check every few days is what keeps it usable — so your readiness score drops if you skip them, and recovers when you do them.","सुरक्षा प्रशिक्षण एक हफ़्ते में फीका पड़ जाता है। हर कुछ दिन में नब्बे सेकंड की जांच ही इसे काम लायक रखती है — छोड़ने पर तैयारी स्कोर गिरता है, करने पर सुधरता है।",ᱨᱠᱷᱟ ᱛᱟᱞᱤᱢ ᱢᱤᱫ ᱦᱟᱛᱟ ᱨᱮ ᱦᱤᱲᱤᱡᱚᱜᱼᱟ ᱾ ᱠᱚᱲᱟ ᱢᱟᱦᱟᱸ ᱛᱟᱞᱟ ᱨᱮ ᱠᱩᱲᱟᱹᱭ ᱠᱟᱛᱮ ᱩᱭᱦᱟᱹᱨ ᱫᱚᱦᱚ ᱦᱚᱪᱚᱜᱼᱟ ᱾,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,rf_due_now,Due now,अभी बाकी,ᱛᱮᱦᱮᱸ ᱞᱟᱹᱠᱛᱤ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,rf_enable_reminders,Remind me,याद दिलाएं,ᱩᱭᱦᱟᱹᱨ ᱦᱚᱪᱚᱭ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,rf_eyebrow,Retention,स्मृति,ᱫᱚᱦᱚᱭ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,rf_failed,Not passed — this comes back in two days,पास नहीं — यह दो दिन में फिर आएगा,ᱯᱟᱥ ᱵᱟᱝ — ᱱᱚᱶᱟ ᱵᱟᱨ ᱢᱟᱦᱟᱸ ᱨᱮ ᱫᱚᱦᱲᱟ ᱦᱮᱡᱚᱜᱼᱟ,,,i18nSantali.js
+2 · Worker-facing flows,rf_never_trained,Not trained yet,अभी प्रशिक्षण नहीं,ᱛᱟᱞᱤᱢ ᱵᱟᱝ ᱦᱩᱭ ᱮᱱᱟ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,rf_next_in,Next check in,अगली जांच,ᱤᱱᱟᱹ ᱛᱟᱭᱚᱢ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,rf_none_due,Nothing due right now. Well done.,अभी कुछ बाकी नहीं। शाबाश।,ᱛᱮᱦᱮᱸ ᱪᱮᱫ ᱦᱚᱸ ᱵᱟᱝ ᱾ ᱵᱮᱥ ᱾,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,rf_overdue_by,overdue by,देर से,ᱟᱲᱟᱜ ᱦᱩᱭ ᱮᱱᱟ,,,i18nSantali.js
+2 · Worker-facing flows,rf_passed,Passed — readiness restored,पास — तैयारी बहाल,ᱯᱟᱥ — ᱛᱮᱭᱟᱨᱤ ᱫᱚᱦᱲᱟ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,rf_reminders_blocked,Notifications are blocked in your browser settings.,ब्राउज़र सेटिंग्स में सूचनाएं अवरुद्ध हैं।,ᱟᱢᱟᱜ ᱵᱨᱟᱣᱡᱚᱨ ᱥᱮᱴᱤᱝᱥ ᱨᱮ ᱠᱷᱚᱵᱚᱨ ᱵᱚᱸᱫᱚ ᱟᱠᱟᱱᱟ ᱾,,,i18nSantali.js
+2 · Worker-facing flows,rf_reminders_on,Reminders on,रिमाइंडर चालू,ᱩᱭᱦᱟᱹᱨ ᱦᱚᱪᱚ ᱡᱷᱤᱡ,,,i18nSantali.js
+2 · Worker-facing flows,rf_reminders_unsupported,This browser cannot show reminders.,यह ब्राउज़र रिमाइंडर नहीं दिखा सकता।,ᱱᱚᱶᱟ ᱵᱨᱟᱣᱡᱚᱨ ᱩᱭᱦᱟᱹᱨ ᱦᱚᱪᱚ ᱵᱟᱝ ᱩᱫᱩᱜ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ ᱾,,,i18nSantali.js
+2 · Worker-facing flows,rf_start,Start 90-second check,90 सेकंड की जांच शुरू करें,90 ᱥᱮᱠᱮᱸᱰ ᱠᱩᱲᱟᱹᱭ ᱮᱦᱚᱵ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,rf_title,Keep it fresh,याद बनाए रखें,ᱩᱭᱦᱟᱹᱨ ᱫᱚᱦᱚᱭ ᱢᱮ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,rf_web_limit,Reminders appear when you open the app. A phone cannot be woken on a schedule from a web page — the installed Android build can.,रिमाइंडर ऐप खोलने पर दिखते हैं। वेब पेज से फ़ोन को समय पर जगाया नहीं जा सकता — इंस्टॉल किया Android बिल्ड कर सकता है।,ᱩᱭᱦᱟᱹᱨ ᱦᱚᱪᱚ ᱫᱚ ᱮᱯ ᱡᱷᱤᱡ ᱚᱠᱛᱚ ᱩᱫᱩᱜᱚᱜᱼᱟ ᱾ ᱣᱮᱵ ᱥᱟᱦᱴᱟ ᱠᱷᱚᱱ ᱯᱷᱚᱱ ᱚᱠᱛᱚ ᱨᱮ ᱵᱟᱝ ᱩᱠᱩᱢ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ — ᱮᱥᱮᱫ ᱠᱟᱱ Android ᱵᱤᱞᱰ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ ᱾,,,i18nSantali.js
+2 · Worker-facing flows,set_endpoint_label,Upload endpoint URL,अपलोड एंडपॉइंट URL,ᱟᱯᱞᱳᱰ ᱮᱱᱰᱯᱚᱭᱱᱴ URL,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,set_eyebrow,Settings,सेटिंग्स,ᱥᱮᱴᱤᱝᱥ,,,i18nSantali.js
+2 · Worker-facing flows,set_getting_key,Getting a free key:,मुफ्त कुंजी प्राप्त करना:,ᱢᱩᱯᱷᱚᱛ ᱠᱩᱸᱡᱤ ᱧᱟᱢ ᱦᱚᱨ:,,,i18nSantali.js
+2 · Worker-facing flows,set_key_hint1,Stored only in your browser's local storage. Never sent anywhere except directly to,केवल आपके ब्राउज़र के लोकल स्टोरेज में सहेजा गया। सीधे इसके अलावा कहीं नहीं भेजा जाता,ᱟᱢᱟᱜ ᱵᱨᱟᱣᱡᱚᱨ ᱨᱮᱭᱟᱜ ᱞᱚᱠᱟᱞ ᱥᱴᱳᱨᱮᱡ ᱨᱮ ᱜᱮ ᱥᱟᱸᱪᱟᱣ ᱟᱠᱟᱱᱟ ᱾ ᱱᱚᱶᱟ ᱵᱟᱹᱭᱨᱮ ᱛᱤᱱᱟᱹᱜ ᱦᱚᱸ ᱵᱟᱝ ᱠᱩᱞᱚᱜᱼᱟ,,,i18nSantali.js
+2 · Worker-facing flows,set_key_label,API Key,एपीआई कुंजी,API ᱠᱩᱸᱡᱤ,,,i18nSantali.js
+2 · Worker-facing flows,set_key_placeholder,Paste your API key,अपनी एपीआई कुंजी पेस्ट करें,ᱟᱢᱟᱜ API ᱠᱩᱸᱡᱤ ᱮᱢ ᱢᱮ,,,i18nSantali.js
+2 · Worker-facing flows,set_language_label,App Language,ऐप की भाषा,ᱮᱯ ᱨᱮᱭᱟᱜ ᱯᱟᱹᱨᱥᱤ,,,i18nSantali.js
+2 · Worker-facing flows,set_provider_hint,Gemini has the most generous free tier — recommended for a hackathon demo.,Gemini का मुफ्त टियर सबसे उदार है — हैकाथॉन डेमो के लिए अनुशंसित।,Gemini ᱨᱮᱭᱟᱜ ᱢᱩᱯᱷᱚᱛ ᱴᱤᱭᱟᱨ ᱡᱟᱥᱛᱤ ᱡᱟᱹᱥᱛᱤ — ᱦᱮᱠᱟᱛᱚᱱ ᱰᱮᱢᱳ ᱞᱟᱹᱜᱤᱫ ᱵᱮᱥ ᱾,,,i18nSantali.js
+2 · Worker-facing flows,set_provider_label,Provider,प्रदाता,ᱮᱢᱚᱜᱤᱡ,,,i18nSantali.js
+2 · Worker-facing flows,set_save,Save Settings,सेटिंग्स सहेजें,ᱥᱮᱴᱤᱝᱥ ᱥᱟᱸᱪᱟᱣ ᱢᱮ,,,i18nSantali.js
+2 · Worker-facing flows,set_saved,Saved ✓,सहेजा गया ✓,ᱥᱟᱸᱪᱟᱣ ᱮᱱᱟ ✓,,,i18nSantali.js
+2 · Worker-facing flows,set_title,AI Provider,एआई प्रदाता,AI ᱮᱢᱚᱜᱤᱡ,,,i18nSantali.js
+2 · Worker-facing flows,site_aim_and_tap,"Aim at the object, then tap what it is","वस्तु की ओर करें, फिर बताएं वह क्या है","ᱡᱤᱱᱤᱥ ᱛᱮ ᱩᱫᱩᱜ ᱢᱮ, ᱚᱱᱟ ᱛᱟᱭᱚᱢ ᱚᱱᱟ ᱪᱮᱫ ᱠᱟᱱᱟ ᱛᱚᱯᱟᱣ ᱢᱮ",,,i18nSantali.js
+2 · Worker-facing flows,site_anchors_count,markers,मार्कर,ᱢᱟᱨᱠᱚᱨ,,,i18nSantali.js
+2 · Worker-facing flows,site_delete_anchor,Delete marker,मार्कर हटाएं,ᱢᱟᱨᱠᱚᱨ ᱚᱜᱟᱲ ᱢᱮ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,site_delete_zone,Delete zone,ज़ोन हटाएं,ᱡᱚᱱ ᱜᱷᱟᱹᱴᱟᱣ ᱢᱮ,,,i18nSantali.js
+2 · Worker-facing flows,site_desc,"Walk the area once and mark where the exits, extinguishers and hazards really are. Every worker who opens a drill in this zone then sees them in the right direction.","क्षेत्र में एक बार घूमें और चिह्नित करें कि निकास, अग्निशामक और खतरे वास्तव में कहाँ हैं। इस ज़ोन में ड्रिल खोलने वाला हर श्रमिक उन्हें सही दिशा में देखेगा।","ᱢᱤᱫ ᱫᱷᱟᱣ ᱡᱟᱭᱜᱟ ᱨᱮ ᱜᱩᱨᱮᱭ ᱠᱟᱛᱮ ᱪᱤᱱᱦᱟᱹ ᱢᱮ ᱡᱮ ᱚᱰᱚᱠ, ᱥᱮᱸᱜᱮᱞ ᱦᱩᱭᱩᱠ ᱟᱨ ᱡᱚᱠᱷᱚᱢ ᱚᱠᱟ ᱨᱮ ᱥᱟᱹᱨᱤ ᱢᱮᱱᱟᱜᱼᱟ ᱾ ᱱᱚᱶᱟ ᱡᱚᱱ ᱨᱮ ᱛᱟᱞᱤᱢ ᱡᱷᱤᱡ ᱠᱟᱱ ᱡᱚᱛᱚ ᱠᱟᱹᱢᱤ ᱦᱚᱲ ᱚᱱᱟ ᱠᱚ ᱥᱟᱹᱨᱤ ᱦᱚᱨ ᱨᱮ ᱧᱮᱞᱟ ᱾",,,i18nSantali.js
+2 · Worker-facing flows,site_export_scan,Share this scan,यह स्कैन साझा करें,ᱱᱚᱶᱟ ᱥᱠᱮᱱ ᱦᱟᱹᱴᱤᱧ ᱢᱮ,,,i18nSantali.js
+2 · Worker-facing flows,site_eyebrow,Supervisor,सुपरवाइज़र,ᱥᱩᱯᱚᱨᱣᱟᱭᱡᱚᱨ,,,i18nSantali.js
+2 · Worker-facing flows,site_heading_now,Facing,दिशा,ᱦᱚᱨ,,,i18nSantali.js
+2 · Worker-facing flows,site_import_done,Scan loaded,स्कैन लोड हो गया,ᱥᱠᱮᱱ ᱞᱟᱫᱮᱫ ᱮᱱᱟ,,,i18nSantali.js
+2 · Worker-facing flows,site_import_scan,Load a scan,स्कैन लोड करें,ᱥᱠᱮᱱ ᱞᱟᱫᱮᱫ ᱢᱮ,,,i18nSantali.js
+2 · Worker-facing flows,site_marked,Marked,चिह्नित,ᱪᱤᱱᱦᱟᱹ,,,i18nSantali.js
+2 · Worker-facing flows,site_marker_label,Marker name,मार्कर का नाम,ᱢᱟᱨᱠᱚᱨ ᱧᱩᱛᱩᱢ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,site_name_label,Site name,साइट का नाम,ᱴᱷᱟᱶ ᱧᱩᱛᱩᱢ,,,i18nSantali.js
+2 · Worker-facing flows,site_new_zone,New zone,नया ज़ोन,ᱱᱟᱶᱟ ᱡᱚᱱ,,,i18nSantali.js
+2 · Worker-facing flows,site_no_zones,No zones yet. Create one to start marking anchors.,अभी कोई ज़ोन नहीं। एंकर चिह्नित करने के लिए एक बनाएं।,ᱛᱮᱦᱮᱸ ᱦᱟᱹᱵᱤᱡ ᱡᱟᱦᱟᱸ ᱡᱚᱱ ᱵᱟᱝ ᱾ ᱮᱸᱠᱚᱨ ᱪᱤᱱᱦᱟᱹ ᱮᱦᱚᱵ ᱞᱟᱹᱜᱤᱫ ᱢᱤᱫ ᱛᱮᱭᱟᱨ ᱢᱮ ᱾,,,i18nSantali.js
+2 · Worker-facing flows,site_scan_note,"Markers are anchored to compass direction, not depth. Steel structures can distort the compass — re-centre if markers look wrong.","मार्कर कंपास दिशा से जुड़े हैं, गहराई से नहीं। स्टील ढांचे कंपास बिगाड़ सकते हैं — गलत लगे तो री-सेंटर करें।","ᱢᱟᱨᱠᱚᱨ ᱠᱚ ᱠᱚᱢᱯᱟᱥ ᱦᱚᱨ ᱥᱟᱶ ᱡᱚᱲᱟᱣ ᱟᱠᱟᱱᱟ, ᱞᱟᱛᱟᱨ ᱥᱟᱶ ᱵᱟᱝ ᱾ ᱞᱚᱦᱟ ᱡᱤᱱᱤᱥ ᱠᱚᱢᱯᱟᱥ ᱵᱚᱫᱚᱞ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ — ᱵᱷᱩᱞ ᱧᱮᱞᱚᱜ ᱠᱷᱟᱱ ᱫᱚᱦᱲᱟ ᱛᱷᱤᱠ ᱢᱮ ᱾",,,i18nSantali.js
+2 · Worker-facing flows,site_start_marking,Mark anchors,एंकर चिह्नित करें,ᱮᱸᱠᱚᱨ ᱪᱤᱱᱦᱟᱹ ᱢᱮ,,,i18nSantali.js
+2 · Worker-facing flows,site_title,Scan your site,अपनी साइट स्कैन करें,ᱟᱢᱟᱜ ᱴᱷᱟᱶ ᱥᱠᱮᱱ ᱢᱮ,,,i18nSantali.js
+2 · Worker-facing flows,site_zone_deleted,Zone deleted,ज़ोन हटाया गया,ᱡᱚᱱ ᱜᱷᱟᱹᱴᱟᱣ ᱮᱱᱟ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,site_zone_name_prompt,Name this zone (e.g. Shaft Corridor B),इस ज़ोन का नाम (जैसे शाफ्ट कॉरिडोर B),ᱱᱚᱶᱟ ᱡᱚᱱ ᱨᱮᱭᱟᱜ ᱧᱩᱛᱩᱢ (ᱡᱮᱞᱮᱠᱟ ᱥᱟᱯᱷᱴ ᱠᱚᱨᱤᱰᱚᱨ B),,,i18nSantali.js
+2 · Worker-facing flows,site_zone_renamed,Zone renamed,ज़ोन का नाम बदला,ᱡᱚᱱ ᱧᱩᱛᱩᱢ ᱵᱚᱫᱚᱞ ᱮᱱᱟ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,site_zones,Zones,ज़ोन,ᱡᱚᱱ ᱠᱚ,,,i18nSantali.js
+2 · Worker-facing flows,st_ar_hint,Overlays hazards on your real surroundings instead of a 3D model.,3D मॉडल के बजाय आपके असली परिवेश पर खतरे दिखाता है।,3D ᱢᱳᱰᱮᱞ ᱡᱟᱭᱜᱟ ᱨᱮ ᱟᱢᱟᱜ ᱥᱟᱹᱨᱤ ᱟᱲᱟᱝ ᱨᱮ ᱡᱚᱠᱷᱚᱢ ᱩᱫᱩᱜᱮᱫᱟ ᱾,,,i18nSantali.js
+2 · Worker-facing flows,st_ar_mode,Use the camera for drills,ड्रिल के लिए कैमरा इस्तेमाल करें,ᱛᱟᱞᱤᱢ ᱞᱟᱹᱜᱤᱫ ᱠᱮᱢᱨᱟ ᱵᱮᱵᱷᱟᱨ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,st_ENDPOINT_INVALID,That is not a valid URL.,यह मान्य URL नहीं है।,ᱱᱚᱶᱟ ᱴᱷᱤᱠ URL ᱵᱟᱝ ᱠᱟᱱᱟ ᱾,,,i18nSantali.js
+2 · Worker-facing flows,st_ENDPOINT_NOT_HTTPS,The upload URL must use https.,अपलोड URL https होना चाहिए।,ᱟᱯᱞᱳᱰ URL https ᱛᱟᱦᱮᱸᱱ ᱞᱟᱹᱠᱛᱤ ᱾,,,i18nSantali.js
+2 · Worker-facing flows,st_gesture_hint,"Uses the front camera to track your hand, so you can select without touching the screen. Needs a one-time download.","सामने के कैमरे से हाथ ट्रैक करता है, जिससे स्क्रीन छुए बिना चुन सकते हैं। एक बार डाउनलोड चाहिए।","ᱢᱟᱲᱟᱝ ᱠᱮᱢᱨᱟ ᱛᱮ ᱟᱢᱟᱜ ᱛᱤ ᱧᱮᱞᱮᱫᱟ, ᱚᱱᱟᱛᱮ ᱥᱠᱨᱤᱱ ᱵᱟᱝ ᱡᱩᱢᱤᱫ ᱠᱟᱛᱮ ᱵᱟᱪᱷᱟᱣ ᱫᱟᱲᱮᱭᱟᱜᱼᱟᱢ ᱾ ᱢᱤᱫ ᱫᱷᱟᱣ ᱰᱟᱣᱱᱞᱳᱰ ᱞᱟᱹᱠᱛᱤ ᱾",,,i18nSantali.js
+2 · Worker-facing flows,st_gesture_mode,Point with your hand,हाथ से इशारा करें,ᱛᱤ ᱛᱮ ᱩᱫᱩᱜ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,st_modes_title,How you want to use it,आप कैसे इस्तेमाल करना चाहते हैं,ᱟᱢ ᱪᱮᱫ ᱞᱮᱠᱟ ᱵᱮᱵᱷᱟᱨ ᱥᱟᱱᱟᱢ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,st_off,Off,बंद,ᱵᱚᱸᱫᱚ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,st_on,On,चालू,ᱡᱷᱤᱡ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,st_pictogram_hint,Shows standard safety signs with spoken instructions instead of text.,पाठ के बजाय मानक सुरक्षा चिह्न और बोले गए निर्देश दिखाता है।,ᱚᱞ ᱡᱟᱭᱜᱟ ᱨᱮ ᱨᱠᱷᱟ ᱪᱤᱱᱦᱟᱹ ᱟᱨ ᱨᱚᱲ ᱛᱮ ᱦᱩᱠᱩᱢ ᱩᱫᱩᱜᱮᱫᱟ ᱾,,,i18nSantali.js
+2 · Worker-facing flows,st_pictogram_mode,Picture mode (no reading),चित्र मोड (पढ़ने की ज़रूरत नहीं),ᱪᱤᱛᱟᱹᱨ ᱢᱳᱰ (ᱯᱟᱲᱦᱟᱣ ᱵᱟᱝ ᱞᱟᱹᱠᱛᱤ),,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,st_reset_confirm,Type ERASE to confirm,पुष्टि के लिए ERASE लिखें,ᱥᱟᱹᱨᱤ ᱞᱟᱹᱜᱤᱫ ERASE ᱚᱞ ᱢᱮ,,,i18nSantali.js
+2 · Worker-facing flows,st_reset_device,Erase everything on this device,इस डिवाइस से सब मिटाएं,ᱱᱚᱶᱟ ᱡᱤᱱᱤᱥ ᱠᱷᱚᱱ ᱡᱚᱛᱚ ᱜᱷᱟᱹᱴᱟᱣ ᱢᱮ,,,i18nSantali.js
+2 · Worker-facing flows,st_reset_warning,"This deletes every worker record, certificate and hazard report stored here, including the signing key. Export a bundle first.","यह यहाँ सहेजे सभी श्रमिक रिकॉर्ड, प्रमाणपत्र और खतरा रिपोर्ट मिटा देगा, हस्ताक्षर कुंजी सहित। पहले बंडल निर्यात करें।","ᱱᱚᱶᱟ ᱱᱚᱰᱮ ᱥᱟᱸᱪᱟᱣ ᱠᱟᱱ ᱡᱚᱛᱚ ᱠᱟᱹᱢᱤ ᱦᱚᱲ ᱨᱮᱠᱚᱰ, ᱯᱚᱨᱢᱟᱱ ᱟᱨ ᱡᱚᱠᱷᱚᱢ ᱠᱷᱚᱵᱚᱨ ᱜᱷᱟᱹᱴᱟᱣᱮᱫᱟ, ᱥᱩᱦᱤ ᱠᱩᱸᱡᱤ ᱦᱚᱸ ᱾ ᱢᱟᱲᱟᱝ ᱵᱟᱱᱰᱚᱞ ᱵᱟᱦᱨᱮ ᱠᱩᱞ ᱢᱮ ᱾",,,i18nSantali.js
+2 · Worker-facing flows,st_sync_hint,"Leave this blank and nothing ever leaves the device. If your organisation runs a collection endpoint, paste its https URL here.","खाली छोड़ें तो डिवाइस से कुछ बाहर नहीं जाता। यदि आपके संगठन का संग्रह एंडपॉइंट है, उसका https URL यहाँ डालें।","ᱱᱚᱶᱟ ᱠᱷᱟᱞᱤ ᱵᱟᱰᱟᱭ ᱢᱮ ᱟᱨ ᱡᱤᱱᱤᱥ ᱠᱷᱚᱱ ᱛᱤᱱᱟᱹᱜ ᱦᱚᱸ ᱵᱟᱦᱨᱮ ᱵᱟᱝ ᱪᱟᱞᱟᱜᱼᱟ ᱾ ᱟᱢᱟᱜ ᱥᱚᱝᱜᱚᱛᱚᱱ ᱨᱮ ᱡᱟᱨᱣᱟ ᱮᱱᱰᱯᱚᱭᱱᱴ ᱢᱮᱱᱟᱜ ᱠᱷᱟᱱ, ᱟᱭᱟᱜ https URL ᱱᱚᱰᱮ ᱮᱢ ᱢᱮ ᱾",,,i18nSantali.js
+2 · Worker-facing flows,st_sync_title,Central upload (optional),केंद्रीय अपलोड (वैकल्पिक),ᱡᱟᱨᱣᱟ ᱟᱯᱞᱳᱰ (ᱢᱚᱬᱮ ᱛᱮ),,,i18nSantali.js
+2 · Worker-facing flows,st_voice_check,Voice availability on this device,इस डिवाइस पर आवाज़ उपलब्धता,ᱱᱚᱶᱟ ᱡᱤᱱᱤᱥ ᱨᱮ ᱨᱚᱲ ᱢᱮᱱᱟᱜ ᱵᱟᱝ,,,i18nSantali.js
+2 · Worker-facing flows,st_voice_hint,"Say ""one"" or ""two"" instead of tapping. Works with gloves on.","टैप के बजाय ""एक"" या ""दो"" बोलें। दस्ताने पहने भी काम करता है।","ᱛᱚᱯᱟᱣ ᱡᱟᱭᱜᱟ ᱨᱮ ""ᱢᱤᱫ"" ᱥᱮ ""ᱵᱟᱨ"" ᱨᱚᱲ ᱢᱮ ᱾ ᱛᱤᱥᱟᱠᱟᱢ ᱦᱚᱸ ᱠᱟᱹᱢᱤᱭᱟ ᱾",,,i18nSantali.js
+2 · Worker-facing flows,st_voice_missing,no voice installed,कोई आवाज़ इंस्टॉल नहीं,ᱡᱟᱦᱟᱸ ᱨᱚᱲ ᱵᱟᱝ ᱮᱥᱮᱫ,,,i18nSantali.js
+2 · Worker-facing flows,st_voice_mode,Answer by voice,आवाज़ से उत्तर दें,ᱨᱚᱲ ᱛᱮ ᱛᱮᱞᱟ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,st_voice_substitute,read with a Hindi voice,हिंदी आवाज़ से पढ़ा जाता है,ᱦᱤᱱᱫᱤ ᱨᱚᱲ ᱛᱮ ᱯᱟᱲᱦᱟᱣ ᱦᱩᱭᱩᱜᱼᱟ,,,i18n.js / i18nJaagruk.js
+3 · Certification and records,cert_chain_position,Ledger position,लेजर स्थिति,ᱞᱮᱡᱚᱨ ᱡᱟᱭᱜᱟ,,,i18nSantali.js
+3 · Certification and records,cert_decay_note,"This is your score as it stands today, not on the day you passed. It falls if you skip refreshers.","यह आज का स्कोर है, पास होने के दिन का नहीं। रिफ्रेशर छोड़ने पर यह गिरता है।","ᱱᱚᱶᱟ ᱛᱮᱦᱮᱸᱟᱜ ᱱᱚᱢᱵᱚᱨ ᱠᱟᱱᱟ, ᱯᱟᱥ ᱦᱩᱭ ᱢᱟᱦᱟᱸ ᱨᱮᱭᱟᱜ ᱵᱟᱝ ᱾ ᱫᱚᱦᱲᱟ ᱛᱟᱞᱤᱢ ᱵᱟᱹᱰᱨᱟᱹ ᱠᱷᱟᱱ ᱱᱚᱶᱟ ᱠᱚᱢ ᱦᱩᱭᱩᱜᱼᱟ ᱾",,,i18nSantali.js
+3 · Certification and records,cert_desc,Pass all 5 safety domains to unlock a verifiable QR certificate.,सत्यापन योग्य क्यूआर प्रमाणपत्र अनलॉक करने के लिए सभी 5 सुरक्षा डोमेन पास करें।,ᱡᱟᱹᱨᱩᱭ ᱦᱩᱭᱩᱜ ᱠᱟᱱ QR ᱯᱚᱨᱢᱟᱱ ᱞᱟᱹᱜᱤᱫ ᱡᱚᱛᱚ 5 ᱨᱠᱷᱟ ᱮᱞᱟᱠᱟ ᱯᱟᱥ ᱢᱮ ᱾,,,i18nSantali.js
+3 · Certification and records,cert_domains_passed,Domains Passed,पास किए गए डोमेन,ᱯᱟᱥ ᱮᱞᱟᱠᱟ,,,i18nSantali.js
+3 · Certification and records,cert_eligible_title,You're eligible! Generate your certificate,आप पात्र हैं! अपना प्रमाणपत्र बनाएं,ᱟᱢ ᱞᱟᱭᱠᱚ ᱠᱟᱱᱟᱢ! ᱟᱢᱟᱜ ᱯᱚᱨᱢᱟᱱ ᱛᱮᱭᱟᱨ ᱢᱮ,,,i18nSantali.js
+3 · Certification and records,cert_existing_note,You already hold a certificate. Issuing again records a fresh readiness snapshot.,आपके पास प्रमाणपत्र है। दोबारा जारी करने पर नई तैयारी दर्ज होगी।,ᱟᱢᱟᱜ ᱯᱚᱨᱢᱟᱱ ᱢᱮᱱᱟᱜᱼᱟ ᱾ ᱫᱚᱦᱲᱟ ᱮᱢ ᱠᱷᱟᱱ ᱱᱟᱶᱟ ᱛᱮᱭᱟᱨᱤ ᱨᱮᱠᱚᱰ ᱦᱩᱭᱩᱜᱼᱟ ᱾,,,i18nSantali.js
+3 · Certification and records,cert_eyebrow,Certification,प्रमाणन,ᱥᱚᱨᱴᱤᱯᱤᱠᱮᱴ,,,i18nSantali.js
+3 · Certification and records,cert_issue_again,Issue an updated certificate,अद्यतन प्रमाणपत्र जारी करें,ᱱᱟᱶᱟ ᱯᱚᱨᱢᱟᱱ ᱮᱢ ᱢᱮ,,,i18nSantali.js
+3 · Certification and records,cert_issue_btn,Generate Certificate,प्रमाणपत्र बनाएं,ᱯᱚᱨᱢᱟᱱ ᱛᱮᱭᱟᱨ ᱢᱮ,,,i18nSantali.js
+3 · Certification and records,cert_issued_label,Certificate Issued,प्रमाणपत्र जारी किया गया,ᱯᱚᱨᱢᱟᱱ ᱮᱢ ᱮᱱᱟ,,,i18nSantali.js
+3 · Certification and records,cert_not_attempted,Not attempted,प्रयास नहीं किया गया,ᱵᱟᱝ ᱠᱩᱨᱩᱢᱩᱴᱩ ᱞᱮᱱᱟ,,,i18nSantali.js
+3 · Certification and records,cert_not_eligible,Complete and pass every domain to unlock your certificate. Head to the,अपना प्रमाणपत्र अनलॉक करने के लिए हर डोमेन पूरा करें और पास करें। यहां जाएं:,ᱟᱢᱟᱜ ᱯᱚᱨᱢᱟᱱ ᱞᱟᱹᱜᱤᱫ ᱡᱚᱛᱚ ᱮᱞᱟᱠᱟ ᱯᱩᱨᱟᱹᱣ ᱟᱨ ᱯᱟᱥ ᱢᱮ ᱾ ᱱᱚᱰᱮ ᱪᱟᱞᱟᱜ ᱢᱮ:,,,i18nSantali.js
+3 · Certification and records,cert_offline_note,"The QR carries the whole signed record, so an inspector can verify it with no network and no copy of the ledger.","QR में पूरा हस्ताक्षरित रिकॉर्ड है, इसलिए निरीक्षक बिना नेटवर्क और बिना लेजर की कॉपी के इसे सत्यापित कर सकता है।","QR ᱨᱮ ᱡᱚᱛᱚ ᱨᱮᱠᱚᱰ ᱢᱮᱱᱟᱜᱼᱟ, ᱚᱱᱟᱛᱮ ᱱᱮᱴᱣᱟᱨᱠ ᱵᱟᱝ ᱛᱟᱦᱮᱸᱠᱷᱟᱱ ᱦᱚᱸ ᱡᱟᱹᱨᱩᱭ ᱦᱩᱭᱩᱜᱼᱟ ᱾",,,i18n.js / i18nJaagruk.js
+3 · Certification and records,cert_pass_threshold,Pass threshold:,उत्तीर्ण सीमा:,ᱯᱟᱥ ᱥᱤᱢᱟ:,,,i18nSantali.js
+3 · Certification and records,cert_prev_hash,Links to,जुड़ा है,ᱡᱚᱲᱟᱣ ᱠᱟᱱᱟ,,,i18nSantali.js
+3 · Certification and records,cert_print,Print / Save PDF,प्रिंट / पीडीएफ सहेजें,ᱯᱨᱤᱱᱴ / PDF ᱥᱟᱸᱪᱟᱣ,,,i18nSantali.js
+3 · Certification and records,cert_readiness_now,Readiness today,आज की तैयारी,ᱛᱮᱦᱮᱸᱟᱜ ᱛᱮᱭᱟᱨᱤ,,,i18n.js / i18nJaagruk.js
+3 · Certification and records,cert_record_hash,Record hash,रिकॉर्ड हैश,ᱨᱮᱠᱚᱰ ᱦᱮᱥ,,,i18nSantali.js
+3 · Certification and records,cert_retry_needed,Retry needed,दोबारा प्रयास आवश्यक,ᱫᱚᱦᱲᱟ ᱠᱩᱨᱩᱢᱩᱴᱩ ᱞᱟᱹᱠᱛᱤ,,,i18nSantali.js
+3 · Certification and records,cert_sign_in_first,Sign in to claim a certificate,प्रमाणपत्र के लिए साइन इन करें,ᱯᱚᱨᱢᱟᱱ ᱦᱟᱛᱟᱣ ᱞᱟᱹᱜᱤᱫ ᱵᱚᱞᱚᱭ ᱢᱮ,,,i18nSantali.js
+3 · Certification and records,cert_sign_in_why,"A certificate names a specific worker, so it needs a signed-in record rather than an anonymous session.","प्रमाणपत्र में विशिष्ट श्रमिक का नाम होता है, इसलिए इसे साइन-इन रिकॉर्ड चाहिए, गुमनाम सत्र नहीं।","ᱯᱚᱨᱢᱟᱱ ᱨᱮ ᱢᱤᱫ ᱠᱟᱹᱢᱤ ᱦᱚᱲ ᱨᱮᱭᱟᱜ ᱧᱩᱛᱩᱢ ᱛᱟᱦᱮᱸᱱᱟ, ᱚᱱᱟᱛᱮ ᱵᱚᱞᱚ ᱨᱮᱠᱚᱰ ᱞᱟᱹᱠᱛᱤ, ᱧᱩᱛᱩᱢ ᱵᱟᱝ ᱠᱟᱱ ᱥᱮᱥᱚᱱ ᱵᱟᱝ ᱾",,,i18nSantali.js
+3 · Certification and records,cert_title,Your Safety Certificate,आपका सुरक्षा प्रमाणपत्र,ᱟᱢᱟᱜ ᱨᱠᱷᱟ ᱯᱚᱨᱢᱟᱱ,,,i18nSantali.js
+3 · Certification and records,cert_view_verification,View Verification Page,सत्यापन पृष्ठ देखें,ᱡᱟᱹᱨᱩᱭ ᱥᱟᱦᱴᱟ ᱧᱮᱞ ᱢᱮ,,,i18nSantali.js
+3 · Certification and records,cert_weak_crypto,"This device could not use hardware-grade signing, so certificates it issues carry a weaker signature. Verification still detects tampering.","यह डिवाइस हार्डवेयर-स्तर हस्ताक्षर नहीं कर सका, इसलिए इससे जारी प्रमाणपत्रों का हस्ताक्षर कमज़ोर है। सत्यापन अब भी छेड़छाड़ पकड़ता है।","ᱱᱚᱶᱟ ᱡᱤᱱᱤᱥ ᱦᱟᱨᱰᱣᱮᱨ ᱛᱚᱨᱟᱦ ᱥᱩᱦᱤ ᱵᱟᱝ ᱵᱮᱵᱷᱟᱨ ᱫᱟᱲᱮ ᱞᱮᱱᱟ, ᱚᱱᱟᱛᱮ ᱱᱚᱰᱮ ᱠᱷᱚᱱ ᱮᱢ ᱠᱟᱱ ᱯᱚᱨᱢᱟᱱ ᱨᱮᱭᱟᱜ ᱥᱩᱦᱤ ᱞᱟᱲᱟᱭ ᱾ ᱡᱟᱹᱨᱩᱭ ᱫᱚ ᱛᱟᱦᱮᱸᱱ ᱦᱚᱸ ᱦᱟᱹᱴᱤᱧ ᱵᱟᱰᱟᱭᱮᱫᱟ ᱾",,,i18nSantali.js
+3 · Certification and records,ch_active_days,days trained,दिन प्रशिक्षण,ᱢᱟᱦᱟᱸ ᱛᱟᱞᱤᱢ,,,i18n.js / i18nJaagruk.js
+3 · Certification and records,ch_ago,ago,पहले,ᱞᱟᱦᱟ,,,i18n.js / i18nJaagruk.js
+3 · Certification and records,ch_decay_label,Readiness if you do not refresh,रिफ्रेश न करने पर तैयारी,ᱫᱚᱦᱲᱟ ᱵᱟᱝ ᱛᱟᱞᱤᱢ ᱠᱷᱟᱱ ᱛᱮᱭᱟᱨᱤ,,,i18nSantali.js
+3 · Certification and records,ch_falls_below,Drops below the pass mark in,पास अंक से नीचे गिरेगा,ᱯᱟᱥ ᱱᱚᱢᱵᱚᱨ ᱠᱷᱚᱱ ᱞᱟᱛᱟᱨ ᱜᱤᱛᱤᱡᱚᱜᱼᱟ,,,i18nSantali.js
+3 · Certification and records,ch_from_now,from now,बाद,ᱛᱟᱭᱚᱢ,,,i18n.js / i18nJaagruk.js
+3 · Certification and records,ch_just_now,just now,अभी,ᱱᱤᱛᱚᱜ,,,i18n.js / i18nJaagruk.js
+3 · Certification and records,ch_today,today,आज,ᱛᱮᱦᱮᱸ,,,i18n.js / i18nJaagruk.js
+3 · Certification and records,ch_trend_down,declining,गिर रहा है,ᱠᱚᱢ ᱠᱟᱱᱟ,,,i18n.js / i18nJaagruk.js
+3 · Certification and records,ch_trend_up,improving,सुधर रहा है,ᱠᱟᱹᱴᱤᱡ ᱠᱟᱱᱟ,,,i18n.js / i18nJaagruk.js
+3 · Certification and records,ch_unit_day,days,दिन,ᱢᱟᱦᱟᱸ,,,i18n.js / i18nJaagruk.js
+3 · Certification and records,ch_unit_hour,hr,घंटे,ᱴᱟᱲᱟᱝ,,,i18n.js / i18nJaagruk.js
+3 · Certification and records,ch_unit_min,min,मिनट,ᱢᱤᱱᱤᱴ,,,i18n.js / i18nJaagruk.js
+3 · Certification and records,ch_unit_month,months,महीने,ᱡᱟᱹᱨᱩᱫ,,,i18n.js / i18nJaagruk.js
+3 · Certification and records,chain_BAD_HASH,Record was altered after signing,हस्ताक्षर के बाद रिकॉर्ड बदला गया,ᱥᱩᱦᱤ ᱛᱟᱭᱚᱢ ᱨᱮᱠᱚᱰ ᱵᱚᱫᱚᱞ ᱮᱱᱟ,,,i18nSantali.js
+3 · Certification and records,chain_BAD_SIGNATURE,Signature does not verify,हस्ताक्षर सत्यापित नहीं,ᱥᱩᱦᱤ ᱵᱟᱝ ᱡᱟᱹᱨᱩᱭ ᱦᱩᱭ ᱞᱮᱱᱟ,,,i18nSantali.js
+3 · Certification and records,chain_BROKEN_LINK,Record does not link to the one before it,रिकॉर्ड पिछले से नहीं जुड़ता,ᱨᱮᱠᱚᱰ ᱟᱭᱟᱜ ᱞᱟᱦᱟᱛᱮ ᱵᱟᱝ ᱡᱚᱲᱟᱣ ᱠᱟᱱᱟ,,,i18nSantali.js
+3 · Certification and records,chain_DOMAIN_MISMATCH,Record covers a different set of domains,रिकॉर्ड अलग डोमेन सेट का है,ᱨᱮᱠᱚᱰ ᱮᱴᱟᱜ ᱮᱞᱟᱠᱟ ᱨᱮᱭᱟᱜ ᱠᱟᱱᱟ,,,i18nSantali.js
+3 · Certification and records,chain_FORK,Two records claim the same position,दो रिकॉर्ड एक ही स्थान का दावा करते हैं,ᱵᱟᱨᱭᱟ ᱨᱮᱠᱚᱰ ᱢᱤᱫ ᱜᱮ ᱡᱟᱭᱜᱟ ᱫᱟᱵᱤ ᱮᱫᱟ,,,i18nSantali.js
+3 · Certification and records,chain_OK,Intact,अक्षुण्ण,ᱴᱷᱤᱠ,,,i18n.js / i18nJaagruk.js
+3 · Certification and records,chain_SEQ_GAP,A record is missing from the sequence,क्रम में एक रिकॉर्ड गायब,ᱠᱨᱚᱢ ᱨᱮ ᱢᱤᱫ ᱨᱮᱠᱚᱰ ᱵᱟᱝ ᱢᱮᱱᱟᱜᱼᱟ,,,i18nSantali.js
+3 · Certification and records,chain_UNKNOWN_SIGNER,Signed by a device this phone does not know,अज्ञात डिवाइस द्वारा हस्ताक्षरित,ᱱᱚᱶᱟ ᱯᱷᱚᱱ ᱵᱟᱝ ᱵᱟᱰᱟᱭ ᱠᱟᱱ ᱡᱤᱱᱤᱥ ᱛᱮ ᱥᱩᱦᱤ ᱦᱩᱭ ᱟᱠᱟᱱᱟ,,,i18nSantali.js
+3 · Certification and records,chain_UNSUPPORTED_VERSION,Record uses a newer format,रिकॉर्ड नए फॉर्मेट में है,ᱨᱮᱠᱚᱰ ᱱᱟᱶᱟ ᱯᱷᱚᱨᱢᱮᱴ ᱨᱮ ᱢᱮᱱᱟᱜᱼᱟ,,,i18nSantali.js
+3 · Certification and records,verify_eyebrow,Certificate Verification,प्रमाणपत्र सत्यापन,ᱯᱚᱨᱢᱟᱱ ᱡᱟᱹᱨᱩᱭ,,,i18nSantali.js
+3 · Certification and records,verify_invalid,Certificate Not Found,प्रमाणपत्र नहीं मिला,ᱯᱚᱨᱢᱟᱱ ᱵᱟᱝ ᱧᱟᱢ ᱞᱮᱱᱟ,,,i18nSantali.js
+3 · Certification and records,verify_invalid_desc,This certificate ID does not match any issued certificate on this device.,यह प्रमाणपत्र आईडी इस डिवाइस पर जारी किए गए किसी भी प्रमाणपत्र से मेल नहीं खाती।,ᱱᱚᱶᱟ ᱯᱚᱨᱢᱟᱱ ID ᱱᱚᱶᱟ ᱡᱤᱱᱤᱥ ᱨᱮ ᱮᱢ ᱠᱟᱱ ᱡᱟᱦᱟᱸ ᱯᱚᱨᱢᱟᱱ ᱥᱟᱶ ᱵᱟᱝ ᱢᱮᱞᱟᱣ ᱠᱟᱱᱟ ᱾,,,i18nSantali.js
+3 · Certification and records,verify_issued,Issued,जारी किया गया,ᱮᱢ ᱮᱱᱟ,,,i18nSantali.js
+3 · Certification and records,verify_title,Certificate Check,प्रमाणपत्र जांच,ᱯᱚᱨᱢᱟᱱ ᱡᱟᱹᱨᱩᱭ,,,i18n.js / i18nJaagruk.js
+3 · Certification and records,vf_check_now,Verify,सत्यापित करें,ᱡᱟᱹᱨᱩᱭ ᱢᱮ,,,i18n.js / i18nJaagruk.js
+3 · Certification and records,vf_genuine,Genuine and unaltered,असली और अपरिवर्तित,ᱥᱟᱹᱨᱤ ᱟᱨ ᱵᱟᱝ ᱵᱚᱫᱚᱞ,,,i18n.js / i18nJaagruk.js
+3 · Certification and records,vf_in_ledger,Present in this phone’s ledger and correctly linked,इस फ़ोन के लेजर में मौजूद और सही जुड़ा,ᱱᱚᱶᱟ ᱯᱷᱚᱱ ᱨᱮᱭᱟᱜ ᱞᱮᱡᱚᱨ ᱨᱮ ᱢᱮᱱᱟᱜᱼᱟ ᱟᱨ ᱴᱷᱤᱠ ᱡᱚᱲᱟᱣ ᱟᱠᱟᱱᱟ,,,i18nSantali.js
+3 · Certification and records,vf_not_in_ledger,Not in this phone’s ledger — verified from the QR alone,इस फ़ोन के लेजर में नहीं — केवल QR से सत्यापित,ᱱᱚᱶᱟ ᱯᱷᱚᱱ ᱨᱮᱭᱟᱜ ᱞᱮᱡᱚᱨ ᱨᱮ ᱵᱟᱝ — QR ᱠᱷᱚᱱ ᱜᱮ ᱡᱟᱹᱨᱩᱭ ᱦᱩᱭ ᱟᱠᱟᱱᱟ,,,i18nSantali.js
+3 · Certification and records,vf_offline_ok,Verified offline,ऑफ़लाइन सत्यापित,ᱚᱯᱷᱞᱟᱭᱤᱱ ᱡᱟᱹᱨᱩᱭ,,,i18n.js / i18nJaagruk.js
+3 · Certification and records,vf_paste_placeholder,Paste JGK1… here,JGK1… यहाँ पेस्ट करें,JGK1… ᱱᱚᱰᱮ ᱮᱢ ᱢᱮ,,,i18nSantali.js
+3 · Certification and records,vf_scan_or_paste,"Scan a certificate QR, or paste its code","प्रमाणपत्र QR स्कैन करें, या कोड पेस्ट करें","ᱯᱚᱨᱢᱟᱱ QR ᱥᱠᱮᱱ ᱢᱮ, ᱥᱮ ᱟᱭᱟᱜ ᱠᱚᱰ ᱮᱢ ᱢᱮ",,,i18nSantali.js
+3 · Certification and records,vf_signer_known,Signing device is known to this phone,हस्ताक्षर करने वाला डिवाइस ज्ञात है,ᱥᱩᱦᱤ ᱡᱤᱱᱤᱥ ᱱᱚᱶᱟ ᱯᱷᱚᱱ ᱵᱟᱰᱟᱭᱮᱫᱟ,,,i18nSantali.js
+3 · Certification and records,vf_signer_unknown,"Signature is valid, but this phone has not met the issuing device. Confirm the site before accepting.","हस्ताक्षर वैध है, पर यह फ़ोन जारीकर्ता डिवाइस को नहीं जानता। स्वीकार करने से पहले साइट की पुष्टि करें।","ᱥᱩᱦᱤ ᱴᱷᱤᱠ ᱠᱟᱱᱟ, ᱢᱮᱱᱠᱷᱟᱱ ᱱᱚᱶᱟ ᱯᱷᱚᱱ ᱮᱢᱚᱜᱤᱡ ᱡᱤᱱᱤᱥ ᱵᱟᱝ ᱵᱟᱰᱟᱭᱮᱫᱟ ᱾ ᱢᱟᱱᱟᱣ ᱞᱟᱦᱟ ᱴᱷᱟᱶ ᱥᱟᱹᱨᱤ ᱢᱮ ᱾",,,i18nSantali.js
+3 · Certification and records,vf_tampered,This certificate has been tampered with,इस प्रमाणपत्र से छेड़छाड़ हुई है,ᱱᱚᱶᱟ ᱯᱚᱨᱢᱟᱱ ᱨᱮ ᱦᱟᱹᱴᱤᱧ ᱦᱩᱭ ᱟᱠᱟᱱᱟ,,,i18n.js / i18nJaagruk.js
+3 · Certification and records,vf_unreadable,That is not a Jaagruk certificate.,यह जागरुक प्रमाणपत्र नहीं है।,ᱱᱚᱶᱟ ᱡᱟᱜᱨᱩᱠ ᱯᱚᱨᱢᱟᱱ ᱵᱟᱝ ᱠᱟᱱᱟ ᱾,,,i18nSantali.js
+4 · Supervisor surfaces,ad_auth_warning,"This PIN is a local speed bump, not real authorization. A production deployment needs server-issued roles — see the architecture notes.","यह पिन स्थानीय अवरोध है, वास्तविक प्राधिकरण नहीं। उत्पादन परिनियोजन के लिए सर्वर-जारी भूमिकाएं चाहिए।","ᱱᱚᱶᱟ ᱯᱤᱱ ᱫᱚ ᱠᱷᱟᱲᱤᱡ ᱨᱚᱠᱚᱴ ᱜᱮ ᱠᱟᱱᱟ, ᱥᱟᱹᱨᱤ ᱦᱩᱠᱩᱢ ᱵᱟᱝ ᱾ ᱥᱟᱹᱨᱤ ᱵᱮᱵᱷᱟᱨ ᱞᱟᱹᱜᱤᱫ ᱥᱟᱨᱵᱷᱟᱨ ᱠᱷᱚᱱ ᱮᱢ ᱠᱟᱱ ᱨᱚᱞ ᱞᱟᱹᱠᱛᱤ ᱾",,,i18nSantali.js
+4 · Supervisor surfaces,ad_export_dgms,Export compliance bundle,अनुपालन बंडल निर्यात करें,ᱠᱟᱱᱩᱱ ᱵᱟᱱᱰᱚᱞ ᱵᱟᱦᱨᱮ ᱠᱩᱞ,,,i18nSantali.js
+4 · Supervisor surfaces,ad_gate_enter,Enter supervisor PIN,सुपरवाइज़र पिन लिखें,ᱥᱩᱯᱚᱨᱣᱟᱭᱡᱚᱨ ᱯᱤᱱ ᱚᱞ ᱢᱮ,,,i18nSantali.js
+4 · Supervisor surfaces,ad_gate_lock,Lock dashboard,डैशबोर्ड लॉक करें,ᱰᱮᱥᱵᱚᱨᱰ ᱛᱟᱞᱟ,,,i18nSantali.js
+4 · Supervisor surfaces,ad_gate_set_body,No PIN is set yet. Choose one to protect this dashboard on a shared phone.,अभी कोई पिन नहीं है। साझा फ़ोन पर इस डैशबोर्ड की सुरक्षा के लिए एक चुनें।,ᱛᱮᱦᱮᱸ ᱦᱟᱹᱵᱤᱡ ᱯᱤᱱ ᱵᱟᱝ ᱾ ᱡᱟᱨᱣᱟ ᱯᱷᱚᱱ ᱨᱮ ᱱᱚᱶᱟ ᱰᱮᱥᱵᱚᱨᱰ ᱨᱠᱷᱟ ᱞᱟᱹᱜᱤᱫ ᱢᱤᱫ ᱵᱟᱪᱷᱟᱣ ᱢᱮ ᱾,,,i18nSantali.js
+4 · Supervisor surfaces,ad_gate_set_title,Set a supervisor PIN,सुपरवाइज़र पिन सेट करें,ᱥᱩᱯᱚᱨᱣᱟᱭᱡᱚᱨ ᱯᱤᱱ ᱛᱮᱭᱟᱨ ᱢᱮ,,,i18nSantali.js
+4 · Supervisor surfaces,ad_gate_title,Supervisor access,सुपरवाइज़र पहुंच,ᱥᱩᱯᱚᱨᱣᱟᱭᱡᱚᱨ ᱵᱚᱞᱚ,,,i18nSantali.js
+4 · Supervisor surfaces,ad_gate_unlock,Unlock,खोलें,ᱡᱷᱤᱡ ᱢᱮ,,,i18nSantali.js
+4 · Supervisor surfaces,ad_gate_wrong,Wrong PIN.,गलत पिन।,ᱵᱷᱩᱞ ᱯᱤᱱ ᱾,,,i18nSantali.js
+4 · Supervisor surfaces,ad_gossip_desc,"When the pit has no network, connect to a supervisor phone and pass the records across directly. They upload when they surface.","जब खदान में नेटवर्क न हो, सुपरवाइज़र फ़ोन से जुड़ें और रिकॉर्ड सीधे भेजें। वे ऊपर आकर अपलोड कर देंगे।","ᱠᱷᱟᱰ ᱨᱮ ᱱᱮᱴᱣᱟᱨᱠ ᱵᱟᱝ ᱛᱟᱦᱮᱸᱠᱷᱟᱱ, ᱥᱩᱯᱚᱨᱣᱟᱭᱡᱚᱨ ᱯᱷᱚᱱ ᱥᱟᱶ ᱡᱚᱲᱟᱣ ᱢᱮ ᱟᱨ ᱨᱮᱠᱚᱰ ᱠᱚ ᱥᱚᱡᱷᱮ ᱠᱩᱞ ᱢᱮ ᱾ ᱩᱱᱠᱩ ᱩᱯᱨᱩᱢ ᱠᱟᱛᱮ ᱟᱯᱞᱳᱰ ᱠᱚ ᱮᱢᱟ ᱾",,,i18nSantali.js
+4 · Supervisor surfaces,ad_gossip_title,Hand off to a nearby phone,पास के फ़ोन को सौंपें,ᱱᱟᱜᱟᱢ ᱯᱷᱚᱱ ᱛᱮ ᱮᱢ ᱢᱮ,,,i18nSantali.js
+4 · Supervisor surfaces,ad_hazard_ack,Acknowledge,स्वीकार करें,ᱢᱟᱱᱟᱣ ᱢᱮ,,,i18nSantali.js
+4 · Supervisor surfaces,ad_hazard_dismiss,Dismiss,खारिज करें,ᱚᱰᱚᱠ ᱢᱮ,,,i18nSantali.js
+4 · Supervisor surfaces,ad_hazard_reopen,Reopen,फिर खोलें,ᱫᱚᱦᱲᱟ ᱡᱷᱤᱡ,,,i18nSantali.js
+4 · Supervisor surfaces,ad_hazard_resolve,Mark fixed,ठीक चिह्नित करें,ᱴᱷᱤᱠ ᱢᱮᱱ ᱢᱮ,,,i18nSantali.js
+4 · Supervisor surfaces,ad_hazards_none,No hazard reports yet.,अभी कोई खतरा रिपोर्ट नहीं।,ᱛᱮᱦᱮᱸ ᱦᱟᱹᱵᱤᱡ ᱡᱚᱠᱷᱚᱢ ᱠᱷᱚᱵᱚᱨ ᱵᱟᱝ ᱾,,,i18nSantali.js
+4 · Supervisor surfaces,ad_hesitation_desc,These workers answered correctly but slowly. On paper they passed; under pressure they are the ones who freeze. Target them for a repeat drill.,इन श्रमिकों ने सही पर धीमे उत्तर दिए। कागज़ पर वे पास हैं; दबाव में यही रुक जाते हैं। इन्हें दोबारा ड्रिल कराएं।,"ᱱᱚᱶᱟ ᱠᱟᱹᱢᱤ ᱦᱚᱲ ᱠᱚ ᱴᱷᱤᱠ ᱢᱮᱱ ᱠᱮᱫᱟ ᱢᱮᱱᱠᱷᱟᱱ ᱟᱲᱟᱜ ᱛᱮ ᱾ ᱠᱟᱜᱚᱡ ᱨᱮ ᱩᱱᱠᱩ ᱯᱟᱥ, ᱵᱟᱹᱲᱛᱤ ᱡᱚᱨ ᱨᱮ ᱩᱱᱠᱩ ᱜᱮ ᱛᱷᱤᱨ ᱚᱲᱟᱜᱚᱜᱼᱟ ᱾ ᱩᱱᱠᱩ ᱫᱚᱦᱲᱟ ᱛᱟᱞᱤᱢ ᱮᱢ ᱢᱮ ᱾",,,i18nSantali.js
+4 · Supervisor surfaces,ad_hesitation_none,No hesitation flags on record.,कोई हिचकिचाहट दर्ज नहीं।,ᱡᱟᱦᱟᱸ ᱟᱲᱟᱜ ᱨᱮᱠᱚᱰ ᱵᱟᱝ ᱾,,,i18nSantali.js
+4 · Supervisor surfaces,ad_import_bundle,Import a bundle,बंडल आयात करें,ᱵᱟᱱᱰᱚᱞ ᱟᱹᱜᱩ ᱢᱮ,,,i18nSantali.js
+4 · Supervisor surfaces,ad_import_done,Import complete,आयात पूर्ण,ᱟᱹᱜᱩ ᱦᱩᱭ ᱮᱱᱟ,,,i18nSantali.js
+4 · Supervisor surfaces,ad_import_failed,That file is not a Jaagruk bundle.,यह फ़ाइल जागरुक बंडल नहीं है।,ᱱᱚᱶᱟ ᱯᱷᱟᱭᱤᱞ ᱡᱟᱜᱨᱩᱠ ᱵᱟᱱᱰᱚᱞ ᱵᱟᱝ ᱠᱟᱱᱟ ᱾,,,i18nSantali.js
+4 · Supervisor surfaces,ad_import_trust,Also trust the signing devices in this bundle,इस बंडल के हस्ताक्षर डिवाइस पर भी भरोसा करें,ᱱᱚᱶᱟ ᱵᱟᱱᱰᱚᱞ ᱨᱮᱭᱟᱜ ᱥᱩᱦᱤ ᱡᱤᱱᱤᱥ ᱠᱚ ᱦᱚᱸ ᱯᱟᱛᱭᱟᱣ ᱢᱮ,,,i18nSantali.js
+4 · Supervisor surfaces,ad_ledger_empty,No certificates have been issued on this device.,इस डिवाइस पर कोई प्रमाणपत्र जारी नहीं हुआ।,ᱱᱚᱶᱟ ᱡᱤᱱᱤᱥ ᱨᱮ ᱡᱟᱦᱟᱸ ᱯᱚᱨᱢᱟᱱ ᱵᱟᱝ ᱮᱢ ᱞᱮᱱᱟ ᱾,,,i18nSantali.js
+4 · Supervisor surfaces,ad_ledger_intact,All records intact,सभी रिकॉर्ड अक्षुण्ण,ᱡᱚᱛᱚ ᱨᱮᱠᱚᱰ ᱴᱷᱤᱠ,,,i18nSantali.js
+4 · Supervisor surfaces,ad_ledger_intact_to,Chain intact up to record,रिकॉर्ड तक चेन अक्षुण्ण,ᱨᱮᱠᱚᱰ ᱦᱟᱹᱵᱤᱡ ᱥᱟᱸᱠᱞᱤ ᱴᱷᱤᱠ,,,i18nSantali.js
+4 · Supervisor surfaces,ad_ledger_records,records,रिकॉर्ड,ᱨᱮᱠᱚᱰ,,,i18nSantali.js
+4 · Supervisor surfaces,ad_ledger_verify,Verify the whole ledger,पूरा लेजर सत्यापित करें,ᱡᱚᱛᱚ ᱞᱮᱡᱚᱨ ᱡᱟᱹᱨᱩᱭ ᱢᱮ,,,i18nSantali.js
+4 · Supervisor surfaces,ad_oldest_open,"oldest open, days","सबसे पुराना खुला, दिन","ᱡᱟᱥᱛᱤ ᱢᱟᱨᱮ ᱡᱷᱤᱡ, ᱢᱟᱦᱟᱸ",,,i18nSantali.js
+4 · Supervisor surfaces,ad_open_high,open high-severity,खुले उच्च-गंभीरता,ᱡᱷᱤᱡ ᱡᱟᱥᱛᱤ ᱡᱚᱠᱷᱚᱢ,,,i18nSantali.js
+4 · Supervisor surfaces,ad_statutory_note,"Export formatted for Mines Act 1952 and Factories Act 1948 record-keeping. Readiness is reported as of the export date, not the original test date.","खान अधिनियम 1952 और कारखाना अधिनियम 1948 के अभिलेख हेतु निर्यात। तैयारी निर्यात तिथि की है, मूल परीक्षा तिथि की नहीं।","ᱠᱷᱟᱰ ᱠᱟᱱᱩᱱ 1952 ᱟᱨ ᱠᱟᱨᱠᱷᱟᱱᱟ ᱠᱟᱱᱩᱱ 1948 ᱨᱮᱭᱟᱜ ᱨᱮᱠᱚᱰ ᱞᱟᱹᱜᱤᱫ ᱵᱟᱦᱨᱮ ᱠᱩᱞ ᱾ ᱛᱮᱭᱟᱨᱤ ᱫᱚ ᱵᱟᱦᱨᱮ ᱠᱩᱞ ᱢᱟᱦᱟᱸ ᱨᱮᱭᱟᱜ ᱠᱟᱱᱟ, ᱢᱟᱲᱟᱝ ᱡᱟᱹᱨᱩᱭ ᱢᱟᱦᱟᱸ ᱨᱮᱭᱟᱜ ᱵᱟᱝ ᱾",,,i18nSantali.js
+4 · Supervisor surfaces,ad_sync_done,Sync complete,सिंक पूर्ण,ᱥᱤᱸᱠ ᱦᱩᱭ ᱮᱱᱟ,,,i18nSantali.js
+4 · Supervisor surfaces,ad_sync_failed,Sync failed. Records are safe and queued.,सिंक विफल। रिकॉर्ड सुरक्षित और कतार में हैं।,ᱥᱤᱸᱠ ᱵᱟᱝ ᱦᱩᱭ ᱞᱮᱱᱟ ᱾ ᱨᱮᱠᱚᱰ ᱠᱚ ᱨᱠᱷᱟ ᱨᱮ ᱟᱨ ᱵᱟᱠᱤ ᱨᱮ ᱢᱮᱱᱟᱜᱼᱟ ᱾,,,i18nSantali.js
+4 · Supervisor surfaces,ad_sync_no_endpoint,"No upload URL is configured, so records stay on this device.","कोई अपलोड URL सेट नहीं है, इसलिए रिकॉर्ड इसी डिवाइस पर रहेंगे।","ᱡᱟᱦᱟᱸ ᱟᱯᱞᱳᱰ URL ᱵᱟᱝ ᱛᱮᱭᱟᱨ, ᱚᱱᱟᱛᱮ ᱨᱮᱠᱚᱰ ᱠᱚ ᱱᱚᱶᱟ ᱡᱤᱱᱤᱥ ᱨᱮ ᱜᱮ ᱛᱟᱦᱮᱸᱱᱟ ᱾",,,i18nSantali.js
+4 · Supervisor surfaces,ad_sync_now,Sync now,अभी सिंक करें,ᱱᱤᱛᱚᱜ ᱥᱤᱸᱠ ᱢᱮ,,,i18nSantali.js
+4 · Supervisor surfaces,ad_sync_offline,This device is offline. Records will go up automatically later.,यह डिवाइस ऑफ़लाइन है। रिकॉर्ड बाद में अपने आप जाएंगे।,ᱱᱚᱶᱟ ᱡᱤᱱᱤᱥ ᱚᱯᱷᱞᱟᱭᱤᱱ ᱠᱟᱱᱟ ᱾ ᱨᱮᱠᱚᱰ ᱠᱚ ᱛᱟᱭᱚᱢ ᱟᱡᱛᱮ ᱪᱟᱞᱟᱜᱼᱟ ᱾,,,i18nSantali.js
+4 · Supervisor surfaces,ad_sync_pending,records waiting,रिकॉर्ड बाकी,ᱨᱮᱠᱚᱰ ᱵᱟᱠᱤ,,,i18nSantali.js
+4 · Supervisor surfaces,ad_tab_compliance,Compliance,अनुपालन,ᱠᱟᱱᱩᱱ ᱢᱟᱱᱟᱣ,,,i18nSantali.js
+4 · Supervisor surfaces,ad_tab_hazards,Hazard board,खतरा बोर्ड,ᱡᱚᱠᱷᱚᱢ ᱵᱚᱨᱰ,,,i18nSantali.js
+4 · Supervisor surfaces,ad_tab_hesitation,Hesitation risk,हिचकिचाहट जोखिम,ᱟᱲᱟᱜ ᱡᱚᱠᱷᱚᱢ,,,i18nSantali.js
+4 · Supervisor surfaces,ad_tab_ledger,Ledger,लेजर,ᱞᱮᱡᱚᱨ,,,i18nSantali.js
+4 · Supervisor surfaces,ad_tab_verify,Verify a QR,QR सत्यापित करें,QR ᱡᱟᱹᱨᱩᱭ,,,i18nSantali.js
+4 · Supervisor surfaces,ad_worst_pause,Longest pause,सबसे लंबा ठहराव,ᱡᱟᱥᱛᱤ ᱡᱤᱞᱤᱧ ᱟᱲᱟᱜ,,,i18nSantali.js
+4 · Supervisor surfaces,ad_zone_clusters,Where reports cluster,रिपोर्टें कहाँ जमा हैं,ᱠᱷᱚᱵᱚᱨ ᱠᱚ ᱚᱠᱟ ᱨᱮ ᱡᱟᱨᱣᱟ,,,i18nSantali.js
+4 · Supervisor surfaces,admin_certified_workers,Certified Workers,प्रमाणित श्रमिक,ᱥᱚᱨᱴᱤᱯᱤᱠᱮᱴ ᱦᱩᱭ ᱠᱟᱱ ᱠᱟᱹᱢᱤ ᱦᱚᱲ,,,i18nSantali.js
+4 · Supervisor surfaces,admin_domain_breakdown,Domain-wise Average,डोमेन-वार औसत,ᱮᱞᱟᱠᱟ ᱞᱮᱠᱟᱛᱮ ᱟᱣᱥᱚᱛ,,,i18nSantali.js
+4 · Supervisor surfaces,admin_export_csv,Export CSV,सीएसवी निर्यात करें,CSV ᱵᱟᱦᱨᱮ ᱠᱩᱞ,,,i18nSantali.js
+4 · Supervisor surfaces,admin_eyebrow,Admin,एडमिन,ᱮᱰᱢᱤᱱ,,,i18nSantali.js
+4 · Supervisor surfaces,admin_no_certs,No certificates issued yet.,अभी तक कोई प्रमाणपत्र जारी नहीं किया गया।,ᱛᱮᱦᱮᱸ ᱦᱟᱹᱵᱤᱡ ᱡᱟᱦᱟᱸ ᱯᱚᱨᱢᱟᱱ ᱵᱟᱝ ᱮᱢ ᱞᱮᱱᱟ ᱾,,,i18nSantali.js
+4 · Supervisor surfaces,admin_search,Search by name…,नाम से खोजें…,ᱧᱩᱛᱩᱢ ᱛᱮ ᱯᱟᱱᱛᱮ ᱢᱮ…,,,i18nSantali.js
+4 · Supervisor surfaces,admin_title,Compliance Dashboard,अनुपालन डैशबोर्ड,ᱠᱟᱱᱩᱱ ᱢᱟᱱᱟᱣ ᱰᱮᱥᱵᱚᱨᱰ,,,i18nSantali.js
+4 · Supervisor surfaces,admin_total_certs,Certificates Issued,जारी प्रमाणपत्र,ᱮᱢ ᱠᱟᱱ ᱯᱚᱨᱢᱟᱱ,,,i18nSantali.js
+4 · Supervisor surfaces,anchor_assembly,Assembly point,एकत्रीकरण स्थल,ᱡᱟᱨᱣᱟ ᱴᱷᱟᱶ,,,i18n.js / i18nJaagruk.js
+4 · Supervisor surfaces,anchor_dust,Dust source,धूल स्रोत,ᱫᱷᱩᱲᱤ ᱡᱟᱭᱜᱟ,,,i18n.js / i18nJaagruk.js
+4 · Supervisor surfaces,anchor_electrical,Electrical panel,विद्युत पैनल,ᱵᱤᱡᱩᱞᱤ ᱯᱟᱱᱮᱞ,,,i18n.js / i18nJaagruk.js
+4 · Supervisor surfaces,anchor_exit,Exit,निकास,ᱚᱰᱚᱠ,,,i18n.js / i18nJaagruk.js
+4 · Supervisor surfaces,anchor_extinguisher,Extinguisher,अग्निशामक,ᱥᱮᱸᱜᱮᱞ ᱦᱩᱭᱩᱠ,,,i18n.js / i18nJaagruk.js
+4 · Supervisor surfaces,anchor_first_aid,First aid,प्राथमिक चिकित्सा,ᱢᱟᱲᱟᱝ ᱩᱴᱷᱟᱹᱨ,,,i18n.js / i18nJaagruk.js
+4 · Supervisor surfaces,anchor_gas_zone,Gas zone,गैस क्षेत्र,ᱜᱮᱥ ᱡᱟᱭᱜᱟ,,,i18n.js / i18nJaagruk.js
+4 · Supervisor surfaces,anchor_hazard,Hazard,खतरा,ᱡᱚᱠᱷᱚᱢ,,,i18n.js / i18nJaagruk.js
+4 · Supervisor surfaces,anchor_loto,Lockout panel,लॉकआउट पैनल,ᱞᱚᱠᱟᱣᱴ ᱯᱟᱱᱮᱞ,,,i18nSantali.js
+4 · Supervisor surfaces,anchor_machine,Machine,मशीन,ᱢᱮᱥᱤᱱ,,,i18n.js / i18nJaagruk.js
+4 · Supervisor surfaces,dash_clear,Clear log,लॉग साफ़ करें,ᱞᱚᱜ ᱯᱷᱟᱹᱨᱪᱟ ᱢᱮ,,,i18nSantali.js
+4 · Supervisor surfaces,dash_empty,No activity yet. Run a hazard scan or scenario to see your record here.,अभी तक कोई गतिविधि नहीं। अपना रिकॉर्ड यहां देखने के लिए खतरा स्कैन या परिदृश्य चलाएं।,ᱛᱮᱦᱮᱸ ᱦᱟᱹᱵᱤᱡ ᱠᱟᱹᱢᱤ ᱵᱟᱝ ᱾ ᱟᱢᱟᱜ ᱨᱮᱠᱚᱰ ᱱᱚᱰᱮ ᱧᱮᱞ ᱞᱟᱹᱜᱤᱫ ᱡᱚᱠᱷᱚᱢ ᱥᱠᱮᱱ ᱥᱮ ᱥᱮᱱᱟᱨᱤᱭᱚ ᱮᱦᱚᱵ ᱢᱮ ᱾,,,i18nSantali.js
+4 · Supervisor surfaces,dash_eyebrow,Progress,प्रगति,ᱞᱟᱦᱟᱱᱛᱤ,,,i18nSantali.js
+4 · Supervisor surfaces,dash_hazard_scan,Hazard Scan,खतरा स्कैन,ᱡᱚᱠᱷᱚᱢ ᱥᱠᱮᱱ,,,i18nSantali.js
+4 · Supervisor surfaces,dash_log_cleared,Activity log cleared,गतिविधि लॉग साफ़ हुआ,ᱠᱟᱹᱢᱤ ᱞᱚᱜ ᱯᱷᱟᱹᱨᱪᱟ ᱮᱱᱟ,,,i18n.js / i18nJaagruk.js
+4 · Supervisor surfaces,dash_scenario_training,Scenario Training,परिदृश्य प्रशिक्षण,ᱥᱮᱱᱟᱨᱤᱭᱚ ᱛᱟᱞᱤᱢ,,,i18nSantali.js
+4 · Supervisor surfaces,dash_sessions,Sessions,सत्र,ᱥᱮᱥᱚᱱ,,,i18nSantali.js
+4 · Supervisor surfaces,db_all_local,Everything here is stored only on this phone.,यहाँ सब कुछ केवल इस फ़ोन पर सहेजा है।,ᱱᱚᱰᱮ ᱡᱚᱛᱚ ᱡᱤᱱᱤᱥ ᱱᱚᱶᱟ ᱯᱷᱚᱱ ᱨᱮ ᱜᱮ ᱢᱮᱱᱟᱜᱼᱟ ᱾,,,i18n.js / i18nJaagruk.js
+4 · Supervisor surfaces,db_by_domain,By safety domain,सुरक्षा क्षेत्र अनुसार,ᱨᱠᱷᱟ ᱮᱞᱟᱠᱟ ᱞᱮᱠᱟᱛᱮ,,,i18nSantali.js
+4 · Supervisor surfaces,db_consistency,Consistency,नियमितता,ᱞᱟᱦᱟ ᱞᱟᱦᱟ,,,i18n.js / i18nJaagruk.js
+4 · Supervisor surfaces,db_consistency_hint,Short sessions every few days beat one long session. The gaps are what the score reacts to.,हर कुछ दिन में छोटे सत्र एक लंबे सत्र से बेहतर हैं। स्कोर इन अंतरालों पर प्रतिक्रिया देता है।,ᱡᱟᱦᱟᱸ ᱢᱟᱦᱟᱸ ᱨᱮ ᱦᱩᱰᱤᱧ ᱥᱮᱥᱚᱱ ᱫᱚ ᱢᱤᱫ ᱡᱤᱞᱤᱧ ᱥᱮᱥᱚᱱ ᱠᱷᱚᱱ ᱵᱮᱥ ᱾ ᱱᱚᱢᱵᱚᱨ ᱫᱚ ᱱᱚᱶᱟ ᱛᱟᱞᱟ ᱚᱠᱛᱚ ᱨᱮ ᱛᱮᱞᱟᱭᱮᱫᱟ ᱾,,,i18nSantali.js
+4 · Supervisor surfaces,db_decay_title,Where this is heading,यह किस दिशा में जा रहा है,ᱱᱚᱶᱟ ᱚᱠᱟ ᱛᱮ ᱪᱟᱞᱟᱜ ᱠᱟᱱᱟ,,,i18n.js / i18nJaagruk.js
+4 · Supervisor surfaces,db_decayed_from,was,था,ᱛᱟᱦᱮᱸᱠᱟᱱᱟ,,,i18nSantali.js
+4 · Supervisor surfaces,db_filter_all,All,सभी,ᱡᱚᱛᱚ,,,i18n.js / i18nJaagruk.js
+4 · Supervisor surfaces,db_flagged_slow,Flagged for slow reaction,धीमी प्रतिक्रिया के लिए चिह्नित,ᱟᱲᱟᱜ ᱛᱮᱞᱟ ᱞᱟᱹᱜᱤᱫ ᱪᱤᱱᱦᱟᱹ,,,i18nSantali.js
+4 · Supervisor surfaces,db_last_passed,Last passed,अंतिम पास,ᱢᱩᱪᱟᱹᱫ ᱯᱟᱥ,,,i18nSantali.js
+4 · Supervisor surfaces,db_live,Live,लाइव,ᱡᱤᱭᱚᱸ,,,i18n.js / i18nJaagruk.js
+4 · Supervisor surfaces,db_longest_streak,Longest,सबसे लंबा,ᱡᱟᱥᱛᱤ ᱡᱤᱞᱤᱧ,,,i18n.js / i18nJaagruk.js
+4 · Supervisor surfaces,db_mode_buddy,Buddy,बडी,ᱡᱚᱲᱟᱣ,,,i18nSantali.js
+4 · Supervisor surfaces,db_mode_refresher,Refresher,रिफ्रेशर,ᱫᱚᱦᱲᱟ ᱛᱟᱞᱤᱢ,,,i18nSantali.js
+4 · Supervisor surfaces,db_mode_solo,Solo,अकेले,ᱮᱠᱞᱟ,,,i18nSantali.js
+4 · Supervisor surfaces,db_never,Never,कभी नहीं,ᱛᱤᱱᱟᱹᱜ ᱦᱚᱸ ᱵᱟᱝ,,,i18n.js / i18nJaagruk.js
+4 · Supervisor surfaces,db_no_data,Not enough data yet,अभी पर्याप्त डेटा नहीं,ᱛᱮᱦᱮᱸ ᱰᱟᱴᱟ ᱵᱟᱝ,,,i18n.js / i18nJaagruk.js
+4 · Supervisor surfaces,db_pending_sync,waiting to sync,सिंक बाकी,ᱥᱤᱸᱠ ᱵᱟᱠᱤ,,,i18n.js / i18nJaagruk.js
+4 · Supervisor surfaces,db_radar_hint,Certification needs all five above the line. A dent in the shape is the one to work on next.,"प्रमाणन के लिए पाँचों को रेखा से ऊपर होना चाहिए। आकृति में जो हिस्सा दबा है, अगला काम वही है।","ᱥᱚᱨᱴᱤᱯᱤᱠᱮᱴ ᱞᱟᱹᱜᱤᱫ ᱢᱚᱬᱮᱭᱟ ᱜᱮ ᱜᱟᱨ ᱠᱷᱚᱱ ᱩᱯᱨᱩᱢ ᱛᱟᱦᱮᱸᱱ ᱞᱟᱹᱠᱛᱤ ᱾ ᱟᱠᱟᱨ ᱨᱮ ᱚᱠᱟ ᱦᱟᱹᱴᱩᱵ ᱟᱠᱟᱱᱟ, ᱟᱶᱜᱟ ᱠᱟᱹᱢᱤ ᱚᱱᱟ ᱜᱮ ᱠᱟᱱᱟ ᱾",,,i18nSantali.js
+4 · Supervisor surfaces,db_radar_title,Readiness across all five domains,सभी पाँच क्षेत्रों में तैयारी,ᱡᱚᱛᱚ ᱢᱚᱬᱮ ᱮᱞᱟᱠᱟ ᱨᱮ ᱛᱮᱭᱟᱨᱤ,,,i18nSantali.js
+4 · Supervisor surfaces,db_reaction_hint,"Every decision you have made, grouped by how fast you made it.","आपके सभी निर्णय, इस आधार पर समूहित कि आपने कितनी तेज़ी से लिए।","ᱟᱢ ᱮᱢ ᱠᱟᱱ ᱡᱚᱛᱚ ᱴᱷᱮᱭᱟᱣ, ᱛᱤᱱᱟᱹᱜ ᱞᱚᱜᱚᱱ ᱛᱮ ᱮᱢ ᱠᱮᱫᱟᱢ ᱚᱱᱟ ᱞᱮᱠᱟᱛᱮ ᱡᱟᱨᱣᱟ ᱟᱠᱟᱱᱟ ᱾",,,i18nSantali.js
+4 · Supervisor surfaces,db_reaction_mix,How you react under pressure,दबाव में आपकी प्रतिक्रिया,ᱡᱚᱨ ᱨᱮ ᱟᱢᱟᱜ ᱛᱮᱞᱟ,,,i18n.js / i18nJaagruk.js
+4 · Supervisor surfaces,db_readiness_title,Your readiness,आपकी तैयारी,ᱟᱢᱟᱜ ᱛᱮᱭᱟᱨᱤ,,,i18n.js / i18nJaagruk.js
+4 · Supervisor surfaces,db_recent,Recent activity,हाल की गतिविधि,ᱱᱮᱛᱟᱨᱟᱜ ᱠᱟᱹᱢᱤ,,,i18n.js / i18nJaagruk.js
+4 · Supervisor surfaces,db_refresh,Refresh,ताज़ा करें,ᱫᱚᱦᱲᱟ ᱞᱟᱫᱮ,,,i18n.js / i18nJaagruk.js
+4 · Supervisor surfaces,db_showing,showing,दिखा रहा है,ᱩᱫᱩᱜ ᱠᱟᱱᱟ,,,i18nSantali.js
+4 · Supervisor surfaces,db_storage_temp,"This browser will not let Jaagruk store data permanently, so your progress lasts only for this session.","यह ब्राउज़र जागरुक को स्थायी रूप से डेटा सहेजने नहीं देता, इसलिए प्रगति सिर्फ़ इस सत्र तक रहेगी।","ᱱᱚᱶᱟ ᱵᱨᱟᱣᱡᱚᱨ ᱡᱟᱜᱨᱩᱠ ᱛᱮ ᱰᱟᱴᱟ ᱥᱚᱨᱮᱥ ᱛᱮ ᱵᱟᱝ ᱥᱟᱸᱪᱟᱣ ᱮᱢᱟ, ᱚᱱᱟᱛᱮ ᱟᱢᱟᱜ ᱞᱟᱦᱟᱱᱛᱤ ᱱᱚᱶᱟ ᱥᱮᱥᱚᱱ ᱦᱟᱹᱵᱤᱡ ᱜᱮ ᱛᱟᱦᱮᱸᱱᱟ ᱾",,,i18nSantali.js
+4 · Supervisor surfaces,db_streak,Current streak,वर्तमान लगातार,ᱱᱤᱛᱚᱜᱟᱜ,,,i18n.js / i18nJaagruk.js
+4 · Supervisor surfaces,db_trend,Recent trend,हाल की प्रवृत्ति,ᱱᱮᱛᱟᱨᱟᱜ ᱦᱚᱨ,,,i18n.js / i18nJaagruk.js
+4 · Supervisor surfaces,db_weakest,Weakest,सबसे कमज़ोर,ᱡᱟᱥᱛᱤ ᱞᱟᱲᱟᱭ,,,i18n.js / i18nJaagruk.js
+5 · Other,app_name,JAAGRUK,जागरुक,ᱡᱟᱜᱨᱩᱠ,,,i18n.js / i18nJaagruk.js
+5 · Other,app_tagline,Safety Training & Certification,सुरक्षा प्रशिक्षण एवं प्रमाणन,ᱨᱠᱷᱟ ᱛᱟᱞᱤᱢ,,,i18n.js / i18nJaagruk.js
+5 · Other,back_label,Back,पीछे,ᱛᱟᱭᱚᱢ,,,i18n.js / i18nJaagruk.js
+5 · Other,cancel_label,Cancel,रद्द करें,ᱵᱟᱹᱰᱨᱟᱹ,,,i18n.js / i18nJaagruk.js
+5 · Other,clear_label,Clear,साफ़ करें,ᱯᱷᱟᱹᱨᱪᱟ,,,i18n.js / i18nJaagruk.js
+5 · Other,close_label,Close,बंद करें,ᱵᱚᱸᱫᱚᱭ,,,i18n.js / i18nJaagruk.js
+5 · Other,delete_label,Delete,हटाएं,ᱜᱷᱟᱹᱴᱟᱣ,,,i18n.js / i18nJaagruk.js
+5 · Other,dismiss_label,Dismiss,हटाएं,ᱚᱰᱚᱠ,,,i18n.js / i18nJaagruk.js
+5 · Other,done_label,Done,पूर्ण,ᱦᱩᱭ ᱮᱱᱟ,,,i18n.js / i18nJaagruk.js
+5 · Other,error_label,Something went wrong,कुछ गलत हुआ,ᱚᱠᱟ ᱦᱚᱸ ᱵᱷᱩᱞ ᱦᱩᱭ ᱮᱱᱟ,,,i18n.js / i18nJaagruk.js
+5 · Other,gauge_high,HIGH RISK,उच्च जोखिम,ᱡᱟᱥᱛᱤ ᱡᱚᱠᱷᱚᱢ,,,i18n.js / i18nJaagruk.js
+5 · Other,gauge_low,LOW RISK,कम जोखिम,ᱠᱚᱢ ᱡᱚᱠᱷᱚᱢ,,,i18n.js / i18nJaagruk.js
+5 · Other,gauge_moderate,MODERATE RISK,मध्यम जोखिम,ᱢᱟᱡᱷᱮᱡ ᱡᱚᱠᱷᱚᱢ,,,i18n.js / i18nJaagruk.js
+5 · Other,loading_label,Loading…,लोड हो रहा है…,ᱞᱟᱫᱮᱫ ᱠᱟᱱᱟ…,,,i18n.js / i18nJaagruk.js
+5 · Other,m_anchors,Anchors placed,एंकर लगाए,ᱮᱸᱠᱚᱨ ᱮᱢ,,,i18n.js / i18nJaagruk.js
+5 · Other,m_decisions,Timed decisions,समयबद्ध निर्णय,ᱚᱠᱛᱚ ᱮᱢ ᱴᱷᱮᱭᱟᱣ,,,i18n.js / i18nJaagruk.js
+5 · Other,m_domains,Domains passed,क्षेत्र पास,ᱮᱞᱟᱠᱟ ᱯᱟᱥ,,,i18n.js / i18nJaagruk.js
+5 · Other,m_due,Refreshers due,रिफ्रेशर बाकी,ᱫᱚᱦᱲᱟ ᱛᱟᱞᱤᱢ ᱵᱟᱠᱤ,,,i18n.js / i18nJaagruk.js
+5 · Other,m_languages,Languages,भाषाएं,ᱯᱟᱹᱨᱥᱤ ᱠᱚ,,,i18n.js / i18nJaagruk.js
+5 · Other,m_modules,Modules,मॉड्यूल,ᱢᱚᱰᱩᱞ,,,i18n.js / i18nJaagruk.js
+5 · Other,m_readiness,Readiness,तैयारी,ᱛᱮᱭᱟᱨᱤ,,,i18n.js / i18nJaagruk.js
+5 · Other,m_reports,Open reports,खुली रिपोर्ट,ᱡᱷᱤᱡ ᱠᱷᱚᱵᱚᱨ,,,i18n.js / i18nJaagruk.js
+5 · Other,m_zones,Zones scanned,ज़ोन स्कैन,ᱡᱚᱱ ᱥᱠᱮᱱ,,,i18n.js / i18nJaagruk.js
+5 · Other,more_label,More,अधिक,ᱟᱨᱦᱚ,,,i18n.js / i18nJaagruk.js
+5 · Other,next_label,Next,आगे,ᱟᱶᱜᱟ,,,i18n.js / i18nJaagruk.js
+5 · Other,not_found_label,Not found,नहीं मिला,ᱵᱟᱝ ᱧᱟᱢ ᱞᱮᱱᱟ,,,i18n.js / i18nJaagruk.js
+5 · Other,offline_label,Offline,ऑफ़लाइन,ᱚᱯᱷᱞᱟᱭᱤᱱ,,,i18n.js / i18nJaagruk.js
+5 · Other,ps_collect,Collect from a phone,फ़ोन से इकट्ठा करें,ᱯᱷᱚᱱ ᱠᱷᱚᱱ ᱡᱟᱨᱣᱟ,,,i18n.js / i18nJaagruk.js
+5 · Other,ps_exchanging,Exchanging records…,रिकॉर्ड का आदान-प्रदान…,ᱨᱮᱠᱚᱰ ᱟᱹᱰᱤ ᱠᱟᱱᱟ…,,,i18n.js / i18nJaagruk.js
+5 · Other,ps_offer,Send my records,मेरे रिकॉर्ड भेजें,ᱤᱧᱟᱜ ᱨᱮᱠᱚᱰ ᱠᱩᱞ,,,i18n.js / i18nJaagruk.js
+5 · Other,ps_received,Received,प्राप्त,ᱧᱟᱢ ᱮᱱᱟ,,,i18n.js / i18nJaagruk.js
+5 · Other,ps_sent,Sent,भेजा,ᱠᱩᱞ ᱮᱱᱟ,,,i18n.js / i18nJaagruk.js
+5 · Other,rename_label,Rename,नाम बदलें,ᱧᱩᱛᱩᱢ ᱵᱚᱫᱚᱞ,,,i18n.js / i18nJaagruk.js
+5 · Other,retry_label,Try again,फिर कोशिश करें,ᱫᱚᱦᱲᱟ ᱠᱩᱨᱩᱢᱩᱴᱩᱭ,,,i18n.js / i18nJaagruk.js
+5 · Other,save_label,Save,सहेजें,ᱥᱟᱸᱪᱟᱣ,,,i18n.js / i18nJaagruk.js
+5 · Other,th_dark,Dark,गहरा,ᱧᱩᱛ,,,i18n.js / i18nJaagruk.js
+5 · Other,th_light,Light,हल्का,ᱨᱟᱹᱲᱟᱹ,,,i18n.js / i18nJaagruk.js
+5 · Other,th_system,Auto,स्वतः,ᱟᱡᱛᱮ,,,i18n.js / i18nJaagruk.js
+5 · Other,trust_label,Trust this signer,इस हस्ताक्षरकर्ता पर भरोसा करें,ᱱᱚᱶᱟ ᱥᱩᱦᱤ ᱠᱚ ᱯᱟᱛᱭᱟᱣ,,,i18n.js / i18nJaagruk.js
+5 · Other,trust_skip_label,Import without trusting,भरोसा किए बिना आयात करें,ᱵᱟᱝ ᱯᱟᱛᱭᱟᱣ ᱠᱟᱛᱮ ᱟᱹᱜᱩ,,,i18n.js / i18nJaagruk.js

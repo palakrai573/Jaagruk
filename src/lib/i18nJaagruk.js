@@ -1008,16 +1008,27 @@ export const JAAGRUK_STRINGS = {
  * flagged Bengali, Odia or Urdu even where they were genuinely thin. Measuring
  * it means the in-app notice tells the truth without anyone maintaining a list.
  */
-export function coverageFor(lang, dictionaries = [JAAGRUK_STRINGS]) {
+export /**
+ * @param overlay optional key -> string map for a language kept in its own file.
+ *   Iterating by key rather than by value is what makes this possible; the
+ *   previous version walked Object.values and so could not tell whether an
+ *   overlay held the missing string.
+ */
+function coverageFor(lang, dictionaries = [JAAGRUK_STRINGS], overlay = null) {
   let total = 0
   let translated = 0
 
   for (const dict of dictionaries) {
-    for (const entry of Object.values(dict || {})) {
+    for (const [key, entry] of Object.entries(dict || {})) {
       if (!entry || typeof entry !== 'object') continue
       total += 1
       const value = entry[lang]
-      if (typeof value === 'string' && value.trim().length > 0) translated += 1
+      if (typeof value === 'string' && value.trim().length > 0) {
+        translated += 1
+        continue
+      }
+      const overlaid = overlay?.[key]
+      if (typeof overlaid === 'string' && overlaid.trim().length > 0) translated += 1
     }
   }
 
@@ -1040,13 +1051,28 @@ export function coverageFor(lang, dictionaries = [JAAGRUK_STRINGS]) {
 export const COVERAGE_NOTICE = {
   en: 'Some screens are still in English while this translation is completed.',
   hi: 'इस अनुवाद के पूरा होने तक कुछ स्क्रीन अंग्रेज़ी में रहेंगी।',
-  // Names Hindi, not English: Santali falls back to Hindi first (see FALLBACK in
-  // i18n.js), and Hindi is at full coverage, so a Santali screen never reaches
-  // English. Telling the worker "English" would have been simply untrue.
-  sat: 'ᱱᱚᱶᱟ ᱛᱚᱨᱡᱚᱢᱟ ᱯᱩᱨᱟᱹᱣ ᱦᱟᱵᱤᱡ ᱛᱤᱱᱟᱹᱜ ᱥᱠᱨᱤᱱ ᱦᱤᱱᱫᱤ ᱛᱮ ᱛᱟᱦᱮᱸᱱᱟ ᱾',
   bn: 'এই অনুবাদ সম্পূর্ণ হওয়া পর্যন্ত কিছু স্ক্রিন ইংরেজিতে থাকবে।',
   or: 'ଏହି ଅନୁବାଦ ସମ୍ପୂର୍ଣ୍ଣ ହେବା ପର୍ଯ୍ୟନ୍ତ କିଛି ସ୍କ୍ରିନ ଇଂରାଜୀରେ ରହିବ।',
   ur: 'اس ترجمے کے مکمل ہونے تک کچھ اسکرینیں انگریزی میں رہیں گی۔',
+}
+
+/**
+ * Shown when a language is fully translated but not yet checked by a speaker of it.
+ *
+ * This is a different statement from the coverage notice and needs its own words.
+ * "Some screens are in Hindi" was true while Santali had gaps; now that it is at
+ * 100%, that sentence would be false while the real caveat — nobody who speaks
+ * Santali has read this yet — would go unsaid. Worth saying plainly on a safety
+ * app: a worker who knows the wording is machine-made will double-check it against
+ * the pictogram, which is exactly the behaviour we want.
+ */
+export const UNVERIFIED_NOTICE = {
+  en: 'Santali here is machine-written and not yet checked by a Santali speaker. Follow the safety signs if the wording is unclear.',
+  hi: 'यहाँ संताली मशीन से लिखी गई है, किसी संताली भाषी ने अभी जाँची नहीं। शब्द समझ न आएं तो सुरक्षा चिह्न देखें।',
+  sat: 'ᱱᱚᱰᱮ ᱨᱮᱱ ᱥᱟᱱᱛᱟᱲᱤ ᱫᱚ ᱢᱮᱥᱤᱱ ᱛᱮ ᱚᱞ ᱟᱠᱟᱱᱟ, ᱛᱮᱦᱮᱸ ᱦᱟᱹᱵᱤᱡ ᱡᱟᱦᱟᱸ ᱥᱟᱱᱛᱟᱲᱤ ᱨᱚᱲ ᱦᱚᱲ ᱵᱟᱝ ᱧᱮᱞ ᱟᱠᱟᱫᱟᱭ ᱾ ᱟᱹᱲᱟᱹ ᱵᱟᱝ ᱵᱩᱡᱷᱟᱹᱣ ᱠᱷᱟᱱ ᱨᱠᱷᱟ ᱪᱤᱱᱦᱟᱹ ᱧᱮᱞ ᱢᱮ ᱾',
+  bn: 'এখানে সাঁওতালি যন্ত্রে লেখা, কোনো সাঁওতালি ভাষী এখনও যাচাই করেননি। শব্দ অস্পষ্ট হলে নিরাপত্তা চিহ্ন অনুসরণ করুন।',
+  or: 'ଏଠାରେ ସାନ୍ତାଳୀ ଯନ୍ତ୍ରରେ ଲେଖାଯାଇଛି, କୌଣସି ସାନ୍ତାଳୀ ଭାଷୀ ଏପର୍ଯ୍ୟନ୍ତ ଯାଞ୍ଚ କରିନାହାନ୍ତି। ଶବ୍ଦ ଅସ୍ପଷ୍ଟ ଲାଗିଲେ ସୁରକ୍ଷା ଚିହ୍ନ ଦେଖନ୍ତୁ।',
+  ur: 'یہاں سنتالی مشین سے لکھی گئی ہے، کسی سنتالی بولنے والے نے ابھی جانچ نہیں کی۔ الفاظ واضح نہ ہوں تو حفاظتی نشان دیکھیں۔',
 }
 
 // Shown on a drill when the scenario content itself has no translation. This is

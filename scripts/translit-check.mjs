@@ -64,7 +64,13 @@ for (const [ol, expected, note] of CASES) {
 console.log('\n=== 2. EVERY Ol Chiki STRING IN THE APP ===')
 
 const MATRAS = /[\u093E-\u094C\u0962\u0963]/
-const sources = ['src/lib/i18n.js', 'src/lib/i18nJaagruk.js', 'src/lib/scenarioTranslations.js', 'src/lib/speech.js']
+const sources = [
+  'src/lib/i18n.js',
+  'src/lib/i18nJaagruk.js',
+  'src/lib/i18nSantali.js',
+  'src/lib/scenarioTranslations.js',
+  'src/lib/speech.js',
+]
 
 const strings = []
 for (const rel of sources) {

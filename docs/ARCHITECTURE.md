@@ -287,25 +287,43 @@ matters because those are the values hashed into a certificate.
    and mapping letter-for-letter turns `ᱦᱟᱸ` ("hã") into `हआं` ("ha-aa-n"). Verified by
    `npm run translit`.
 
-4. **Santali translations are 42% complete and not verified by a native speaker.** 241 of
-   573 UI strings, and no scenario content. This is a declared gap, not a hidden one:
+4. **Santali UI is 100% covered and 0% verified.** These are two different numbers and the
+   app reports them separately, because conflating them is how software ends up lying.
 
-   - The missing strings resolve to **Hindi**, not English — a Santali speaker in Jharkhand
-     is far more likely to read Devanagari than Latin, and Devanagari is already in the
-     precached font subset so the fallback costs no network.
-   - The in-app notice says so in Ol Chiki, naming Hindi rather than English, because Hindi
-     is what actually appears.
-   - `npm run i18n` fails the build if English text is stored in another language's slot.
-     Four nav labels used to do this, which inflated the reported coverage while showing
-     Latin script to a Santali reader.
-   - `npm run santali:worksheet` regenerates `docs/santali-worksheet.csv`: every missing
-     key with its English and Hindi source, ordered by consequence so drill and hazard
-     instructions come before supervisor dashboards.
+   All 573 UI strings now exist in Ol Chiki. None has been checked by a Santali speaker.
+   The 332 written in one pass live in `src/lib/i18nSantali.js` so a reviewer can work
+   through one file; the other 241 in `i18n.js` / `i18nJaagruk.js` are equally unreviewed,
+   so the file split is organisational rather than a quality boundary.
 
-   The remaining strings are deliberately **not** machine-generated. This is safety
-   training content, and a confident-looking wrong instruction is more dangerous than a
-   declared gap, because the gap degrades to a language the worker can read while the wrong
-   instruction teaches the wrong reaction.
+   The honesty mechanism is that **the in-app notice keys off a verification flag, not off
+   the coverage percentage.** `SANTALI_VERIFIED` is `false` in `i18nSantali.js`, and
+   `isPartiallyTranslated('sat')` returns true regardless of coverage until a reviewer is
+   recorded there. Without that decoupling, writing the last string would have silenced the
+   warning and left the app presenting unchecked machine-authored safety text as a finished
+   translation. The notice itself changes wording too: "some screens are in Hindi" was true
+   while there were gaps and is false now, so Santali gets its own message saying the
+   wording is machine-written and to follow the safety signs if it is unclear.
+
+   What is enforced mechanically, by `npm run i18n`:
+
+   - No English text stored in another language's slot. Four nav labels used to do this,
+     which inflated reported coverage while showing Latin script to a Santali reader.
+   - Every authored value contains its own script.
+   - Every figure survives translation, comparing across numeral systems so Bengali ৪
+     counts as 4. Catches a bulk pass dropping the 4 and 6 from a PIN-length rule or 1952
+     from a statute citation.
+   - Every character falls inside a shipped font subset. A codepoint outside it renders as
+     a box, permanently, on a device with no network — and nothing else in the build fails.
+   - Fallback chains terminate in a fully covered language.
+
+   **Scenario content is deliberately not machine-authored.** None of the 6 modules has
+   Santali; they resolve to Hindi. Drill prose is where a wrong verb changes what a worker
+   physically does, so it waits for a speaker rather than being filled in.
+
+   `npm run santali:worksheet` regenerates `docs/santali-worksheet.csv`: all 573 strings
+   with English and Hindi source, the current Santali, and the file to correct it in,
+   ordered by consequence so drill and hazard instructions come before supervisor
+   dashboards.
 5. **No hardware keystore.** Private keys are non-extractable Web Crypto handles in
    IndexedDB, not hardware-backed. Clearing site data destroys the device key — which is
    why chain records gossip to a second device.
