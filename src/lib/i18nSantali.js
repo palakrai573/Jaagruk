@@ -116,6 +116,12 @@ export const SANTALI_STRINGS = {
   ar_block_no_orientation:
     'ᱱᱚᱶᱟ ᱡᱤᱱᱤᱥ ᱨᱮ ᱢᱳᱥᱚᱱ ᱥᱮᱱᱥᱚᱨ ᱵᱟᱝ, ᱚᱱᱟᱛᱮ ᱢᱟᱨᱠᱚᱨ ᱠᱚ ᱥᱟᱹᱨᱤ ᱦᱚᱨ ᱨᱮ ᱵᱟᱝ ᱛᱮᱭᱟᱨ ᱦᱩᱭᱩᱜᱼᱟ ᱾ ᱛᱟᱞᱤᱢ 3D ᱛᱮ ᱠᱟᱹᱢᱤᱭᱟ ᱾',
   ar_generic_zone_short: 'ᱥᱟᱫᱷᱟᱨᱚᱱ',
+  scan_found_label: 'ᱧᱟᱢ ᱮᱱᱟ',
+  scan_high_label: 'ᱡᱟᱥᱛᱤ ᱡᱚᱠᱷᱚᱢ',
+  scan_ppe_label: 'PPE',
+  scan_err_empty: 'ᱧᱮᱞ ᱠᱟᱹᱢᱤ ᱠᱷᱚᱱ ᱪᱮᱫ ᱦᱚᱸ ᱵᱟᱝ ᱦᱮᱡ ᱞᱮᱱᱟ ᱾ ᱱᱚᱶᱟ "ᱡᱚᱛᱚ ᱴᱷᱤᱠ" ᱵᱟᱝ ᱠᱟᱱᱟ — ᱫᱚᱦᱲᱟ ᱥᱠᱮᱱ ᱢᱮ ᱾',
+  scan_err_unreadable:
+    'ᱧᱮᱞ ᱠᱟᱹᱢᱤ ᱨᱮᱭᱟᱜ ᱯᱷᱚᱞ ᱵᱟᱝ ᱯᱟᱲᱦᱟᱣ ᱦᱩᱭ ᱞᱮᱱᱟ, ᱚᱱᱟᱛᱮ ᱪᱮᱫ ᱦᱚᱸ ᱵᱟᱝ ᱡᱟᱹᱨᱩᱭ ᱦᱩᱭ ᱞᱮᱱᱟ ᱾ ᱯᱷᱟᱹᱨᱪᱟ ᱯᱷᱚᱴᱚ ᱛᱮ ᱫᱚᱦᱲᱟ ᱠᱩᱨᱩᱢᱩᱴᱩᱭ ᱢᱮ ᱾',
   home_ar_ready: 'ᱠᱮᱢᱨᱟ AR ᱛᱮᱭᱟᱨ',
   home_ar_blocked: '3D ᱜᱮ',
 

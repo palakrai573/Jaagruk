@@ -229,6 +229,27 @@ const AR = {
     ur: 'اس ڈیوائس میں موشن سینسر نہیں ہے، اس لیے مارکر اصل سمت میں نہیں لگ سکتے۔ ڈرل 3D میں چلیں گی۔',
   },
   ar_generic_zone_short: { en: 'Generic', hi: 'सामान्य', bn: 'সাধারণ', or: 'ସାଧାରଣ', ur: 'عام' },
+
+  // A scan that could not be read must never be presented as a scan that found
+  // nothing, so these are worded as failures rather than as results.
+  scan_found_label: { en: 'found', hi: 'मिले', bn: 'পাওয়া গেছে', or: 'ମିଳିଲା', ur: 'ملے' },
+  scan_high_label: { en: 'high severity', hi: 'उच्च गंभीरता', bn: 'উচ্চ তীব্রতা', or: 'ଅଧିକ ଗମ୍ଭୀରତା', ur: 'زیادہ شدت' },
+  scan_ppe_label: { en: 'PPE', hi: 'पीपीई', bn: 'পিপিই', or: 'ପିପିଇ', ur: 'پی پی ای' },
+
+  scan_err_empty: {
+    en: 'The inspection returned nothing. This is not a clean result — try the scan again.',
+    hi: 'जांच से कोई उत्तर नहीं आया। यह "सब ठीक" नहीं है — स्कैन दोबारा करें।',
+    bn: 'পরিদর্শন থেকে কিছুই আসেনি। এটি "সব ঠিক" নয় — আবার স্ক্যান করুন।',
+    or: 'ପରୀକ୍ଷଣରୁ କିଛି ଆସିଲା ନାହିଁ। ଏହା "ସବୁ ଠିକ" ନୁହେଁ — ପୁଣି ସ୍କାନ କରନ୍ତୁ।',
+    ur: 'معائنے سے کوئی جواب نہیں آیا۔ یہ "سب ٹھیک" نہیں ہے — دوبارہ اسکین کریں۔',
+  },
+  scan_err_unreadable: {
+    en: 'The inspection result could not be read, so nothing was checked. Try again with a clearer photo.',
+    hi: 'जांच का परिणाम पढ़ा नहीं जा सका, इसलिए कुछ भी जांचा नहीं गया। साफ़ फोटो से दोबारा कोशिश करें।',
+    bn: 'পরিদর্শনের ফল পড়া যায়নি, তাই কিছুই যাচাই হয়নি। পরিষ্কার ছবি দিয়ে আবার চেষ্টা করুন।',
+    or: 'ପରୀକ୍ଷଣର ଫଳ ପଢ଼ାଯାଇ ପାରିଲା ନାହିଁ, ତେଣୁ କିଛି ଯାଞ୍ଚ ହେଲା ନାହିଁ। ସ୍ପଷ୍ଟ ଫଟୋ ସହିତ ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ।',
+    ur: 'معائنے کا نتیجہ پڑھا نہیں جا سکا، اس لیے کچھ بھی جانچا نہیں گیا۔ صاف تصویر کے ساتھ دوبارہ کوشش کریں۔',
+  },
   home_ar_ready: { en: 'Camera AR ready', hi: 'कैमरा एआर तैयार', bn: 'ক্যামেরা এআর প্রস্তুত', or: 'କ୍ୟାମେରା AR ପ୍ରସ୍ତୁତ', ur: 'کیمرہ اے آر تیار' },
   home_ar_blocked: { en: '3D only', hi: 'केवल 3D', bn: 'শুধু 3D', or: 'କେବଳ 3D', ur: 'صرف 3D' },
   ar_use_3d: { en: 'Use 3D view', hi: '3D व्यू इस्तेमाल करें', sat: '3D ᱧᱮᱞ ᱵᱮᱵᱷᱟᱨ', bn: '3D ভিউ ব্যবহার করুন', or: '3D ଭ୍ୟୁ ବ୍ୟବହାର କରନ୍ତୁ', ur: '3D ویو استعمال کریں' },

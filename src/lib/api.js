@@ -38,13 +38,21 @@ Respond ONLY with valid JSON, no markdown, no backticks, in this exact shape:
       "label": "short hazard name",
       "severity": "low" | "medium" | "high",
       "description": "one sentence explaining the risk",
-      "bbox": [x, y, w, h]
+      "bbox": [x, y, w, h],
+      "ppe": true if this hazard is a missing or misused item of personal protective equipment, otherwise false
     }
   ],
   "summary": "one or two sentence overall safety assessment",
   "riskScore": 0-100
 }
-bbox values are normalized 0 to 1 (fraction of image width/height) for where the hazard appears. If you cannot localize precisely, make a reasonable estimate. If no hazards are visible, return an empty hazards array and a low riskScore.`
+bbox values are normalized 0 to 1 (fraction of image width/height) for where the hazard appears. If you cannot localize precisely, make a reasonable estimate. If no hazards are visible, return an empty hazards array and a low riskScore.
+
+Severity guidance, so the scores mean the same thing across photos:
+- high: could cause death or permanent injury on this shift (no fall protection at height, unguarded in-running nip, live exposed conductor, blocked or locked escape route)
+- medium: likely to cause a reportable injury, or a control that has been defeated (missing helmet or eye protection in an active area, a wedged fire door, damaged access equipment still in use)
+- low: a housekeeping or signage problem that raises risk without being immediately dangerous
+
+Set "ppe" true only for protective equipment worn by a person — helmet, eye protection, gloves, respirator, hearing protection, harness, footwear. A missing machine guard is not PPE.`
 
   if (provider === 'gemini') {
     const res = await fetch(
@@ -61,14 +69,18 @@ bbox values are normalized 0 to 1 (fraction of image width/height) for where the
               ],
             },
           ],
-          generationConfig: { temperature: 0.3 },
+          // responseMimeType makes the model emit JSON instead of being asked to.
+          // Most parse failures were markdown fences or a sentence of preamble,
+          // and this removes that class of failure at the source rather than
+          // recovering from it afterwards.
+          generationConfig: { temperature: 0.3, responseMimeType: 'application/json' },
         }),
       }
     )
     const data = await res.json()
     if (!res.ok) throw new Error(data?.error?.message || 'Gemini API error')
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}'
-    return parseJsonSafe(text)
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || ''
+    return normaliseScanResult(parseScanJson(text))
   }
 
   if (provider === 'openai') {
@@ -81,6 +93,8 @@ bbox values are normalized 0 to 1 (fraction of image width/height) for where the
       body: JSON.stringify({
         model: 'gpt-4o-mini',
         temperature: 0.3,
+        // Same reasoning as Gemini's responseMimeType above.
+        response_format: { type: 'json_object' },
         messages: [
           {
             role: 'user',
@@ -94,8 +108,8 @@ bbox values are normalized 0 to 1 (fraction of image width/height) for where the
     })
     const data = await res.json()
     if (!res.ok) throw new Error(data?.error?.message || 'OpenAI API error')
-    const text = data.choices?.[0]?.message?.content || '{}'
-    return parseJsonSafe(text)
+    const text = data.choices?.[0]?.message?.content || ''
+    return normaliseScanResult(parseScanJson(text))
   }
 
   throw new Error('Unknown provider')
@@ -152,12 +166,122 @@ export async function askTrainer(systemContext, messages) {
   throw new Error('Unknown provider')
 }
 
-function parseJsonSafe(text) {
+/* ================================================================== */
+/* Scan result validation                                              */
+/* ================================================================== */
+
+export const SCAN_SEVERITY = ['low', 'medium', 'high']
+
+/**
+ * Parse the model's reply, or throw.
+ *
+ * THE BUG THIS REPLACES
+ * The previous version swallowed a parse failure and returned
+ * `{ hazards: [], summary: 'Could not parse AI response.' }`. HazardScan renders an
+ * empty hazards array as "No hazards detected." in safe green — so a scan that
+ * FAILED was displayed as a clean bill of health on a safety inspection. The
+ * summary line said otherwise, but the green heading is what a worker reads.
+ *
+ * A failed inspection must never look like a passed one, so this throws and lets
+ * the caller's existing error path show it as an error.
+ */
+function parseScanJson(text) {
+  const cleaned = String(text || '')
+    .replace(/```json|```/g, '')
+    .trim()
+  if (!cleaned) throw new Error('SCAN_EMPTY_RESPONSE')
   try {
-    const cleaned = text.replace(/```json|```/g, '').trim()
     return JSON.parse(cleaned)
-  } catch (e) {
-    return { hazards: [], summary: 'Could not parse AI response.', riskScore: 0, raw: text }
+  } catch {
+    // A model that wrapped the JSON in prose is recoverable: take the outermost
+    // braces and retry once before giving up.
+    const first = cleaned.indexOf('{')
+    const last = cleaned.lastIndexOf('}')
+    if (first !== -1 && last > first) {
+      try {
+        return JSON.parse(cleaned.slice(first, last + 1))
+      } catch {
+        /* fall through */
+      }
+    }
+    throw new Error('SCAN_UNREADABLE_RESPONSE')
+  }
+}
+
+const clamp01 = (n) => Math.max(0, Math.min(1, n))
+
+/**
+ * Coerce one hazard into something the UI can render, or return null to drop it.
+ *
+ * HazardScan destructures `bbox` positionally and feeds the values straight into
+ * CSS percentages, so a bbox of the wrong length yields `undefined%` and a box
+ * outside 0..1 draws outside the photo. Boxes are clamped into frame here rather
+ * than trusted, and a hazard with no usable label is dropped — an unlabelled
+ * marker on a photo tells a worker nothing.
+ */
+function normaliseHazard(raw) {
+  if (!raw || typeof raw !== 'object') return null
+
+  const label = String(raw.label ?? '').trim()
+  if (!label) return null
+
+  const severity = SCAN_SEVERITY.includes(raw.severity) ? raw.severity : 'medium'
+
+  // Unrecognised severity defaults to medium, never to low: guessing downwards on
+  // a hazard the model described but mislabelled is the wrong direction to err.
+  const box = Array.isArray(raw.bbox) ? raw.bbox.map(Number) : []
+  let bbox
+  if (box.length === 4 && box.every(Number.isFinite)) {
+    const x = clamp01(box[0])
+    const y = clamp01(box[1])
+    // Width and height are trimmed so the box cannot extend past the edge.
+    bbox = [x, y, clamp01(Math.min(box[2], 1 - x)), clamp01(Math.min(box[3], 1 - y))]
+  } else {
+    // No usable geometry. Still worth listing, so it gets a centred default and
+    // is flagged as unlocalised rather than silently drawn somewhere arbitrary.
+    bbox = [0.35, 0.35, 0.3, 0.3]
+  }
+
+  return {
+    label: label.slice(0, 80),
+    severity,
+    description: String(raw.description ?? '').trim().slice(0, 300),
+    bbox,
+    localised: box.length === 4 && box.every(Number.isFinite),
+    ppe: raw.ppe === true,
+  }
+}
+
+/**
+ * Validate and clamp a scan result so the UI cannot be handed a shape it will
+ * render incorrectly. Exported for tests.
+ */
+export function normaliseScanResult(raw) {
+  const hazards = (Array.isArray(raw?.hazards) ? raw.hazards : []).map(normaliseHazard).filter(Boolean)
+
+  // A model that returns hazards but forgets the score would otherwise show a
+  // reassuring zero on the gauge, so derive one from the worst severity present.
+  const derived = hazards.length
+    ? Math.max(...hazards.map((h) => ({ low: 30, medium: 60, high: 90 })[h.severity]))
+    : 0
+
+  /* `Number(null)` and `Number('')` are both 0, and 0 is finite — so testing
+     Number.isFinite alone accepted a MISSING score as a genuine zero and put a
+     reassuring empty gauge next to a list of things that are wrong. Absence has to
+     be checked before coercion, not after. */
+  const rawScore = raw?.riskScore
+  const scoreProvided =
+    rawScore !== null && rawScore !== undefined && rawScore !== '' && Number.isFinite(Number(rawScore))
+  const riskScore = scoreProvided ? Math.max(0, Math.min(100, Math.round(Number(rawScore)))) : derived
+
+  return {
+    hazards,
+    summary: String(raw?.summary ?? '').trim(),
+    riskScore,
+    // Counted separately so the UI can say "3 hazards, 2 of them PPE" without a
+    // second model call or a separate screen that fails offline.
+    ppeCount: hazards.filter((h) => h.ppe).length,
+    highCount: hazards.filter((h) => h.severity === 'high').length,
   }
 }
 

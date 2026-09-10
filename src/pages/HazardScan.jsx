@@ -6,6 +6,15 @@ import { speak } from '../lib/speech.js'
 import RiskGauge from '../components/RiskGauge.jsx'
 import { useLanguage } from '../context/LanguageContext.jsx'
 
+/* The scan now throws when the model's reply cannot be read, instead of returning
+   an empty hazard list — which HazardScan rendered as "No hazards detected." in
+   safe green, so a failed inspection looked like a passed one. These map the two
+   codes analyzeHazardImage can raise onto a sentence a worker can act on. */
+const SCAN_ERROR_KEYS = {
+  SCAN_EMPTY_RESPONSE: 'scan_err_empty',
+  SCAN_UNREADABLE_RESPONSE: 'scan_err_unreadable',
+}
+
 // ISO fills, used as borders and chip backgrounds. Identical in both themes,
 const severityColor = { low: 'rgb(var(--safe))', medium: 'rgb(var(--warning))', high: 'rgb(var(--hazard))' }
 
@@ -122,13 +131,47 @@ export default function HazardScan() {
                 </p>
               </div>
             )}
+            {/* Our own error codes get translated; a provider's message is shown
+                verbatim because it usually names the actual problem (quota, bad
+                key, image too large) and paraphrasing it would lose that. */}
             {error && error !== 'NO_KEY' && (
-              <div className="bg-hazard/10 border border-hazard rounded p-4 text-sm text-hazard-text">{error}</div>
+              <div className="bg-hazard/10 border border-hazard rounded p-4 text-sm text-hazard-text">
+                {SCAN_ERROR_KEYS[error] ? t(SCAN_ERROR_KEYS[error]) : error}
+              </div>
             )}
 
             {result && (
               <div className="space-y-6">
                 <RiskGauge score={result.riskScore || 0} />
+
+                {/* The counts the normaliser already derives. A supervisor reading
+                    this wants "how many will hurt someone today" and "how many are
+                    PPE" before reading the list, and PPE is the category a
+                    toolbox talk can fix the same morning. */}
+                {result.hazards.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    <span className="font-mono text-2xs uppercase tracking-widest rounded-full border border-line-subtle px-3 py-1.5 text-ink-secondary">
+                      {result.hazards.length} {t('scan_found_label')}
+                    </span>
+                    {result.highCount > 0 && (
+                      <span
+                        className="font-mono text-2xs uppercase tracking-widest rounded-full px-3 py-1.5 border"
+                        style={{ borderColor: severityColor.high, color: 'rgb(var(--hazard-text))' }}
+                      >
+                        {result.highCount} {t('scan_high_label')}
+                      </span>
+                    )}
+                    {result.ppeCount > 0 && (
+                      <span
+                        className="font-mono text-2xs uppercase tracking-widest rounded-full px-3 py-1.5 border"
+                        style={{ borderColor: severityColor.medium, color: 'rgb(var(--warning-text))' }}
+                      >
+                        {result.ppeCount} {t('scan_ppe_label')}
+                      </span>
+                    )}
+                  </div>
+                )}
+
                 <p className="text-sm text-ink-tertiary leading-relaxed border-t border-line-subtle pt-4">
                   {result.summary}
                 </p>

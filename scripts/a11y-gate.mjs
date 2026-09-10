@@ -27,7 +27,70 @@ const ok = (label, cond, detail, severity = 'FAIL') => {
   else report(severity, label, detail)
 }
 
-const strip = (s) => s.replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/(^|[^:])\/\/[^\n]*/g, '$1 ')
+/* Remove comments without mistaking string contents for them.
+ *
+ * This was two regexes — /\/\*[\s\S]*?\*\// then //-to-end-of-line — and it had a
+ * real failure. `accept="image/*"` in HazardScan.jsx contains `/*`, so the block
+ * regex opened a comment inside a string literal and swallowed everything up to
+ * the next `*​/` anywhere in the file. That merged ~4000 characters into a single
+ * <input> tag, and the gate then reported that input as unlabelled because the
+ * className it was being judged on had been eaten.
+ *
+ * The bug was latent: it only surfaced when an unlucky `*​/` appeared later in the
+ * file, which is what adding a comment elsewhere did. A stripper that corrupts its
+ * input is worse than no stripper, because every check downstream is then reading
+ * fiction — so this walks the source instead, tracking string and template state.
+ */
+function strip(source) {
+  let out = ''
+  let i = 0
+  const n = source.length
+
+  while (i < n) {
+    const ch = source[i]
+    const next = source[i + 1]
+
+    // Comments — only reachable when not inside a string.
+    if (ch === '/' && next === '*') {
+      const end = source.indexOf('*/', i + 2)
+      out += ' '
+      i = end === -1 ? n : end + 2
+      continue
+    }
+    // Not a comment when preceded by ':' — that is a protocol, as in https://.
+    if (ch === '/' && next === '/' && out[out.length - 1] !== ':') {
+      while (i < n && source[i] !== '\n') i += 1
+      out += ' '
+      continue
+    }
+
+    // Strings and templates pass through verbatim, escapes included, so nothing
+    // inside them can be read as syntax.
+    if (ch === '"' || ch === "'" || ch === '`') {
+      const quote = ch
+      out += ch
+      i += 1
+      while (i < n) {
+        if (source[i] === '\\') {
+          out += source[i] + (source[i + 1] ?? '')
+          i += 2
+          continue
+        }
+        out += source[i]
+        if (source[i] === quote) {
+          i += 1
+          break
+        }
+        i += 1
+      }
+      continue
+    }
+
+    out += ch
+    i += 1
+  }
+  return out
+}
 const files = []
 ;(function walk(dir) {
   for (const n of readdirSync(dir)) {
@@ -395,6 +458,36 @@ const hard = findings.filter((f) => f.severity === 'FAIL')
 const warn = findings.filter((f) => f.severity === 'WARN')
 
 if (SELFTEST) {
+  /* The comment stripper is asserted first, because a stripper that corrupts its
+   * input makes every check below read fiction while still reporting a pass.
+   * `accept="image/*"` is the exact string that broke the earlier regex version:
+   * it opened a block comment inside a string literal and swallowed ~4000
+   * characters, merging them into one <input> tag whose className had been eaten. */
+  console.log('\nSTRIPPER')
+  const stripCases = [
+    ['<input accept="image/*" className="hidden" />', 'className="hidden"', 'a /* inside a string is not a comment'],
+    ['const a = 1 /* gone */ ; const b = 2', 'const b = 2', 'a real block comment is removed'],
+    ['const u = "https://x.test/a"', 'https://x.test/a', 'a protocol // inside a string survives'],
+    ['let x = 1 // gone\nlet y = 2', 'let y = 2', 'a real line comment is removed'],
+    ["const s = 'it\\'s fine' ; const t = 3", 'const t = 3', 'an escaped quote does not end the string'],
+  ]
+  let stripFails = 0
+  for (const [input, mustContain, why] of stripCases) {
+    if (strip(input).includes(mustContain)) console.log(`  ok   ${why}`)
+    else {
+      stripFails += 1
+      console.log(`  FAIL ${why}\n       got ${JSON.stringify(strip(input))}`)
+    }
+  }
+  if (strip('a /* x */ b').includes('x')) {
+    stripFails += 1
+    console.log('  FAIL block comment content survived')
+  } else console.log('  ok   block comment content is removed')
+  if (stripFails) {
+    console.log(`\n${stripFails} stripper failures — every check above is unreliable`)
+    process.exit(1)
+  }
+
   // Every check that reads the file set must have flagged the synthetic file.
   const EXPECTED = [
     'every button has an accessible name',
