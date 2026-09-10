@@ -113,6 +113,22 @@ export function lsGetBool(key, defaultValue = false) {
   return raw === 'true' || raw === '1'
 }
 
+/**
+ * Like lsGetBool, but returns null when the key has never been written.
+ *
+ * The distinction matters for any setting where "the user has not chosen" should
+ * behave differently from "the user chose no". AR is the case that forced this:
+ * with lsGetBool the two are indistinguishable, so a capable phone got the 3D
+ * scene on first run and nothing said the camera view existed. Now unset means
+ * "pick the better experience for this device" while an explicit false is a
+ * decision to respect.
+ */
+export function lsGetBoolOrNull(key) {
+  const raw = lsGet(key, null)
+  if (raw === null) return null
+  return raw === 'true' || raw === '1'
+}
+
 export function lsSetBool(key, value) {
   lsSet(key, value ? 'true' : 'false')
 }

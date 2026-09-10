@@ -187,6 +187,50 @@ const AR = {
   ar_camera_unsupported: { en: 'This browser cannot open the camera.', hi: 'यह ब्राउज़र कैमरा नहीं खोल सकता।', bn: 'এই ব্রাউজার ক্যামেরা খুলতে পারে না।', or: 'ଏହି ବ୍ରାଉଜର କ୍ୟାମେରା ଖୋଲିପାରିବ ନାହିଁ।', ur: 'یہ براؤزر کیمرہ نہیں کھول سکتا۔' },
   ar_camera_unknown: { en: 'The camera could not start.', hi: 'कैमरा शुरू नहीं हो सका।', bn: 'ক্যামেরা চালু হতে পারেনি।', or: 'କ୍ୟାମେରା ଆରମ୍ଭ ହୋଇପାରିଲା ନାହିଁ।', ur: 'کیمرہ شروع نہیں ہو سکا۔' },
   ar_retry: { en: 'Retry camera', hi: 'कैमरा फिर आज़माएं', bn: 'ক্যামেরা আবার চেষ্টা', or: 'କ୍ୟାମେରା ପୁଣି', ur: 'کیمرہ دوبارہ' },
+
+  // Why the camera view is unavailable, stated per cause rather than as one
+  // generic failure. `ar_block_insecure` is the important one: it is the only
+  // cause the person holding the phone can fix, and it is invisible during
+  // development because localhost is a secure context. "3D" is kept as the Latin
+  // token in every language so the figure survives translation.
+  ar_block_unsupported: {
+    en: 'The camera view cannot run in this browser. Drills still work in 3D.',
+    hi: 'इस ब्राउज़र में कैमरा व्यू नहीं चल सकता। ड्रिल 3D में चलेंगी।',
+    bn: 'এই ব্রাউজারে ক্যামেরা ভিউ চলতে পারে না। ড্রিল 3D-তে চলবে।',
+    or: 'ଏହି ବ୍ରାଉଜରରେ କ୍ୟାମେରା ଭ୍ୟୁ ଚାଲିପାରିବ ନାହିଁ। ଡ୍ରିଲ 3D ରେ ଚାଲିବ।',
+    ur: 'اس براؤزر میں کیمرہ ویو نہیں چل سکتا۔ ڈرل 3D میں چلیں گی۔',
+  },
+  ar_block_insecure: {
+    en: 'The camera view needs a secure (https) connection, so drills will run in 3D.',
+    hi: 'कैमरा व्यू के लिए सुरक्षित (https) कनेक्शन चाहिए, इसलिए ड्रिल 3D में चलेंगी।',
+    bn: 'ক্যামেরা ভিউয়ের জন্য নিরাপদ (https) সংযোগ দরকার, তাই ড্রিল 3D-তে চলবে।',
+    or: 'କ୍ୟାମେରା ଭ୍ୟୁ ପାଇଁ ସୁରକ୍ଷିତ (https) ସଂଯୋଗ ଆବଶ୍ୟକ, ତେଣୁ ଡ୍ରିଲ 3D ରେ ଚାଲିବ।',
+    ur: 'کیمرہ ویو کے لیے محفوظ (https) کنکشن درکار ہے، اس لیے ڈرل 3D میں چلیں گی۔',
+  },
+  ar_block_insecure_hint: {
+    en: 'Open the app over https, or from localhost while developing. Browsers block camera and compass access on plain http.',
+    hi: 'ऐप को https पर खोलें, या विकास के दौरान localhost से। सामान्य http पर ब्राउज़र कैमरा और कंपास रोक देते हैं।',
+    bn: 'অ্যাপটি https-এ খুলুন, বা ডেভেলপমেন্টের সময় localhost থেকে। সাধারণ http-তে ব্রাউজার ক্যামেরা ও কম্পাস বন্ধ রাখে।',
+    or: 'ଆପକୁ https ରେ ଖୋଲନ୍ତୁ, କିମ୍ବା ବିକାଶ ସମୟରେ localhost ରୁ। ସାଧାରଣ http ରେ ବ୍ରାଉଜର କ୍ୟାମେରା ଓ କମ୍ପାସ ଅଟକାଇ ଦିଏ।',
+    ur: 'ایپ کو https پر کھولیں، یا ڈیولپمنٹ کے دوران localhost سے۔ عام http پر براؤزر کیمرہ اور کمپاس روک دیتے ہیں۔',
+  },
+  ar_block_no_camera: {
+    en: 'This browser cannot open a camera, so drills will run in 3D.',
+    hi: 'यह ब्राउज़र कैमरा नहीं खोल सकता, इसलिए ड्रिल 3D में चलेंगी।',
+    bn: 'এই ব্রাউজার ক্যামেরা খুলতে পারে না, তাই ড্রিল 3D-তে চলবে।',
+    or: 'ଏହି ବ୍ରାଉଜର କ୍ୟାମେରା ଖୋଲିପାରିବ ନାହିଁ, ତେଣୁ ଡ୍ରିଲ 3D ରେ ଚାଲିବ।',
+    ur: 'یہ براؤزر کیمرہ نہیں کھول سکتا، اس لیے ڈرل 3D میں چلیں گی۔',
+  },
+  ar_block_no_orientation: {
+    en: 'This device has no motion sensor, so markers cannot be placed on real directions. Drills run in 3D.',
+    hi: 'इस डिवाइस में मोशन सेंसर नहीं है, इसलिए मार्कर असली दिशा में नहीं लग सकते। ड्रिल 3D में चलेंगी।',
+    bn: 'এই ডিভাইসে মোশন সেন্সর নেই, তাই মার্কার আসল দিকে বসানো যাবে না। ড্রিল 3D-তে চলবে।',
+    or: 'ଏହି ଡିଭାଇସରେ ମୋଶନ ସେନ୍ସର ନାହିଁ, ତେଣୁ ମାର୍କର ପ୍ରକୃତ ଦିଗରେ ରଖାଯାଇପାରିବ ନାହିଁ। ଡ୍ରିଲ 3D ରେ ଚାଲିବ।',
+    ur: 'اس ڈیوائس میں موشن سینسر نہیں ہے، اس لیے مارکر اصل سمت میں نہیں لگ سکتے۔ ڈرل 3D میں چلیں گی۔',
+  },
+  ar_generic_zone_short: { en: 'Generic', hi: 'सामान्य', bn: 'সাধারণ', or: 'ସାଧାରଣ', ur: 'عام' },
+  home_ar_ready: { en: 'Camera AR ready', hi: 'कैमरा एआर तैयार', bn: 'ক্যামেরা এআর প্রস্তুত', or: 'କ୍ୟାମେରା AR ପ୍ରସ୍ତୁତ', ur: 'کیمرہ اے آر تیار' },
+  home_ar_blocked: { en: '3D only', hi: 'केवल 3D', bn: 'শুধু 3D', or: 'କେବଳ 3D', ur: 'صرف 3D' },
   ar_use_3d: { en: 'Use 3D view', hi: '3D व्यू इस्तेमाल करें', sat: '3D ᱧᱮᱞ ᱵᱮᱵᱷᱟᱨ', bn: '3D ভিউ ব্যবহার করুন', or: '3D ଭ୍ୟୁ ବ୍ୟବହାର କରନ୍ତୁ', ur: '3D ویو استعمال کریں' },
   ar_use_ar: { en: 'Use camera AR', hi: 'कैमरा एआर इस्तेमाल करें', sat: 'ᱠᱮᱢᱨᱟ AR ᱵᱮᱵᱷᱟᱨ', bn: 'ক্যামেরা এআর ব্যবহার করুন', or: 'କ୍ୟାମେରା AR ବ୍ୟବହାର କରନ୍ତୁ', ur: 'کیمرہ اے آر استعمال کریں' },
   ar_generic_zone: {

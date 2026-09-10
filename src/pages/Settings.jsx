@@ -4,10 +4,11 @@ import { getApiKey, setApiKey, getProvider, setProvider } from '../lib/api.js'
 import { LANGUAGES, allCoverage } from '../lib/i18n.js'
 import { voiceAvailability, speak, SPEECH_IS_SUBSTITUTE } from '../lib/speech.js'
 import { gestureBlocker, gestureStatusKey } from '../lib/gesture.js'
+import { arBlocker, shouldUseAr, AR_BLOCK_KEYS } from '../lib/arSupport.js'
 import { storageStatus, idbClearAll, requestPersistence } from '../lib/idb.js'
 import { getSyncEndpoint, setSyncEndpoint, queueStats, rebuildQueue } from '../lib/sync.js'
 import { getCurrentWorker, logout, ROLE } from '../lib/identity.js'
-import { LS, lsGetBool, lsSetBool, lsRemove } from '../lib/local.js'
+import { LS, lsGetBool, lsGetBoolOrNull, lsSetBool, lsRemove } from '../lib/local.js'
 import Pictogram from '../lib/pictograms.jsx'
 import { useLanguage } from '../context/LanguageContext.jsx'
 
@@ -37,7 +38,10 @@ export default function Settings() {
   const [pictogramMode, setPictogramMode] = useState(() => lsGetBool(LS.MODE_PICTOGRAM, false))
   const [voiceMode, setVoiceMode] = useState(() => lsGetBool(LS.MODE_VOICE, false))
   const [gestureMode, setGestureMode] = useState(() => lsGetBool(LS.MODE_GESTURE, false))
-  const [arMode, setArMode] = useState(() => lsGetBool(LS.MODE_AR, false))
+  // Same resolution as the drill screen, so this switch reflects what a drill will
+  // actually do. Reading it with a plain false default would show "Off" on a phone
+  // that is about to run AR, which is worse than either state being wrong.
+  const [arMode, setArMode] = useState(() => shouldUseAr(lsGetBoolOrNull(LS.MODE_AR)))
 
   const [endpoint, setEndpoint] = useState(() => getSyncEndpoint())
   const [endpointError, setEndpointError] = useState(null)
@@ -51,6 +55,11 @@ export default function Settings() {
   const [resetting, setResetting] = useState(false)
 
   const gestureBlock = gestureBlocker()
+  // The AR toggle had no capability guard while the gesture toggle right above it
+  // did, so Settings would read "On" for camera drills on a laptop with no camera
+  // and on any page served over plain http. Same contract as gestureBlocker:
+  // null when it will work, otherwise a code that maps to an i18n key.
+  const arBlock = arBlocker()
 
   const refresh = useCallback(async () => {
     const [status, queueInfo, current] = await Promise.all([storageStatus(), queueStats(), getCurrentWorker()])
@@ -178,7 +187,9 @@ export default function Settings() {
           pictogram="warning"
           label={t('st_ar_mode')}
           hint={t('st_ar_hint')}
-          on={arMode}
+          on={arMode && !arBlock}
+          disabled={!!arBlock}
+          disabledReason={arBlock ? t(AR_BLOCK_KEYS[arBlock]) : null}
           onToggle={() => toggle(arMode, setArMode, LS.MODE_AR)}
           t={t}
           last

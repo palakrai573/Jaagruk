@@ -27,6 +27,7 @@ import { STORE, idbGet, idbPut, idbGetAll, idbDelete } from './idb.js'
 import { randomId } from './crypto.js'
 import { getActiveSiteId, DEFAULT_SITE_ID } from './identity.js'
 import { toFiniteNumber, toNumberOr, clamp } from './num.js'
+import { secureContext } from './arSupport.js'
 
 /* ================================================================== */
 /* Anchor vocabulary                                                   */
@@ -440,6 +441,13 @@ export function createOrientationTracker({ onUpdate, onStatus, smoothing = 0.25,
 
 export const CAMERA_ERROR = {
   UNSUPPORTED: 'CAMERA_UNSUPPORTED',
+  // Distinct from UNSUPPORTED, and the distinction is the whole point. Outside a
+  // secure context `navigator.mediaDevices` is simply absent, so this used to
+  // report as UNSUPPORTED — "this browser cannot open the camera" — when the
+  // browser is fine and the page is on http. It is the one camera failure the
+  // person holding the phone can actually fix, and it only ever appears on a
+  // phone: localhost is a secure context, so the dev machine never sees it.
+  INSECURE_CONTEXT: 'CAMERA_INSECURE_CONTEXT',
   PERMISSION_DENIED: 'CAMERA_PERMISSION_DENIED',
   NOT_FOUND: 'CAMERA_NOT_FOUND',
   IN_USE: 'CAMERA_IN_USE',
@@ -463,6 +471,9 @@ function mapCameraError(err) {
  * Throws an Error whose message is a CAMERA_ERROR code.
  */
 export async function openRearCamera() {
+  // Checked before the API test, because an insecure context is why the API is
+  // missing. Reporting the absent API first sends someone hunting a browser bug.
+  if (!secureContext()) throw new Error(CAMERA_ERROR.INSECURE_CONTEXT)
   if (!navigator.mediaDevices?.getUserMedia) throw new Error(CAMERA_ERROR.UNSUPPORTED)
 
   const attempts = [

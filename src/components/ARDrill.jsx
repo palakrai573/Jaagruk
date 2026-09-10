@@ -58,7 +58,14 @@ const CAMERA_ERROR_KEYS = {
   [CAMERA_ERROR.NOT_FOUND]: 'ar_camera_missing',
   [CAMERA_ERROR.IN_USE]: 'ar_camera_in_use',
   [CAMERA_ERROR.UNSUPPORTED]: 'ar_camera_unsupported',
+  [CAMERA_ERROR.INSECURE_CONTEXT]: 'ar_block_insecure',
   [CAMERA_ERROR.UNKNOWN]: 'ar_camera_unknown',
+}
+
+/* The only camera failure with a fix the worker can carry out, so it is the only
+   one that earns a second line of explanation. */
+const CAMERA_ERROR_HINTS = {
+  [CAMERA_ERROR.INSECURE_CONTEXT]: 'ar_block_insecure_hint',
 }
 
 // ~30fps is smooth enough for marker tracking and stops orientation events
@@ -330,6 +337,11 @@ export default function ARDrill({
           <Pictogram name="warning" size={44} />
           <p className="font-display font-bold text-xl uppercase">{t('ar_unavailable')}</p>
           <p className="text-white/70 text-sm max-w-sm">{t(CAMERA_ERROR_KEYS[cameraError] || 'ar_camera_unknown')}</p>
+          {CAMERA_ERROR_HINTS[cameraError] && (
+            <p className="font-mono text-[11px] text-[#FFB020] max-w-sm leading-relaxed">
+              {t(CAMERA_ERROR_HINTS[cameraError])}
+            </p>
+          )}
           <div className="flex gap-3 mt-2 flex-wrap justify-center">
             <button
               onClick={startCamera}

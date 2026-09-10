@@ -10,9 +10,10 @@ import { scoreRun, saveAttempt, gradeLatency, TRAINING_MODE } from '../lib/asses
 import { recordResult } from '../lib/spaced.js'
 import { PASS_THRESHOLD } from '../lib/certificate.js'
 import { getCurrentWorker, getActiveSiteId } from '../lib/identity.js'
-import { getZone, filterAnchors, GENERIC_ZONE_ID } from '../lib/siteMap.js'
+import { listZones, filterAnchors, GENERIC_ZONE_ID } from '../lib/siteMap.js'
+import { shouldUseAr, arBlocker, AR_BLOCK_KEYS } from '../lib/arSupport.js'
 import { enqueue, SYNC_KIND } from '../lib/sync.js'
-import { LS, lsGetBool, lsSetBool } from '../lib/local.js'
+import { LS, lsGetBool, lsGetBoolOrNull, lsSetBool } from '../lib/local.js'
 import SafetyScene3D from '../components/SafetyScene3D.jsx'
 import ARDrill from '../components/ARDrill.jsx'
 import Pictogram from '../lib/pictograms.jsx'
@@ -64,23 +65,66 @@ export default function Scenario() {
 
   const [pictogramMode, setPictogramMode] = useState(() => lsGetBool(LS.MODE_PICTOGRAM, false))
   const [voiceMode, setVoiceMode] = useState(() => lsGetBool(LS.MODE_VOICE, false))
-  const [arMode, setArMode] = useState(() => lsGetBool(LS.MODE_AR, false))
+  /**
+   * AR is ON by default on a device that can run it.
+   *
+   * This used to be `lsGetBool(LS.MODE_AR, false)`, which meant the camera view —
+   * the headline of an AR submission — was off out of the box and mentioned
+   * nowhere a first-time user would look. `lsGetBoolOrNull` distinguishes "never
+   * chose" from "chose no", and `shouldUseAr` resolves the former against actual
+   * device capability rather than a guess. An explicit false is still respected,
+   * and a stored true never survives a hard block, so enabling AR on a phone and
+   * then opening the same app on a laptop yields the 3D scene rather than an
+   * error panel.
+   */
+  const [arMode, setArMode] = useState(() => shouldUseAr(lsGetBoolOrNull(LS.MODE_AR)))
   const [zone, setZone] = useState(null)
+  const [zones, setZones] = useState([])
+
+  // Why AR is unavailable, if it is. Held so the toggle can explain itself
+  // instead of simply not working.
+  const arBlock = useMemo(() => arBlocker(), [])
 
   const step = scenario?.steps?.[stepIndex] || null
   const totalSteps = scenario?.steps?.length || 0
 
   /* ---------------- AR zone ---------------- */
 
+  /**
+   * Resolve which zone's anchors this drill should project.
+   *
+   * THE BUG THIS REPLACES
+   * The previous version called `getZone(getActiveSiteId(), null)`. `getZone`
+   * opens with `if (!zoneId || zoneId === GENERIC_ZONE_ID) return genericZone()`,
+   * so passing a hardcoded null short-circuited on the first line, every time.
+   * The drill therefore ALWAYS showed the six hardcoded generic bearings and
+   * always displayed the amber "this site has not been scanned" chip — even on a
+   * fully scanned site. Site Setup was a feature that fed nothing, and the one
+   * thing that makes this AR spatially real (markers over the actual exit in the
+   * actual corridor) never ran.
+   *
+   * Now the real zones are listed and the first scanned one is preferred, with the
+   * generic zone as the deliberate fallback rather than the only outcome. Same
+   * precedence ReportHazard already used, so the two agree about which zone a
+   * worker is standing in.
+   */
   useEffect(() => {
     if (!arMode || !scenario) return
     let cancelled = false
     ;(async () => {
       try {
-        const active = await getZone(getActiveSiteId(), null)
-        if (!cancelled) setZone(active)
+        const list = await listZones(getActiveSiteId())
+        if (cancelled) return
+        setZones(list)
+        // A zone with anchors beats an empty one; a real zone beats the generic.
+        const scanned = list.filter((z) => z.id !== GENERIC_ZONE_ID)
+        const withAnchors = scanned.find((z) => (z.anchors?.length || 0) > 0)
+        setZone(withAnchors || scanned[0] || list[list.length - 1] || null)
       } catch {
-        if (!cancelled) setZone(null)
+        if (!cancelled) {
+          setZones([])
+          setZone(null)
+        }
       }
     })()
     return () => {
@@ -412,18 +456,70 @@ export default function Scenario() {
           <span className="min-w-0">{scenario.title}</span>
         </h1>
 
-        <button
-          type="button"
-          onClick={() => {
-            const nextValue = !arMode
-            setArMode(nextValue)
-            lsSetBool(LS.MODE_AR, nextValue)
-          }}
-          className="font-mono text-2xs uppercase tracking-widest border border-line-subtle rounded-lg px-3 min-h-[44px] flex items-center text-ink-tertiary hover:border-brand hover:text-brand-text transition-colors duration-fast shrink-0"
-        >
-          {arMode ? t('ar_use_3d') : t('ar_use_ar')}
-        </button>
+        {/* The mode switch was a 10px tertiary-ink caption at the far right of the
+            title row — indistinguishable from a label, on the one control that
+            decides whether this is an AR product or a 3D one. It now reads as a
+            control: brand-tinted when AR is live, with a pictogram, and it states
+            the reason instead of silently doing nothing when the device cannot. */}
+        {arBlock ? (
+          <span
+            className="font-mono text-2xs uppercase tracking-widest border border-line-subtle rounded-lg px-3 py-2
+                       max-w-[10rem] text-center leading-snug text-ink-tertiary shrink-0"
+            title={t(AR_BLOCK_KEYS[arBlock] || 'ar_camera_unknown')}
+          >
+            {t('ar_unavailable')}
+          </span>
+        ) : (
+          <button
+            type="button"
+            onClick={() => {
+              const nextValue = !arMode
+              setArMode(nextValue)
+              // Only an explicit tap persists. See onFallback below.
+              lsSetBool(LS.MODE_AR, nextValue)
+            }}
+            aria-pressed={arMode}
+            className={`font-mono text-2xs uppercase tracking-widest rounded-lg border px-3 min-h-touch
+                        inline-flex items-center gap-2 shrink-0 transition-colors duration-fast ${
+                          arMode
+                            ? 'border-brand bg-brand-subtle text-brand-text'
+                            : 'border-line text-ink-secondary hover:border-brand hover:text-brand-text'
+                        }`}
+          >
+            <Pictogram name={arMode ? 'exit_arrow' : 'warning'} size={16} />
+            {arMode ? t('ar_use_3d') : t('ar_use_ar')}
+          </button>
+        )}
       </div>
+
+      {/* Zone picker. Only worth showing when a supervisor has actually scanned
+          something — with one zone there is nothing to choose, and the generic
+          fallback is not a place a worker would recognise the name of. */}
+      {arMode && zones.filter((z) => z.id !== GENERIC_ZONE_ID).length > 1 && (
+        <div className="flex items-center gap-2 mb-5 overflow-x-auto pb-1">
+          <span className="font-mono text-2xs uppercase tracking-widest text-ink-tertiary shrink-0">
+            {t('hz_zone_label')}
+          </span>
+          {zones.map((z) => (
+            <button
+              key={z.id}
+              type="button"
+              onClick={() => setZone(z)}
+              aria-pressed={zone?.id === z.id}
+              /* min-h-touch, not the 32px a chip would naturally be: this is a
+                 field-tier screen and the worker picking a zone may be gloved. */
+              className={`shrink-0 font-mono text-2xs uppercase tracking-widest rounded-full px-4 min-h-touch border
+                          inline-flex items-center transition-colors duration-fast ${
+                            zone?.id === z.id
+                              ? 'border-brand bg-brand-subtle text-brand-text'
+                              : 'border-line-subtle text-ink-tertiary hover:border-brand'
+                          }`}
+            >
+              {z.id === GENERIC_ZONE_ID ? t('ar_generic_zone_short') : z.name}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Untranslated drill CONTENT is a safety problem, not an inconvenience —
           a hazard instruction in a language the worker does not read. Hence
@@ -445,9 +541,15 @@ export default function Scenario() {
           zoneName={zone?.name || ''}
           isGenericZone={!zone || zone.id === GENERIC_ZONE_ID}
           onAimComplete={() => setAimedThisStep(true)}
+          /* Session-only, deliberately NOT persisted.
+             This fires when the worker taps "Use 3D view" on a camera or compass
+             error panel. That is an escape from a broken frame, not a statement of
+             preference — but the previous version wrote false to localStorage, so a
+             single permission misfire or one accidental tap disabled AR on every
+             future drill until the worker rediscovered a 10px toggle. The explicit
+             switch above still persists; this does not. */
           onFallback={() => {
             setArMode(false)
-            lsSetBool(LS.MODE_AR, false)
           }}
         >
           {step?.aim && !feedback && (

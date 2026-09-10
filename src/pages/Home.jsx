@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import Pictogram from '../lib/pictograms.jsx'
 import { useLanguage } from '../context/LanguageContext.jsx'
@@ -23,6 +23,7 @@ import { listAttempts, bestByDomain } from '../lib/assessment.js'
 import { loadDomainProgress, isEligibleForCertificate, overallCompliance } from '../lib/certificate.js'
 import { dueRefreshers } from '../lib/spaced.js'
 import { listSites } from '../lib/siteMap.js'
+import { arBlocker, AR_BLOCK, AR_BLOCK_KEYS } from '../lib/arSupport.js'
 import { hazardStats } from '../lib/hazards.js'
 import { SCENARIOS, CERTIFICATION_DOMAINS } from '../lib/scenarios.js'
 import { LANGUAGES } from '../lib/i18n.js'
@@ -340,6 +341,17 @@ function HeroMetric({ value, suffix = '', label, tone = 'ink', to }) {
 /* ================================================================== */
 
 function Layers({ t, state, signedIn }) {
+  /**
+   * Whether this phone can run the camera view, answered on the home page.
+   *
+   * AR is the headline of the submission and it used to be discoverable only by
+   * opening a specific drill and noticing a caption-sized toggle. Worse, a device
+   * that could not do AR gave no indication until the camera failed mid-drill.
+   * Stating it here — ready, or the specific reason — means a worker or a judge
+   * knows before starting, and the commonest reason (page not on HTTPS) is
+   * actionable rather than mysterious.
+   */
+  const arBlock = useMemo(() => arBlocker(), [])
   // Metadata per card differs by whether we know anything about this worker: real
   // history when signed in, capability figures otherwise. Never a placeholder
   // zero, which on a readiness figure would be actively misleading.
@@ -358,12 +370,18 @@ function Layers({ t, state, signedIn }) {
             { label: t('m_anchors'), value: state.anchors ?? 0 },
           ]
         : [{ label: t('m_modules'), value: MODULE_COUNT }],
-      status:
-        signedIn && state.zones > 0 ? (
-          <Badge tone="safe" size="sm" dot>
-            {state.zones}
-          </Badge>
-        ) : null,
+      // AR readiness outranks the zone count here. A zone count of 3 is useless
+      // information if the camera view cannot open on this device, and the reason
+      // is the thing worth surfacing first.
+      status: arBlock ? (
+        <Badge tone="warning" size="sm" dot>
+          {t('home_ar_blocked')}
+        </Badge>
+      ) : (
+        <Badge tone="safe" size="sm" dot>
+          {t('home_ar_ready')}
+        </Badge>
+      ),
     },
     {
       n: '02',
@@ -429,6 +447,25 @@ function Layers({ t, state, signedIn }) {
   return (
     <Section tone="raised">
       <SectionHeader eyebrow={`${DOMAIN_COUNT} · ${MODULE_COUNT} · ${LANGUAGE_COUNT}`} title={t('home_layers_title')} />
+
+      {/* The reason, not just the fact. A badge reading "no camera view" invites
+          the assumption that the app is broken; naming the cause lets the reader
+          fix it when it is fixable, and the commonest cause — the page not being
+          served over HTTPS — is fixable in about a minute. Drills still run in 3D
+          either way, which is why this is a note and not an error. */}
+      {arBlock && (
+        <div className="bg-warning-subtle border border-warning-border rounded-xl p-3.5 mb-5 flex items-start gap-3">
+          <Pictogram name="warning" size={22} className="shrink-0" />
+          <div className="min-w-0">
+            <p className="text-xs text-ink-secondary leading-relaxed">{t(AR_BLOCK_KEYS[arBlock])}</p>
+            {arBlock === AR_BLOCK.INSECURE_CONTEXT && (
+              <p className="font-mono text-2xs text-ink-tertiary mt-1.5 leading-relaxed">
+                {t('ar_block_insecure_hint')}
+              </p>
+            )}
+          </div>
+        </div>
+      )}
 
       <div className="grid md:grid-cols-2 gap-4">
         {layers.map((layer, i) => (
