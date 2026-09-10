@@ -299,11 +299,21 @@ export function newAttemptSeed() {
  * break the positional translation mapping.
  *
  * @param scenario  base or translated scenario object
+ * @param opts  an attempt seed string, or { shuffle, seed }
  * @param opts.shuffle  reorder choices (default true — see the note at the top
  *                      of this file for why this matters)
  * @param opts.seed     attempt seed; keep it stable for the whole attempt
+ *
+ * A bare string is accepted as the seed. That is not sugar for its own sake: the
+ * natural thing to write is `enrichScenario(s, seed)`, and with an options-only
+ * signature that silently destructures to the default seed — every attempt then
+ * gets the SAME permutation, which quietly restores the guess-by-position exploit
+ * the shuffle exists to prevent. It fails no test and looks correct at the call
+ * site. Both real callers pass the object form; this makes the other form correct
+ * too rather than subtly wrong.
  */
-export function enrichScenario(scenario, { shuffle = true, seed = 'static' } = {}) {
+export function enrichScenario(scenario, opts = {}) {
+  const { shuffle = true, seed = 'static' } = typeof opts === 'string' ? { seed: opts } : opts || {}
   if (!scenario) return null
   const meta = scenarioMeta(scenario.id)
 
