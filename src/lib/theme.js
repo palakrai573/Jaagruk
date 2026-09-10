@@ -1,11 +1,24 @@
-// Theme: dark (default) and light, both first-class.
+// Theme: light (default) and dark, both first-class.
 //
-// WHY DARK IS THE DEFAULT
-// The primary environment is an underground shaft or a night shift. A white
-// screen at 2 a.m. underground destroys dark adaptation, and the worker then
-// cannot see the corridor he is being trained to evacuate. Light exists because
-// a projector in a bright hall washes out dark UI, and because a safety officer
-// reading a roster at a desk should not be forced into a dark theme.
+// WHY LIGHT IS THE DEFAULT
+// Most first contact with this app is above ground in daylight — a worker at the
+// gate during induction, a supervisor at a desk, a demo on a projector in a bright
+// hall. Light is what those readers expect, and a dark-by-default interface reads
+// as a developer tool rather than a piece of workplace equipment.
+//
+// Dark is not a secondary skin, and the reason it exists is not aesthetic: a white
+// screen at 2 a.m. underground destroys dark adaptation, and a worker who has just
+// lost his night vision cannot see the corridor he is being trained to evacuate.
+// Anyone working a night shift or below ground should switch, and the toggle is in
+// the header rather than buried in Settings for exactly that reason.
+//
+// ARDrill is the one surface that stays dark under both themes. It draws over a
+// live camera feed, so flashing white on a camera error would cause the same
+// problem the dark theme exists to prevent.
+//
+// 'system' remains available and still honours the OS, but it is no longer the
+// default: on a device that has never expressed a preference, resolving to dark
+// was surprising for the majority of readers.
 //
 // WHY THE PRE-PAINT SCRIPT IN index.html MATTERS
 // Reading localStorage from React means the first paint happens before the theme
@@ -30,8 +43,8 @@ export function systemPrefersLight() {
 
 /** The stored preference, which may be 'system'. */
 export function getThemePreference() {
-  const stored = lsGet(LS.THEME, THEME.SYSTEM)
-  return VALID.has(stored) ? stored : THEME.SYSTEM
+  const stored = lsGet(LS.THEME, THEME.LIGHT)
+  return VALID.has(stored) ? stored : THEME.LIGHT
 }
 
 /** The theme actually in effect right now — never 'system'. */

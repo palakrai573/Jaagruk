@@ -431,8 +431,12 @@ function CertificateCard({ cert, t }) {
           ) : (
             <>
               {/* Always on white, in both themes. A QR on a dark surface is a QR
-                  most scanners refuse, and this one has to work at a pit head. */}
-              <div className="bg-white rounded-lg p-4 inline-block mb-3">
+                  most scanners refuse, and this one has to work at a pit head.
+                  The border is not decoration: on the light theme the plate and the
+                  card behind it are both near-white, so without it the quiet zone
+                  the QR spec requires has no visible edge and the code reads as a
+                  floating smudge. */}
+              <div className="bg-white border border-line rounded-lg p-4 inline-block mb-3">
                 <QRCodeSVG value={qrPayload} size={188} level="L" />
               </div>
               <p className="text-xs text-ink-tertiary max-w-xs mx-auto mb-6 leading-relaxed">

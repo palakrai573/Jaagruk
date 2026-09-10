@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="en" dir="ltr" data-theme="dark">
+<html lang="en" dir="ltr" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#0D0F11" />
-    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#F7F8F9" />
+    <meta name="color-scheme" content="light dark" />
     <meta
       name="description"
       content="Jaagruk — AR safety training, reaction-time assessment and tamper-evident offline certification for mining, steel and mica workers in Jharkhand."
@@ -27,7 +27,9 @@
       (function () {
         try {
           var stored = localStorage.getItem('jaagruk_theme')
-          var pref = stored === 'light' || stored === 'dark' || stored === 'system' ? stored : 'system'
+          // Unset falls to 'light', matching getThemePreference() in
+          // src/lib/theme.js. Change both or the first paint flashes.
+          var pref = stored === 'light' || stored === 'dark' || stored === 'system' ? stored : 'light'
           var light =
             pref === 'light' ||
             (pref === 'system' &&
@@ -48,7 +50,7 @@
             root.setAttribute('lang', 'ur-PK')
           }
         } catch (e) {
-          /* Private mode with storage disabled. The dark default in the markup
+          /* Private mode with storage disabled. The light default in the markup
              above already applies, so there is nothing to recover from. */
         }
       })()

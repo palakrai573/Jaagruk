@@ -224,7 +224,9 @@ export default function PeerSync({ siteId = null, onComplete }) {
             {stage === STAGE.HOST_SHOW ? t('bd_host_step1') : t('bd_join_step2')}
           </p>
 
-          <div className="bg-white rounded-lg p-3 flex justify-center mb-3">
+          {/* White in both themes so a scanner can read it; bordered so the quiet
+              zone still has an edge on the light theme. */}
+          <div className="bg-white border border-line rounded-lg p-3 flex justify-center mb-3">
             <QRCodeSVG value={myCode} size={190} level="L" />
           </div>
 

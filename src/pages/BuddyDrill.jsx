@@ -305,7 +305,9 @@ export default function BuddyDrill() {
               text={stage === STAGE.HOST_SHOW ? t('bd_host_step1') : t('bd_join_step2')}
             />
 
-            <div className="bg-white rounded-lg p-4 flex justify-center mb-4">
+            {/* White in both themes so a scanner can read it; bordered so the
+                quiet zone still has an edge on the light theme. */}
+            <div className="bg-white border border-line rounded-lg p-4 flex justify-center mb-4">
               <QRCodeSVG value={myCode} size={232} level="L" />
             </div>
 
