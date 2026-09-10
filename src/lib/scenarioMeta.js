@@ -218,6 +218,29 @@ export const STEP_META = {
     pictogram: 'proper_lift',
     choicePictograms: ['proper_lift', 'proper_lift'],
   },
+  ms4: {
+    // Group isolation. A planning conversation at the isolator, not an emergency,
+    // so there is room to reason about who holds which lock.
+    targetMs: 12000,
+    pictogram: 'lockout',
+    choicePictograms: ['do_not_operate', 'lockout', 'worker'],
+    aim: { types: [ANCHOR_TYPE.LOTO_PANEL] },
+  },
+  ms5: {
+    // Re-energising. Deliberate by nature and the sequence is the whole answer,
+    // so time to think is correct here.
+    targetMs: 11000,
+    pictogram: 'machinery',
+    choicePictograms: ['do_not_operate', 'check'],
+    aim: { types: [ANCHOR_TYPE.LOTO_PANEL] },
+  },
+  ms6: {
+    // A defeated two-hand control found mid-shift with production pressure on.
+    // Tighter, because the wrong answer here is the one that feels reasonable.
+    targetMs: 8000,
+    pictogram: 'machinery',
+    choicePictograms: ['machinery', 'do_not_operate', 'warning'],
+  },
 
   // --- Electrical Hazard Response ---
   eh1: {
@@ -240,6 +263,30 @@ export const STEP_META = {
     choicePictograms: ['electric', 'alarm'],
     aim: { types: [ANCHOR_TYPE.EXIT] },
   },
+  eh4: {
+    // A workmate locked onto a live cable. The tightest window in the app
+    // alongside gc4: the instinct to grab is immediate and it is fatal, so the
+    // decision has to be trained to arrive faster than the instinct.
+    targetMs: 5000,
+    pictogram: 'electric',
+    choicePictograms: ['worker', 'lockout', 'warning'],
+    aim: { types: [ANCHOR_TYPE.ELECTRICAL_PANEL, ANCHOR_TYPE.LOTO_PANEL] },
+  },
+  eh5: {
+    // Prove-dead discipline before starting planned work. Deliberate, not urgent.
+    targetMs: 11000,
+    pictogram: 'detector',
+    choicePictograms: ['electric', 'detector'],
+    aim: { types: [ANCHOR_TYPE.ELECTRICAL_PANEL] },
+  },
+  eh6: {
+    // Water under a live board. Nobody is in contact yet, but the wrong action
+    // puts them there, so a middling window.
+    targetMs: 8000,
+    pictogram: 'electric',
+    choicePictograms: ['warning', 'lockout', 'do_not_enter'],
+    aim: { types: [ANCHOR_TYPE.ELECTRICAL_PANEL] },
+  },
 
   // --- Dust & Respiratory Hazard Protection ---
   dr1: {
@@ -261,6 +308,26 @@ export const STEP_META = {
     pictogram: 'medical_check',
     choicePictograms: ['dust', 'medical_check'],
   },
+  dr4: {
+    // Respirator fit before a shift. Nobody is exposed yet, and the right answer
+    // involves asking for different equipment — which takes a moment to reach.
+    targetMs: 12000,
+    pictogram: 'gas_mask',
+    choicePictograms: ['dust_mask', 'gas_mask', 'warning'],
+  },
+  dr5: {
+    // Extraction moved aside. Exposure is happening now, so tighter than dr4.
+    targetMs: 9000,
+    pictogram: 'wet_suppression',
+    choicePictograms: ['dust', 'wet_suppression'],
+    aim: { types: [ANCHOR_TYPE.DUST_SOURCE] },
+  },
+  dr6: {
+    // Filter past its change date. A maintenance judgement, not an emergency.
+    targetMs: 12000,
+    pictogram: 'dust_mask',
+    choicePictograms: ['dust_mask', 'check', 'do_not_operate'],
+  },
 
   // --- Manual Handling & Site Housekeeping ---
   w1: {
@@ -278,6 +345,28 @@ export const STEP_META = {
     targetMs: 9000,
     pictogram: 'damaged_ladder',
     choicePictograms: ['damaged_ladder', 'report_it'],
+  },
+  w4: {
+    // Crossing in front of a loaded forklift whose driver is looking away. This
+    // is the struck-by decision and it happens in the time it takes to walk two
+    // steps, so it is the tightest window in the module.
+    targetMs: 5000,
+    pictogram: 'forklift',
+    choicePictograms: ['forklift', 'check', 'warning'],
+  },
+  w5: {
+    // An unattended machine on a ramp. Nobody is in its path yet, so there is
+    // room to have the conversation properly.
+    targetMs: 11000,
+    pictogram: 'forklift',
+    choicePictograms: ['forklift', 'do_not_operate'],
+  },
+  w6: {
+    // A leaning pallet over a walkway. Not instantaneous, but every minute it
+    // stays there is a minute someone walks underneath it.
+    targetMs: 8000,
+    pictogram: 'unstable_load',
+    choicePictograms: ['ladder', 'do_not_enter', 'warning'],
   },
 }
 

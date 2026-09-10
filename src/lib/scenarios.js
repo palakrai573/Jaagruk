@@ -156,6 +156,32 @@ export const SCENARIOS = [
           { text: 'Suggest proper lifting technique or use lifting equipment', points: 15, feedback: 'Correct. Bend at the knees, keep the load close, or use mechanical aids — this prevents chronic injuries.' },
         ],
       },
+      {
+        id: 'ms4',
+        prompt: 'You have isolated the press and fitted your lock. A fitter arrives to help and asks you to open up so he can fit his own lock.',
+        choices: [
+          { text: 'Remove your lock so he can fit his, then put yours back on', points: -25, feedback: 'For the seconds your lock is off, the machine can be energised by anyone. Group isolation exists precisely so nobody has to remove a lock to add one — a multi-lock hasp takes both without ever leaving the isolation open.' },
+          { text: 'Fit a multi-lock hasp so both locks are on at once and the isolation is never broken', points: 25, feedback: 'Correct. Every person working on the machine holds their own lock, and the isolation stays continuous. The machine cannot start while any one lock remains.' },
+          { text: 'Tell him your lock covers both of you', points: -20, feedback: 'One lock protects one person. If you finish first and remove it, he is still inside a machine that is now live and he has no way to know. Each worker holds their own.' },
+        ],
+      },
+      {
+        id: 'ms5',
+        prompt: 'Work is done. You are about to remove your lock and hand the press back.',
+        choices: [
+          { text: 'Remove the lock and press start to check it runs', points: -30, feedback: 'Nothing has confirmed the danger zone is clear. Starting a machine while a hand or a tool may still be inside it is the final step where LOTO discipline usually fails.' },
+          { text: 'Clear tools, confirm everyone is clear of the danger zone, refit the guard, then remove the lock', points: 30, feedback: 'Correct. The order matters: tools out, people clear, guard on, lock off. Reversing any of those turns a completed job into an incident.' },
+        ],
+      },
+      {
+        id: 'ms6',
+        prompt: 'Next shift, the press runs but the two-hand start control now works with one hand.',
+        choices: [
+          { text: 'Keep running it — the machine works and output is behind', points: -30, feedback: 'A two-hand control exists so both hands are outside the die when it closes. Defeated, it is not a minor fault; it is the specific guard that prevents an amputation, and it has been removed.' },
+          { text: 'Stop the machine, tag it out of service and report the defeated control', points: 30, feedback: 'Correct. A defeated safety control is a stop-work condition. Tagging it prevents the next operator inheriting an unguarded machine that looks normal.' },
+          { text: 'Run it carefully and mention it at the end of the shift', points: -25, feedback: 'Care is not a substitute for a guard, and the next operator will not know. The whole risk of a defeated control is that the machine looks and behaves as usual until it takes a hand.' },
+        ],
+      },
     ],
   },
   {
@@ -187,6 +213,32 @@ export const SCENARIOS = [
         choices: [
           { text: 'Keep working, someone else will notice eventually', points: -30, feedback: 'A burning smell near electrical equipment is an early fire warning sign. Delayed reporting can lead to a major electrical fire.' },
           { text: 'Stop work, report it, and alert the fire safety team', points: 30, feedback: 'Correct. Early reporting of electrical burning smells is critical fire-prevention behavior.' },
+        ],
+      },
+      {
+        id: 'eh4',
+        prompt: 'A workmate is gripping a live cable and cannot let go. He is conscious but rigid.',
+        choices: [
+          { text: 'Pull him off by the arm — every second counts', points: -30, feedback: 'Touching him puts the same current through you, and rescuers become the second casualty in a large share of electrical fatalities. He is rigid because the current has locked his muscles; adding your body to the circuit helps neither of you.' },
+          { text: 'Isolate the supply first, then reach him', points: 30, feedback: 'Correct. Isolation is the rescue. Until the current stops he is part of a live circuit, and the fastest safe route to him is the switch, not his arm.' },
+          { text: 'Use a dry wooden plank to push him clear without isolating', points: -10, feedback: 'A recognised last resort when isolation is genuinely impossible, and far better than bare hands — but the isolator is right there. Insulated separation is what you do when you cannot kill the supply, not instead of killing it.' },
+        ],
+      },
+      {
+        id: 'eh5',
+        prompt: 'You are asked to work on a panel that has been switched off at the breaker.',
+        choices: [
+          { text: 'Start work — the breaker is off and labelled', points: -25, feedback: 'A label records an intention, not a state. Breakers are mislabelled, wired back-fed, or switched by someone else while you work. Nothing but a test on the conductors you are about to touch proves they are dead.' },
+          { text: 'Lock off, then prove dead on every conductor with an approved tester before touching anything', points: 25, feedback: 'Correct. Isolate, lock, prove dead, then work — and prove it on the conductors you will actually contact. Testing the tester first is part of it.' },
+        ],
+      },
+      {
+        id: 'eh6',
+        prompt: 'Water from a leaking pipe is pooling under a live floor-standing distribution board.',
+        choices: [
+          { text: 'Mop it up before it reaches the board', points: -30, feedback: 'That puts you standing in a conductive pool beside live equipment. Water plus an energised board is a step-and-touch shock risk, and the person mopping is the one completing the path to earth.' },
+          { text: 'Keep everyone back, isolate the board upstream, then deal with the water', points: 30, feedback: 'Correct. De-energise first and clear people from the area. The water is a hazard only because the board is live, so removing the energy removes the hazard.' },
+          { text: 'Put down a rubber mat and mop from on top of it', points: -15, feedback: 'A mat is not rated for this and gives false confidence. Standing on an untested insulator next to a live board in standing water is still an unacceptable exposure when isolation is available.' },
         ],
       },
     ],
@@ -223,6 +275,32 @@ export const SCENARIOS = [
           { text: 'Encourage them to report it and get a medical check as per occupational health protocol', points: 30, feedback: 'Correct. Persistent respiratory symptoms in a dust environment should always be reported and medically checked — early detection saves lives.' },
         ],
       },
+      {
+        id: 'dr4',
+        prompt: 'You put your respirator on. It sits loose against your cheek because you have a beard.',
+        choices: [
+          { text: 'Wear it as is — a loose respirator is better than none', points: -25, feedback: 'It is not. A tight-fitting respirator works by seal, and air takes the easy path around a broken seal rather than through the filter. You get the discomfort of the mask and almost none of the protection, plus the false confidence that you are protected.' },
+          { text: 'Ask for a loose-fitting powered respirator or hood that does not rely on a face seal', points: 25, feedback: 'Correct. Where a seal cannot be achieved, the answer is equipment that does not need one. Fit is not a formality — it is the entire mechanism.' },
+          { text: 'Pull the straps as tight as they will go to force a seal', points: -15, feedback: 'Over-tightening does not seal against hair and it makes the mask painful enough that it will come off within the hour. The seal fails at the hair, not at the strap tension.' },
+        ],
+      },
+      {
+        id: 'dr5',
+        prompt: 'The extraction hood over the splitting bench has been swung aside so workers can reach the material more easily.',
+        choices: [
+          { text: 'Leave it — the work is faster and everyone is wearing masks', points: -25, feedback: 'Extraction removes dust from the air; a mask only protects the one person wearing it, and only while it is sealed and fitted. Losing extraction raises exposure for the whole bench and loads every filter faster.' },
+          { text: 'Reposition the hood over the dust source before work continues', points: 25, feedback: 'Correct. Controlling dust at source protects everyone in the area at once. PPE is the last line, not the first, and it is not a substitute for extraction.' },
+        ],
+      },
+      {
+        id: 'dr6',
+        prompt: 'Your respirator filter is past its change date but still breathes easily.',
+        choices: [
+          { text: 'Keep using it — it does not feel blocked', points: -25, feedback: 'Breathing resistance tells you a particulate filter is loading, but it is not a reliable indicator of remaining life and it tells you nothing at all on a gas or vapour cartridge, which can be exhausted while still breathing freely.' },
+          { text: 'Change the filter and record it, on schedule rather than on feel', points: 25, feedback: 'Correct. Filter life is managed by a change schedule, not by sensation. Recording the change is what makes the schedule real rather than a habit.' },
+          { text: 'Blow the filter clean with the airline and carry on', points: -30, feedback: 'Compressed air drives trapped dust through the media and damages it, so a filter cleaned this way is worse than the one you started with. It is also a good way to inhale a concentrated cloud of what it had already captured.' },
+        ],
+      },
     ],
   },
   {
@@ -255,6 +333,32 @@ export const SCENARIOS = [
         choices: [
           { text: 'Use it carefully, just this once', points: -20, feedback: 'A cracked step can fail under any load, "careful" use included. Faulty equipment must be taken out of service, not worked around.' },
           { text: 'Tag it as damaged and get a proper ladder', points: 20, feedback: 'Correct. Damaged equipment should be tagged and removed from use immediately, not risked "just this once."' },
+        ],
+      },
+      {
+        id: 'w4',
+        prompt: 'You need to cross the yard. A loaded forklift is heading for the same gap and the driver is looking over his shoulder at his load.',
+        choices: [
+          { text: 'Walk through quickly before he gets there', points: -30, feedback: 'A loaded forklift has a blind side, poor forward visibility past the load, and cannot stop or swerve like a car. Winning the gap depends on him seeing you, which is the one thing you have just established he is not doing.' },
+          { text: 'Stop, stay in the walkway, and wait until you have eye contact and he has acknowledged you', points: 30, feedback: 'Correct. Pedestrian-vehicle separation plus positive acknowledgement is what prevents struck-by incidents. If he has not seen you, you do not have right of way whatever the markings say.' },
+          { text: 'Wave your arms so he notices you and keep walking', points: -25, feedback: 'You are relying on him looking up at the exact moment you enter his path. Signalling is not a substitute for staying out of the vehicle route until it is clear.' },
+        ],
+      },
+      {
+        id: 'w5',
+        prompt: 'A driver leaves his forklift on the loading ramp, engine running, to go and sign a docket.',
+        choices: [
+          { text: 'Say nothing — he is only away for a moment', points: -25, feedback: 'An unattended machine on a slope with the engine running can roll. "Only a moment" is how a runaway happens, and it is also the moment someone else decides to move it because it is in the way.' },
+          { text: 'Ask him to lower the forks, apply the brake, neutral, engine off, and take the key', points: 25, feedback: 'Correct. Forks down, brake on, neutral, off, key out — that is what "unattended" means. On a ramp it is not a formality.' },
+        ],
+      },
+      {
+        id: 'w6',
+        prompt: 'A pallet on the third tier is leaning out over the walkway below.',
+        choices: [
+          { text: 'Push it back into place from the ladder', points: -30, feedback: 'Correcting a leaning load by hand from a ladder puts you underneath it while destabilising it. If it goes, it goes onto you, and a ladder gives you nowhere to move.' },
+          { text: 'Barrier off the walkway underneath and get it brought down mechanically', points: 30, feedback: 'Correct. Clear the drop zone first, then use the machine that put it up there to bring it down. Nobody should be under a suspect load, including you.' },
+          { text: 'Leave it and warn people walking past to keep to the far side', points: -20, feedback: 'A verbal warning does not survive the shift change, and the next person through will not have heard it. An unstable load overhead needs the area closed and the load removed, not a caution passed on by word of mouth.' },
         ],
       },
     ],
