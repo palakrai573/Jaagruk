@@ -274,6 +274,16 @@ matters because those are the values hashed into a certificate.
 2. **Magnetometer drift.** Steel plants and mine shafts distort magnetic heading. The app
    detects absent or low-accuracy compass data and offers manual re-centring, but this is
    a real constraint of the sensor, not something software can fully remove.
+
+   **The AR view requires a secure context (https).** Not a design choice — browsers do not
+   expose `navigator.mediaDevices` or fire `deviceorientation` on plain http, so the camera
+   and the compass are both unavailable. `localhost` counts as secure, which is why this only
+   ever shows up on a phone and never on the machine doing the developing: serving the dev
+   build to a handset over `http://192.168.x.x:5173` silently loses AR. `src/lib/arSupport.js`
+   detects this as `AR_INSECURE_CONTEXT` and names it, rather than reporting a generic camera
+   failure. Drills fall back to the 3D scene, so nothing is blocked — but a demo intending to
+   show AR must be served over https (`npm run preview` behind a tunnel, or the deployed
+   build). See `docs/DEPLOYMENT.md`.
 3. **Santali ASR does not exist at production quality.** Commands are matched against a
    Hindi acoustic model with a fixed lexicon. Santali *text and audio output* (Ol Chiki) is
    real; Santali *speech input* is best-effort.

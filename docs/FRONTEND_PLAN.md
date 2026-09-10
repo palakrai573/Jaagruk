@@ -334,6 +334,59 @@ physically does, which is a different risk from a mislabelled dashboard tab.
 English and Hindi source, the current Santali, and which file to correct it in, ordered by
 consequence.
 
+### ☑ Phase 8 — AR discoverability and the Site Setup disconnect
+
+Added after a phone test reported "there is no AR". AR was not missing — camera, compass
+projection, anchor markers, aim-and-hold and the smoke overlay were all implemented. It was
+unreachable, and on a phone it was also failing for a reason the error never named.
+
+**AR is now on by default where the device can run it.** `LS.MODE_AR` defaulted to `false`,
+so a capable phone got the 3D scene on first run. The only entry point was a 10px
+tertiary-ink button at the far right of the drill title row — three taps deep and visually a
+caption rather than a control. Nothing in the navigation, Home, or the module cards mentioned
+AR, and the Settings label never used the word. `src/lib/arSupport.js` now computes capability
+and `lsGetBoolOrNull` distinguishes "never chose" from "chose no", so the stored value is an
+override rather than the source of truth. An explicit opt-out is still honoured, and a stored
+`true` never survives a hard block.
+
+**The failure that only happens on a phone.** `navigator.mediaDevices` does not exist outside
+a secure context, so opening the dev server over `http://192.168.x.x:5173` reported "this
+browser cannot open the camera" when the browser was fine and the scheme was the problem.
+`localhost` is a secure context, so it is invisible on the developing machine and appears only
+on the device that matters. There was no `isSecureContext` check anywhere in `src`.
+`CAMERA_ERROR.INSECURE_CONTEXT` is now checked *before* the API test, because the insecure
+context is why the API is absent — and it is the only camera failure the person holding the
+phone can fix, so it is the only one with a second explanatory line.
+
+**The bug that made Site Setup pointless.** `Scenario.jsx` called
+`getZone(getActiveSiteId(), null)`, and `getZone` opens with
+`if (!zoneId || zoneId === GENERIC_ZONE_ID) return genericZone()`. The hardcoded `null`
+short-circuited on the first line every time, so the drill always projected the six generic
+bearings and always showed the "site has not been scanned" chip — including on a fully
+scanned site. A supervisor could mark every exit and extinguisher in a corridor and none of
+it reached a drill; the one thing that makes this AR spatially real never ran. Now
+`listZones()` with explicit precedence — scanned-with-anchors, then any scanned zone, then
+generic as a deliberate fallback — matching the precedence `ReportHazard` already used, plus a
+zone picker when more than one scanned zone exists.
+
+**One hiccup no longer disables AR permanently.** `onFallback` fires when a worker taps "Use
+3D view" on an error panel. That is an escape from a broken frame, not a preference, but it
+wrote `false` to localStorage — so a single permission misfire disabled AR on every future
+drill. Now session-only; the explicit switch still persists.
+
+Also: the drill toggle became a real control (brand-tinted, pictogram, `min-h-touch`,
+`aria-pressed`) that states the reason when the device cannot; Home layer 01 carries AR
+readiness and the specific cause when blocked; the Settings toggle gained the capability guard
+the gesture toggle beside it already had. No `PRIMARY_NAV` item — the header budget measured
+in Phase 6 has ~219px headroom at worst, and AR is a mode rather than a destination.
+
+The Phase 6 touch-target check caught the new zone chips at `py-1.5` on a field-tier screen,
+which is exactly what it was written for.
+
+**Not covered:** whether the camera actually opens. Static analysis cannot request a
+permission or read a magnetometer. AR needs a real phone on https, and the device matrix in
+`docs/DEPLOYMENT.md` §10 is still required.
+
 ---
 
 ## 7. Non-negotiable constraints

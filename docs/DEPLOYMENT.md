@@ -253,6 +253,8 @@ Do these **on a real phone**, not a desktop browser. Several of them cannot fail
 | 4 | **Turn on airplane mode, force-close, reopen** | App boots fully offline |
 | 5 | Offline: run a drill, verify a certificate | Both complete with no network |
 | 6 | Open Site Setup, aim the phone | Compass heading updates live |
+| 6a | **Open any drill on a fresh install** | **Camera view appears with no setting changed** — AR is default-on where the device supports it. If you get the 3D scene, check Home: it names the reason. |
+| 6b | **Mark two anchors in Site Setup, then open a drill** | **Those markers appear at their real bearings, and the "site has not been scanned" chip is gone.** This path was broken until Phase 8 — the drill always used generic bearings — so it is worth confirming on a device rather than assuming. |
 | 7 | Start a hazard report, take a photo | Camera opens, photo downscales |
 | 8 | Enable gesture mode (online first time) | Model downloads then tracks |
 | 9 | Two phones on one hotspot → buddy drill | QR pairing connects |
