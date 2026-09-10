@@ -136,6 +136,28 @@ export const STEP_META = {
     choicePictograms: ['extinguisher', 'assembly_point'],
     aim: { types: [ANCHOR_TYPE.ASSEMBLY_POINT, ANCHOR_TYPE.EXIT] },
   },
+  fe4: {
+    // Mid-evacuation, in a smoke path. Same pressure as fe3.
+    targetMs: 6000,
+    pictogram: 'exit',
+    choicePictograms: ['exit', 'exit_arrow', 'report_it'],
+    aim: { types: [ANCHOR_TYPE.EXIT] },
+  },
+  fe5: {
+    // At the muster point, out of immediate danger, but a missing person makes
+    // delay expensive — tighter than a planning decision, looser than in-smoke.
+    targetMs: 8000,
+    pictogram: 'assembly_point',
+    choicePictograms: ['do_not_enter', 'report_it', 'cross'],
+    aim: { types: [ANCHOR_TYPE.ASSEMBLY_POINT] },
+  },
+  fe6: {
+    // Post-incident permit decision. Nobody is in danger, so there is room to
+    // think and no reason to reward a snap answer.
+    targetMs: 11000,
+    pictogram: 'spark',
+    choicePictograms: ['spark', 'do_not_operate'],
+  },
 
   // --- Gas Leak & Confined Space Protocol ---
   gc1: {
@@ -149,6 +171,28 @@ export const STEP_META = {
     targetMs: 9000,
     pictogram: 'gas_mask',
     choicePictograms: ['dust_mask', 'gas_mask'],
+  },
+  gc4: {
+    // Detector alarming, atmosphere deteriorating. The tightest window in the
+    // module — every second here is a second of exposure.
+    targetMs: 5000,
+    pictogram: 'gas_detector',
+    choicePictograms: ['confined_space', 'exit_arrow', 'gas_detector'],
+    aim: { types: [ANCHOR_TYPE.EXIT] },
+  },
+  gc5: {
+    // Out of the space, but someone else is in it. Counter-instinctive decision
+    // under pressure, so still tight.
+    targetMs: 6000,
+    pictogram: 'no_lone_entry',
+    choicePictograms: ['do_not_enter', 'alarm'],
+    aim: { types: [ANCHOR_TYPE.GAS_ZONE] },
+  },
+  gc6: {
+    // Permit decision with nobody currently at risk. Room to think.
+    targetMs: 11000,
+    pictogram: 'gas_detector',
+    choicePictograms: ['confined_space', 'gas_detector', 'gas_mask'],
   },
   gc3: {
     targetMs: 8000,

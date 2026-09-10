@@ -36,6 +36,32 @@ export const SCENARIOS = [
           { text: 'Abandon extinguishing, follow the evacuation sequence, and account for your team at the muster point', points: 30, feedback: 'Correct. Evacuation sequencing — stop, exit via the nearest safe route, report to muster point — is the standard protocol once a fire escalates.' },
         ],
       },
+      {
+        id: 'fe4',
+        prompt: 'You are evacuating. You pass a fire door held open with a wooden wedge.',
+        choices: [
+          { text: 'Leave it — you are in the middle of an evacuation', points: -15, feedback: 'A wedged fire door is a hole in the compartment that is supposed to hold the fire back. It takes one kick to clear and it protects everyone still behind you.' },
+          { text: 'Kick the wedge clear so the door can swing shut behind you', points: 20, feedback: 'Correct. Fire doors buy the time the evacuation depends on. Clearing a wedge costs a second and restores the compartment.' },
+          { text: 'Stop and find maintenance to report the wedge', points: -20, feedback: 'The reporting is right, the timing is wrong. Standing still in a smoke path to find someone is how people are overcome. Clear it, keep moving, report it at the muster point.' },
+        ],
+      },
+      {
+        id: 'fe5',
+        prompt: 'At the assembly point the supervisor counts heads. One worker from your section is not there.',
+        choices: [
+          { text: 'Go back in to look for them — you know where they usually work', points: -30, feedback: 'This is the decision that turns one casualty into two. Unplanned re-entry by an untrained person is a leading cause of secondary fatalities. You are the person who knows where they were, and that information is worth far more than your entry.' },
+          { text: 'Report the name and their last known location to the incident controller', points: 30, feedback: 'Correct. You hold information the rescue team cannot get anywhere else. Handing it over immediately is the highest-value action available to you.' },
+          { text: 'Assume they used a different exit and stay quiet', points: -25, feedback: 'A silent assumption removes them from the search. If you have not seen them, say so — an unnecessary check costs minutes, an unreported absence can cost a life.' },
+        ],
+      },
+      {
+        id: 'fe6',
+        prompt: 'The fire is out. A colleague starts setting up to resume the grinding job to make up lost time.',
+        choices: [
+          { text: 'Help them restart — the fire is out and the shift is behind', points: -25, feedback: 'The ignition source has not been eliminated and the area has not been re-checked. Restarting hot work over ground that has just burned is how a second fire starts in the same shift.' },
+          { text: 'Stop the restart until the hot-work permit is re-issued and the area re-inspected', points: 25, feedback: 'Correct. A hot-work permit is void once an incident occurs. Re-inspection and re-issue is the control that stops a repeat.' },
+        ],
+      },
     ],
   },
   {
@@ -68,6 +94,32 @@ export const SCENARIOS = [
         choices: [
           { text: 'Enter alone since it will only take a few minutes', points: -30, feedback: 'Confined space entry alone is a critical violation. If you are overcome by gas, no one will know until it is too late — the buddy system exists specifically for this scenario.' },
           { text: 'Wait for a buddy or assign a stand-by attendant before entry', points: 30, feedback: 'Correct. The buddy system is mandatory for confined space entry — a second person monitoring from outside can call for rescue immediately if something goes wrong.' },
+        ],
+      },
+      {
+        id: 'gc4',
+        prompt: 'You are inside. Fifteen minutes in, your detector alarms and the reading is climbing.',
+        choices: [
+          { text: 'Finish the task quickly — you are nearly done and it is only just alarming', points: -30, feedback: 'A climbing reading means the atmosphere is getting worse, not that you have time. "Nearly done" is the reasoning found in most confined-space fatality reports. The alarm is the point at which you leave, not the point at which you hurry.' },
+          { text: 'Leave immediately by the route you came in and tell the attendant why', points: 30, feedback: 'Correct. An alarm is an exit instruction. Leaving by the known route and reporting the reading lets the space be re-tested before anyone re-enters.' },
+          { text: 'Take the detector to the far end to find where the gas is coming from', points: -25, feedback: 'Locating the source is a job for a re-entry with the right equipment, not for the person currently breathing it. Walking further in takes you further from the exit as the atmosphere deteriorates.' },
+        ],
+      },
+      {
+        id: 'gc5',
+        prompt: 'Outside now. The attendant says a contractor lifted the barrier and went in to look for you while you were exiting.',
+        choices: [
+          { text: 'Go back in after him — he does not know the layout', points: -30, feedback: 'Two untrained people in an alarming space is two casualties. This is the exact sequence that produces multiple-fatality confined-space incidents, and good intent is what drives it every time.' },
+          { text: 'Raise the alarm for a trained rescue team and hold the entry so nobody else follows', points: 30, feedback: 'Correct. Controlling the entry point and calling equipped rescue is the only action that reduces the casualty count rather than adding to it.' },
+        ],
+      },
+      {
+        id: 'gc6',
+        prompt: 'The space has been ventilated. The supervisor asks you to go back in and finish the inspection.',
+        choices: [
+          { text: 'Re-enter — it has been ventilated and you know the space', points: -25, feedback: 'Ventilation is not evidence. Gas can stratify and pool low or in dead ends, and a space that reads clear at the opening can still be lethal three metres in. Re-entry requires a fresh test, not a ventilation run.' },
+          { text: 'Ask for a fresh atmospheric test at working depth and a new entry permit first', points: 25, feedback: 'Correct. The permit is void once the space alarms. A fresh test at the depth you will actually work at, and a re-issued permit, are what make re-entry defensible.' },
+          { text: 'Re-enter but leave the door open and keep the detector in your hand', points: -15, feedback: 'Better instinct, still an unpermitted entry. Carrying a detector tells you when you are already in trouble; a pre-entry test at depth tells you not to go.' },
         ],
       },
     ],
