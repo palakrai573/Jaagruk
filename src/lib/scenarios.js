@@ -363,6 +363,214 @@ export const SCENARIOS = [
       },
     ],
   },
+
+  /* ------------------------------------------------------------------ */
+  /* Modules below train domains OUTSIDE the five certifiable ones.
+   *
+   * They are deliberately not added to CERTIFICATION_DOMAINS. That array is
+   * frozen because chain.js derives DOMAIN_ORDER from it and bakes it into the
+   * signed payload of every certificate ever issued — extending it would stop
+   * existing certificates verifying, on a device that may hold the only copy.
+   * A test in tests/content.test.mjs enforces the freeze and says so.
+   *
+   * So these are training-only modules: they record attempts, feed the
+   * hesitation report and the activity log, and appear in the module list, but
+   * they do not gate the certificate. `warehouse-loading` established the
+   * pattern and ScenarioList already renders the distinction.
+   *
+   * They exist because the five certifiable domains, which come from the problem
+   * statement, do not include the two largest causes of death in Indian
+   * underground coal mining: roof and side fall, and haulage. Training the
+   * statutory five and ignoring what actually kills people would be a strange
+   * way to build a safety product.
+   */
+
+  {
+    id: 'roof-strata-control',
+    domain: 'Roof & Strata Control',
+    sector: 'Underground Coal',
+    title: 'Roof & Strata Control',
+    intro:
+      'You are at the coal face in an underground district in Jharkhand. Roof and side fall is the single largest cause of death in Indian underground coal mining, and almost every fall gives warning before it happens.',
+    steps: [
+      {
+        id: 'rs1',
+        prompt: 'You reach the face. The last row of supports is about 1.8 m back, and the support rule for this seam allows a maximum of 1.2 m.',
+        choices: [
+          { text: 'Start work — it is only a little over the limit', points: -30, feedback: 'The support rule is the distance at which this particular roof has been assessed as able to stand unsupported. Sixty centimetres past it is not a rounding error, and the ground you would be standing on to work is the ground that is unsupported.' },
+          { text: 'Stay out from under the unsupported roof and set supports to the rule before any other work', points: 30, feedback: 'Correct. Support to rule first, then work. The rule exists because this roof was measured, not estimated.' },
+          { text: 'Work from the outer edge where the supports are closer', points: -25, feedback: 'The fall zone does not stop at the last prop. Reaching in from the edge still puts your head and shoulders under unsupported roof, which is where the load comes down.' },
+        ],
+      },
+      {
+        id: 'rs2',
+        prompt: 'Before setting the next support you need to judge the condition of the roof above you.',
+        choices: [
+          { text: 'Look up at it — cracks are visible if there are any', points: -20, feedback: 'A dangerous roof frequently looks sound. Separation happens along bedding planes above the visible surface, so the eye alone misses exactly the condition you are checking for.' },
+          { text: 'Sound it with a rod from a supported position and listen for a drummy, hollow note', points: 25, feedback: 'Correct. Sounding finds separation the eye cannot see, and doing it from under support means the test cannot become the accident.' },
+          { text: 'Tap it with your hand while standing underneath', points: -30, feedback: 'This gets the method right and the position fatally wrong. Sounding is done from a supported position with a rod precisely so that a piece released by the tapping does not land on the person testing.' },
+        ],
+      },
+      {
+        id: 'rs3',
+        prompt: 'A patch about two metres across sounds hollow.',
+        choices: [
+          { text: 'Bar the loose down from directly underneath it', points: -30, feedback: 'Barring down from beneath puts you in the fall path of the exact piece you are releasing, and a two-metre patch of coal measures weighs more than enough. Loose is barred from the side, from under supported roof, if it is barred at all.' },
+          { text: 'Withdraw, fence and mark the area, and report it to the overman before anyone else goes in', points: 30, feedback: 'Correct. Fencing stops the next person walking into it unaware, and the decision about how to deal with a drummy area belongs to someone with the authority and the equipment to plan it.' },
+        ],
+      },
+      {
+        id: 'rs4',
+        prompt: 'Fine dust is trickling steadily from a joint in the roof and you can hear intermittent cracking.',
+        choices: [
+          { text: 'Note it and finish the cycle first', points: -30, feedback: 'Trickling dust and audible cracking are the roof telling you it is about to come down. This is the warning that is most often recorded in fall-of-roof reports as having been noticed and worked through.' },
+          { text: 'Withdraw everyone from the area immediately, then report it', points: 30, feedback: 'Correct. Those two signs together mean movement is happening now. Withdrawal first, explanation afterwards — and nobody re-enters until it has been examined.' },
+          { text: 'Set an extra prop under the joint and carry on', points: -25, feedback: 'Setting a prop under a roof that is actively moving means standing under it to do so. The instinct to support it is right; the time to act on it was before it started to move.' },
+        ],
+      },
+      {
+        id: 'rs5',
+        prompt: 'A support in the middle of the roadway is in the way of a machine that needs to pass.',
+        choices: [
+          { text: 'Pull it out, move the machine through, and set it again afterwards', points: -30, feedback: 'Withdrawing a support transfers its load to the roof and the neighbouring supports with no plan and no assessment. Supports are withdrawn under a scheme, in sequence, from a position of safety — not to clear a path for a shift.' },
+          { text: 'Stop and get an alternative route or a supervised support-withdrawal scheme', points: 30, feedback: 'Correct. Any change to the support pattern is a planned operation. If the machine genuinely cannot pass, that is a planning problem, not a reason to open the roof.' },
+        ],
+      },
+      {
+        id: 'rs6',
+        prompt: 'A telltale near the junction has moved into its amber band since the last shift.',
+        choices: [
+          { text: 'Amber is not red — carry on and check it again tomorrow', points: -25, feedback: 'A telltale measures convergence, so movement into amber means the roof is closing and has done so measurably within one shift. Waiting for red is waiting for the roof to travel further while people work underneath it.' },
+          { text: 'Report the reading now so the rate of movement can be assessed and support reviewed', points: 25, feedback: 'Correct. What matters is not the colour but the rate. A reading that moved in a single shift is the information the strata engineer needs today, not tomorrow.' },
+          { text: 'Reset the telltale so the next shift starts from a clean reading', points: -30, feedback: 'This destroys the only record of how far and how fast the roof has moved. Convergence data is meaningless without its history, and resetting it hides the trend from the person whose job is to read it.' },
+        ],
+      },
+    ],
+  },
+
+  {
+    id: 'working-at-height',
+    domain: 'Working at Height & Fall Prevention',
+    sector: 'Steel Plant',
+    title: 'Working at Height & Fall Prevention',
+    intro:
+      'You are working on a structural platform six metres above the plant floor, replacing a section of handrail. A fall from this height is life-changing at best.',
+    steps: [
+      {
+        id: 'wh1',
+        prompt: 'You are wearing a full-body harness. The nearest thing to clip your lanyard to is the scaffold guardrail beside you.',
+        choices: [
+          { text: 'Clip to the guardrail — it is solid and it is right there', points: -30, feedback: 'A guardrail is designed to stop a person leaning against it, not to arrest a falling body. Fall-arrest forces run into several kilonewtons and a guardrail will detach, taking you with it.' },
+          { text: 'Clip to a rated anchor point or a certified lifeline, even if it means moving', points: 30, feedback: 'Correct. An anchor has to be rated for arrest forces and identified as such. If the rated anchor is inconvenient, the answer is to reposition the work, not to lower the standard of the anchor.' },
+          { text: 'Clip to the guardrail but keep the lanyard short so you cannot build up speed', points: -20, feedback: 'Better reasoning — a short lanyard genuinely reduces fall distance — but it does not change the anchor. A shorter fall still applies more force than a guardrail is built to take.' },
+        ],
+      },
+      {
+        id: 'wh2',
+        prompt: 'You need to remove the handrail section to get at the bolts underneath.',
+        choices: [
+          { text: 'Remove it and work carefully at the open edge', points: -30, feedback: 'Taking out the handrail creates an unprotected edge, and "carefully" is the control being relied on. Removing collective protection without replacing it is how planned work becomes a fall.' },
+          { text: 'Fit a temporary barrier or work restraint before removing the rail, so you cannot reach the edge', points: 30, feedback: 'Correct. Restraint that physically prevents reaching the edge beats arrest that catches you after you have gone over it. Protection must be in place before the existing protection comes out.' },
+        ],
+      },
+      {
+        id: 'wh3',
+        prompt: 'A floor opening on the platform is covered by a loose plywood sheet with no fixing or marking.',
+        choices: [
+          { text: 'Step around it and get on with the job', points: -25, feedback: 'An unmarked, unfixed cover is worse than an open hole, because an open hole is visible. The next person will stand on it, and a loose sheet will slide.' },
+          { text: 'Secure and mark the cover, or barrier the opening, before continuing', points: 25, feedback: 'Correct. A cover must be fixed so it cannot move and marked so it reads as a cover. Otherwise it is a concealed hole.' },
+          { text: 'Tell your supervisor about it at the end of the shift', points: -20, feedback: 'The reporting is right and the timing leaves the hazard live for hours with people walking over it. Make it safe now, then report it.' },
+        ],
+      },
+      {
+        id: 'wh4',
+        prompt: 'A fitter starts working directly below your platform while you are handling bolts and hand tools.',
+        choices: [
+          { text: 'Carry on and be careful not to drop anything', points: -25, feedback: 'A dropped spanner from six metres is potentially fatal, and care is not a control that survives a slip or a gust. The person below has no idea what is above him.' },
+          { text: 'Stop, barrier the area below, and use tool lanyards and a closed container before resuming', points: 25, feedback: 'Correct. Exclude people from the drop zone and tether the tools. Working at height creates a hazard below as well as at the edge.' },
+        ],
+      },
+      {
+        id: 'wh5',
+        prompt: 'Your colleague falls and is left hanging in his harness, conscious, about two metres below the platform.',
+        choices: [
+          { text: 'Leave him suspended and call for the fire service to attend', points: -25, feedback: 'The harness saved his life and is now the danger: suspension restricts blood return and can be fatal within a short and unpredictable time. A rescue that starts with a phone call and no plan may take longer than he has.' },
+          { text: 'Trigger the pre-planned rescue to get him down and supported quickly, and get medical help moving in parallel', points: 25, feedback: 'Correct. Suspension trauma is why a rescue plan is a condition of working at height rather than paperwork. The plan exists so recovery starts in minutes.' },
+          { text: 'Climb down to him and take his weight until help arrives', points: -30, feedback: 'This puts a second unsecured person at the edge and does not get him out of suspension. The plan is not improvised support; it is planned retrieval.' },
+        ],
+      },
+      {
+        id: 'wh6',
+        prompt: 'Wind picks up sharply and you are about to lift a large sheet of cladding into position.',
+        choices: [
+          { text: 'Lift it now before the wind gets worse', points: -25, feedback: 'A large flat sheet in gusting wind behaves like a sail, and the force arrives without warning while both your hands are committed. Racing the weather at height is how people are pulled off a platform.' },
+          { text: 'Stop the lift, secure the sheet and re-plan when the wind drops or with mechanical handling', points: 25, feedback: 'Correct. Wind limits are a stop-work condition for large surfaces at height. Securing what is already up there is part of stopping properly.' },
+        ],
+      },
+    ],
+  },
+
+  {
+    id: 'mine-haulage',
+    domain: 'Mine Haulage & Conveyor Safety',
+    sector: 'Underground Coal',
+    title: 'Mine Haulage & Conveyor Safety',
+    intro:
+      'You are working along a haulage roadway and belt conveyor underground. Haulage and transport is the second largest cause of death in Indian mines, and most of it happens to people on foot.',
+    steps: [
+      {
+        id: 'mh1',
+        prompt: 'You are at the far end of the district and the belt is running in the direction you need to go.',
+        choices: [
+          { text: 'Ride the belt — it is quicker and people do it all the time', points: -30, feedback: 'A belt has no seat, no stop within reach and a transfer point at the end. Riding a conveyor not designed and licensed for man-riding is a recognised killer, and being common practice has never made it survivable.' },
+          { text: 'Walk the designated travelling road, or use man-riding transport where it is licensed for it', points: 30, feedback: 'Correct. Man-riding is only ever on equipment specifically approved for it, with the right speed, guarding and boarding points.' },
+        ],
+      },
+      {
+        id: 'mh2',
+        prompt: 'You need to get to the other side of the running belt. The marked crossing is about eighty metres back.',
+        choices: [
+          { text: 'Step over the belt here — it is a single stride', points: -30, feedback: 'A stride over a moving belt puts a foot beside a nip point with nothing to hold. Trip on the frame and your leg goes into the moving belt. Eighty metres is a ninety-second walk.' },
+          { text: 'Walk back and use the designated crossing', points: 30, feedback: 'Correct. Crossings are placed and guarded so a stumble does not end in the belt. The only acceptable place to cross is one built for crossing.' },
+          { text: 'Crawl under the belt instead, since it is lower risk than stepping over', points: -25, feedback: 'Underneath puts you within reach of the return belt and rollers with even less room to move, and anything falling from the top run lands on you. Neither over nor under is a crossing.' },
+        ],
+      },
+      {
+        id: 'mh3',
+        prompt: 'Coal has built up and jammed at a transfer chute. The belt is still running.',
+        choices: [
+          { text: 'Free the blockage with a bar while the belt runs, so you do not lose production', points: -30, feedback: 'Clearing a running conveyor is one of the most common fatal-entanglement scenarios there is. The moment the blockage frees, everything moves at once, including whatever you are holding and whatever is holding it.' },
+          { text: 'Stop and isolate the belt, lock it off, then clear the chute', points: 30, feedback: 'Correct. Stopped is not enough on its own — isolated and locked, so nobody at the other end restarts it while your arms are in the chute.' },
+        ],
+      },
+      {
+        id: 'mh4',
+        prompt: 'You are walking the haulage road and hear a set of tubs approaching from behind you.',
+        choices: [
+          { text: 'Keep walking and step aside when they get close', points: -30, feedback: 'A loaded set on a gradient is heavy, quiet at the wrong moment and unable to stop for you. Judging "close" from behind, in poor light, with your back to it, is a decision made on almost no information.' },
+          { text: 'Get into a manhole or refuge and let the set pass completely before continuing', points: 30, feedback: 'Correct. Refuges exist along haulage roads for exactly this, and you wait for the whole set to pass, not just the first tub.' },
+          { text: 'Press against the roadway side and let them go by', points: -25, feedback: 'Side clearance in a haulage road is often less than it looks, and a swinging or derailed tub uses all of it. A refuge is a place you are outside the profile of the load; the roadway side is not.' },
+        ],
+      },
+      {
+        id: 'mh5',
+        prompt: 'A guard is missing from a belt drive drum, exposing the in-running nip.',
+        choices: [
+          { text: 'Keep clear of it and mention it to the next shift', points: -30, feedback: 'A nip point takes a glove, a sleeve or a hand faster than anyone can react, and the next person along may not know it is unguarded. Awareness is not a guard.' },
+          { text: 'Stop the belt, report it, and keep it out of service until the guard is refitted', points: 30, feedback: 'Correct. A missing nip guard is a stop-work condition on the conveyor, not a hazard to be walked around for a shift.' },
+        ],
+      },
+      {
+        id: 'mh6',
+        prompt: 'You are about to restart the belt after clearing the chute. You cannot see along its full length.',
+        choices: [
+          { text: 'Start it — you were the only one working on it', points: -25, feedback: 'You know where you were, not where everyone else is. People join and leave a belt line constantly, and a conveyor starts along its whole length at once.' },
+          { text: 'Sound the pre-start warning, confirm the line is clear, then remove locks and start', points: 25, feedback: 'Correct. The warning signal and the clear confirmation exist because the machine is longer than your line of sight.' },
+          { text: 'Shout along the belt and start if nobody answers', points: -20, feedback: 'A shout does not carry over belt and ventilation noise, and silence is not confirmation. The pre-start alarm is audible along the run precisely because a voice is not.' },
+        ],
+      },
+    ],
+  },
 ]
 
 // The 5 domains required for full certification eligibility (matches the

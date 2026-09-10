@@ -75,6 +75,25 @@ export const SCENARIO_META = {
     smoke: 0,
     arTargets: [ANCHOR_TYPE.EXIT, ANCHOR_TYPE.ASSEMBLY_POINT, ANCHOR_TYPE.HAZARD],
   },
+
+  // Training-only domains — see the note above these modules in scenarios.js.
+  'roof-strata-control': {
+    pictogram: 'warning',
+    // Light haze rather than the heavy fire overlay: an underground roadway is
+    // dusty, but visibility is not the hazard being trained here — the roof is.
+    smoke: 0.18,
+    arTargets: [ANCHOR_TYPE.HAZARD, ANCHOR_TYPE.EXIT, ANCHOR_TYPE.FIRST_AID],
+  },
+  'working-at-height': {
+    pictogram: 'ladder',
+    smoke: 0,
+    arTargets: [ANCHOR_TYPE.HAZARD, ANCHOR_TYPE.EXIT, ANCHOR_TYPE.FIRST_AID],
+  },
+  'mine-haulage': {
+    pictogram: 'machinery',
+    smoke: 0.12,
+    arTargets: [ANCHOR_TYPE.MACHINE, ANCHOR_TYPE.EXIT, ANCHOR_TYPE.HAZARD],
+  },
 }
 
 export function scenarioMeta(scenarioId) {
@@ -367,6 +386,127 @@ export const STEP_META = {
     targetMs: 8000,
     pictogram: 'unstable_load',
     choicePictograms: ['ladder', 'do_not_enter', 'warning'],
+  },
+
+  // --- Roof & Strata Control ---
+  rs1: {
+    // Support-rule decision at the face. Deliberate, before any exposure.
+    targetMs: 10000,
+    pictogram: 'warning',
+    choicePictograms: ['do_not_enter', 'check', 'warning'],
+    aim: { types: [ANCHOR_TYPE.HAZARD] },
+  },
+  rs2: {
+    // Choosing how to test the roof. A method question, so there is time.
+    targetMs: 11000,
+    pictogram: 'check',
+    choicePictograms: ['warning', 'check', 'do_not_enter'],
+  },
+  rs3: {
+    // Drummy roof confirmed overhead. Exposure is live now.
+    targetMs: 6000,
+    pictogram: 'warning',
+    choicePictograms: ['do_not_enter', 'report_it'],
+    aim: { types: [ANCHOR_TYPE.HAZARD] },
+  },
+  rs4: {
+    // Trickling dust and audible cracking: the roof is moving as the question is
+    // asked. The tightest window in the whole app, deliberately — this is the
+    // warning most often noticed and worked through in fall-of-roof reports.
+    targetMs: 4000,
+    pictogram: 'warning',
+    choicePictograms: ['warning', 'exit_arrow', 'do_not_enter'],
+    aim: { types: [ANCHOR_TYPE.EXIT] },
+  },
+  rs5: {
+    // Support withdrawal to clear a machine path. A planning decision.
+    targetMs: 11000,
+    pictogram: 'do_not_operate',
+    choicePictograms: ['do_not_operate', 'check'],
+  },
+  rs6: {
+    // A telltale reading. Nobody is under a moving roof at this instant, and the
+    // right answer is to report a rate rather than react to a colour.
+    targetMs: 12000,
+    pictogram: 'detector',
+    choicePictograms: ['warning', 'report_it', 'cross'],
+  },
+
+  // --- Working at Height & Fall Prevention ---
+  wh1: {
+    targetMs: 9000,
+    pictogram: 'ppe',
+    choicePictograms: ['warning', 'check', 'ppe'],
+    aim: { types: [ANCHOR_TYPE.HAZARD] },
+  },
+  wh2: {
+    targetMs: 10000,
+    pictogram: 'ladder',
+    choicePictograms: ['warning', 'check'],
+  },
+  wh3: {
+    targetMs: 9000,
+    pictogram: 'warning',
+    choicePictograms: ['warning', 'check', 'report_it'],
+  },
+  wh4: {
+    // Someone has walked into the drop zone below. Not instantaneous, but the
+    // exposure starts the moment he arrives.
+    targetMs: 7000,
+    pictogram: 'helmet',
+    choicePictograms: ['warning', 'do_not_enter'],
+  },
+  wh5: {
+    // A colleague suspended in his harness. Suspension trauma makes this a
+    // minutes-matter decision, so the window is short.
+    targetMs: 5000,
+    pictogram: 'first_aid',
+    choicePictograms: ['clock', 'first_aid', 'warning'],
+    aim: { types: [ANCHOR_TYPE.FIRST_AID] },
+  },
+  wh6: {
+    targetMs: 6000,
+    pictogram: 'warning',
+    choicePictograms: ['warning', 'do_not_operate'],
+  },
+
+  // --- Mine Haulage & Conveyor Safety ---
+  mh1: {
+    targetMs: 9000,
+    pictogram: 'machinery',
+    choicePictograms: ['do_not_operate', 'exit_arrow'],
+  },
+  mh2: {
+    targetMs: 9000,
+    pictogram: 'machinery',
+    choicePictograms: ['do_not_enter', 'check', 'do_not_enter'],
+  },
+  mh3: {
+    // Clearing a running conveyor. One of the most common fatal-entanglement
+    // scenarios, and the wrong answer is the one that protects production.
+    targetMs: 7000,
+    pictogram: 'lockout',
+    choicePictograms: ['machinery', 'lockout'],
+    aim: { types: [ANCHOR_TYPE.MACHINE] },
+  },
+  mh4: {
+    // A loaded set approaching from behind, in poor light. Almost no time to
+    // decide, which is exactly the point of training it.
+    targetMs: 4000,
+    pictogram: 'warning',
+    choicePictograms: ['warning', 'exit_arrow', 'do_not_enter'],
+    aim: { types: [ANCHOR_TYPE.EXIT] },
+  },
+  mh5: {
+    targetMs: 8000,
+    pictogram: 'machinery',
+    choicePictograms: ['warning', 'do_not_operate'],
+    aim: { types: [ANCHOR_TYPE.MACHINE] },
+  },
+  mh6: {
+    targetMs: 9000,
+    pictogram: 'alarm',
+    choicePictograms: ['machinery', 'alarm', 'listen'],
   },
 }
 
