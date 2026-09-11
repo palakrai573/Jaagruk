@@ -326,19 +326,60 @@ export function ReadinessRing({ readiness = 0, accuracy = null, speed = null, si
 /* ================================================================== */
 
 /**
- * Push-to-talk answer input.
+ * Hands-free answer input. The worker speaks or taps, whichever they prefer.
+ *
+ * WHY THIS IS NO LONGER PUSH-TO-TALK
+ *
+ * It used to require a tap on the microphone before every single answer, which
+ * removed most of the point. The reason voice exists here is that a worker on a mine
+ * floor has dusty, wet or gloved hands and a respirator on — someone in that state
+ * pressing a button to say "two" may as well have pressed "two". Now the microphone
+ * stays live for the whole step and the choice buttons stay live alongside it, so
+ * either input works at any moment and the worker never has to decide in advance
+ * which one they are going to use.
+ *
+ * WHAT MAKES THIS SAFE TO LEAVE RUNNING
+ *
+ * The drill reads every option aloud, numbered. A live microphone hears that, so
+ * without a guard the phone answers its own question. Two things prevent it: matches
+ * are ignored while the app is speaking and for a short window afterwards, and the
+ * caller supplies a `ready` gate which the drill ties to "the question has finished".
+ * See createCommandListener.
  *
  * Restricted to the commands the current screen can act on, so "left" cannot fire
- * where there is no left option. Every recognition failure produces a specific
- * message rather than silence — a worker who speaks, gets no reaction and no
- * explanation concludes the feature is broken and stops using it.
+ * where there is no left option. A real failure still produces a specific message —
+ * but silence no longer counts as one, because with the mic simply on, silence is the
+ * normal state rather than a worker who pressed a button and said nothing.
  */
-export function VoiceButton({ choiceCount = 2, onCommand, disabled = false, className = '' }) {
+export function VoiceButton({
+  choiceCount = 2,
+  onCommand,
+  /** False while the question is still being read out. Gates acceptance, not listening. */
+  ready = true,
+  disabled = false,
+  className = '',
+}) {
   const { t, lang } = useLanguage()
   const listenerRef = useRef(null)
   const [listening, setListening] = useState(false)
   const [error, setError] = useState(null)
+  /*
+   * Whether the worker wants the microphone at all. Starts on, because voice mode
+   * being enabled IS the opt-in — but it is muteable, since a permanently live
+   * microphone is a real cost in battery and in privacy and nobody should be stuck
+   * with one they cannot switch off from the screen they are looking at.
+   */
+  const [muted, setMuted] = useState(false)
   const supported = speechRecognitionSupported()
+
+  /*
+   * Read through a ref so the listener, which outlives any single render, always sees
+   * the current value. Passing `ready` in directly would freeze it at whatever it was
+   * when the listener was built — which is always false, because the question starts
+   * being read the moment the step appears.
+   */
+  const readyRef = useRef(ready)
+  readyRef.current = ready && !disabled
 
   /*
    * Only the option numbers that actually exist on screen are live, so "three"
@@ -360,57 +401,95 @@ export function VoiceButton({ choiceCount = 2, onCommand, disabled = false, clas
     const listener = createCommandListener({
       lang,
       allowed,
+      handsFree: true,
+      // Checked at the moment a phrase is recognised, not when the listener is built.
+      shouldAccept: () => readyRef.current,
       onCommand: (match) => {
         setError(null)
         onCommand?.(match.command)
       },
       onError: (code) => {
-        // A deliberate stop is not worth reporting.
+        /*
+         * Silence and unmatched audio are not reported in hands-free mode — the
+         * listener already filters those, since with the mic simply on they describe a
+         * worker reading the question rather than anything going wrong. What reaches
+         * here is worth showing.
+         */
         if (code === ASR_ERROR.ABORTED) return
         setError(code)
       },
-      onStateChange: (state) => setListening(state === 'listening' || state === 'starting'),
+      onStateChange: (state) =>
+        // 'restarting' counts as listening: the loop is between utterances, which is
+        // continuous from the worker's point of view and should not flicker the dot.
+        setListening(state === 'listening' || state === 'starting' || state === 'restarting'),
     })
 
     listenerRef.current = listener
+    // Starts itself. Not gated on a tap — that gate was the thing being removed.
+    if (!muted) listener.start()
+
     return () => {
       listener.destroy()
       listenerRef.current = null
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lang, choiceCount])
+  }, [lang, choiceCount, muted])
 
   if (!supported) return null
 
   const errorKey = error ? `as_${error}` : null
+  /*
+   * A denied permission or a missing microphone is permanent for this page, so the
+   * row must stop claiming to be starting up. The listener has already given up
+   * retrying by this point; this is the visible half of that decision.
+   */
+  const dead = error === ASR_ERROR.PERMISSION_DENIED || error === ASR_ERROR.AUDIO
+  const live = listening && !muted && !dead
 
   return (
     <div className={className}>
-      <button
-        type="button"
-        onClick={() => {
-          setError(null)
-          if (listening) listenerRef.current?.stop()
-          else listenerRef.current?.start()
-        }}
-        disabled={disabled}
-        aria-pressed={listening}
-        className={`w-full rounded-xl border-2 min-h-touch px-4 font-mono text-sm flex items-center justify-center gap-3
-                    transition-colors duration-fast disabled:opacity-50 ${
-                      listening
+      {/*
+        A status row, not a trigger. There is nothing to press to speak — the mute
+        control is the only button, and it is deliberately the smaller half of the row
+        so it is not mistaken for the way to answer.
+      */}
+      <div
+        className={`w-full rounded-xl border-2 min-h-touch px-4 py-2 font-mono text-sm flex items-center gap-3
+                    transition-colors duration-fast ${
+                      live
                         ? 'border-brand bg-brand-subtle text-brand-text'
-                        : 'border-line text-ink-secondary hover:border-brand hover:text-brand-text'
+                        : 'border-line text-ink-secondary'
                     }`}
       >
-        {/* The mic indicator pulses only while listening. That is state, not
-            decoration — it is how a worker knows the phone is actually hearing
-            them, which is the single thing voice input most needs to communicate. */}
-        {listening && <span className="w-2 h-2 rounded-full bg-hazard live-dot shrink-0" aria-hidden="true" />}
+        {/* Pulses only while the mic is actually open. That is state, not decoration —
+            it is how a worker knows the phone is hearing them, which is the single
+            thing voice input most needs to communicate, and doubly so now that
+            nothing was pressed to begin with. */}
+        {live && <span className="w-2 h-2 rounded-full bg-hazard live-dot shrink-0" aria-hidden="true" />}
         <Pictogram name="listen" size={22} />
-        {listening ? t('as_listening') : t('as_speak_answer')}
-      </button>
 
-      <p className="font-mono text-2xs text-ink-tertiary text-center mt-2">{t('as_say_one_or_two')}</p>
+        <span className="flex-1 text-start" role="status" aria-live="polite">
+          {muted ? t('as_voice_muted') : live ? t('as_listening') : t('as_voice_starting')}
+        </span>
+
+        <button
+          type="button"
+          onClick={() => {
+            setError(null)
+            setMuted((m) => !m)
+          }}
+          aria-pressed={muted}
+          className="shrink-0 border border-line rounded px-3 py-2 min-h-[44px] font-mono text-2xs uppercase hover:border-brand hover:text-brand-text"
+        >
+          {t(muted ? 'as_voice_unmute' : 'as_voice_mute')}
+        </button>
+      </div>
+
+      {/* Says both inputs are available, because the whole change here is that the
+          worker no longer has to choose one in advance. */}
+      <p className="font-mono text-2xs text-ink-tertiary text-center mt-2">
+        {muted ? t('as_say_one_or_two') : t('as_speak_or_tap')}
+      </p>
 
       {errorKey && (
         <p className="font-mono text-2xs text-hazard-text text-center mt-1.5" role="status">

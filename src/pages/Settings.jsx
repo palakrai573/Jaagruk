@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useId } from 'react'
 import { Link } from 'react-router-dom'
 import { getApiKey, setApiKey, getProvider, setProvider } from '../lib/api.js'
 import { LANGUAGES, allCoverage } from '../lib/i18n.js'
-import { voiceAvailability, speak, SPEECH_IS_SUBSTITUTE } from '../lib/speech.js'
+import { voiceAvailability, speak, SPEECH_IS_SUBSTITUTE, shouldUseVoice } from '../lib/speech.js'
 import { gestureBlocker, gestureStatusKey } from '../lib/gesture.js'
 import { arBlocker, shouldUseAr, AR_BLOCK_KEYS } from '../lib/arSupport.js'
 import { storageStatus, idbClearAll, requestPersistence } from '../lib/idb.js'
@@ -36,7 +36,9 @@ export default function Settings() {
   const [saved, setSaved] = useState(false)
 
   const [pictogramMode, setPictogramMode] = useState(() => lsGetBool(LS.MODE_PICTOGRAM, false))
-  const [voiceMode, setVoiceMode] = useState(() => lsGetBool(LS.MODE_VOICE, false))
+  // Same resolution as the drill screen, so this switch reflects what a drill will
+  // actually do rather than only what was stored.
+  const [voiceMode, setVoiceMode] = useState(() => shouldUseVoice(lsGetBoolOrNull(LS.MODE_VOICE)))
   const [gestureMode, setGestureMode] = useState(() => lsGetBool(LS.MODE_GESTURE, false))
   // Same resolution as the drill screen, so this switch reflects what a drill will
   // actually do. Reading it with a plain false default would show "Off" on a phone

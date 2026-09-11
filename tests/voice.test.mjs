@@ -15,7 +15,16 @@
 import { test, describe } from 'node:test'
 import assert from 'node:assert/strict'
 import { SCENARIOS } from '../src/lib/scenarios.js'
-import { COMMAND, COMMAND_PHRASES, matchCommand, normaliseTranscript } from '../src/lib/speech.js'
+import {
+  COMMAND,
+  COMMAND_PHRASES,
+  matchCommand,
+  normaliseTranscript,
+  asrRetryPolicy,
+  msSinceSpeech,
+  ASR_ERROR,
+  SELF_HEARING_GUARD_MS,
+} from '../src/lib/speech.js'
 
 /** Commands that name an option position, in order. */
 const OPTION_COMMANDS = [COMMAND.ONE, COMMAND.TWO, COMMAND.THREE, COMMAND.FOUR]
@@ -154,5 +163,117 @@ describe('the new phrases do not collide with the old ones', () => {
       const latin = /^[a-z]+$/.test(phrase)
       if (latin) assert.ok(phrase.length >= 3, `"${phrase}" is too short to match safely`)
     }
+  })
+})
+
+/* ------------------------------------------------------- hands-free mode */
+
+describe('hands-free retry policy', () => {
+  test('silence is not a failure', () => {
+    /*
+     * The distinction the whole mode rests on. Under push-to-talk, "no speech" meant
+     * the worker pressed a button and said nothing — worth reporting. With the mic
+     * simply live, silence is the normal state and the engine reports it every few
+     * seconds. Treating it as an error would paper the screen with warnings about a
+     * worker who is reading the question.
+     */
+    const p = asrRetryPolicy(ASR_ERROR.NO_SPEECH)
+    assert.equal(p.retry, true)
+    assert.equal(p.fatal, false)
+    assert.ok(p.delayMs <= 500, `should restart promptly, got ${p.delayMs}ms`)
+  })
+
+  test('unmatched audio and engine-closed sessions also just restart', () => {
+    for (const code of [ASR_ERROR.NO_MATCH, ASR_ERROR.ABORTED]) {
+      const p = asrRetryPolicy(code)
+      assert.equal(p.retry, true, code)
+      assert.equal(p.fatal, false, code)
+    }
+  })
+
+  test('a denied microphone stops for good', () => {
+    // Retrying would re-prompt in a loop, which is the worst possible response to
+    // someone having just said no.
+    const p = asrRetryPolicy(ASR_ERROR.PERMISSION_DENIED)
+    assert.equal(p.retry, false)
+    assert.equal(p.fatal, true)
+  })
+
+  test('a missing microphone stops for good', () => {
+    // No hardware means no amount of retrying will help; it would spin forever.
+    const p = asrRetryPolicy(ASR_ERROR.AUDIO)
+    assert.equal(p.fatal, true)
+    assert.equal(p.retry, false)
+  })
+
+  test('an unsupported engine stops for good', () => {
+    assert.equal(asrRetryPolicy(ASR_ERROR.UNSUPPORTED).fatal, true)
+  })
+
+  test('network failures back off but never give up', () => {
+    /*
+     * Chrome's recogniser is network-backed on many builds, so this fires constantly
+     * underground. It must not become a request loop, and it must not give up either —
+     * the link returning should restore voice without the worker noticing it went.
+     */
+    const delays = [0, 1, 2, 3, 4, 5, 6].map((n) => asrRetryPolicy(ASR_ERROR.NETWORK, n))
+    for (const p of delays) {
+      assert.equal(p.retry, true)
+      assert.equal(p.fatal, false)
+    }
+    for (let i = 1; i < 4; i += 1) {
+      assert.ok(delays[i].delayMs > delays[i - 1].delayMs, `delay should grow at step ${i}`)
+    }
+    assert.ok(delays[6].delayMs <= 8000, `capped, got ${delays[6].delayMs}`)
+  })
+
+  test('unknown faults retry but are bounded', () => {
+    // An unrecognised error repeating without limit is how a background loop quietly
+    // eats a battery.
+    assert.equal(asrRetryPolicy('something-new', 0).retry, true)
+    assert.equal(asrRetryPolicy('something-new', 5).fatal, true, 'must eventually stop')
+  })
+
+  test('the failure count is clamped rather than trusted', () => {
+    for (const n of [-5, NaN, undefined, null, 'many', 1e9]) {
+      const p = asrRetryPolicy(ASR_ERROR.NETWORK, n)
+      assert.ok(Number.isFinite(p.delayMs) && p.delayMs >= 0, `n=${n} gave ${p.delayMs}`)
+    }
+  })
+
+  test('every policy result has the full shape', () => {
+    for (const code of [...Object.values(ASR_ERROR), 'unmapped', undefined]) {
+      const p = asrRetryPolicy(code)
+      assert.equal(typeof p.retry, 'boolean', code)
+      assert.equal(typeof p.fatal, 'boolean', code)
+      assert.equal(typeof p.delayMs, 'number', code)
+      assert.ok(!(p.retry && p.fatal), `${code}: cannot be both retryable and fatal`)
+    }
+  })
+})
+
+describe('the self-hearing guard', () => {
+  test('there is a non-trivial guard window', () => {
+    /*
+     * The hazard this exists for: the drill reads every option aloud, numbered, and a
+     * permanently live microphone hears "one, two, three" perfectly well. Without a
+     * guard the phone answers its own question with whichever number it said last, and
+     * the worker watches the drill play itself.
+     *
+     * Recognition results arrive AFTER the audio that produced them, so an is-speaking
+     * check alone is not enough — a phrase captured during narration can be delivered
+     * just after it stops. Hence a trailing window.
+     */
+    assert.ok(SELF_HEARING_GUARD_MS >= 300, `${SELF_HEARING_GUARD_MS}ms is too short to cover delivery lag`)
+    assert.ok(
+      SELF_HEARING_GUARD_MS <= 1200,
+      `${SELF_HEARING_GUARD_MS}ms would ignore a worker who answers immediately, which is what the drill measures`,
+    )
+  })
+
+  test('with no speech yet, nothing is suppressed', () => {
+    // A fresh page has never spoken, so the guard must not block the first answer.
+    assert.equal(msSinceSpeech(), Number.POSITIVE_INFINITY)
+    assert.ok(msSinceSpeech() >= SELF_HEARING_GUARD_MS, 'the first answer must be accepted')
   })
 })

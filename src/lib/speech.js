@@ -56,6 +56,28 @@ export function speechSynthesisSupported() {
   }
 }
 
+/**
+ * Should voice answering be on for this drill?
+ *
+ * `stored` is the worker's explicit choice, or null if they have never made one. The
+ * distinction matters, and it is the same one arSupport.shouldUseAr draws: null means
+ * we are free to pick the better default, whereas an explicit false is a decision to
+ * respect.
+ *
+ * The default is ON where the browser can hear at all, for the reason AR is default-on
+ * — a feature that exists for workers who cannot reliably tap is useless if those
+ * workers have to tap a settings toggle to discover it. Nothing happens silently: the
+ * browser still asks for the microphone the first time, the drill screen shows a live
+ * indicator whenever it is open, and one tap mutes it.
+ *
+ * A stored true never overrides a missing engine.
+ */
+export function shouldUseVoice(stored) {
+  if (!speechRecognitionSupported()) return false
+  if (stored === null || stored === undefined) return true
+  return stored === true
+}
+
 export function speechRecognitionSupported() {
   try {
     return typeof window !== 'undefined' && !!(window.SpeechRecognition || window.webkitSpeechRecognition)
@@ -223,6 +245,36 @@ function chunkText(text) {
 let currentToken = 0
 let speaking = false
 
+/*
+ * When the app last stopped talking.
+ *
+ * Needed because hands-free listening and narration share one room. The drill now
+ * reads every option aloud — "one… two… three…" — and a live microphone hears that
+ * perfectly well. Without a guard the phone answers its own question, picking
+ * whichever number it said last, and the worker watches the drill play itself.
+ *
+ * A trailing window is required as well as an is-speaking check: recognition results
+ * arrive after the audio that produced them, so a phrase captured during narration
+ * can be delivered a moment after narration ends.
+ */
+let speechEndedAt = 0
+
+/** Milliseconds since the app stopped speaking. Infinity if it never has. */
+export function msSinceSpeech() {
+  if (speaking) return 0
+  return speechEndedAt ? Date.now() - speechEndedAt : Number.POSITIVE_INFINITY
+}
+
+/**
+ * How long after narration a recognised phrase is still assumed to be the app's own
+ * voice rather than the worker's.
+ *
+ * Long enough to cover the recogniser's delivery lag, short enough that a worker who
+ * answers the instant the question finishes is not ignored — which is the case that
+ * matters, since a fast answer is exactly what the drill is measuring.
+ */
+export const SELF_HEARING_GUARD_MS = 600
+
 export function isSpeaking() {
   if (!speechSynthesisSupported()) return false
   try {
@@ -283,6 +335,7 @@ export function speak(text, lang = 'en', opts = {}) {
 
     if (index >= chunks.length) {
       speaking = false
+      speechEndedAt = Date.now()
       if (typeof onEnd === 'function') {
         try {
           onEnd()
@@ -646,6 +699,61 @@ export const ASR_ERROR = {
   UNKNOWN: 'UNKNOWN',
 }
 
+/**
+ * Should hands-free listening restart after this failure, and how soon?
+ *
+ * Hands-free changes what counts as an error. Under push-to-talk, "no speech
+ * detected" meant the worker pressed the button and said nothing — worth reporting.
+ * With the mic simply live, silence is the NORMAL state and the engine reports it
+ * every few seconds; treating that as a failure would fill the screen with warnings
+ * about nothing and stop the loop the moment the worker paused to think.
+ *
+ * The distinction that actually matters is transient versus fatal. Restarting after a
+ * denied permission would prompt in a loop; restarting after a missing microphone
+ * would spin forever. Those stop for good and say so once.
+ *
+ * @returns { retry, delayMs, fatal }
+ */
+export function asrRetryPolicy(code, consecutiveFailures = 0) {
+  const n = Math.max(0, Math.min(6, Number(consecutiveFailures) || 0))
+
+  switch (code) {
+    /*
+     * Nothing was wrong. The engine closed the utterance because the worker was
+     * quiet, or heard something outside the lexicon. Restart promptly and silently —
+     * the worker should never learn that thinking for four seconds is an error.
+     */
+    case ASR_ERROR.NO_SPEECH:
+    case ASR_ERROR.NO_MATCH:
+    case ASR_ERROR.ABORTED:
+      return { retry: true, delayMs: 250, fatal: false }
+
+    /*
+     * Chrome's recogniser is network-backed on many builds, so this fires whenever
+     * the site link drops — constantly, underground. Backed off so a dead connection
+     * does not become a request loop, but never given up on, because the link coming
+     * back should restore voice input without the worker noticing it went.
+     */
+    case ASR_ERROR.NETWORK:
+      return { retry: true, delayMs: Math.min(8000, 1000 * 2 ** n), fatal: false }
+
+    /* No permission and no microphone are both permanent within this page. */
+    case ASR_ERROR.PERMISSION_DENIED:
+    case ASR_ERROR.AUDIO:
+    case ASR_ERROR.UNSUPPORTED:
+      return { retry: false, delayMs: 0, fatal: true }
+
+    /*
+     * Unknown faults are retried, but bounded. An unrecognised error repeating
+     * without limit is how a background loop quietly eats a battery.
+     */
+    default:
+      return n >= 5
+        ? { retry: false, delayMs: 0, fatal: true }
+        : { retry: true, delayMs: Math.min(4000, 500 * 2 ** n), fatal: false }
+  }
+}
+
 function mapAsrError(code) {
   switch (code) {
     case 'not-allowed':
@@ -664,14 +772,19 @@ function mapAsrError(code) {
   }
 }
 
-export function createRecognizer(lang = 'en') {
+export function createRecognizer(lang = 'en', { continuous = false } = {}) {
   const SR = typeof window !== 'undefined' ? window.SpeechRecognition || window.webkitSpeechRecognition : null
   if (!SR) return null
   const rec = new SR()
   rec.lang = String(lang).includes('-') ? lang : speechLocaleFor(lang)
   rec.interimResults = false
   rec.maxAlternatives = 3
-  rec.continuous = false
+  /*
+   * `continuous` keeps the session open across pauses instead of closing after one
+   * utterance. It is not sufficient on its own — engines still end the session on
+   * silence or a network blip — so the listener restarts as well. Both are needed.
+   */
+  rec.continuous = !!continuous
   return rec
 }
 
@@ -691,6 +804,21 @@ export function createCommandListener({
   onTranscript,
   onError,
   onStateChange,
+  /*
+   * Hands-free. The microphone stays live and the loop restarts itself, so the worker
+   * can speak whenever they like — or ignore voice entirely and tap, which keeps
+   * working throughout. Off by default so existing push-to-talk callers are unchanged.
+   */
+  handsFree = false,
+  /*
+   * Consulted before a recognised command is delivered. The drill uses it to refuse
+   * answers until the question has finished being read out; without it the narration
+   * counts as a valid answer to itself.
+   *
+   * A function rather than a boolean because the listener outlives any single render,
+   * so a captured value would be stale by the time it mattered.
+   */
+  shouldAccept = null,
 } = {}) {
   if (!speechRecognitionSupported()) {
     onError?.(ASR_ERROR.UNSUPPORTED)
@@ -705,13 +833,29 @@ export function createCommandListener({
   let rec = null
   let listening = false
   let destroyed = false
+  /*
+   * `wanted` is the caller's intent; `listening` is the engine's actual state. They
+   * are separate because the engine stops constantly on its own in hands-free mode and
+   * must be restarted, whereas an explicit stop() must NOT be undone by that restart.
+   * Collapsing the two would make the mute button unable to mute.
+   */
+  let wanted = false
+  let failures = 0
+  let restartTimer = null
 
   const setState = (state) => {
     if (!destroyed) onStateChange?.(state)
   }
 
+  const clearRestart = () => {
+    if (restartTimer !== null) {
+      clearTimeout(restartTimer)
+      restartTimer = null
+    }
+  }
+
   const build = () => {
-    const r = createRecognizer(lang)
+    const r = createRecognizer(lang, { continuous: handsFree })
     if (!r) return null
 
     r.onresult = (event) => {
@@ -729,18 +873,81 @@ export function createCommandListener({
         if (match) break
       }
 
-      if (match) onCommand?.(match)
-      else onError?.(ASR_ERROR.NO_MATCH, alternatives[0] || '')
+      if (!match) {
+        onError?.(ASR_ERROR.NO_MATCH, alternatives[0] || '')
+        return
+      }
+
+      /*
+       * Two gates before a match becomes an answer, both about the same hazard: the
+       * microphone can hear the phone.
+       *
+       * The drill reads every option aloud, numbered, so a live mic hears "one, two,
+       * three" and would submit whichever it heard last. The trailing window covers
+       * recognition results that arrive just after narration stops, transcribed from
+       * audio captured while it was still talking.
+       */
+      if (handsFree && msSinceSpeech() < SELF_HEARING_GUARD_MS) return
+
+      // The caller's own readiness gate — for the drill, "the question has finished".
+      if (typeof shouldAccept === 'function') {
+        let ok = false
+        try {
+          ok = !!shouldAccept()
+        } catch {
+          // A throwing gate must not be read as permission.
+          ok = false
+        }
+        if (!ok) return
+      }
+
+      failures = 0
+      onCommand?.(match)
     }
 
     r.onerror = (event) => {
       const mapped = mapAsrError(event?.error)
-      // Silence is not a failure worth shouting about.
-      if (mapped !== ASR_ERROR.ABORTED) onError?.(mapped)
+      const policy = asrRetryPolicy(mapped, failures)
+
+      if (policy.fatal) {
+        // Permanent for this page: stop wanting the microphone so onend does not
+        // restart into the same wall, and report it once.
+        wanted = false
+        onError?.(mapped)
+        return
+      }
+
+      /*
+       * In hands-free mode silence and unmatched audio are the normal condition, not
+       * faults. Reporting them would put a warning on screen every few seconds while
+       * the worker was simply reading the question.
+       */
+      const routine = mapped === ASR_ERROR.NO_SPEECH || mapped === ASR_ERROR.ABORTED
+      if (!(handsFree && routine) && mapped !== ASR_ERROR.ABORTED) onError?.(mapped)
+
+      failures += 1
     }
 
     r.onend = () => {
       listening = false
+
+      /*
+       * The engine ends the session on its own after silence, after each utterance
+       * without `continuous`, and whenever the network recogniser hiccups. Hands-free
+       * therefore has to restart, or the microphone goes quiet after the first pause
+       * and the worker is left speaking to nothing with no indication why.
+       */
+      if (handsFree && wanted && !destroyed) {
+        const policy = asrRetryPolicy(ASR_ERROR.NO_SPEECH, failures)
+        setState('restarting')
+        clearRestart()
+        restartTimer = setTimeout(() => {
+          restartTimer = null
+          if (!destroyed && wanted && !listening) begin()
+        }, policy.delayMs)
+        return
+      }
+
       setState('idle')
     }
 
@@ -752,32 +959,68 @@ export function createCommandListener({
     return r
   }
 
+  /**
+   * Open a recognition session. Shared by start() and the restart loop.
+   *
+   * The one behavioural fork between the two modes lives here. Push-to-talk cancels
+   * narration first, because the worker deliberately pressed a button and wants to be
+   * heard now. Hands-free must NOT: the mic is live for the whole step, and cutting
+   * the question off every time the loop restarts would mean the worker never hears
+   * the options at all. Self-hearing is handled at dispatch instead, where it can be
+   * distinguished from a real answer.
+   */
+  function begin() {
+    if (destroyed || listening) return
+
+    if (!handsFree) stopSpeaking()
+
+    rec = build()
+    if (!rec) {
+      onError?.(ASR_ERROR.UNSUPPORTED)
+      return
+    }
+    try {
+      rec.start()
+      setState('starting')
+    } catch {
+      /*
+       * start() throws if a previous session is still closing. Not a failure in
+       * hands-free mode — onend is about to fire and the loop will pick it up — so it
+       * is only reported when a person is waiting on it.
+       */
+      listening = false
+      if (handsFree && wanted) {
+        setState('restarting')
+        clearRestart()
+        restartTimer = setTimeout(() => {
+          restartTimer = null
+          if (!destroyed && wanted && !listening) begin()
+        }, 400)
+        return
+      }
+      setState('idle')
+      onError?.(ASR_ERROR.UNKNOWN)
+    }
+  }
+
   return {
     supported: true,
     get listening() {
       return listening
     },
     start() {
-      if (destroyed || listening) return
-      // Speaking and listening at once makes the mic hear the app.
-      stopSpeaking()
-      rec = build()
-      if (!rec) {
-        onError?.(ASR_ERROR.UNSUPPORTED)
-        return
-      }
-      try {
-        rec.start()
-        setState('starting')
-      } catch {
-        // start() throws if called while an earlier session is still closing.
-        listening = false
-        setState('idle')
-        onError?.(ASR_ERROR.UNKNOWN)
-      }
+      if (destroyed) return
+      wanted = true
+      begin()
     },
     stop() {
-      if (!rec) return
+      // Clears intent first, so the restart loop does not immediately undo this.
+      wanted = false
+      clearRestart()
+      if (!rec) {
+        setState('idle')
+        return
+      }
       try {
         rec.stop()
       } catch {
@@ -788,6 +1031,8 @@ export function createCommandListener({
     },
     destroy() {
       destroyed = true
+      wanted = false
+      clearRestart()
       if (!rec) return
       try {
         rec.abort()

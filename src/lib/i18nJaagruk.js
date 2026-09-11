@@ -668,8 +668,17 @@ const ASSESSMENT = {
   as_listen_again: { en: 'Read it aloud again', hi: 'फिर सुनाएं', sat: 'ᱫᱚᱦᱲᱟ ᱟᱸᱡᱚᱢ', bn: 'আবার শোনান', or: 'ପୁଣି ଶୁଣାନ୍ତୁ', ur: 'دوبارہ سنائیں' },
   as_speak_answer: { en: 'Speak your answer', hi: 'बोलकर उत्तर दें', sat: 'ᱨᱚᱲ ᱠᱟᱛᱮ ᱛᱮᱞᱟ', bn: 'বলে উত্তর দিন', or: 'କହି ଉତ୍ତର ଦିଅନ୍ତୁ', ur: 'بول کر جواب دیں' },
   as_listening: { en: 'Listening…', hi: 'सुन रहा है…', sat: 'ᱟᱸᱡᱚᱢ ᱠᱟᱱᱟ…', bn: 'শুনছি…', or: 'ଶୁଣୁଛି…', ur: 'سن رہا ہے…' },
-  as_say_one_or_two: { en: 'Say "one" or "two"', hi: '"एक" या "दो" बोलें', sat: '"ᱢᱤᱫ" ᱥᱮ "ᱵᱟᱨ" ᱨᱚᱲ', bn: '"এক" বা "দুই" বলুন', or: '"ଏକ" କିମ୍ବା "ଦୁଇ" କୁହନ୍ତୁ', ur: '"ایک" یا "دو" کہیں' },
-  as_NO_MATCH: { en: 'Did not catch that. Say "one" or "two", or tap.', hi: 'समझ नहीं आया। "एक" या "दो" बोलें, या टैप करें।', bn: 'বুঝতে পারিনি। "এক" বা "দুই" বলুন, বা ট্যাপ করুন।', or: 'ବୁଝିପାରିଲି ନାହିଁ। "ଏକ" କିମ୍ବା "ଦୁଇ" କୁହନ୍ତୁ।', ur: 'سمجھ نہیں آیا۔ "ایک" یا "دو" کہیں۔' },
+  // Generalised away from "one or two": 22 of the 54 decisions have a third option,
+  // so naming only the first two told a worker the third could not be spoken.
+  as_say_one_or_two: { en: 'Say the option number', hi: 'विकल्प का नंबर बोलें', sat: 'ᱵᱟᱪᱷᱟᱣ ᱨᱮᱭᱟᱜ ᱱᱚᱢᱵᱚᱨ ᱨᱚᱲ ᱢᱮ', bn: 'বিকল্পের নম্বর বলুন', or: 'ବିକଳ୍ପର ନମ୍ବର କୁହନ୍ତୁ', ur: 'آپشن کا نمبر بولیں' },
+  // The hands-free line. Says both inputs are live, because the point of the change is
+  // that the worker no longer has to choose one in advance or press anything first.
+  as_speak_or_tap: { en: 'Speak the option number, or tap — either works', hi: 'विकल्प का नंबर बोलें, या टैप करें — दोनों चलेंगे', sat: 'ᱵᱟᱪᱷᱟᱣ ᱨᱮᱭᱟᱜ ᱱᱚᱢᱵᱚᱨ ᱨᱚᱲ ᱢᱮ, ᱥᱮ ᱛᱚᱯᱟᱣ ᱢᱮ — ᱵᱟᱨᱭᱟ ᱜᱮ ᱠᱟᱹᱢᱤᱭᱟ', bn: 'বিকল্পের নম্বর বলুন, বা ট্যাপ করুন — দুটোই চলবে', or: 'ବିକଳ୍ପର ନମ୍ବର କୁହନ୍ତୁ, କିମ୍ବା ଟ୍ୟାପ କରନ୍ତୁ — ଦୁଇଟି ଚାଲିବ', ur: 'آپشن کا نمبر بولیں، یا ٹیپ کریں — دونوں چلیں گے' },
+  as_voice_starting: { en: 'Microphone starting…', hi: 'माइक शुरू हो रहा है…', sat: 'ᱢᱟᱭᱠ ᱮᱦᱚᱵ ᱠᱟᱱᱟ…', bn: 'মাইক চালু হচ্ছে…', or: 'ମାଇକ ଆରମ୍ଭ ହେଉଛି…', ur: 'مائیک شروع ہو رہا ہے…' },
+  as_voice_muted: { en: 'Microphone off', hi: 'माइक बंद', sat: 'ᱢᱟᱭᱠ ᱵᱚᱸᱫ', bn: 'মাইক বন্ধ', or: 'ମାଇକ ବନ୍ଦ', ur: 'مائیک بند' },
+  as_voice_mute: { en: 'Mute', hi: 'बंद करें', sat: 'ᱵᱚᱸᱫ ᱢᱮ', bn: 'বন্ধ করুন', or: 'ବନ୍ଦ କରନ୍ତୁ', ur: 'بند کریں' },
+  as_voice_unmute: { en: 'Unmute', hi: 'चालू करें', sat: 'ᱮᱦᱚᱵ ᱢᱮ', bn: 'চালু করুন', or: 'ଚାଲୁ କରନ୍ତୁ', ur: 'چالو کریں' },
+  as_NO_MATCH: { en: 'Did not catch that. Say the option number, or tap.', hi: 'समझ नहीं आया। विकल्प का नंबर बोलें, या टैप करें।', bn: 'বুঝতে পারিনি। বিকল্পের নম্বর বলুন, বা ট্যাপ করুন।', or: 'ବୁଝିପାରିଲି ନାହିଁ। ବିକଳ୍ପର ନମ୍ବର କୁହନ୍ତୁ, କିମ୍ବା ଟ୍ୟାପ କରନ୍ତୁ।', ur: 'سمجھ نہیں آیا۔ آپشن کا نمبر بولیں، یا ٹیپ کریں۔' },
   as_NO_SPEECH: { en: 'Heard nothing. Try again closer to the phone.', hi: 'कुछ सुना नहीं। फ़ोन के पास बोलें।', bn: 'কিছু শোনা যায়নি। ফোনের কাছে বলুন।', or: 'କିଛି ଶୁଣାଗଲା ନାହିଁ। ଫୋନ ପାଖରେ କୁହନ୍ତୁ।', ur: 'کچھ سنائی نہیں دیا۔ فون کے قریب بولیں۔' },
   as_PERMISSION_DENIED: { en: 'Microphone permission was refused, so voice answers are off.', hi: 'माइक्रोफ़ोन अनुमति नहीं मिली, इसलिए आवाज़ से उत्तर बंद है।', bn: 'মাইক্রোফোন অনুমতি নেই, তাই ভয়েস উত্তর বন্ধ।', or: 'ମାଇକ୍ରୋଫୋନ ଅନୁମତି ନାହିଁ, ତେଣୁ ଭଏସ ଉତ୍ତର ବନ୍ଦ।', ur: 'مائیکروفون اجازت نہیں، اس لیے آواز سے جواب بند۔' },
   as_UNSUPPORTED: { en: 'This browser cannot listen for spoken answers.', hi: 'यह ब्राउज़र बोले गए उत्तर नहीं सुन सकता।', bn: 'এই ব্রাউজার কথ্য উত্তর শুনতে পারে না।', or: 'ଏହି ବ୍ରାଉଜର କଥିତ ଉତ୍ତର ଶୁଣିପାରିବ ନାହିଁ।', ur: 'یہ براؤزر بولے گئے جواب نہیں سن سکتا۔' },

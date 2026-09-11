@@ -4,7 +4,7 @@ import { getScenario } from '../lib/scenarios.js'
 import { translateScenario, SCENARIO_TRANSLATIONS } from '../lib/scenarioTranslations.js'
 import { enrichScenario, newAttemptSeed } from '../lib/scenarioMeta.js'
 import { askTrainer, getApiKey } from '../lib/api.js'
-import { speak, stopSpeaking, COMMAND } from '../lib/speech.js'
+import { speak, stopSpeaking, COMMAND, shouldUseVoice } from '../lib/speech.js'
 import { addLogEntry } from '../lib/store.js'
 import { scoreRun, saveAttempt, gradeLatency, TRAINING_MODE } from '../lib/assessment.js'
 import { recordResult } from '../lib/spaced.js'
@@ -114,7 +114,14 @@ export default function Scenario() {
   /* ---------------- presentation modes ---------------- */
 
   const [pictogramMode, setPictogramMode] = useState(() => lsGetBool(LS.MODE_PICTOGRAM, false))
-  const [voiceMode, setVoiceMode] = useState(() => lsGetBool(LS.MODE_VOICE, false))
+  /*
+   * Voice answering is ON by default where the browser can hear, for the same reason AR
+   * is: it exists for workers who cannot reliably tap a small button with gloved or wet
+   * hands, and those are precisely the workers least likely to go and find a settings
+   * toggle. `lsGetBoolOrNull` keeps "never chose" distinct from "chose no", and
+   * shouldUseVoice resolves the former against whether an engine exists at all.
+   */
+  const [voiceMode, setVoiceMode] = useState(() => shouldUseVoice(lsGetBoolOrNull(LS.MODE_VOICE)))
   /**
    * AR is ON by default on a device that can run it.
    *
@@ -704,7 +711,19 @@ export default function Scenario() {
           </div>
 
           {voiceMode && (
-            <VoiceButton choiceCount={step.choices.length} onCommand={onVoiceCommand} className="mt-4" />
+            /*
+             * `ready` is the same signal the reaction clock starts on: narration of the
+             * prompt and every option has finished. Reusing it is deliberate — it means
+             * voice input becomes live at exactly the moment the worker has been told
+             * what the options are, and never while the phone is still saying "one,
+             * two, three" into its own microphone.
+             */
+            <VoiceButton
+              choiceCount={step.choices.length}
+              onCommand={onVoiceCommand}
+              ready={clockStartedAt !== null}
+              className="mt-4"
+            />
           )}
 
           {/* Accessibility toggles, reachable mid-drill on purpose: a worker who
