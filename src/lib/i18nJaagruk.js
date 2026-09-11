@@ -1052,10 +1052,107 @@ const CHARTS = {
   ps_sent: { en: 'Sent', hi: 'भेजा', sat: 'ᱠᱩᱞ ᱮᱱᱟ', bn: 'পাঠানো', or: 'ପଠାଯାଇଛି', ur: 'بھیجا' },
 }
 
+/*
+ * On-device object detection.
+ *
+ * `vision_scope` is not a disclaimer bolted on at the end — it is the label that
+ * keeps the feature honest. The model is COCO-trained and can recognise people and
+ * vehicles; it cannot recognise a door, an extinguisher or a hard hat, and a worker
+ * who assumed otherwise would trust an overlay that is not watching for those
+ * things. So the scope is stated in the UI, in every language, next to the counts.
+ */
+const VISION = {
+  vision_idle: {
+    en: 'Detection off',
+    hi: 'पहचान बंद',
+    bn: 'শনাক্তকরণ বন্ধ',
+    or: 'ଚିହ୍ନଟ ବନ୍ଦ',
+    ur: 'شناخت بند',
+  },
+  vision_loading: {
+    en: 'Loading detector…',
+    hi: 'डिटेक्टर लोड हो रहा है…',
+    bn: 'ডিটেক্টর লোড হচ্ছে…',
+    or: 'ଡିଟେକ୍ଟର ଲୋଡ ହେଉଛି…',
+    ur: 'ڈیٹیکٹر لوڈ ہو رہا ہے…',
+  },
+  vision_running: {
+    en: 'Detecting',
+    hi: 'पहचान चल रही है',
+    bn: 'শনাক্ত করা হচ্ছে',
+    or: 'ଚିହ୍ନଟ ଚାଲୁଛି',
+    ur: 'شناخت جاری ہے',
+  },
+  vision_no_camera: {
+    en: 'No camera available for detection.',
+    hi: 'पहचान के लिए कैमरा उपलब्ध नहीं।',
+    bn: 'শনাক্তকরণের জন্য ক্যামেরা নেই।',
+    or: 'ଚିହ୍ନଟ ପାଇଁ କ୍ୟାମେରା ନାହିଁ।',
+    ur: 'شناخت کے لیے کیمرہ دستیاب نہیں۔',
+  },
+  vision_model_failed: {
+    en: 'The detector could not load. The drill continues without it.',
+    hi: 'डिटेक्टर लोड नहीं हो सका। ड्रिल इसके बिना चलती रहेगी।',
+    bn: 'ডিটেক্টর লোড হয়নি। ড্রিল এটি ছাড়াই চলবে।',
+    or: 'ଡିଟେକ୍ଟର ଲୋଡ ହୋଇପାରିଲା ନାହିଁ। ଡ୍ରିଲ ଏହା ବିନା ଚାଲିବ।',
+    ur: 'ڈیٹیکٹر لوڈ نہیں ہو سکا۔ ڈرل اس کے بغیر جاری رہے گی۔',
+  },
+  vision_unsupported: {
+    en: 'This browser cannot run on-device detection.',
+    hi: 'यह ब्राउज़र डिवाइस पर पहचान नहीं चला सकता।',
+    bn: 'এই ব্রাউজার ডিভাইসে শনাক্তকরণ চালাতে পারে না।',
+    or: 'ଏହି ବ୍ରାଉଜର ଡିଭାଇସରେ ଚିହ୍ନଟ ଚଲାଇପାରିବ ନାହିଁ।',
+    ur: 'یہ براؤزر ڈیوائس پر شناخت نہیں چلا سکتا۔',
+  },
+  vision_people: {
+    en: 'People',
+    hi: 'लोग',
+    bn: 'ব্যক্তি',
+    or: 'ଲୋକ',
+    ur: 'لوگ',
+  },
+  vision_vehicles: {
+    en: 'Vehicles',
+    hi: 'वाहन',
+    bn: 'যানবাহন',
+    or: 'ଯାନ',
+    ur: 'گاڑیاں',
+  },
+  vision_vehicle_near: {
+    en: 'Vehicle close — keep clear',
+    hi: 'वाहन पास है — दूर रहें',
+    bn: 'যান কাছে — সরে থাকুন',
+    or: 'ଯାନ ନିକଟରେ — ଦୂରେ ରୁହନ୍ତୁ',
+    ur: 'گاڑی قریب ہے — دور رہیں',
+  },
+  vision_scope: {
+    en: 'Detects people and vehicles only',
+    hi: 'सिर्फ लोग और वाहन पहचानता है',
+    bn: 'কেবল ব্যক্তি ও যানবাহন শনাক্ত করে',
+    or: 'କେବଳ ଲୋକ ଓ ଯାନ ଚିହ୍ନଟ କରେ',
+    ur: 'صرف لوگ اور گاڑیاں پہچانتا ہے',
+  },
+  vision_none: {
+    en: 'Nothing detected',
+    hi: 'कुछ नहीं मिला',
+    bn: 'কিছু পাওয়া যায়নি',
+    or: 'କିଛି ମିଳିଲା ନାହିଁ',
+    ur: 'کچھ نہیں ملا',
+  },
+  vision_label: {
+    en: 'Live detection',
+    hi: 'लाइव पहचान',
+    bn: 'লাইভ শনাক্তকরণ',
+    or: 'ଲାଇଭ ଚିହ୍ନଟ',
+    ur: 'لائیو شناخت',
+  },
+}
+
 export const JAAGRUK_STRINGS = {
   ...SHELL,
   ...IDENTITY,
   ...AR,
+  ...VISION,
   ...BUDDY,
   ...HAZARDS,
   ...ASSESSMENT,

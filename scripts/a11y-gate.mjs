@@ -326,7 +326,11 @@ console.log('\n=== 7. RTL ===')
 // ARDrill draws over a live camera feed. A marker on the physical left of the
 // frame stays on the left whatever the reading direction of the UI — camera space
 // is not text space — so its positional classes are correct as physical.
-const RTL_EXEMPT = new Set(['src/components/ARDrill.jsx'])
+// DetectionOverlay is the same case: a bounding box drawn around an object the
+// camera found sits at that object's physical position in the frame, and its label
+// hangs off the physical left of that box. Mirroring either one for an RTL locale
+// would move the box away from the thing it identifies.
+const RTL_EXEMPT = new Set(['src/components/ARDrill.jsx', 'src/components/DetectionOverlay.jsx'])
 
 const physical = []
 for (const { path, src } of files) {
@@ -424,6 +428,7 @@ console.log('\n=== 11. NO THEME-BLIND COLOUR LITERALS ===')
  */
 const LITERAL_EXEMPT = new Map([
   ['src/components/ARDrill.jsx', 'fixed dark panel over the camera in both themes'],
+  ['src/components/DetectionOverlay.jsx', 'box outlines must hold against bright and dark video, not a themed surface'],
   ['src/components/GestureLayer.jsx', 'draws over the camera feed'],
   ['src/pages/HazardScan.jsx', 'ink over a photograph, not over a themed surface'],
   ['src/pages/Scenario.jsx', 'overlay sits on the 3D scene'],

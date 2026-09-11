@@ -496,4 +496,20 @@ export const SANTALI_STRINGS = {
   vf_signer_unknown:
     'ᱥᱩᱦᱤ ᱴᱷᱤᱠ ᱠᱟᱱᱟ, ᱢᱮᱱᱠᱷᱟᱱ ᱱᱚᱶᱟ ᱯᱷᱚᱱ ᱮᱢᱚᱜᱤᱡ ᱡᱤᱱᱤᱥ ᱵᱟᱝ ᱵᱟᱰᱟᱭᱮᱫᱟ ᱾ ᱢᱟᱱᱟᱣ ᱞᱟᱦᱟ ᱴᱷᱟᱶ ᱥᱟᱹᱨᱤ ᱢᱮ ᱾',
   vf_unreadable: 'ᱱᱚᱶᱟ ᱡᱟᱜᱨᱩᱠ ᱯᱚᱨᱢᱟᱱ ᱵᱟᱝ ᱠᱟᱱᱟ ᱾',
+
+  /* ---------------- object detection ---------------- */
+  /* ᱵᱟᱛᱟᱣ carries "detect/identify", leaving ᱧᱮᱞ for "view" as the AR keys already
+     use it. ᱜᱟᱰᱤ covers every vehicle class the model is willing to report. */
+  vision_idle: 'ᱵᱟᱛᱟᱣ ᱵᱚᱸᱫ',
+  vision_loading: 'ᱵᱟᱛᱟᱣ ᱭᱚᱱᱛᱨᱚ ᱞᱚᱰ ᱠᱟᱱᱟ…',
+  vision_running: 'ᱵᱟᱛᱟᱣ ᱠᱟᱱᱟ',
+  vision_no_camera: 'ᱵᱟᱛᱟᱣ ᱞᱟᱹᱜᱤᱫ ᱠᱮᱢᱨᱟ ᱵᱟᱝ ᱦᱮᱸᱡᱚᱜ ᱾',
+  vision_model_failed: 'ᱵᱟᱛᱟᱣ ᱭᱚᱱᱛᱨᱚ ᱞᱚᱰ ᱵᱟᱝ ᱦᱩᱭ ᱞᱮᱱᱟ ᱾ ᱛᱟᱞᱤᱢ ᱚᱱᱟ ᱵᱟᱝ ᱠᱟᱛᱮ ᱦᱚᱸ ᱞᱟᱦᱟ ᱛᱮ ᱪᱟᱞᱟᱜᱼᱟ ᱾',
+  vision_unsupported: 'ᱱᱚᱶᱟ ᱵᱨᱟᱣᱡᱚᱨ ᱯᱷᱚᱱ ᱨᱮ ᱵᱟᱛᱟᱣ ᱵᱟᱝ ᱮᱦᱚᱵ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ ᱾',
+  vision_people: 'ᱦᱚᱲ',
+  vision_vehicles: 'ᱜᱟᱰᱤ',
+  vision_vehicle_near: 'ᱜᱟᱰᱤ ᱦᱟᱹᱲᱤᱡ ᱨᱮ — ᱟᱹᱲᱟᱹᱜ ᱛᱟᱦᱮᱸᱱ ᱢᱮ',
+  vision_scope: 'ᱠᱷᱟᱹᱞᱤ ᱦᱚᱲ ᱟᱨ ᱜᱟᱰᱤ ᱵᱟᱛᱟᱣᱟ',
+  vision_none: 'ᱡᱟᱦᱟᱸ ᱵᱟᱝ ᱧᱟᱢ ᱞᱮᱱᱟ',
+  vision_label: 'ᱞᱟᱭᱤᱵᱷ ᱵᱟᱛᱟᱣ',
 }

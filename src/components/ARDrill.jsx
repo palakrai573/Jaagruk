@@ -13,6 +13,7 @@ import {
   CAMERA_ERROR,
 } from '../lib/siteMap.js'
 import { webglSupported } from '../lib/arSupport.js'
+import { visionCapable } from '../lib/vision.js'
 import Pictogram from '../lib/pictograms.jsx'
 import { useLanguage } from '../context/LanguageContext.jsx'
 
@@ -25,6 +26,14 @@ import { useLanguage } from '../context/LanguageContext.jsx'
  * would pull the renderer into this component's chunk for everyone.
  */
 const ARScene3D = lazy(() => import('./ARScene3D.jsx'))
+
+/*
+ * Object detection, also on demand and for a stronger reason: the first run
+ * downloads roughly four megabytes of model. That is not something to spend on a
+ * worker's data allowance because they opened a drill, so it starts only when they
+ * ask for it, and the drill never depends on it.
+ */
+const DetectionOverlay = lazy(() => import('./DetectionOverlay.jsx'))
 
 /**
  * THIS VIEWPORT IS A FIXED DARK PANEL IN BOTH THEMES. THAT IS DELIBERATE.
@@ -131,6 +140,8 @@ export default function ARDrill({
   const [view, setView] = useState({ heading: 0, elevation: 0 })
   const [aimProgress, setAimProgress] = useState(0)
   const [aimedAnchorId, setAimedAnchorId] = useState(null)
+  // Off until asked for. See the DetectionOverlay import note.
+  const [detectOn, setDetectOn] = useState(false)
 
   const fov = useMemo(() => computeFov(videoSize.width, videoSize.height), [videoSize])
 
@@ -362,6 +373,10 @@ export default function ARDrill({
    */
   const webgl = useMemo(() => webglSupported(), [])
 
+  /* Detection needs WebAssembly and a camera. Checked before offering the toggle,
+     so the control never appears on a device that would only fail. */
+  const detectSupported = useMemo(() => visionCapable(), [])
+
   /*
    * Portrait is required, matching the constraint the projection maths already
    * documents. The overlay is additive in every other respect — if any condition
@@ -484,6 +499,14 @@ export default function ARDrill({
             aimedAnchorId={aimedAnchorId}
             guideAnchorId={guideAnchorId}
           />
+        </Suspense>
+      )}
+
+      {/* Detection layer. Above the 3D geometry but below the anchor markers, so a
+          detection box can never hide the exit marker the drill is asking for. */}
+      {cameraReady && detectOn && detectSupported && (
+        <Suspense fallback={null}>
+          <DetectionOverlay videoRef={videoRef} />
         </Suspense>
       )}
 
@@ -621,11 +644,34 @@ export default function ARDrill({
             </span>
           )}
         </div>
-        {headingSource === HEADING_SOURCE.COMPASS && (
-          <span className="font-mono text-[10px] uppercase tracking-widest bg-black/75 text-safe px-2 py-1 rounded">
-            {Math.round(view.heading)}°
-          </span>
-        )}
+        <div className="flex flex-col items-end gap-1">
+          {headingSource === HEADING_SOURCE.COMPASS && (
+            <span className="font-mono text-[10px] uppercase tracking-widest bg-black/75 text-safe px-2 py-1 rounded">
+              {Math.round(view.heading)}°
+            </span>
+          )}
+          {/*
+            Detection toggle. pointer-events are re-enabled just for this control,
+            because the row it lives in is otherwise pass-through so the worker can
+            never be blocked from the camera by decoration.
+          */}
+          {cameraReady && detectSupported && (
+            <button
+              type="button"
+              onClick={() => setDetectOn((on) => !on)}
+              aria-pressed={detectOn}
+              /* 44px, the WCAG target-size minimum. This is a control a worker may
+                 be reaching for with gloves on, one-handed, holding the phone up. */
+              className="pointer-events-auto font-mono text-[10px] uppercase tracking-wide px-3 rounded min-h-[44px]"
+              style={{
+                background: detectOn ? '#FFB020' : 'rgba(0,0,0,0.75)',
+                color: detectOn ? '#101315' : '#F2F1ED',
+              }}
+            >
+              {t('vision_label')}
+            </button>
+          )}
+        </div>
       </div>
 
       {/* iOS orientation permission gate */}
