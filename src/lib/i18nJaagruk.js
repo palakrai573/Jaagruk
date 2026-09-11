@@ -1148,11 +1148,45 @@ const VISION = {
   },
 }
 
+/*
+ * The worked-example site.
+ *
+ * `demo_note` carries one sentence that is not sales copy: no training records are
+ * created. The demo seeds the site a supervisor would have set up, and deliberately
+ * not the passes and certificates a worker is supposed to earn — so it has to say
+ * which of the two it is doing, or someone will reasonably assume the dashboard
+ * numbers came from somewhere real.
+ */
+const DEMO = {
+  demo_load: {
+    en: 'Load demo site',
+    hi: 'डेमो साइट लोड करें',
+    bn: 'ডেমো সাইট লোড করুন',
+    or: 'ଡେମୋ ସାଇଟ ଲୋଡ କରନ୍ତୁ',
+    ur: 'ڈیمو سائٹ لوڈ کریں',
+  },
+  demo_note: {
+    en: 'Adds a worked example site — three zones with exits, extinguishers, gas and lockout points already marked — so the camera drill can be tried without walking a real site first. No training records are created.',
+    hi: 'एक तैयार उदाहरण साइट जोड़ता है — तीन ज़ोन, जिनमें निकास, अग्निशामक, गैस और लॉकआउट पॉइंट पहले से चिह्नित हैं — ताकि असली साइट पर घूमे बिना कैमरा ड्रिल आज़माई जा सके। कोई प्रशिक्षण रिकॉर्ड नहीं बनता।',
+    bn: 'একটি প্রস্তুত উদাহরণ সাইট যোগ করে — তিনটি জোন, যেখানে বেরোনোর পথ, অগ্নিনির্বাপক, গ্যাস ও লকআউট পয়েন্ট আগেই চিহ্নিত — যাতে সত্যিকারের সাইটে না ঘুরেই ক্যামেরা ড্রিল দেখা যায়। কোনো প্রশিক্ষণ রেকর্ড তৈরি হয় না।',
+    or: 'ଏକ ପ୍ରସ୍ତୁତ ଉଦାହରଣ ସାଇଟ ଯୋଡେ — ତିନୋଟି ଜୋନ, ଯେଉଁଠି ବାହାରିବା ପଥ, ଅଗ୍ନିଶମକ, ଗ୍ୟାସ ଓ ଲକଆଉଟ ପଏଣ୍ଟ ଆଗରୁ ଚିହ୍ନିତ — ଯାହା ଫଳରେ ପ୍ରକୃତ ସାଇଟରେ ନ ବୁଲି କ୍ୟାମେରା ଡ୍ରିଲ ଦେଖାଯିବ। କୌଣସି ତାଲିମ ରେକର୍ଡ ତିଆରି ହୁଏ ନାହିଁ।',
+    ur: 'ایک تیار مثالی سائٹ شامل کرتا ہے — تین زون، جن میں نکاس، آتش بجھانے والے، گیس اور لاک آؤٹ پوائنٹ پہلے سے نشان زد ہیں — تاکہ اصلی سائٹ پر گھومے بغیر کیمرہ ڈرل آزمائی جا سکے۔ کوئی تربیتی ریکارڈ نہیں بنتا۔',
+  },
+  demo_loaded: {
+    en: 'Demo site loaded',
+    hi: 'डेमो साइट लोड हो गई',
+    bn: 'ডেমো সাইট লোড হয়েছে',
+    or: 'ଡେମୋ ସାଇଟ ଲୋଡ ହେଲା',
+    ur: 'ڈیمو سائٹ لوڈ ہو گئی',
+  },
+}
+
 export const JAAGRUK_STRINGS = {
   ...SHELL,
   ...IDENTITY,
   ...AR,
   ...VISION,
+  ...DEMO,
   ...BUDDY,
   ...HAZARDS,
   ...ASSESSMENT,

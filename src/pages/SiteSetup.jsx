@@ -17,6 +17,7 @@ import {
   GENERIC_ZONE_ID,
 } from '../lib/siteMap.js'
 import { getActiveSiteId, getCurrentWorker, ROLE } from '../lib/identity.js'
+import { loadDemoSite } from '../lib/demoSite.js'
 import { downloadBundle, readBundleFile } from '../lib/sync.js'
 import ARDrill from '../components/ARDrill.jsx'
 import Pictogram from '../lib/pictograms.jsx'
@@ -170,6 +171,25 @@ export default function SiteSetup() {
       const bundle = await readBundleFile(file)
       const result = await importSiteBundle(bundle, { siteId })
       flash('ok', 'site_import_done')
+      setActiveZoneId(result.site.zones?.[0]?.id || null)
+      await refresh()
+    } catch {
+      flash('error', 'ad_import_failed')
+    }
+  }
+
+  /*
+   * Loads the worked example. Deliberately routed into THIS site id rather than the
+   * demo bundle's own, so it seeds whichever site the supervisor is currently editing
+   * instead of a second one they would never see.
+   *
+   * Idempotent: importSiteBundle merges by zone and anchor id, so a second tap adds
+   * nothing rather than producing duplicate exits.
+   */
+  const handleLoadDemo = async () => {
+    try {
+      const result = await loadDemoSite({ siteId })
+      flash('ok', 'demo_loaded')
       setActiveZoneId(result.site.zones?.[0]?.id || null)
       await refresh()
     } catch {
@@ -518,6 +538,24 @@ export default function SiteSetup() {
             {t('site_import_scan')}
           </button>
         </div>
+      </section>
+
+      {/*
+        The worked example. It lives beside import/export because it IS an import —
+        the same bundle path, the same validation — and because this is the screen
+        someone lands on when they realise the camera drill needs a scanned site
+        before it can show anything real.
+      */}
+      <section className="border-t border-line-subtle pt-8">
+        <h2 className="font-display font-bold text-xl uppercase mb-3">{t('demo_load')}</h2>
+        <p className="text-xs text-ink-tertiary mb-4 leading-relaxed max-w-xl">{t('demo_note')}</p>
+        <button
+          type="button"
+          onClick={handleLoadDemo}
+          className="border border-line rounded px-4 py-2.5 font-mono text-xs hover:border-brand hover:text-brand-text"
+        >
+          {t('demo_load')}
+        </button>
       </section>
     </div>
   )
