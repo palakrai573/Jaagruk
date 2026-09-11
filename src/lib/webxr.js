@@ -284,6 +284,143 @@ export function siteElevation(local) {
   return (Math.atan2(local.y, horizontal) * 180) / Math.PI
 }
 
+/* ================================================================== */
+/* Placement accuracy                                                  */
+/* ================================================================== */
+
+/*
+ * How many recent hit-test samples are considered before a placement is allowed.
+ *
+ * A hit-test pose is not a measurement, it is an estimate that is re-derived every
+ * frame, and it visibly jitters and snaps between surfaces. The first version of this
+ * captured whichever single frame happened to coincide with the worker's finger, which
+ * means the accuracy of every anchor was decided by a coin toss. Twelve samples is
+ * roughly two thirds of a second of evidence at the rate results arrive.
+ */
+export const PLACEMENT_SAMPLES = 12
+
+/*
+ * How far the samples may wander and still count as a stable aim, in metres.
+ *
+ * Three centimetres is comfortably inside what a well-lit textured floor produces and
+ * comfortably outside what a blank wall or a dark roadway produces — which is the
+ * distinction worth enforcing, because a featureless surface is exactly where a
+ * confident-looking reticle is least trustworthy.
+ */
+export const PLACEMENT_STABLE_M = 0.03
+
+/**
+ * Component-wise median of a set of points.
+ *
+ * Median rather than mean, deliberately. Hit-testing does not fail by adding noise
+ * evenly around the truth; it fails by occasionally snapping to a completely different
+ * surface — the far wall behind a doorway, or the floor beyond a machine. A mean drags
+ * the result toward those outliers, a median ignores them until they are the majority.
+ *
+ * This is the component-wise median rather than the geometric median, which is not the
+ * same thing. For a tight cluster of samples the difference is far below the tracking
+ * error, and the geometric median needs iteration this does not justify.
+ */
+export function medianPoint(points) {
+  const usable = (points || []).filter(isPoint)
+  if (!usable.length) return null
+
+  const pick = (axis) => {
+    const sorted = usable.map((p) => p[axis]).sort((a, b) => a - b)
+    const mid = sorted.length >> 1
+    return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2
+  }
+
+  return { x: pick('x'), y: pick('y'), z: pick('z') }
+}
+
+/** Largest distance from any sample to the median, in metres. */
+export function pointSpread(points) {
+  const centre = medianPoint(points)
+  if (!centre) return Number.POSITIVE_INFINITY
+  let worst = 0
+  for (const p of points) {
+    if (!isPoint(p)) continue
+    const d = Math.hypot(p.x - centre.x, p.y - centre.y, p.z - centre.z)
+    if (d > worst) worst = d
+  }
+  return worst
+}
+
+/**
+ * Is the aim steady enough to place an anchor, and where would it land?
+ *
+ * Reported rather than merely enforced, so the interface can say "hold still" instead
+ * of leaving a disabled button with no explanation. A worker who cannot tell the
+ * difference between "not ready yet" and "broken" assumes broken.
+ */
+export function placementReadiness(points) {
+  const samples = (points || []).filter(isPoint)
+  if (samples.length < PLACEMENT_SAMPLES) {
+    return { ready: false, reason: 'SAMPLING', point: null, spread: null, samples: samples.length }
+  }
+  const spread = pointSpread(samples)
+  if (spread > PLACEMENT_STABLE_M) {
+    return { ready: false, reason: 'UNSTEADY', point: null, spread, samples: samples.length }
+  }
+  return { ready: true, reason: null, point: medianPoint(samples), spread, samples: samples.length }
+}
+
+export const TRACKING = {
+  /** No viewer pose at all: the session cannot say where the device is. */
+  NONE: 'NONE',
+  /** Rotation only. The position is guessed, so any placement would be fiction. */
+  LIMITED: 'LIMITED',
+  GOOD: 'GOOD',
+}
+
+/**
+ * How much the session actually knows about where the device is.
+ *
+ * `emulatedPosition` is the flag that matters and it is easy to miss: it means the
+ * runtime is reporting orientation but INVENTING position. A reticle still draws, a
+ * tap still works, and the resulting anchor is meaningless. Placement is refused in
+ * that state rather than recording a number that looks like a measurement.
+ */
+export function trackingQuality(viewerPose) {
+  if (!viewerPose) return TRACKING.NONE
+  if (viewerPose.emulatedPosition === true) return TRACKING.LIMITED
+  return TRACKING.GOOD
+}
+
+/**
+ * Yaw error the site frame inherits from an imprecise second tap, in degrees.
+ *
+ * The two-tap alignment converts a tapping error into a ROTATION of the entire zone,
+ * and the shorter the baseline the worse the conversion. This makes that trade
+ * explicit so the interface can quote it rather than implying the alignment is exact.
+ *
+ * @param baseline  horizontal separation of the two taps, metres
+ * @param tapError  assumed positional error of a tap, metres
+ */
+export function alignmentYawErrorDeg(baseline, tapError = PLACEMENT_STABLE_M) {
+  const b = toFinite(baseline)
+  const e = toFinite(tapError)
+  if (b === null || e === null || b <= 0) return null
+  return (Math.atan2(Math.abs(e), b) * 180) / Math.PI
+}
+
+/**
+ * Worst-case lateral error at a given distance, in metres, from that yaw error.
+ *
+ * The number a supervisor can act on. "Half a degree" means nothing; "your markers
+ * could be twenty centimetres out at the far end of the roadway" means they should
+ * either accept it or walk further apart and re-align.
+ */
+export function alignmentErrorAtDistance(baseline, distanceM, tapError = PLACEMENT_STABLE_M) {
+  const yaw = alignmentYawErrorDeg(baseline, tapError)
+  const d = toFinite(distanceM)
+  if (yaw === null || d === null || d < 0) return null
+  return d * Math.tan((yaw * Math.PI) / 180)
+}
+
+const toFinite = (n) => (typeof n === 'number' && Number.isFinite(n) ? n : null)
+
 /** Straight-line distance from the frame origin, in metres. */
 export function siteDistance(local) {
   if (!isPoint(local)) return null

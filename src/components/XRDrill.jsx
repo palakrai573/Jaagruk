@@ -30,10 +30,27 @@ import {
   ALIGN_ERROR,
   MIN_ALIGNMENT_BASELINE_M,
   XR_BLOCK_KEYS,
+  TRACKING,
+  alignmentErrorAtDistance,
 } from '../lib/webxr.js'
 import XRScene from './XRScene.jsx'
 import Pictogram from '../lib/pictograms.jsx'
 import { useLanguage } from '../context/LanguageContext.jsx'
+
+/*
+ * Why a tap was refused, in words the worker can act on.
+ *
+ * Four genuinely different situations that all used to look identical — nothing
+ * happened. Telling them apart is the difference between a worker adjusting what they
+ * are doing and a worker concluding the feature is broken.
+ */
+const AIM_NOTE = {
+  NO_SURFACE: 'xr_no_surface',
+  SAMPLING: 'xr_hold_still',
+  UNSTEADY: 'xr_hold_still',
+  [TRACKING.NONE]: 'xr_tracking_lost',
+  [TRACKING.LIMITED]: 'xr_tracking_limited',
+}
 
 /** Where the worker is in the alignment sequence. */
 const PHASE = {
@@ -68,9 +85,17 @@ export default function XRDrill({
   const [frame, setFrame] = useState(savedFrame)
   const [alignOrigin, setAlignOrigin] = useState(null)
   const [alignReference, setAlignReference] = useState(null)
-  const [hasReticle, setHasReticle] = useState(false)
+  /* The placement verdict from the render loop: is a tap allowed, and if not, why. */
+  const [aim, setAim] = useState({ ready: false, reason: null })
   const [note, setNote] = useState(null)
   const [error, setError] = useState(null)
+  const captureRef = useRef(null)
+  /*
+   * The two XRAnchors the whole site frame hangs off. Held as refs because they are read
+   * by the render loop every frame and changing them must not re-render the overlay.
+   */
+  const originAnchorRef = useRef(null)
+  const referenceAnchorRef = useRef(null)
 
   const block = useMemo(() => xrBlocker(), [])
 
@@ -125,7 +150,7 @@ export default function XRDrill({
       session.addEventListener('end', () => {
         sessionRef.current = null
         setActive(false)
-        setHasReticle(false)
+        setAim({ ready: false, reason: null })
         // The frame is deliberately KEPT. Re-entering the same zone should not mean
         // walking back to the marker plate and aligning again.
       })
@@ -150,21 +175,43 @@ export default function XRDrill({
 
   /* ---------------- alignment ---------------- */
 
-  const onReticle = useCallback((point) => {
-    reticleRef.current = point
-    setHasReticle((prev) => (!!point === prev ? prev : !!point))
+  /*
+   * Reported from the render loop whenever the verdict changes, not every frame.
+   * `reason` distinguishes the states the worker needs told apart: no surface found,
+   * still gathering evidence, aim still moving, or tracking not good enough to place
+   * anything at all.
+   */
+  const onReticle = useCallback((state) => {
+    reticleRef.current = state
+    setAim((prev) => {
+      if (prev.ready === state.ready && prev.reason === state.reason) return prev
+      return { ready: state.ready, reason: state.reason }
+    })
   }, [])
 
-  const tap = useCallback(() => {
-    const point = reticleRef.current
-    if (!point) {
-      setNote('xr_no_surface')
+  const tap = useCallback(async () => {
+    const capture = captureRef.current
+    if (!capture) return
+
+    const got = await capture()
+    if (!got.ok) {
+      /*
+       * Refused, and told which of the four reasons applies. The old version placed
+       * whatever single frame coincided with the tap, so it never refused anything and
+       * never explained anything — every placement succeeded and some were nonsense.
+       */
+      setNote(AIM_NOTE[got.reason] || 'xr_no_surface')
       return
     }
     setNote(null)
+    const point = got.point
 
     if (phase === PHASE.MARKER) {
       setAlignOrigin(point)
+      // The frame is derived from this point, so it is anchored to the real surface.
+      // See useAnchoredFrame: refreshing these two poses is what stops the zone
+      // drifting as ARCore refines its map.
+      originAnchorRef.current = got.anchor || null
       setPhase(PHASE.REFERENCE)
       return
     }
@@ -179,6 +226,7 @@ export default function XRDrill({
         return
       }
       setAlignReference(point)
+      referenceAnchorRef.current = got.anchor || null
       setFrame(built)
       setPhase(PHASE.READY)
       onAligned?.(built)
@@ -257,6 +305,13 @@ export default function XRDrill({
             alignOrigin={alignOrigin}
             alignReference={alignReference}
             onReticle={onReticle}
+            captureRef={captureRef}
+            originAnchorRef={originAnchorRef}
+            referenceAnchorRef={referenceAnchorRef}
+            /* Refined poses from the anchored alignment points. Keeps the zone locked
+               to the real room as ARCore improves its map, which is what stops the
+               whole set of markers drifting together. */
+            onFrameRefined={setFrame}
           />
         </Canvas>
       </div>
@@ -298,6 +353,22 @@ export default function XRDrill({
                 </p>
               )}
 
+              {/*
+                The achieved accuracy, quoted rather than implied.
+                
+                A two-tap alignment converts a tapping error into a ROTATION of the whole
+                zone, so the accuracy at the far end depends on how far apart the two
+                points were. Stating the expected error at twenty metres lets a
+                supervisor decide to accept it or walk further apart and re-align —
+                which they cannot do if the interface simply says "aligned".
+              */}
+              {phase === PHASE.READY && frame?.baseline && (
+                <p className="font-mono text-[10px] text-white/60 leading-snug">
+                  {frame.baseline.toFixed(1)}m ·{' '}
+                  {Math.round((alignmentErrorAtDistance(frame.baseline, 20) || 0) * 100)}cm @ 20m
+                </p>
+              )}
+
               {note && <p className="font-mono text-[11px] text-[#FFB020]">{t(note)}</p>}
 
               {/* Occlusion is reported, never assumed. `known: false` means the
@@ -312,10 +383,13 @@ export default function XRDrill({
                 <button
                   type="button"
                   onClick={tap}
-                  disabled={!hasReticle}
+                  disabled={!aim.ready}
                   className="flex-1 bg-[#FFB020] text-[#101315] font-display font-bold uppercase py-3 px-4 rounded min-h-[56px] disabled:opacity-40"
                 >
-                  {t(hasReticle ? 'xr_tap_here' : 'xr_scanning')}
+                  {/* The label states the current obstacle rather than a generic
+                      "scanning", so the worker knows whether to move, hold still, or
+                      wait for tracking to recover. */}
+                  {t(aim.ready ? 'xr_tap_here' : AIM_NOTE[aim.reason] || 'xr_scanning')}
                 </button>
                 {phase === PHASE.READY && (
                   <button

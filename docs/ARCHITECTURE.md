@@ -333,10 +333,44 @@ matters because those are the values hashed into a certificate.
    run without an ARCore device. The UI says "no depth sensing — markers draw in front
    of walls" rather than implying otherwise.
 
-   **Verification status:** the site-frame maths is unit-tested, including a
-   cross-session test proving two sessions with different world origins resolve a
-   stored coordinate to the same real point. The *session handling* is not tested and
-   needs a device. It sits behind a capability probe with the compass mode intact, so
+   **Accuracy.** Three defects were found and fixed, all in this repo rather than in
+   the platform:
+
+   - **The `anchors` feature was requested and never used.** A session's reference space
+     is not fixed — ARCore continuously refines its map, and when it does, the origin
+     moves. A position stored as three plain numbers therefore slowly stops describing
+     the place it was recorded at, and the whole zone drifts *together*, which is the
+     hardest kind of error to notice: the markers stay consistent with each other while
+     all of them wander off their objects. `XRHitTestResult.createAnchor()` is now called
+     for the two alignment points and the site frame is re-derived from their refreshed
+     poses every frame. Only those two are anchored, deliberately: the frame is defined
+     by them, so refreshing them moves the entire zone back into place at once, whereas
+     anchoring each marker separately would let them be refined independently and the
+     zone would deform instead of staying rigid. Anchors are documented as losing their
+     pose fairly often; when that happens the last good frame is kept, because a
+     slightly stale zone beats one that blinks out.
+   - **Placement sampled a single frame.** A hit-test pose is an estimate re-derived
+     every frame that visibly jitters and snaps between surfaces, so the accuracy of
+     every anchor was decided by whichever frame coincided with the worker's finger.
+     Twelve samples are now buffered, the tap is refused until they agree within 3 cm,
+     and the point used is their **median** — median rather than mean because hit-testing
+     fails by occasionally snapping to a completely different surface, which a mean is
+     dragged toward and a median outvotes.
+   - **No tracking-quality gate.** `emulatedPosition` means the runtime reports
+     orientation while *inventing* position: the reticle still draws, the tap still
+     works, and the anchor is fiction. Placement is now refused in that state.
+
+   The interface distinguishes all four reasons a tap can be refused — no surface, still
+   sampling, aim moving, tracking degraded — because they previously looked identical
+   (nothing happened) and a worker who cannot tell "not yet" from "broken" assumes
+   broken. Alignment quality is quoted as an expected error at 20 m rather than as the
+   word "aligned", so a supervisor can accept it or walk further apart and re-align.
+
+   **Verification status:** the maths is unit-tested — 53 tests, including a
+   cross-session test proving two sessions with different world origins resolve a stored
+   coordinate to the same real point, and a test demonstrating the median holding while
+   the mean is dragged metres away by one outlier. The *session handling* is not tested
+   and needs a device. It sits behind a capability probe with the compass mode intact, so
    a phone that cannot run it loses nothing.
 
 1. **No depth or SLAM, and an anchor has no distance.** *(Compass mode.)* The overlay draws real 3D geometry,

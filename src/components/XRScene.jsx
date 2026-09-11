@@ -30,7 +30,16 @@ import { useRef, useState, useCallback, useMemo } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { DoubleSide } from 'three'
 import { anchorMeta } from '../lib/siteMap.js'
-import { poseToPoint, siteToWorld } from '../lib/webxr.js'
+import {
+  poseToPoint,
+  siteToWorld,
+  siteFrameFrom,
+  placementReadiness,
+  medianPoint,
+  trackingQuality,
+  PLACEMENT_SAMPLES,
+  TRACKING,
+} from '../lib/webxr.js'
 import { MESH_FOR_TYPE, UnknownMarker } from './ARScene3D.jsx'
 import { HideMeshLabels } from './SafetyScene3D.jsx'
 
@@ -39,17 +48,28 @@ import { HideMeshLabels } from './SafetyScene3D.jsx'
 /* ================================================================== */
 
 /**
- * Runs a transient hit-test down the middle of the view and reports where it lands.
+ * Hit-tests down the middle of the view, accumulating evidence rather than trusting
+ * a single frame.
+ *
+ * WHY A BUFFER AND NOT JUST THE LATEST RESULT
+ *
+ * A hit-test pose is an estimate re-derived every frame, and it visibly jitters and
+ * snaps between surfaces. The first version of this captured whichever single frame
+ * coincided with the worker's finger, which meant the accuracy of every anchor in the
+ * zone was settled by a coin toss. Now the recent samples are kept, the placement is
+ * refused until they agree, and the point used is their median — so an occasional snap
+ * to the wall behind a doorway is outvoted instead of recorded.
  *
  * `requestHitTestSource` is asynchronous and the session may end before it resolves,
  * which is the common case when someone taps Exit immediately — so the result is
  * discarded if the session has moved on. Without that guard the source leaks and
  * throws on the next frame.
  */
-function useViewerHitTest(onHit) {
+function useViewerHitTest({ samplesRef, latestResultRef, onState }) {
   const gl = useThree((s) => s.gl)
   const sourceRef = useRef(null)
   const requestedForRef = useRef(null)
+  const lastReportRef = useRef('')
 
   useFrame((state, delta, frame) => {
     // No frame means we are not in an XR session; nothing to do.
@@ -60,6 +80,7 @@ function useViewerHitTest(onHit) {
     if (requestedForRef.current !== session) {
       requestedForRef.current = session
       sourceRef.current = null
+      samplesRef.current = []
       const viewerSpace = session.requestReferenceSpace?.('viewer')
       if (viewerSpace?.then) {
         viewerSpace
@@ -80,17 +101,136 @@ function useViewerHitTest(onHit) {
       return
     }
 
+    const referenceSpace = gl.xr.getReferenceSpace?.()
+    if (!referenceSpace) return
+
+    /*
+     * Tracking quality first, because it invalidates everything below it.
+     * `emulatedPosition` means the runtime is reporting orientation while INVENTING
+     * position — the reticle still draws and a tap still works, and the resulting
+     * anchor is fiction. That must be refused, not averaged.
+     */
+    const tracking = trackingQuality(frame.getViewerPose?.(referenceSpace))
+    if (tracking !== TRACKING.GOOD) {
+      samplesRef.current = []
+      latestResultRef.current = null
+      report(onState, lastReportRef, { point: null, ready: false, reason: tracking, spread: null, tracking })
+      return
+    }
+
     const source = sourceRef.current
     if (!source) return
 
     const results = frame.getHitTestResults(source)
     if (!results?.length) {
-      onHit(null)
+      samplesRef.current = []
+      latestResultRef.current = null
+      report(onState, lastReportRef, { point: null, ready: false, reason: 'NO_SURFACE', spread: null, tracking })
       return
     }
+
+    const point = poseToPoint(results[0].getPose(referenceSpace))
+    if (!point) return
+
+    // Kept so a placement can be anchored to the real surface via createAnchor().
+    latestResultRef.current = results[0]
+
+    const buffer = samplesRef.current
+    buffer.push(point)
+    if (buffer.length > PLACEMENT_SAMPLES) buffer.shift()
+
+    const readiness = placementReadiness(buffer)
+    report(onState, lastReportRef, {
+      // The live reticle follows the raw point so it feels responsive; only the
+      // PLACED position uses the median.
+      point,
+      ready: readiness.ready,
+      reason: readiness.reason,
+      spread: readiness.spread,
+      tracking,
+    })
+  })
+}
+
+/*
+ * Only tells the caller when something meaningful changed.
+ *
+ * This runs every frame and the caller sets React state from it. Reporting a slightly
+ * different spread sixty times a second would re-render the drill's whole overlay
+ * continuously for no visible benefit, so the readiness verdict is what gates the
+ * update and the spread is rounded to the centimetre it is displayed at.
+ */
+function report(onState, lastRef, next) {
+  const key = `${next.ready}|${next.reason}|${next.tracking}|${next.spread === null ? '' : Math.round(next.spread * 100)}|${next.point ? 1 : 0}`
+  if (key === lastRef.current) return
+  lastRef.current = key
+  onState?.(next)
+}
+
+/**
+ * Keeps the site frame locked to the real room as ARCore refines its map.
+ *
+ * THIS IS THE FIX FOR THE DRIFT.
+ *
+ * The session's reference space is not a fixed thing. ARCore continuously improves its
+ * understanding of the room, and when it does, the origin of that space moves — so a
+ * position stored as three plain numbers slowly stops describing the place it was
+ * recorded at. Everything in the zone then drifts together, which is the hardest kind
+ * of error to notice, because the markers stay consistent with each other while all of
+ * them wander away from the objects they label.
+ *
+ * An XRAnchor is the mechanism for this and it was the piece missing: the `anchors`
+ * feature was being REQUESTED and never used. An anchor is attached to the real surface
+ * and the runtime re-reports its pose in the current space every frame, absorbing
+ * exactly that refinement.
+ *
+ * Only the two alignment points are anchored, not every object. The site frame is
+ * derived from those two points, so re-deriving it from their refreshed poses moves the
+ * entire zone back into place at once. Anchoring every marker individually would cost
+ * far more and achieve less, because each would then be refined independently and the
+ * zone would deform rather than stay rigid.
+ *
+ * Anchors are documented as losing their pose fairly often. When that happens the last
+ * good frame is kept, because a zone that is slightly stale is vastly better than a
+ * zone that blinks out of existence.
+ */
+function useAnchoredFrame({ originAnchorRef, referenceAnchorRef, onFrameRefined }) {
+  const gl = useThree((s) => s.gl)
+  const lastKeyRef = useRef('')
+
+  useFrame((state, delta, frame) => {
+    if (!frame) return
+    const origin = originAnchorRef.current
+    const reference = referenceAnchorRef.current
+    if (!origin || !reference) return
+
     const referenceSpace = gl.xr.getReferenceSpace?.()
     if (!referenceSpace) return
-    onHit(poseToPoint(results[0].getPose(referenceSpace)))
+
+    let a = null
+    let b = null
+    try {
+      a = poseToPoint(frame.getPose?.(origin.anchorSpace, referenceSpace))
+      b = poseToPoint(frame.getPose?.(reference.anchorSpace, referenceSpace))
+    } catch {
+      // A deleted or invalidated anchor throws rather than returning null.
+      return
+    }
+    // Pose lost this frame. Routine, and explicitly not a reason to move anything.
+    if (!a || !b) return
+
+    const refreshed = siteFrameFrom(a, b)
+    if (refreshed.error) return
+
+    /*
+     * Only propagated when it has moved enough to matter. Refinement is continuous and
+     * mostly sub-millimetre; rebuilding React state on every frame would re-render the
+     * whole overlay sixty times a second to move nothing the eye can see.
+     */
+    const key = `${a.x.toFixed(3)},${a.y.toFixed(3)},${a.z.toFixed(3)},${refreshed.yaw.toFixed(4)}`
+    if (key === lastKeyRef.current) return
+    lastKeyRef.current = key
+    onFrameRefined?.(refreshed)
   })
 }
 
@@ -194,18 +334,69 @@ export default function XRScene({
   alignOrigin = null,
   alignReference = null,
   onReticle,
+  /*
+   * Set to a function the shell can call on tap. Imperative on purpose: capturing a
+   * placement needs the live sample buffer and the live XRHitTestResult, both of which
+   * belong to the render loop. Lifting them into the shell's React state would mean
+   * copying them out sixty times a second to be read once.
+   */
+  captureRef,
+  originAnchorRef,
+  referenceAnchorRef,
+  onFrameRefined,
 }) {
   const [hit, setHit] = useState(null)
+  const [ready, setReady] = useState(false)
+  const samplesRef = useRef([])
+  const latestResultRef = useRef(null)
 
-  const handleHit = useCallback(
-    (point) => {
-      setHit(point)
-      onReticle?.(point)
+  const handleState = useCallback(
+    (next) => {
+      setHit(next.point)
+      setReady(next.ready)
+      onReticle?.(next)
     },
     [onReticle],
   )
 
-  useViewerHitTest(handleHit)
+  useViewerHitTest({ samplesRef, latestResultRef, onState: handleState })
+  useAnchoredFrame({ originAnchorRef, referenceAnchorRef, onFrameRefined })
+
+  /*
+   * Capture a placement.
+   *
+   * Two things are produced and they come from different places on purpose. The POSITION
+   * is the median of the recent samples, because that is the best estimate available and
+   * is robust to a snap onto the wrong surface. The ANCHOR comes from the live hit-test
+   * result, because only that is attached to the real geometry and can be refined later.
+   *
+   * createAnchor is asynchronous and can reject — the feature may not have been granted,
+   * or the surface may be too poor to anchor to. A rejection is not a failed placement:
+   * the position is still good, it simply will not be refined. So the anchor is awaited
+   * separately and its absence degrades rather than blocks.
+   */
+  if (captureRef) {
+    captureRef.current = async () => {
+      const readiness = placementReadiness(samplesRef.current)
+      if (!readiness.ready) return { ok: false, reason: readiness.reason }
+
+      const point = readiness.point || medianPoint(samplesRef.current)
+      if (!point) return { ok: false, reason: 'SAMPLING' }
+
+      let anchor = null
+      const result = latestResultRef.current
+      if (result?.createAnchor) {
+        try {
+          anchor = await result.createAnchor()
+        } catch {
+          // Anchors unavailable or the surface refused one. The placement stands.
+          anchor = null
+        }
+      }
+
+      return { ok: true, point, anchor, spread: readiness.spread }
+    }
+  }
 
   const placeable = useMemo(
     () => (frame ? anchors.filter((a) => a?.local) : []),
@@ -224,7 +415,9 @@ export default function XRScene({
       <directionalLight position={[3, 6, 2]} intensity={1.4} />
       <directionalLight position={[-3, 2, -2]} intensity={0.4} />
 
-      <Reticle point={hit} ready={!!frame} />
+      {/* Green only when a placement would actually be accepted, so the colour is
+          information rather than decoration: amber means the aim is still moving. */}
+      <Reticle point={hit} ready={ready} />
 
       <AlignmentMarkers origin={alignOrigin} reference={alignReference} />
 

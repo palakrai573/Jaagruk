@@ -154,6 +154,72 @@ function HazardCone({ color }) {
   )
 }
 
+/**
+ * The destination marker: a column of light and a chevron over the one thing that
+ * matters right now.
+ *
+ * WHY THIS EXISTS SEPARATELY FROM THE MARKERS
+ *
+ * A scanned zone shows eight or ten markers, all legible, all equally weighted. That
+ * answers "where are things" and not "what do I do", and under pressure the second
+ * question is the only one that matters. A worker in smoke does not need an inventory
+ * of the room, they need one unambiguous destination.
+ *
+ * So the active target gets something categorically louder than a marker: a column
+ * visible over machinery and around a corner where the object itself may be hidden, and
+ * a chevron pointing down at it so the meaning is "here", not "that way". The floor path
+ * shows the route; this shows the end of it.
+ *
+ * Deliberately only ever ONE of these on screen. Two destinations is no destination.
+ */
+function TargetBeacon({ color, reducedMotion }) {
+  const chevron = useRef(null)
+
+  useFrame((state) => {
+    const m = chevron.current
+    if (!m || reducedMotion) return
+    // A slow descent, repeating. Motion downward reinforces "this spot" rather than
+    // simply drawing attention to itself.
+    m.position.y = 2.6 + ((state.clock.elapsedTime * 0.9) % 1) * -0.5
+  })
+
+  return (
+    <group>
+      {/*
+        The column. Additive-ish translucency and depthWrite off so it reads as light
+        rather than as a solid pillar standing in the room, and so it does not z-fight
+        with the object it surrounds.
+      */}
+      <mesh position={[0, 1.1, 0]}>
+        <cylinderGeometry args={[0.5, 0.5, 5, 20, 1, true]} />
+        <meshBasicMaterial
+          color={color}
+          transparent
+          opacity={0.16}
+          side={DoubleSide}
+          depthWrite={false}
+        />
+      </mesh>
+      <mesh position={[0, 1.1, 0]}>
+        <cylinderGeometry args={[0.14, 0.14, 5, 12, 1, true]} />
+        <meshBasicMaterial color={color} transparent opacity={0.3} side={DoubleSide} depthWrite={false} />
+      </mesh>
+
+      {/* Chevron, pointing down at the target. */}
+      <mesh ref={chevron} position={[0, 2.6, 0]} rotation={[Math.PI, 0, 0]}>
+        <coneGeometry args={[0.34, 0.6, 4]} />
+        <meshBasicMaterial color={color} transparent opacity={0.92} />
+      </mesh>
+
+      {/* Ground ring, so the column is anchored to a place on the floor. */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.35, 0]}>
+        <ringGeometry args={[0.62, 0.82, 40]} />
+        <meshBasicMaterial color={color} side={DoubleSide} transparent opacity={0.75} depthWrite={false} />
+      </mesh>
+    </group>
+  )
+}
+
 /*
  * Type to geometry. LOTO_PANEL borrows the electrical panel because that is
  * physically what a lockout point is attached to, and GAS_ZONE borrows the fixed
@@ -336,7 +402,7 @@ function CameraRig({ viewRef, vFov }) {
 /* Anchor objects                                                      */
 /* ================================================================== */
 
-function AnchorObject({ anchor, aimed, reducedMotion }) {
+function AnchorObject({ anchor, aimed, isTarget, reducedMotion }) {
   const groupRef = useRef(null)
   const meta = anchorMeta(anchor.type)
   const Mesh = MESH_FOR_TYPE[anchor.type] || UnknownMarker
@@ -378,6 +444,11 @@ function AnchorObject({ anchor, aimed, reducedMotion }) {
       {/* The shared briefing meshes carry their own scene coordinates as prop
           defaults, so they are explicitly re-centred on the anchor point here. */}
       <Mesh color={meta.color} position={[0, 0, 0]} />
+
+      {/* The destination marker sits OUTSIDE the object's facing rotation, so the
+          column stays vertical and the chevron keeps pointing down regardless of which
+          way the object was turned to face the worker. */}
+      {isTarget && <TargetBeacon color={meta.color} reducedMotion={reducedMotion} />}
 
       {aimed && (
         /* Ground ring under the locked target. Reads as contact with the floor,
@@ -439,6 +510,9 @@ function Scene({ viewRef, vFov, anchors, aimedAnchorId, guideAnchorId, reducedMo
             key={anchor.id}
             anchor={anchor}
             aimed={anchor.id === aimedAnchorId}
+            /* Exactly one target, and only once a destination has been chosen. Two
+               destinations would be no destination. */
+            isTarget={!!guide && anchor.id === guide.id}
             reducedMotion={reducedMotion}
           />
         ))}

@@ -33,6 +33,15 @@ import {
   ALIGN_ERROR,
   XR_BLOCK,
   XR_BLOCK_KEYS,
+  medianPoint,
+  pointSpread,
+  placementReadiness,
+  trackingQuality,
+  alignmentYawErrorDeg,
+  alignmentErrorAtDistance,
+  PLACEMENT_SAMPLES,
+  PLACEMENT_STABLE_M,
+  TRACKING,
 } from '../src/lib/webxr.js'
 
 const P = (x, y, z) => ({ x, y, z })
@@ -400,5 +409,183 @@ describe('an XR-placed anchor is usable by the compass overlay', () => {
     const far = worldToSite(P(4, -1, -20), frame)
     assert.ok(Math.abs(siteBearing(near, frame) - siteBearing(far, frame)) < 1e-6, 'same bearing')
     assert.ok(siteDistance(far) > siteDistance(near) + 10, 'different distance')
+  })
+})
+
+/* ------------------------------------------------------------- accuracy */
+
+describe('medianPoint', () => {
+  test('the median of a tight cluster is inside it', () => {
+    const pts = [P(1, 1, 1), P(1.01, 1.02, 0.99), P(0.99, 0.98, 1.01)]
+    const m = medianPoint(pts)
+    assert.ok(Math.abs(m.x - 1) < 0.02 && Math.abs(m.y - 1) < 0.03 && Math.abs(m.z - 1) < 0.02)
+  })
+
+  test('an outlier does NOT drag the result, which is the whole reason for a median', () => {
+    /*
+     * Hit-testing does not fail by adding even noise. It fails by occasionally
+     * snapping to a completely different surface — the wall behind a doorway, the
+     * floor beyond a machine. A mean would be pulled metres toward that; a median
+     * ignores it until it is the majority.
+     */
+    const cluster = [P(0, 0, -3), P(0.01, 0, -3.01), P(-0.01, 0.01, -2.99), P(0, -0.01, -3)]
+    const withOutlier = [...cluster, P(0, 0, -14)]
+    const m = medianPoint(withOutlier)
+    assert.ok(Math.abs(m.z + 3) < 0.05, `median z should stay near -3, got ${m.z}`)
+
+    // Demonstrate the contrast: the mean is pulled more than two metres away.
+    const meanZ = withOutlier.reduce((s, p) => s + p.z, 0) / withOutlier.length
+    assert.ok(Math.abs(meanZ + 3) > 2, `the mean should be badly pulled, got ${meanZ}`)
+  })
+
+  test('an even sample count averages the middle pair', () => {
+    assert.deepEqual(medianPoint([P(0, 0, 0), P(2, 4, 6)]), { x: 1, y: 2, z: 3 })
+  })
+
+  test('unusable input yields null rather than a plausible point', () => {
+    for (const bad of [null, undefined, [], [null], ['x'], [{ x: 1 }], [{ x: NaN, y: 0, z: 0 }]]) {
+      assert.equal(medianPoint(bad), null, JSON.stringify(bad))
+    }
+  })
+
+  test('junk mixed with real samples is discarded, not counted', () => {
+    const m = medianPoint([null, P(1, 1, 1), { x: NaN, y: 1, z: 1 }, P(1, 1, 1), 'nope'])
+    assert.deepEqual(m, { x: 1, y: 1, z: 1 })
+  })
+})
+
+describe('pointSpread', () => {
+  test('identical samples have no spread', () => {
+    assert.equal(pointSpread([P(1, 2, 3), P(1, 2, 3), P(1, 2, 3)]), 0)
+  })
+
+  test('spread is the worst deviation, not the average', () => {
+    // One bad sample must be visible in the number, or the steadiness gate would
+    // average away exactly the evidence it exists to catch.
+    const spread = pointSpread([P(0, 0, 0), P(0, 0, 0), P(0, 0, 0), P(0, 0, 0.5)])
+    assert.ok(spread > 0.2, `expected the outlier to show, got ${spread}`)
+  })
+
+  test('no usable samples means infinite spread, never zero', () => {
+    // Zero would read as "perfectly steady" and permit a placement from nothing.
+    assert.equal(pointSpread([]), Number.POSITIVE_INFINITY)
+    assert.equal(pointSpread(null), Number.POSITIVE_INFINITY)
+  })
+})
+
+describe('placementReadiness', () => {
+  const steady = (n) => Array.from({ length: n }, (_, i) => P(0.001 * (i % 3), 0, -2 + 0.001 * (i % 2)))
+
+  test('too few samples is reported as sampling, not as unsteady', () => {
+    // The distinction is what lets the UI say "hold on" rather than "you are shaking",
+    // which would be a lie and would make the worker change the wrong thing.
+    const r = placementReadiness(steady(PLACEMENT_SAMPLES - 1))
+    assert.equal(r.ready, false)
+    assert.equal(r.reason, 'SAMPLING')
+    assert.equal(r.point, null)
+  })
+
+  test('a steady aim with enough samples is ready and returns the median', () => {
+    const r = placementReadiness(steady(PLACEMENT_SAMPLES))
+    assert.equal(r.ready, true, `spread was ${r.spread}`)
+    assert.equal(r.reason, null)
+    assert.ok(isFinite(r.point.x) && isFinite(r.point.z))
+    assert.ok(r.spread <= PLACEMENT_STABLE_M)
+  })
+
+  test('a wandering aim is refused even with plenty of samples', () => {
+    const wandering = Array.from({ length: PLACEMENT_SAMPLES + 6 }, (_, i) => P(i * 0.05, 0, -2))
+    const r = placementReadiness(wandering)
+    assert.equal(r.ready, false)
+    assert.equal(r.reason, 'UNSTEADY')
+    assert.ok(r.spread > PLACEMENT_STABLE_M)
+    assert.equal(r.point, null, 'an unsteady aim must not yield a point at all')
+  })
+
+  test('the steadiness threshold is a realistic one', () => {
+    // Loose enough for a handheld phone, tight enough to reject a blank wall — which
+    // is where a confident-looking reticle is least trustworthy.
+    assert.ok(PLACEMENT_STABLE_M >= 0.01, 'no phone is steadier than a centimetre handheld')
+    assert.ok(PLACEMENT_STABLE_M <= 0.08, 'looser than 8cm stops being a measurement')
+    assert.ok(PLACEMENT_SAMPLES >= 6, 'too few samples to judge steadiness')
+  })
+
+  test('junk input is refused rather than throwing', () => {
+    for (const bad of [null, undefined, [], ['x', null]]) {
+      const r = placementReadiness(bad)
+      assert.equal(r.ready, false)
+      assert.equal(r.point, null)
+    }
+  })
+})
+
+describe('trackingQuality', () => {
+  test('a real pose is good', () => {
+    assert.equal(trackingQuality({ emulatedPosition: false }), TRACKING.GOOD)
+    assert.equal(trackingQuality({}), TRACKING.GOOD)
+  })
+
+  test('an emulated position is LIMITED, not good', () => {
+    /*
+     * The flag that is easy to miss and expensive to ignore. emulatedPosition means
+     * the runtime reports orientation but INVENTS position. The reticle still draws,
+     * the tap still works, and the anchor is fiction. Placement must be refused in
+     * that state rather than recording a number that looks like a measurement.
+     */
+    assert.equal(trackingQuality({ emulatedPosition: true }), TRACKING.LIMITED)
+  })
+
+  test('no pose at all is NONE', () => {
+    // getViewerPose returns null whenever tracking is lost, which is routine.
+    for (const bad of [null, undefined]) {
+      assert.equal(trackingQuality(bad), TRACKING.NONE)
+    }
+  })
+
+  test('only an explicit true counts as emulated', () => {
+    // A truthy-but-not-true value must not silently downgrade a good session.
+    assert.equal(trackingQuality({ emulatedPosition: 'yes' }), TRACKING.GOOD)
+  })
+})
+
+describe('alignment error reporting', () => {
+  test('a longer baseline gives a smaller yaw error', () => {
+    // The trade the two-tap alignment makes, stated as a number instead of implied.
+    const short = alignmentYawErrorDeg(2)
+    const long = alignmentYawErrorDeg(8)
+    assert.ok(short > long, `${short} should exceed ${long}`)
+    assert.ok(short < 2, `even the minimum baseline should be under 2 degrees, got ${short}`)
+  })
+
+  test('the error at distance is the number a supervisor can act on', () => {
+    /*
+     * "Half a degree" means nothing to anyone. "Your markers could be twenty
+     * centimetres out at the far end of the roadway" is something they can either
+     * accept or walk further apart to improve.
+     */
+    const atTwenty = alignmentErrorAtDistance(2, 20)
+    assert.ok(atTwenty > 0.1 && atTwenty < 0.5, `expected a few tens of cm, got ${atTwenty}`)
+
+    // Doubling the baseline should roughly halve it.
+    const better = alignmentErrorAtDistance(4, 20)
+    assert.ok(better < atTwenty * 0.6, `${better} should be well under ${atTwenty}`)
+  })
+
+  test('error grows with distance from the origin', () => {
+    const near = alignmentErrorAtDistance(3, 5)
+    const far = alignmentErrorAtDistance(3, 40)
+    assert.ok(far > near * 5, 'error is proportional to distance')
+  })
+
+  test('zero distance has zero error', () => {
+    assert.equal(alignmentErrorAtDistance(3, 0), 0)
+  })
+
+  test('nonsense inputs give null rather than a confident number', () => {
+    for (const b of [0, -1, null, undefined, NaN, 'far']) {
+      assert.equal(alignmentYawErrorDeg(b), null, `baseline ${b}`)
+    }
+    assert.equal(alignmentErrorAtDistance(3, -1), null)
+    assert.equal(alignmentErrorAtDistance(null, 10), null)
   })
 })

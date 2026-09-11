@@ -1279,6 +1279,32 @@ const XR = {
     or: 'ପୃଷ୍ଠ ଖୋଜିବା ପାଇଁ ଫୋନ ଧୀରେ ଧୀରେ ଘୁରାନ୍ତୁ',
     ur: 'سطح ڈھونڈنے کے لیے فون آہستہ آہستہ گھمائیں',
   },
+  /*
+   * Four reasons a tap can be refused, which all used to look identical — nothing
+   * happened. Telling them apart is the difference between a worker adjusting what they
+   * are doing and a worker deciding the feature is broken.
+   */
+  xr_hold_still: {
+    en: 'Hold still',
+    hi: 'स्थिर रखें',
+    bn: 'স্থির রাখুন',
+    or: 'ସ୍ଥିର ରଖନ୍ତୁ',
+    ur: 'ساکت رکھیں',
+  },
+  xr_tracking_lost: {
+    en: 'Lost track of the room. Move the phone slowly to pick it up again.',
+    hi: 'कमरे की ट्रैकिंग टूट गई। फ़ोन धीरे-धीरे घुमाकर फिर पकड़ें।',
+    bn: 'ঘরের ট্র্যাকিং হারিয়ে গেছে। ফোন ধীরে ঘুরিয়ে আবার ধরুন।',
+    or: 'ରୁମର ଟ୍ରାକିଂ ହଜିଗଲା। ଫୋନ ଧୀରେ ଘୁରାଇ ପୁଣି ଧରନ୍ତୁ।',
+    ur: 'کمرے کی ٹریکنگ ٹوٹ گئی۔ فون آہستہ گھما کر دوبارہ پکڑیں۔',
+  },
+  xr_tracking_limited: {
+    en: 'Not enough of the room mapped yet. Walk a few steps and look around.',
+    hi: 'कमरा अभी पूरा मैप नहीं हुआ। कुछ कदम चलें और चारों ओर देखें।',
+    bn: 'ঘর এখনও পুরো ম্যাপ হয়নি। কয়েক পা হাঁটুন ও চারপাশে দেখুন।',
+    or: 'ରୁମ ଏପର୍ଯ୍ୟନ୍ତ ପୂରା ମ୍ୟାପ ହୋଇନାହିଁ। କିଛି ପାଦ ଚାଲି ଚାରିପଟେ ଦେଖନ୍ତୁ।',
+    ur: 'کمرہ ابھی پورا میپ نہیں ہوا۔ کچھ قدم چلیں اور چاروں طرف دیکھیں۔',
+  },
   xr_no_surface: {
     en: 'No surface found there yet.',
     hi: 'वहाँ अभी कोई सतह नहीं मिली।',
