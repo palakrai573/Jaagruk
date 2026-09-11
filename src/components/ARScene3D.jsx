@@ -159,7 +159,7 @@ function HazardCone({ color }) {
  * physically what a lockout point is attached to, and GAS_ZONE borrows the fixed
  * gas detector that marks one.
  */
-const MESH_FOR_TYPE = {
+export const MESH_FOR_TYPE = {
   [ANCHOR_TYPE.EXIT]: ExitDoor,
   [ANCHOR_TYPE.ASSEMBLY_POINT]: AssemblyPad,
   [ANCHOR_TYPE.FIRST_AID]: FirstAidCabinet,
@@ -173,7 +173,7 @@ const MESH_FOR_TYPE = {
 }
 
 /** Anything unrecognised still gets a body, so a new anchor type is never invisible. */
-function UnknownMarker({ color }) {
+export function UnknownMarker({ color }) {
   return (
     <mesh>
       <octahedronGeometry args={[0.6, 0]} />

@@ -1184,12 +1184,164 @@ const DEMO = {
   },
 }
 
+/*
+ * Immersive AR (WebXR).
+ *
+ * `xr_note` and `xr_depth_off` are the honest ones. The first says plainly that this
+ * mode needs a specific class of phone; the second says occlusion is not active,
+ * because a worker who believes virtual signage will hide behind a real wall would
+ * misread the depth cues of everything they are looking at.
+ */
+const XR = {
+  xr_enter: {
+    en: 'Start tracked AR',
+    hi: 'ट्रैक्ड एआर शुरू करें',
+    bn: 'ট্র্যাকড এআর শুরু করুন',
+    or: 'ଟ୍ରାକଡ AR ଆରମ୍ଭ କରନ୍ତୁ',
+    ur: 'ٹریکڈ اے آر شروع کریں',
+  },
+  xr_exit: {
+    en: 'Exit',
+    hi: 'बाहर',
+    bn: 'প্রস্থান',
+    or: 'ବାହାରକୁ',
+    ur: 'باہر',
+  },
+  xr_intro: {
+    en: 'Uses the phone motion tracking to place markers at their real distance, so they stay put as you walk.',
+    hi: 'फ़ोन की मोशन ट्रैकिंग से मार्कर उनकी असली दूरी पर रखे जाते हैं, इसलिए चलने पर भी वे टिके रहते हैं।',
+    bn: 'ফোনের মোশন ট্র্যাকিং দিয়ে মার্কার তাদের প্রকৃত দূরত্বে বসে, তাই হাঁটলেও সেগুলি স্থির থাকে।',
+    or: 'ଫୋନର ମୋସନ ଟ୍ରାକିଂ ଦ୍ୱାରା ମାର୍କର ପ୍ରକୃତ ଦୂରତାରେ ବସେ, ତେଣୁ ଚାଲିଲେ ମଧ୍ୟ ସେମାନେ ସ୍ଥିର ରୁହନ୍ତି।',
+    ur: 'فون کی موشن ٹریکنگ سے مارکر اپنے اصل فاصلے پر رکھے جاتے ہیں، اس لیے چلنے پر بھی وہ ٹھہرے رہتے ہیں۔',
+  },
+  xr_note: {
+    en: 'Needs a recent Android phone with Google Play Services for AR. Where it is unavailable the compass camera view is used instead.',
+    hi: 'इसके लिए Google Play Services for AR वाला नया Android फ़ोन चाहिए। न होने पर कंपास कैमरा व्यू चलेगा।',
+    bn: 'এর জন্য Google Play Services for AR সহ নতুন Android ফোন দরকার। না থাকলে কম্পাস ক্যামেরা ভিউ চলবে।',
+    or: 'ଏହା ପାଇଁ Google Play Services for AR ସହିତ ନୂଆ Android ଫୋନ ଆବଶ୍ୟକ। ନଥିଲେ କମ୍ପାସ କ୍ୟାମେରା ଭ୍ୟୁ ଚାଲିବ।',
+    ur: 'اس کے لیے Google Play Services for AR والا نیا Android فون درکار ہے۔ نہ ہونے پر کمپاس کیمرہ ویو چلے گا۔',
+  },
+  xr_align_marker: {
+    en: 'Point at the printed marker plate and tap',
+    hi: 'छपी हुई मार्कर प्लेट पर निशाना लगाकर टैप करें',
+    bn: 'মুদ্রিত মার্কার প্লেটে তাক করে ট্যাপ করুন',
+    or: 'ମୁଦ୍ରିତ ମାର୍କର ପ୍ଲେଟ ଉପରେ ଲକ୍ଷ୍ୟ କରି ଟ୍ୟାପ କରନ୍ତୁ',
+    ur: 'چھپی ہوئی مارکر پلیٹ پر نشانہ لگا کر ٹیپ کریں',
+  },
+  xr_align_reference: {
+    en: 'Now tap a second fixed point further along',
+    hi: 'अब कुछ दूर एक दूसरा स्थिर बिंदु टैप करें',
+    bn: 'এখন কিছু দূরে দ্বিতীয় একটি স্থির বিন্দু ট্যাপ করুন',
+    or: 'ବର୍ତ୍ତମାନ କିଛି ଦୂରରେ ଦ୍ୱିତୀୟ ଏକ ସ୍ଥିର ବିନ୍ଦୁ ଟ୍ୟାପ କରନ୍ତୁ',
+    ur: 'اب کچھ دور ایک دوسرا ثابت نقطہ ٹیپ کریں',
+  },
+  xr_align_too_close: {
+    en: 'Too close to the first point. Move further away and tap again.',
+    hi: 'पहले बिंदु के बहुत पास। और दूर जाकर फिर टैप करें।',
+    bn: 'প্রথম বিন্দুর খুব কাছে। আরও দূরে গিয়ে আবার ট্যাপ করুন।',
+    or: 'ପ୍ରଥମ ବିନ୍ଦୁର ବହୁତ ନିକଟରେ। ଅଧିକ ଦୂରକୁ ଯାଇ ପୁଣି ଟ୍ୟାପ କରନ୍ତୁ।',
+    ur: 'پہلے نقطے کے بہت قریب۔ مزید دور جا کر دوبارہ ٹیپ کریں۔',
+  },
+  xr_align_invalid: {
+    en: 'That point could not be used. Try again.',
+    hi: 'यह बिंदु उपयोग नहीं हो सका। फिर कोशिश करें।',
+    bn: 'এই বিন্দু ব্যবহার করা গেল না। আবার চেষ্টা করুন।',
+    or: 'ଏହି ବିନ୍ଦୁ ବ୍ୟବହାର ହୋଇପାରିଲା ନାହିଁ। ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ।',
+    ur: 'یہ نقطہ استعمال نہیں ہو سکا۔ دوبارہ کوشش کریں۔',
+  },
+  xr_place_anchor: {
+    en: 'Point at an object and tap to mark it',
+    hi: 'किसी वस्तु पर निशाना लगाकर टैप करें',
+    bn: 'কোনো বস্তুতে তাক করে ট্যাপ করুন',
+    or: 'କୌଣସି ବସ୍ତୁ ଉପରେ ଲକ୍ଷ୍ୟ କରି ଟ୍ୟାପ କରନ୍ତୁ',
+    ur: 'کسی چیز پر نشانہ لگا کر ٹیپ کریں',
+  },
+  xr_tap_here: {
+    en: 'Tap here',
+    hi: 'यहाँ टैप करें',
+    bn: 'এখানে ট্যাপ করুন',
+    or: 'ଏଠାରେ ଟ୍ୟାପ କରନ୍ତୁ',
+    ur: 'یہاں ٹیپ کریں',
+  },
+  xr_scanning: {
+    en: 'Move the phone slowly to find a surface',
+    hi: 'सतह खोजने के लिए फ़ोन धीरे-धीरे घुमाएँ',
+    bn: 'পৃষ্ঠ খুঁজতে ফোন ধীরে ধীরে ঘোরান',
+    or: 'ପୃଷ୍ଠ ଖୋଜିବା ପାଇଁ ଫୋନ ଧୀରେ ଧୀରେ ଘୁରାନ୍ତୁ',
+    ur: 'سطح ڈھونڈنے کے لیے فون آہستہ آہستہ گھمائیں',
+  },
+  xr_no_surface: {
+    en: 'No surface found there yet.',
+    hi: 'वहाँ अभी कोई सतह नहीं मिली।',
+    bn: 'সেখানে এখনও কোনো পৃষ্ঠ পাওয়া যায়নি।',
+    or: 'ସେଠାରେ ଏପର୍ଯ୍ୟନ୍ତ କୌଣସି ପୃଷ୍ଠ ମିଳିନାହିଁ।',
+    ur: 'وہاں ابھی کوئی سطح نہیں ملی۔',
+  },
+  xr_realign: {
+    en: 'Re-align',
+    hi: 'फिर संरेखित करें',
+    bn: 'পুনরায় সাজান',
+    or: 'ପୁଣି ସଜାଡ଼ନ୍ତୁ',
+    ur: 'دوبارہ ترتیب دیں',
+  },
+  xr_depth_on: {
+    en: 'Depth sensing active',
+    hi: 'डेप्थ सेंसिंग चालू',
+    bn: 'ডেপথ সেন্সিং চালু',
+    or: 'ଡେପ୍ଥ ସେନ୍ସିଂ ଚାଲୁ',
+    ur: 'ڈیپتھ سینسنگ فعال',
+  },
+  xr_depth_off: {
+    en: 'No depth sensing — markers draw in front of walls',
+    hi: 'डेप्थ सेंसिंग नहीं — मार्कर दीवारों के आगे दिखेंगे',
+    bn: 'ডেপথ সেন্সিং নেই — মার্কার দেয়ালের সামনে দেখাবে',
+    or: 'ଡେପ୍ଥ ସେନ୍ସିଂ ନାହିଁ — ମାର୍କର କାନ୍ଥ ଆଗରେ ଦେଖାଯିବ',
+    ur: 'ڈیپتھ سینسنگ نہیں — مارکر دیواروں کے سامنے دکھیں گے',
+  },
+  xr_enter_failed: {
+    en: 'Tracked AR could not start. The camera view still works.',
+    hi: 'ट्रैक्ड एआर शुरू नहीं हो सका। कैमरा व्यू अब भी चलेगा।',
+    bn: 'ট্র্যাকড এআর চালু হতে পারেনি। ক্যামেরা ভিউ এখনও চলবে।',
+    or: 'ଟ୍ରାକଡ AR ଆରମ୍ଭ ହୋଇପାରିଲା ନାହିଁ। କ୍ୟାମେରା ଭ୍ୟୁ ଏବେ ମଧ୍ୟ ଚାଲିବ।',
+    ur: 'ٹریکڈ اے آر شروع نہیں ہو سکا۔ کیمرہ ویو اب بھی چلے گا۔',
+  },
+  xr_block_unsupported: {
+    en: 'This browser does not support tracked AR.',
+    hi: 'यह ब्राउज़र ट्रैक्ड एआर नहीं चला सकता।',
+    bn: 'এই ব্রাউজার ট্র্যাকড এআর চালাতে পারে না।',
+    or: 'ଏହି ବ୍ରାଉଜର ଟ୍ରାକଡ AR ଚଲାଇପାରିବ ନାହିଁ।',
+    ur: 'یہ براؤزر ٹریکڈ اے آر نہیں چلا سکتا۔',
+  },
+  xr_block_insecure: {
+    en: 'Tracked AR needs a secure (https) connection.',
+    hi: 'ट्रैक्ड एआर के लिए सुरक्षित (https) कनेक्शन चाहिए।',
+    bn: 'ট্র্যাকড এআরের জন্য নিরাপদ (https) সংযোগ দরকার।',
+    or: 'ଟ୍ରାକଡ AR ପାଇଁ ସୁରକ୍ଷିତ (https) ସଂଯୋଗ ଆବଶ୍ୟକ।',
+    ur: 'ٹریکڈ اے آر کے لیے محفوظ (https) کنکشن درکار ہے۔',
+  },
+  xr_block_no_session: {
+    en: 'This device does not offer tracked AR. The compass camera view is used instead.',
+    hi: 'यह डिवाइस ट्रैक्ड एआर नहीं देता। कंपास कैमरा व्यू चलेगा।',
+    bn: 'এই ডিভাইস ট্র্যাকড এআর দেয় না। কম্পাস ক্যামেরা ভিউ চলবে।',
+    or: 'ଏହି ଡିଭାଇସ ଟ୍ରାକଡ AR ଦିଏ ନାହିଁ। କମ୍ପାସ କ୍ୟାମେରା ଭ୍ୟୁ ଚାଲିବ।',
+    ur: 'یہ ڈیوائس ٹریکڈ اے آر نہیں دیتا۔ کمپاس کیمرہ ویو چلے گا۔',
+  },
+  xr_block_no_webgl: {
+    en: 'This device cannot render 3D, so tracked AR is unavailable.',
+    hi: 'यह डिवाइस 3D नहीं बना सकता, इसलिए ट्रैक्ड एआर उपलब्ध नहीं।',
+    bn: 'এই ডিভাইস 3D আঁকতে পারে না, তাই ট্র্যাকড এআর নেই।',
+    or: 'ଏହି ଡିଭାଇସ 3D ଆଙ୍କିପାରିବ ନାହିଁ, ତେଣୁ ଟ୍ରାକଡ AR ନାହିଁ।',
+    ur: 'یہ ڈیوائس 3D نہیں بنا سکتا، اس لیے ٹریکڈ اے آر دستیاب نہیں۔',
+  },
+}
+
 export const JAAGRUK_STRINGS = {
   ...SHELL,
   ...IDENTITY,
   ...AR,
   ...VISION,
   ...DEMO,
+  ...XR,
   ...BUDDY,
   ...HAZARDS,
   ...ASSESSMENT,

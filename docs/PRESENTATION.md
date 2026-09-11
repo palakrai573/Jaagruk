@@ -847,8 +847,19 @@ lifetime of **24 hours**, so a "one-time site setup" needs OAuth and a hosted Go
 project, and the scan is then a subscription rather than a one-off. Cloud Anchors also work by
 uploading camera imagery and device poses to Google to build the feature map, which is
 difficult to reconcile with a DGMS deployment where the selling point is that nothing leaves
-the device. Our phase-three plan is ARCore Depth for occlusion; for cross-session persistence
-we would relocalise against a printed marker at the zone entrance, which stays offline.
+the device.
+
+So we did the tracking part and replaced the persistence part. There is a second AR mode using
+WebXR `immersive-ar`, which on Chrome for Android *is* ARCore: real 6DoF, hit-test placement, so
+an anchor has a measured distance rather than just a direction. For persistence we align to a
+printed marker plate with two taps — tap the plate, tap a fixed point a couple of metres away to
+set heading — and store every anchor in that frame. Two phones that align to the same plate agree
+on the same real point, offline, with nothing uploaded. A baseline shorter than two metres is
+refused, because a short baseline turns a small tap error into a large rotation of the whole zone.
+
+What we did *not* do is depth occlusion. It is requested and the UI reports whether the device
+granted it, but hiding geometry behind a real wall needs a per-fragment depth material, and we
+would not ship a shader we could not test on hardware and call it occlusion.
 
 ### "Can it detect a door, or missing PPE?"
 No, and we will not claim it. The on-device detector is COCO-trained: `door`, `exit sign`,

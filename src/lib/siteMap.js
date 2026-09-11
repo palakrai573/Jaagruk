@@ -949,10 +949,35 @@ export async function deleteZone(siteId, zoneId) {
 }
 
 /**
- * Record a sighting. `bearing` and `elevation` come from the live orientation
- * tracker at the moment the supervisor taps.
+ * Validate a measured site-frame position, or return null.
+ *
+ * Only present on anchors placed through the tracked-AR mode, where a hit-test
+ * against a real surface gives a genuine position in metres. Compass-placed anchors
+ * have no distance and must NOT carry a fabricated one, so this returns null rather
+ * than a default — the 3D overlay tests for its presence to decide whether apparent
+ * size is allowed to mean anything.
  */
-export async function addAnchor(siteId, zoneId, { type, label, bearing, elevation = 0, thumbnail = null, note = '' }) {
+function normaliseLocal(local) {
+  if (!local) return null
+  const x = toFiniteNumber(local.x)
+  const y = toFiniteNumber(local.y)
+  const z = toFiniteNumber(local.z)
+  if (x === null || y === null || z === null) return null
+  // A kilometre of site frame is a tracking failure, not a large site.
+  if (Math.hypot(x, y, z) > 500) return null
+  return { x, y, z }
+}
+
+/**
+ * Record a sighting. `bearing` and `elevation` come from the live orientation
+ * tracker at the moment the supervisor taps, or are derived from a tracked-AR
+ * hit-test when `local` is supplied.
+ */
+export async function addAnchor(
+  siteId,
+  zoneId,
+  { type, label, bearing, elevation = 0, thumbnail = null, note = '', local = null },
+) {
   if (!ANCHOR_TYPE[type]) throw new Error('UNKNOWN_ANCHOR_TYPE')
   // Strict, so a dropped compass reading can't be stored as due north.
   if (normaliseHeadingStrict(bearing) === null) throw new Error('BEARING_REQUIRED')
@@ -970,6 +995,13 @@ export async function addAnchor(siteId, zoneId, { type, label, bearing, elevatio
     elevation: normaliseElevation(elevation),
     thumbnail: thumbnail || null,
     note: String(note || '').slice(0, 200),
+    /*
+     * Measured position, present only for anchors placed in tracked AR. Absent means
+     * "direction only" and every consumer must keep treating it that way — bearing and
+     * elevation above are always populated, so an XR-placed anchor still works in the
+     * compass overlay and on a phone that cannot run XR at all.
+     */
+    local: normaliseLocal(local),
     createdAt: Date.now(),
   }
 
@@ -1036,6 +1068,9 @@ export async function exportSiteBundle(siteId, { includeThumbnails = false } = {
           elevation: a.elevation,
           note: a.note || '',
           thumbnail: includeThumbnails ? a.thumbnail || null : null,
+          // Only emitted when it exists, so a compass-only bundle stays byte-identical
+          // to what it was before tracked AR existed.
+          ...(a.local ? { local: a.local } : {}),
         })),
       })),
     },
@@ -1073,6 +1108,13 @@ export async function importSiteBundle(bundle, { siteId = null } = {}) {
       elevation: normaliseElevation(a.elevation),
       note: String(a.note || '').slice(0, 200),
       thumbnail: a.thumbnail || null,
+      /*
+       * Carried through the bundle, and validated on the way in exactly as it was on
+       * the way out. Dropping it here would mean an XR scan lost every measured
+       * distance the moment it was shared with a second phone — which is the one
+       * thing site bundles exist to do.
+       */
+      local: normaliseLocal(a.local),
       createdAt: a.createdAt || Date.now(),
     }))
 

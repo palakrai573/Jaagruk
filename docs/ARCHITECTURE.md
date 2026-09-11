@@ -309,7 +309,37 @@ matters because those are the values hashed into a certificate.
 
 ## 9. Known limitations (state these before a judge asks)
 
-1. **No depth or SLAM, and an anchor has no distance.** The overlay draws real 3D geometry,
+0. **Two AR modes, and the limitations below apply to the compass one.**
+
+   `src/lib/webxr.js` + `XRDrill` add a second mode: a WebXR `immersive-ar` session,
+   which on Chrome for Android is backed by ARCore. That gives genuine 6DoF tracking,
+   `hit-test` placement so an anchor has a real **distance**, and correct scale from
+   ARCore's own camera parameters. Anchors placed there carry both a measured `local`
+   position and a derived `bearing`/`elevation`, so a zone scanned in XR still works
+   on a phone that cannot run XR — the two modes stay one product.
+
+   Persistence without Cloud Anchors is done with a **printed marker and two taps**.
+   The supervisor fixes a QR plate in the zone, taps it, then taps a second fixed
+   point at least 2 m away to establish heading; every anchor is stored in that frame
+   rather than in the session's arbitrary origin. A worker repeats the two taps and
+   lands on the same coordinates. Offline, cross-device, nothing uploaded. The
+   accuracy is bounded by how carefully the two points are tapped, which is visible
+   and correctable — and a short baseline is *refused* rather than accepted and
+   silently skewed.
+
+   **Not implemented: depth occlusion.** `depth-sensing` is requested and whether it
+   was granted is reported on screen, but hiding geometry behind a real wall needs a
+   material that samples the depth texture per fragment, and that is code I could not
+   run without an ARCore device. The UI says "no depth sensing — markers draw in front
+   of walls" rather than implying otherwise.
+
+   **Verification status:** the site-frame maths is unit-tested, including a
+   cross-session test proving two sessions with different world origins resolve a
+   stored coordinate to the same real point. The *session handling* is not tested and
+   needs a device. It sits behind a capability probe with the compass mode intact, so
+   a phone that cannot run it loses nothing.
+
+1. **No depth or SLAM, and an anchor has no distance.** *(Compass mode.)* The overlay draws real 3D geometry,
    oriented by the full device rotation including roll, but it is anchored to compass
    bearing and elevation rather than to a reconstructed mesh. Three consequences, all worth
    saying out loud before a judge finds them:

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef, useId } from 'react'
+import { useState, useEffect, useCallback, useRef, useId, lazy, Suspense } from 'react'
 import {
   getSite,
   saveSite,
@@ -20,6 +20,9 @@ import { getActiveSiteId, getCurrentWorker, ROLE } from '../lib/identity.js'
 import { loadDemoSite } from '../lib/demoSite.js'
 import { downloadBundle, readBundleFile } from '../lib/sync.js'
 import ARDrill from '../components/ARDrill.jsx'
+/* Lazy: three.js plus the XR shell is a large chunk, and most supervisors will be on
+   a phone that cannot run a session at all. They should not download it to be told so. */
+const XRDrill = lazy(() => import('../components/XRDrill.jsx'))
 import Pictogram from '../lib/pictograms.jsx'
 import { Dialog, useConfirm, usePrompt, useToast, Skeleton } from '../components/ui/index.js'
 import { useLanguage } from '../context/LanguageContext.jsx'
@@ -75,6 +78,11 @@ export default function SiteSetup() {
 
   const [activeZoneId, setActiveZoneId] = useState(null)
   const [marking, setMarking] = useState(false)
+  /* Tracked-AR state. The site frame is held here rather than inside XRDrill so it
+     survives the session ending — re-entering must not mean walking back to the
+     marker plate and aligning again. */
+  const [xrFrame, setXrFrame] = useState(null)
+  const [xrType, setXrType] = useState(ANCHOR_TYPE.EXIT)
   const [newZoneName, setNewZoneName] = useState('')
   const [pendingLabel, setPendingLabel] = useState('')
   const [notice, setNotice] = useState(null)
@@ -132,6 +140,36 @@ export default function SiteSetup() {
     if (!site) return
     const next = await saveSite({ ...site, name })
     setSite(next)
+  }
+
+  /*
+   * An anchor placed by tapping a real surface in tracked AR.
+   *
+   * The type and label come from the same pending selection the compass path uses, so
+   * the supervisor's workflow is identical: pick what you are marking, then point and
+   * tap. The difference is invisible at this level and entirely in the data — this one
+   * arrives with a measured position, so it also carries a real distance.
+   */
+  const handleXrPlace = async ({ local, bearing, elevation }) => {
+    if (!activeZone || bearing === null) return
+    try {
+      await addAnchor(siteId, activeZone.id, {
+        type: xrType,
+        label: pendingLabel.trim() || t(anchorMeta(xrType).labelKey),
+        // Both representations. The bearing and elevation are DERIVED from the measured
+        // position rather than read off the compass, so this anchor is usable in the
+        // compass overlay too — and its bearing is better than a compass could give,
+        // because it came from tracking rather than from a magnetometer in a steel plant.
+        bearing,
+        elevation,
+        local,
+      })
+      setPendingLabel('')
+      flash('ok', 'site_marked')
+      await refresh()
+    } catch {
+      flash('error', 'ar_no_compass_title')
+    }
   }
 
   const handleDropAnchor = async (type) => {
@@ -405,6 +443,45 @@ export default function SiteSetup() {
               {marking ? t('close_label') : t('site_start_marking')}
             </button>
           </div>
+
+          {/*
+            Tracked AR, offered alongside the compass view rather than instead of it.
+            A supervisor with a recent Android phone gets measured positions; everyone
+            else marks by bearing exactly as before, and both produce anchors the whole
+            app can read. The component renders its own "not available here" note, so
+            there is nothing to branch on at this level.
+          */}
+          {marking && (
+            <div className="mb-4">
+              <Suspense fallback={null}>
+                <XRDrill
+                  anchors={activeZone.anchors || []}
+                  zoneName={activeZone.name}
+                  savedFrame={xrFrame}
+                  onAligned={setXrFrame}
+                  onPlace={handleXrPlace}
+                >
+                  {/* Which kind of anchor the next tap creates. Rendered as a child so
+                      it sits inside the dom-overlay and stays reachable during the
+                      session — the compass path can use a row of per-type buttons
+                      because it is on a normal page, but in XR the whole screen is the
+                      camera and there is room for one control. */}
+                  <select
+                    value={xrType}
+                    onChange={(e) => setXrType(e.target.value)}
+                    aria-label={t('site_anchor_type')}
+                    className="w-full bg-black/60 text-white border border-white/30 rounded px-2 py-2 font-mono text-xs"
+                  >
+                    {Object.values(ANCHOR_TYPE).map((type) => (
+                      <option key={type} value={type} className="text-black">
+                        {t(anchorMeta(type).labelKey)}
+                      </option>
+                    ))}
+                  </select>
+                </XRDrill>
+              </Suspense>
+            </div>
+          )}
 
           {marking && (
             <>
