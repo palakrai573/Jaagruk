@@ -68,7 +68,49 @@ a JSON bundle so one supervisor's scan seeds every worker's phone.
 During a drill the worker's phone shows live camera with markers reprojected at their
 recorded bearings, so "the exit is left past the second pillar" is learned in the real
 corridor. Unscanned sites fall back to a generic template zone — the platform degrades,
-it never blocks.
+it never blocks. `src/lib/demoSite.js` is a hand-authored three-zone scan covering all ten
+anchor types, loadable in one tap from Site Setup, so the registered overlay can be shown
+without first walking a real building. It seeds the site only, never training records.
+
+**Two layers are drawn over the feed, and they cannot disagree.**
+
+The flat marker layer is absolutely-positioned DOM: pictogram, label, edge arrows for
+anchors out of frame. It works on any device with a camera and a compass and is never
+switched off.
+
+Above it, `src/components/ARScene3D.jsx` draws real geometry — a door frame for an exit, a
+floor ring for a muster point, the same extinguisher and switchgear meshes the 3D briefing
+uses, so an object learned in the briefing is recognised in the field. It is a transparent
+`react-three-fiber` canvas, lazy-loaded behind a WebGL probe that is deliberately separate
+from `arBlocker()`: a phone with a camera and a compass but no usable renderer still gets
+the full drill, just flat.
+
+The reason the two layers stay together is worth stating, because it is the part that is
+easy to get wrong. Both are placed from **one** azimuth. `cameraQuaternion()` takes pitch
+and roll from the device quaternion but overrides its yaw to equal the same smoothed
+`heading` the DOM markers use. Feeding the raw sensor quaternion to the 3D camera would
+leave two independent estimates of where the worker is looking, and they diverge whenever
+the compass is off — a 3D exit sign floating beside its own label. It also means a manual
+re-centre moves both layers at once, since the offset already lives inside `heading`.
+`tests/geometry.test.mjs` asserts that the camera's forward vector equals
+`anchorDirection()` for the same bearing, exactly.
+
+Projection is true perspective, `tan(θ)/tan(fov/2)`. The vertical term divides by
+`cos(θ)` as well, because off-axis vertical screen position genuinely depends on the
+horizontal angle; treating the two axes independently — the obvious approach, and the
+one used before — put high anchors near the frame edge measurably too low. Anchors beyond
+90° are intercepted rather than divided, since the perspective divide changes sign there
+and would fold an exit that is *behind* the worker back into the middle of the frame.
+
+A floor-projected chevron path leads to the active target using **bearing only**: you walk
+on the ground whether the target is a muster point or a door at the top of a stair. It is
+never drawn toward a hazard, gas zone or dust source — a line of arrows is an instruction
+to walk somewhere, and those anchors are marked, not routed to.
+
+**1a-ii. On-device object detection** (`src/lib/vision.js`, opt-in per drill). MediaPipe
+EfficientDet-Lite0, int8, cached in IndexedDB after first download. It reports **people and
+vehicles, and nothing else** — see limitation 9. Headcount at a muster point and a
+large-vehicle proximity warning are the two things it does that carry real safety weight.
 
 **1b. Touchless control.** Hand tracking gives a pointer driven by the index fingertip,
 pinch to confirm, and a 1.2 s dwell ring as a precision fallback. Voice is a first-class
@@ -267,10 +309,29 @@ matters because those are the values hashed into a certificate.
 
 ## 9. Known limitations (state these before a judge asks)
 
-1. **No depth or SLAM.** Overlay is anchored to compass bearing and elevation, not to a 3D
-   mesh. Markers hold their direction as the worker turns, but do not occlude behind real
-   geometry and do not survive large translation. ARCore Depth + Cloud Anchors is the
-   native upgrade.
+1. **No depth or SLAM, and an anchor has no distance.** The overlay draws real 3D geometry,
+   oriented by the full device rotation including roll, but it is anchored to compass
+   bearing and elevation rather than to a reconstructed mesh. Three consequences, all worth
+   saying out loud before a judge finds them:
+
+   - **Objects do not occlude behind real geometry.** An exit sign for a door around the
+     corner draws over the wall, not behind it.
+   - **Nothing survives large translation.** Walk twenty metres and the bearings are stale,
+     because they were recorded from where the supervisor stood.
+   - **An anchor is a ray, so apparent size means nothing.** Site Setup records the
+     direction a supervisor was pointing, and distance cannot be recovered from one
+     direction — that needs stereo, a depth sensor, or the supervisor pacing out every
+     anchor. Every object is therefore drawn on a ring at a fixed six metres
+     (`ANCHOR_RING_RADIUS_M`). Direction is accurate and is what a worker in smoke acts on;
+     an extinguisher three metres away and one twenty metres away render identically. This
+     is why the overlay never displays a distance figure — it would be fiction.
+
+   ARCore Depth + Persistent Cloud Anchors is the native upgrade and would fix all three.
+
+   The floor path additionally assumes a camera height of 1.55 m (`EYE_HEIGHT_M`), since
+   nothing in the browser reports how tall the person holding the phone is. Being wrong
+   there shifts the painted path slightly against the real floor; the direction it indicates
+   stays correct.
 2. **Magnetometer drift.** Steel plants and mine shafts distort magnetic heading. The app
    detects absent or low-accuracy compass data and offers manual re-centring, but this is
    a real constraint of the sensor, not something software can fully remove.
@@ -300,10 +361,10 @@ matters because those are the values hashed into a certificate.
 4. **Santali UI is 100% covered and 0% verified.** These are two different numbers and the
    app reports them separately, because conflating them is how software ends up lying.
 
-   All 573 UI strings now exist in Ol Chiki. None has been checked by a Santali speaker.
-   The 332 written in one pass live in `src/lib/i18nSantali.js` so a reviewer can work
-   through one file; the other 241 in `i18n.js` / `i18nJaagruk.js` are equally unreviewed,
-   so the file split is organisational rather than a quality boundary.
+   All 601 UI strings now exist in Ol Chiki. None has been checked by a Santali speaker.
+   The 360 gathered into `src/lib/i18nSantali.js` let a reviewer work through one file; the
+   other 241 in `i18n.js` / `i18nJaagruk.js` are equally unreviewed, so the file split is
+   organisational rather than a quality boundary.
 
    The honesty mechanism is that **the in-app notice keys off a verification flag, not off
    the coverage percentage.** `SANTALI_VERIFIED` is `false` in `i18nSantali.js`, and
@@ -326,11 +387,11 @@ matters because those are the values hashed into a certificate.
      a box, permanently, on a device with no network — and nothing else in the build fails.
    - Fallback chains terminate in a fully covered language.
 
-   **Scenario content is deliberately not machine-authored.** None of the 6 modules has
+   **Scenario content is deliberately not machine-authored.** None of the 9 modules has
    Santali; they resolve to Hindi. Drill prose is where a wrong verb changes what a worker
    physically does, so it waits for a speaker rather than being filled in.
 
-   `npm run santali:worksheet` regenerates `docs/santali-worksheet.csv`: all 573 strings
+   `npm run santali:worksheet` regenerates `docs/santali-worksheet.csv`: all 601 strings
    with English and Hindi source, the current Santali, and the file to correct it in,
    ordered by consequence so drill and hazard instructions come before supervisor
    dashboards.
@@ -351,3 +412,34 @@ matters because those are the values hashed into a certificate.
 11. **Central sync endpoint is configurable but unimplemented server-side.** This repo
     ships the client half plus a signed export bundle. There is no DGMS server in this
     submission.
+12. **Object detection sees people and vehicles. It cannot see doors, PPE or equipment.**
+
+    The on-device model is EfficientDet-Lite0, trained on COCO. COCO has eighty classes and
+    the eighty are fixed. `door`, `fire exit`, `exit sign`, `fire extinguisher`, `hard hat`,
+    `helmet`, `safety vest`, `gas cylinder`, `machine guard` and `forklift` are none of
+    them, so no confidence threshold or tuning would produce them. What it does report is
+    `person` — a headcount, which is what a muster-point roll call needs — and the vehicle
+    classes `car`, `truck`, `bus`, `motorcycle`, `bicycle`, `train`, because
+    pedestrian/vehicle interaction is a leading cause of death in warehouses and on haul
+    roads.
+
+    Forklifts specifically: not a COCO class. Some read as `truck`, many are not detected at
+    all. The UI says "vehicle" and means it.
+
+    The scope is enforced rather than promised. `categoryAllowlist` is passed to MediaPipe so
+    other classes are never scored; `classifyLabel()` is a second exact-match gate; and
+    `tests/vision.test.mjs` contains a test that **fails if `door` or `helmet` ever becomes
+    classifiable**, with a note that the honesty copy needs rewriting if the model is
+    swapped. The string `vision_scope` — "Detects people and vehicles only" — renders beside
+    the counts in all six languages whenever the detector is running, not buried in a help
+    screen.
+
+    Proximity is a heuristic and is described as one. Apparent size depends on the real size
+    of the object and on the lens, neither of which is known, so a distant bus and a nearby
+    hatchback fill the same box. It is reported as "close", never in metres.
+
+    **Exits stay with the supervisor anchor scan, and that is not a consolation prize.** A
+    walked-and-recorded bearing is exact, works in smoke and darkness where no camera model
+    would, needs no download and costs no battery. For the thing that matters most, the
+    boring method is the better one. A custom-trained detector for site-specific classes is
+    the upgrade path, and it needs a labelled dataset this submission does not have.

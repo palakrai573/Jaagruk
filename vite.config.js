@@ -82,16 +82,25 @@ export default defineConfig({
             },
           },
           {
-            // MediaPipe hand-tracking runtime and model. Fetched once, then the
-            // gesture layer works offline. The model bytes are additionally
-            // cached in IndexedDB by gesture.js.
+            // MediaPipe runtime, WASM and models — now TWO models sharing this
+            // cache: the hand landmarker for gesture control and the object
+            // detector for person/vehicle detection. Both sets of model bytes are
+            // additionally cached in IndexedDB by gesture.js and vision.js, so
+            // this entry is the secondary layer; it is what makes the runtime and
+            // WASM available offline.
+            //
+            // maxEntries was raised from 12 when the second model landed. The
+            // runtime bundle plus its WASM variants plus two models is already
+            // most of a dozen, and a CacheFirst eviction would surface as a
+            // feature that worked yesterday and cannot initialise on a phone with
+            // no signal.
             urlPattern: ({ url }) =>
               url.href.includes('cdn.jsdelivr.net/npm/@mediapipe') ||
               url.href.includes('storage.googleapis.com/mediapipe-models'),
             handler: 'CacheFirst',
             options: {
               cacheName: 'jaagruk-mediapipe',
-              expiration: { maxEntries: 12, maxAgeSeconds: 60 * 60 * 24 * 180 },
+              expiration: { maxEntries: 24, maxAgeSeconds: 60 * 60 * 24 * 180 },
               cacheableResponse: { statuses: [0, 200] },
             },
           },

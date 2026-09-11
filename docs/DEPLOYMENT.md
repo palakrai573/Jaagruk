@@ -137,8 +137,8 @@ Optional hardening. If you add one, these origins must be allowed or features br
 | Origin | Needed for | Breaks if blocked |
 |---|---|---|
 | `https://fonts.googleapis.com`, `https://fonts.gstatic.com` | Typography | Falls back to system fonts (cosmetic only) |
-| `https://cdn.jsdelivr.net` | MediaPipe runtime + WASM | Gesture control never initialises |
-| `https://storage.googleapis.com` | Hand-landmarker model | Gesture control never initialises |
+| `https://cdn.jsdelivr.net` | MediaPipe runtime + WASM | Gesture control and object detection never initialise |
+| `https://storage.googleapis.com` | Hand-landmarker and object-detector models | Gesture control and object detection never initialise |
 | `https://generativelanguage.googleapis.com` | Gemini hazard scan | AI scan fails |
 | `https://api.openai.com` | OpenAI hazard scan | AI scan fails |
 
@@ -159,8 +159,9 @@ worker-src 'self' blob:;
 `'wasm-unsafe-eval'` is required by the MediaPipe WASM runtime. `blob:` in `media-src` and
 `img-src` is required for camera frames, downscaled photos and voice notes.
 
-**Test the AR drill, gesture mode and the AI scan after adding a CSP.** Every one of them
-touches an origin a naive policy would block.
+**Test the AR drill, gesture mode, live detection and the AI scan after adding a CSP.** Every
+one of them touches an origin a naive policy would block. The 3D overlay is the exception —
+it is bundled, same-origin, and needs nothing beyond WebGL.
 
 ---
 
@@ -255,8 +256,13 @@ Do these **on a real phone**, not a desktop browser. Several of them cannot fail
 | 6 | Open Site Setup, aim the phone | Compass heading updates live |
 | 6a | **Open any drill on a fresh install** | **Camera view appears with no setting changed** — AR is default-on where the device supports it. If you get the 3D scene, check Home: it names the reason. |
 | 6b | **Mark two anchors in Site Setup, then open a drill** | **Those markers appear at their real bearings, and the "site has not been scanned" chip is gone.** This path was broken until Phase 8 — the drill always used generic bearings — so it is worth confirming on a device rather than assuming. |
+| 6c | **Site Setup → Load demo site, then open a drill** | Three zones appear; the drill uses one of them, not the generic zone. Fastest route to a registered overlay with no walking. Tap it twice — the second tap must add nothing. |
+| 6d | **In the drill, tilt the phone side to side** | **3D objects stay level with the world; the horizon in the overlay matches the horizon in the video.** This is the roll path. If the geometry tilts with the phone instead, the device is reporting no `gamma` and the overlay has fallen back to a level camera — correct behaviour, but worth knowing. |
+| 6e | **Turn a full circle on the spot** | Objects leave and re-enter frame at their own bearings, edge arrows point the short way round, and nothing behind you is drawn ahead of you. |
+| 6f | **Compare a 3D object with its flat label** | They sit on the same spot. Any horizontal separation means the two layers have disagreed about azimuth, which `cameraQuaternion()` is specifically built to prevent. |
 | 7 | Start a hazard report, take a photo | Camera opens, photo downscales |
 | 8 | Enable gesture mode (online first time) | Model downloads then tracks |
+| 8a | **Tap "Live detection" in the drill, online first time** | ~4 MB model downloads, then boxes appear around people. The "detects people and vehicles only" line must be visible beside the counts. Reload offline — it works from the IndexedDB cache. |
 | 9 | Two phones on one hotspot → buddy drill | QR pairing connects |
 | 10 | Install to home screen, relaunch offline | Opens standalone, data intact |
 | 11 | Deploy a change, reload twice | New version is picked up (validates §5) |
