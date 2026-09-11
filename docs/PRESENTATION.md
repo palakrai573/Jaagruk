@@ -453,7 +453,8 @@ SYNC (whenever, never blocking)
 | Packaging | **Capacitor 8** (Android, minSdk 29) | Wraps the same build as a real APK without a second codebase. Meets the "working APK" deliverable. |
 | Local database | **IndexedDB** (`jaagruk` v1, 9 stores) | The Room equivalent on web. Structured, indexed, quota-aware, holds blobs (photos, voice notes, ML model). |
 | Crypto | **Web Crypto** — Ed25519 → ECDSA P-256 → HMAC ladder | Native, audited primitives. Ed25519 where available; automatic fallback down the ladder rather than failing on older WebViews. PIN hashing is PBKDF2, 210 000 iterations. |
-| AR overlay | **getUserMedia + DeviceOrientationEvent** | Camera passthrough with compass/pitch anchoring. No plugin, no ARCore dependency, runs on any Android 10+ phone. |
+| AR overlay | **getUserMedia + DeviceOrientationEvent + three.js** | Camera passthrough with compass/pitch/roll anchoring, and real 3D geometry drawn over it — a door frame at the exit bearing, not a flat icon. No plugin, no ARCore dependency, runs on any Android 10+ phone. Degrades to flat markers where WebGL is unavailable. |
+| Object detection | **@mediapipe/tasks-vision** `ObjectDetector` (EfficientDet-Lite0, int8) | On-device, offline after first load. Reports **people and vehicles only** — headcount at a muster point, large-vehicle proximity warning. Opt-in per drill. |
 | Hand tracking | **@mediapipe/tasks-vision** (WASM) | Same model family as native MediaPipe Hands. Loaded from CDN at runtime and cached, so it never inflates the base bundle. |
 | Peer-to-peer | **WebRTC RTCDataChannel + QR signalling** | No signalling server and no internet. Offer/answer trimmed then `deflate-raw` compressed: 1054 → 663 chars, dropping the code from QR version 19 to 14 so a cheap phone camera reads it first time. |
 | Voice | **Web Speech API** | Synthesis and recognition with per-language locale mapping and a fixed command lexicon with fuzzy matching. |
@@ -492,7 +493,7 @@ management library, any component library, any blockchain.
 
 | Component | Native design | Jaagruk | Fidelity |
 |---|---|---|---|
-| Site-Scan AR | ARCore Depth + Cloud Anchors | Camera + compass/pitch bearing anchors | **Functional for orientation-anchored overlay.** No depth mesh, no occlusion, no translational tracking. |
+| Site-Scan AR | ARCore Depth + Cloud Anchors | Camera + compass/pitch/roll bearing anchors with real 3D geometry | **Functional for orientation-anchored overlay.** Direction is exact. No depth mesh, no occlusion, no translational tracking, and an anchor has no distance — objects draw on a fixed 6 m ring. |
 | Gesture input | MediaPipe Hands (TFLite) | `@mediapipe/tasks-vision` (WASM) | **Full** — same model family |
 | Local DB | Room / SQLite | IndexedDB, versioned, quota-aware | **Full** |
 | Buddy pairing | Nearby Connections (Wi-Fi Direct + BT) | WebRTC + QR signalling | **Functional.** Needs a shared LAN or hotspot; Nearby brings its own radio. |
@@ -641,21 +642,22 @@ UI action
 | Deliverable required | Status |
 |---|---|
 | Working Android APK | Capacitor project configured, `minSdk 29`, `in.gov.jharkhand.jaagruk` |
-| ≥ 2 complete AR training modules | **6 modules, 18 timed decisions**, covering all 5 named domains + a bonus manual-handling module |
+| ≥ 2 complete AR training modules | **9 modules, 54 timed decisions**, covering all 5 named domains + manual handling, roof & strata, working at height and mine haulage |
 | Assessment engine | Accuracy + latency grading, hesitation detection, decaying readiness |
 | QR certificate + verification | Signed hash-chained ledger; QR carries the whole record for offline verify |
-| Hindi + Santali localisation | 6 languages; Santali in Ol Chiki, partial and flagged |
+| Hindi + Santali localisation | 6 languages, 601 keys each at 100%; Santali in Ol Chiki, machine-authored and flagged unverified |
 | Offline functionality | Train, assess, certify, verify — all with no network |
 | Web admin compliance dashboard | Compliance, hesitation-risk list, hazard board, chain integrity, QR verify, statutory CSV |
 
-> **Codebase:** 53 source files, ~18 700 lines. Domain logic 9 700 lines across 25 pure
-> modules; 14 pages; 10 components; 13 routes.
-> **Build:** 690 modules, no warnings. ~1.6 MB precached across 11 entries.
+> **Codebase:** 74 source files, ~26 300 lines. Domain logic 13 500 lines across 33 pure
+> modules; 14 pages; 22 components; 16 routes. 171 executable checks in 1 800 lines of tests.
+> **Build:** no warnings. ~2.2 MB precached across 36 entries.
 
 **Say**
 
-> Six modules, not the two required, covering all five named domains plus manual handling.
-> Eighteen individually timed decisions.
+> Nine modules, not the two required, covering all five named domains plus manual handling,
+> roof and strata control, working at height, and haulage. Fifty-four individually timed
+> decisions.
 >
 > The number I would point at is 9 700 lines of domain logic in pure modules. That is the
 > part that had to be right, and it is the part that could be developed against executable
@@ -673,9 +675,11 @@ own system." Panels reward it.
 
 **Slide** — pick 6 for the slide, keep the rest for Q&A
 
-> 1. **No depth or SLAM.** Markers anchor to bearing and elevation, not a 3D mesh. They hold
->    direction as you turn but do not occlude behind real geometry. *ARCore Depth + Cloud
->    Anchors is the upgrade path.*
+> 1. **No depth or SLAM, and an anchor has no distance.** Markers anchor to bearing and
+>    elevation, not a 3D mesh. They hold direction as you turn but do not occlude behind real
+>    geometry, do not survive walking twenty metres, and because a direction carries no range
+>    every object draws on a fixed 6 m ring — so apparent size means nothing and we never show a
+>    distance figure. *ARCore Depth is the upgrade path.*
 > 2. **Magnetometer drift.** Steel plants and shafts distort magnetic heading. The app detects
 >    relative-only heading and offers manual re-centring — a sensor limit, not a software one.
 > 3. **No production Santali ASR exists.** Santali text and audio *output* are real; Santali
@@ -828,10 +832,31 @@ records, each embedding the previous hash — with no consensus, no mining and n
 agreement. Adding those words would be inaccurate.
 
 ### "How is this actually AR without ARCore?"
-Camera passthrough plus the magnetometer and accelerometer, so an anchor is a *direction* — a
-bearing and an elevation — rather than a 3D point. Markers stay over the real exit as the
-worker turns, which is the property that makes training transfer; what we give up is occlusion
-and surviving large translation.
+Camera passthrough plus the magnetometer, accelerometer and gyroscope, so an anchor is a
+*direction* — a bearing and an elevation — rather than a 3D point. Real 3D geometry is drawn at
+that direction, oriented by the full device rotation including roll, so the objects stay level
+with the world when the phone tilts. Markers stay over the real exit as the worker turns, which
+is the property that makes training transfer; what we give up is occlusion and surviving large
+translation.
+
+### "Why not use Persistent Cloud Anchors? That's the obvious answer."
+Two reasons, and the first is simply that there is no web binding — Cloud Anchors are an ARCore
+SDK service for Android, NDK and Unity, with no WebXR equivalent. But the second matters more
+even for the native phase: a Cloud Anchor created with an API key has a documented maximum
+lifetime of **24 hours**, so a "one-time site setup" needs OAuth and a hosted Google Cloud
+project, and the scan is then a subscription rather than a one-off. Cloud Anchors also work by
+uploading camera imagery and device poses to Google to build the feature map, which is
+difficult to reconcile with a DGMS deployment where the selling point is that nothing leaves
+the device. Our phase-three plan is ARCore Depth for occlusion; for cross-session persistence
+we would relocalise against a printed marker at the zone entrance, which stays offline.
+
+### "Can it detect a door, or missing PPE?"
+No, and we will not claim it. The on-device detector is COCO-trained: `door`, `exit sign`,
+`fire extinguisher`, `hard hat` and `forklift` are not among its eighty classes, so no amount of
+tuning produces them. It reports people and vehicles, which gives a muster-point headcount and a
+vehicle proximity warning — both real. Exits come from the supervisor's walk-through instead,
+which is *better* than detection for that job: exact, works in smoke and darkness, no download.
+There is a test in the repo that fails if `door` ever becomes classifiable.
 
 ### "What if the magnetometer is wrong? It is a steel plant."
 That is a real constraint and we detect it rather than ignore it: when absolute heading is
