@@ -113,6 +113,143 @@ export function angularDistance(a, b) {
   return Math.abs(signedDelta(a, b))
 }
 
+/* ================================================================== */
+/* Quaternions                                                         */
+/* ================================================================== */
+
+/*
+ * WHY THESE ARE HAND-ROLLED AND NOT THREE.QUATERNION
+ *
+ * three.js has all of this, and siteMap.js must not import it. This module is
+ * pulled in by identity, hazard reporting, Site Setup and the drill runner, so an
+ * import of three here would drag the 830 KB renderer chunk into the base module
+ * graph for every user including those who never open a 3D view. Four numbers and
+ * three functions are cheaper than that trade.
+ *
+ * WHY A QUATERNION AT ALL, WHEN heading + elevation ALREADY EXIST
+ *
+ * heading and elevation come from alpha and beta and describe where the camera
+ * points. They say nothing about ROLL — gamma was discarded entirely. That is
+ * invisible while markers are flat DOM elements pinned to a screen percentage, but
+ * the moment real geometry is placed in the world the omission shows: the video
+ * rotates with the phone and the 3D objects do not, so they slide across the frame
+ * whenever the worker tilts. A marker that drifts off the thing it labels is worse
+ * than no marker, because it is confidently wrong about which exit to run for.
+ *
+ * heading and elevation are left exactly as they were. This is additive.
+ */
+
+/** Multiply two quaternions ({x,y,z,w}), returning a new one. */
+export function quatMultiply(a, b) {
+  return {
+    x: a.w * b.x + a.x * b.w + a.y * b.z - a.z * b.y,
+    y: a.w * b.y - a.x * b.z + a.y * b.w + a.z * b.x,
+    z: a.w * b.z + a.x * b.y - a.y * b.x + a.z * b.w,
+    w: a.w * b.w - a.x * b.x - a.y * b.y - a.z * b.z,
+  }
+}
+
+/**
+ * Quaternion from intrinsic Euler angles in YXZ order, radians.
+ *
+ * YXZ is not a preference — it is the order the Device Orientation API defines its
+ * angles in, so any other order silently mixes the axes.
+ */
+export function quatFromEulerYXZ(x, y, z) {
+  const c1 = Math.cos(x / 2)
+  const c2 = Math.cos(y / 2)
+  const c3 = Math.cos(z / 2)
+  const s1 = Math.sin(x / 2)
+  const s2 = Math.sin(y / 2)
+  const s3 = Math.sin(z / 2)
+  return {
+    x: s1 * c2 * c3 + c1 * s2 * s3,
+    y: c1 * s2 * c3 - s1 * c2 * s3,
+    z: c1 * c2 * s3 - s1 * s2 * c3,
+    w: c1 * c2 * c3 + s1 * s2 * s3,
+  }
+}
+
+/** Quaternion for a rotation of `angle` radians about a unit axis. */
+export function quatFromAxisAngle(ax, ay, az, angle) {
+  const half = angle / 2
+  const s = Math.sin(half)
+  return { x: ax * s, y: ay * s, z: az * s, w: Math.cos(half) }
+}
+
+function quatNormalise(q) {
+  const len = Math.hypot(q.x, q.y, q.z, q.w)
+  if (!len) return { x: 0, y: 0, z: 0, w: 1 }
+  return { x: q.x / len, y: q.y / len, z: q.z / len, w: q.w / len }
+}
+
+/**
+ * Normalised linear interpolation, taking the shortest arc.
+ *
+ * nlerp rather than slerp on purpose: at 60 Hz the angular step between samples is
+ * tiny, where nlerp and slerp are indistinguishable, and nlerp has no trig. The
+ * sign flip matters though — q and -q are the same rotation, so without it the
+ * interpolation occasionally takes the long way round and the view snaps.
+ */
+export function quatNlerp(a, b, t) {
+  let bx = b.x
+  let by = b.y
+  let bz = b.z
+  let bw = b.w
+  if (a.x * bx + a.y * by + a.z * bz + a.w * bw < 0) {
+    bx = -bx
+    by = -by
+    bz = -bz
+    bw = -bw
+  }
+  return quatNormalise({
+    x: a.x + (bx - a.x) * t,
+    y: a.y + (by - a.y) * t,
+    z: a.z + (bz - a.z) * t,
+    w: a.w + (bw - a.w) * t,
+  })
+}
+
+/** Identity rotation. */
+export const QUAT_IDENTITY = Object.freeze({ x: 0, y: 0, z: 0, w: 1 })
+
+/*
+ * Camera-frame correction, precomputed because it never changes.
+ *
+ * The device frame has +Z out of the SCREEN, so a phone held upright has its rear
+ * camera looking along -Z of the device. A three.js camera also looks along -Z, but
+ * the device's resting frame is screen-up (lying on a table). This -90 degrees
+ * about X is what turns "flat on the table" into "held up looking at the horizon".
+ * It is the same correction the old THREE.DeviceOrientationControls applied.
+ */
+const CAMERA_FRAME_FIX = Object.freeze(quatFromAxisAngle(1, 0, 0, -Math.PI / 2))
+
+/**
+ * Device orientation angles to a camera-space quaternion.
+ *
+ * @param alphaDeg  Z rotation, 0..360, compass-ish
+ * @param betaDeg   X rotation, -180..180, front-to-back tilt
+ * @param gammaDeg  Y rotation, -90..90, left-to-right roll
+ * @param screenDeg screen rotation from portrait (screenAngle())
+ * @returns {x,y,z,w} or null when any angle is missing
+ */
+export function deviceQuaternion(alphaDeg, betaDeg, gammaDeg, screenDeg = 0) {
+  const a = toFiniteNumber(alphaDeg)
+  const b = toFiniteNumber(betaDeg)
+  const g = toFiniteNumber(gammaDeg)
+  // Roll is the whole reason this function exists, so a missing gamma is a null
+  // result rather than a silent zero that would look level and be wrong.
+  if (a === null || b === null || g === null) return null
+
+  const rad = Math.PI / 180
+  let q = quatFromEulerYXZ(b * rad, a * rad, -g * rad)
+  q = quatMultiply(q, CAMERA_FRAME_FIX)
+  // Screen rotation is applied last, in the already-rotated camera frame, so
+  // landscape does not mirror the world.
+  q = quatMultiply(q, quatFromAxisAngle(0, 0, 1, -(toNumberOr(screenDeg, 0) * rad)))
+  return quatNormalise(q)
+}
+
 /**
  * Circular mean of headings, so smoothing doesn't break across the 359->0 seam.
  * A naive average of 359 and 1 gives 180, which would swing every marker across
@@ -182,28 +319,205 @@ export function computeFov(videoWidth, videoHeight, longAxisFov = DEFAULT_LONG_A
  *   angularError    total angular distance from view centre, for aim scoring
  * }
  */
+/*
+ * Depth below which the perspective divide is refused. An anchor at exactly 90
+ * degrees from the view direction sits on the camera plane, where the divide is
+ * infinite, and BEYOND 90 degrees it changes sign — which would silently fold an
+ * anchor that is behind the worker back into the middle of the frame. A marker
+ * pointing at an exit behind you, drawn as if it were in front, is the worst
+ * failure this file could produce, so the sign flip is intercepted rather than
+ * clamped after the fact.
+ */
+const MIN_VIEW_DEPTH = 1e-3
+/* Where behind-camera anchors are parked: far enough outside the frame that no
+   clamp or rounding can drag them back in, close enough to stay finite. */
+const BEHIND_NDC = 3
+
 export function projectAnchor(anchor, view) {
   const { heading = 0, elevation = 0, hFov = 50, vFov = 65 } = view || {}
 
   const relBearing = signedDelta(anchor?.bearing ?? 0, heading)
   const relElevation = toNumberOr(anchor?.elevation, 0) - toNumberOr(elevation, 0)
 
-  const x = 0.5 + relBearing / hFov
-  // Screen y grows downward, so a marker above the centre gets a smaller y.
-  const y = 0.5 - relElevation / vFov
+  const rad = Math.PI / 180
+  const theta = relBearing * rad
+  const phi = relElevation * rad
 
-  const withinX = Math.abs(relBearing) <= hFov / 2
-  const withinY = Math.abs(relElevation) <= vFov / 2
+  /*
+   * The camera-space ray to the anchor. Camera convention: +X right, +Y up,
+   * looking down -Z, matching three.js so the DOM markers and the 3D overlay
+   * cannot disagree.
+   */
+  const dirX = Math.sin(theta) * Math.cos(phi)
+  const dirY = Math.sin(phi)
+  const depth = Math.cos(theta) * Math.cos(phi) // = -dirZ
+
+  // A degenerate FOV would divide by zero. computeFov already clamps, but this
+  // function is called with caller-supplied viewports too.
+  const halfW = Math.tan((clamp(toNumberOr(hFov, 50), 1, 179) / 2) * rad)
+  const halfH = Math.tan((clamp(toNumberOr(vFov, 65), 1, 179) / 2) * rad)
+
+  const behind = depth <= MIN_VIEW_DEPTH
+
+  let ndcX
+  let ndcY
+  if (behind) {
+    ndcX = relBearing < 0 ? -BEHIND_NDC : BEHIND_NDC
+    ndcY = relElevation > 0 ? BEHIND_NDC : -BEHIND_NDC
+  } else {
+    /*
+     * True perspective, replacing the previous linear angle-to-pixel mapping.
+     * The linear version agreed at the centre and at the horizontal frame edge
+     * but sagged in between, which is why labels used to drift off their object
+     * as the worker turned.
+     *
+     * Note that ndcY divides by `depth`, which contains cos(theta): vertical
+     * screen position genuinely depends on the HORIZONTAL angle. Treating the
+     * two axes independently — the obvious approach, and the previous one — puts
+     * high anchors near the frame edge measurably too low. This coupling is what
+     * makes the overlay line up in the corners.
+     */
+    ndcX = dirX / depth / halfW
+    ndcY = dirY / depth / halfH
+  }
+
+  /*
+   * Framing is decided by the PROJECTED position, not by the raw angles. The two
+   * agree on the horizontal axis, but off-axis vertical stretch means an anchor
+   * can be within vFov/2 of centre and still fall outside the frame near a
+   * corner. Testing the angle there would report `visible` for a marker drawn
+   * outside the video — the label-not-on-the-object bug, one level up.
+   */
+  const withinX = !behind && Math.abs(ndcX) <= 1
+  const withinY = !behind && Math.abs(ndcY) <= 1
 
   return {
-    x,
-    y,
+    x: 0.5 + 0.5 * ndcX,
+    // Screen y grows downward, so a marker above the centre gets a smaller y.
+    y: 0.5 - 0.5 * ndcY,
     visible: withinX && withinY,
     offScreen: !withinX || !withinY,
+    behind,
     side: relBearing < 0 ? 'left' : 'right',
     relBearing,
     relElevation,
+    /* Purely angular, and deliberately unchanged by the projection rewrite:
+       aim-hold tolerance is specified in degrees off-centre, so it must not
+       inherit any lens model. isAimedAt and the drill's aim loop behave exactly
+       as they did before. */
     angularError: Math.sqrt(relBearing * relBearing + relElevation * relElevation),
+  }
+}
+
+/** The direction a camera with this rotation is looking (its local -Z). */
+export function quatForward(q) {
+  const v = { x: 0, y: 0, z: -1 }
+  const tx = 2 * (q.y * v.z - q.z * v.y)
+  const ty = 2 * (q.z * v.x - q.x * v.z)
+  const tz = 2 * (q.x * v.y - q.y * v.x)
+  return {
+    x: v.x + q.w * tx + (q.y * tz - q.z * ty),
+    y: v.y + q.w * ty + (q.z * tx - q.x * tz),
+    z: v.z + q.w * tz + (q.x * ty - q.y * tx),
+  }
+}
+
+/** The compass bearing a camera with this rotation is facing, or null if degenerate. */
+export function quatBearing(q) {
+  const f = quatForward(q)
+  if (Math.hypot(f.x, f.z) < 1e-6) return null // looking straight up or down
+  return normaliseHeading((Math.atan2(f.x, -f.z) * 180) / Math.PI)
+}
+
+/**
+ * The rotation for the 3D overlay camera.
+ *
+ * WHY THIS EXISTS RATHER THAN USING THE DEVICE QUATERNION DIRECTLY
+ *
+ * The 2D markers are placed from `heading`: smoothed, compass-sourced, and
+ * manually re-centrable. The device quaternion is an independent quantity derived
+ * from the raw alpha/beta/gamma triple. Feed the quaternion straight to the camera
+ * and the two layers become two separate estimates of where the worker is looking.
+ * They will disagree — by a little when the compass is calibrated, by a lot when it
+ * is not — and the visible result is a 3D exit sign floating beside its own label.
+ * Every manual re-centre would widen the gap, because the offset is applied to
+ * `heading` and cannot be applied to the quaternion.
+ *
+ * So the quaternion supplies what only it knows — pitch and, above all, ROLL — and
+ * its yaw is overridden to match `heading` exactly. One source of truth for azimuth,
+ * and the manual offset comes along for free because it already lives inside
+ * `heading`. The two layers then cannot disagree horizontally.
+ */
+export function cameraQuaternion(deviceQuat, headingDeg) {
+  if (!deviceQuat) return null
+  const current = quatBearing(deviceQuat)
+  // Straight up or down: azimuth is degenerate, and any correction invented here
+  // would be an arbitrary spin about the view axis. Left alone, because yaw error
+  // is not observable when there is no horizon in frame.
+  if (current === null) return deviceQuat
+  const delta = signedDelta(normaliseHeading(headingDeg), current)
+  // Bearing runs north toward east, which is a NEGATIVE rotation about world +Y in
+  // a right-handed, -Z-is-north frame. This sign mirrors the world if wrong, so the
+  // tests assert it directly.
+  const yaw = quatFromAxisAngle(0, 1, 0, -delta * (Math.PI / 180))
+  // Pre-multiplied, so the correction is a world-space spin applied after the
+  // device's own rotation and therefore leaves pitch and roll untouched.
+  return quatNormalise(quatMultiply(yaw, deviceQuat))
+}
+
+/**
+ * Camera rotation from heading and elevation alone, with no roll.
+ *
+ * The fallback for devices that report alpha and beta but no gamma. It is not a
+ * guess: with no roll available the correct assumption is level, which is exactly
+ * what the 2D marker layer already assumes, so the two layers still agree. The
+ * overlay simply stops compensating for tilt on those devices rather than
+ * inventing a tilt it cannot measure.
+ */
+export function headingQuaternion(headingDeg, elevationDeg = 0) {
+  const rad = Math.PI / 180
+  return quatFromEulerYXZ(
+    clamp(toNumberOr(elevationDeg, 0), -90, 90) * rad,
+    -normaliseHeading(headingDeg) * rad,
+    0,
+  )
+}
+
+/*
+ * How far away a 3D anchor object is drawn, in metres.
+ *
+ * A LIMITATION, STATED PLAINLY: an anchor is a ray, not a point. Site Setup records
+ * the bearing and elevation a supervisor was pointing at, and there is no way to
+ * recover distance from a single direction — that would need stereo, a depth
+ * sensor, or the supervisor pacing out every anchor. So every object is drawn on a
+ * ring at one fixed radius.
+ *
+ * The consequence is honest and worth knowing: the DIRECTION to an object is
+ * accurate and is what the worker needs in smoke, but the apparent SIZE carries no
+ * distance information. An extinguisher three metres away and one twenty metres
+ * away render identically. This is why the overlay leads with direction and the
+ * label, and never implies proximity.
+ *
+ * Six metres is chosen so objects clear the near plane, sit at a plausible
+ * indoor-industrial distance, and stay large enough to read on a phone.
+ */
+export const ANCHOR_RING_RADIUS_M = 6
+
+/**
+ * Unit direction to an anchor in world space, for placing 3D objects.
+ *
+ * World convention is three.js's: +Y up, -Z north, +X east. Anchors are rays with
+ * no distance, so callers supply their own radius — see ANCHOR_RING_RADIUS_M.
+ */
+export function anchorDirection(bearingDeg, elevationDeg = 0) {
+  const rad = Math.PI / 180
+  const b = normaliseHeading(bearingDeg) * rad
+  const e = clamp(toNumberOr(elevationDeg, 0), -90, 90) * rad
+  const cosE = Math.cos(e)
+  return {
+    x: Math.sin(b) * cosE,
+    y: Math.sin(e),
+    z: -Math.cos(b) * cosE,
   }
 }
 
@@ -303,6 +617,11 @@ export function createOrientationTracker({ onUpdate, onStatus, smoothing = 0.25,
   // Smoothed heading held as a unit vector to survive the 0/360 seam.
   let vec = null
   let elevation = 0
+  let roll = 0
+  // Smoothed full device rotation, for the 3D overlay. Null until a sample with a
+  // usable gamma arrives — see deviceQuaternion for why a missing roll must not
+  // default to level.
+  let quat = null
   let lastEventAt = 0
   let waitTimer = null
   let boundEvent = null
@@ -313,6 +632,16 @@ export function createOrientationTracker({ onUpdate, onStatus, smoothing = 0.25,
     heading: vec ? normaliseHeading((Math.atan2(vec.y, vec.x) * 180) / Math.PI + manualOffset) : 0,
     rawElevation: elevation,
     elevation,
+    /* Roll, and the full rotation it belongs to. Additive: heading and elevation
+       above are unchanged, so projectAnchor, Site Setup and the aim loop behave
+       exactly as before and only the 3D overlay reads these. */
+    roll,
+    quaternion: quat,
+    hasQuaternion: !!quat,
+    /* Exposed for diagnostics only. The 3D overlay does NOT need to apply this
+       itself: cameraQuaternion pins the camera's yaw to `heading` above, which
+       already includes the offset, so a re-centre moves both layers together. */
+    headingOffset: manualOffset,
     portrait: isPortrait(),
     hasReading: !!vec,
     lastEventAt,
@@ -357,12 +686,22 @@ export function createOrientationTracker({ onUpdate, onStatus, smoothing = 0.25,
       elevation = Math.max(-90, Math.min(90, raw))
     }
 
+    const k = 1 - Math.max(0, Math.min(0.95, smoothing))
+
     const r = (heading * Math.PI) / 180
     const target = { x: Math.cos(r), y: Math.sin(r) }
     if (!vec) vec = target
     else {
-      const k = 1 - Math.max(0, Math.min(0.95, smoothing))
       vec = { x: vec.x + (target.x - vec.x) * k, y: vec.y + (target.y - vec.y) * k }
+    }
+
+    /* Full rotation for the 3D overlay, smoothed with the same constant so the
+       meshes and the DOM markers settle together rather than one lagging the
+       other — a visible mismatch when both are on screen at once. */
+    if (Number.isFinite(event.gamma)) {
+      roll = event.gamma
+      const targetQuat = deviceQuaternion(event.alpha, event.beta, event.gamma, screenAngle())
+      if (targetQuat) quat = quat ? quatNlerp(quat, targetQuat, k) : targetQuat
     }
 
     if (status !== ORIENTATION_STATUS.ACTIVE) setStatus(ORIENTATION_STATUS.ACTIVE)

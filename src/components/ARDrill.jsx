@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback, useMemo } from 'react'
+import { useEffect, useRef, useState, useCallback, useMemo, lazy, Suspense } from 'react'
 import {
   openRearCamera,
   stopStream,
@@ -12,8 +12,19 @@ import {
   HEADING_SOURCE,
   CAMERA_ERROR,
 } from '../lib/siteMap.js'
+import { webglSupported } from '../lib/arSupport.js'
 import Pictogram from '../lib/pictograms.jsx'
 import { useLanguage } from '../context/LanguageContext.jsx'
+
+/*
+ * The 3D overlay is loaded on demand.
+ *
+ * three.js and react-three-fiber are a large chunk. A device that cannot render it
+ * — no WebGL, or a worker who has turned it off — should never pay to download it,
+ * and the flat marker layer below is fully functional without it. Static importing
+ * would pull the renderer into this component's chunk for everyone.
+ */
+const ARScene3D = lazy(() => import('./ARScene3D.jsx'))
 
 /**
  * THIS VIEWPORT IS A FIXED DARK PANEL IN BOTH THEMES. THAT IS DELIBERATE.
@@ -89,6 +100,9 @@ export default function ARDrill({
   zoneName = '',
   isGenericZone = false,
   height = 420,
+  // Lets a caller suppress the 3D layer even on a capable device. The flat marker
+  // layer is never suppressed, so turning this off degrades rather than breaks.
+  overlay3D = true,
   children,
 }) {
   const { t } = useLanguage()
@@ -163,7 +177,18 @@ export default function ARDrill({
     if (trackerRef.current) return
     const tracker = createOrientationTracker({
       onUpdate: (state) => {
-        viewRef.current = { heading: state.heading, elevation: state.elevation }
+        /*
+         * Written at sensor rate, which is up to 60Hz and deliberately faster than
+         * the throttled React render below. The 3D overlay reads this ref inside its
+         * own frame loop, so it tracks the device smoothly while the DOM marker
+         * layer keeps updating at 30Hz. `quaternion` is null on devices that report
+         * no gamma, and the overlay falls back to a level camera in that case.
+         */
+        viewRef.current = {
+          heading: state.heading,
+          elevation: state.elevation,
+          quaternion: state.quaternion,
+        }
         if (mountedRef.current) setHeadingSource(state.headingSource)
       },
       onStatus: (status) => {
@@ -328,6 +353,43 @@ export default function ARDrill({
   // targetTypes by visibleAnchors, so no second filter is needed here.
   const facingAway = projected.length > 0 && projected.every(({ p }) => Math.abs(p.relBearing) > 90)
 
+  /* ---------------- 3D overlay ---------------- */
+
+  /*
+   * Probed once per mount and cached in the support module. WebGL is checked
+   * separately from the rest of AR capability: a phone with a camera and a compass
+   * but no usable renderer still gets the full drill, just with flat markers.
+   */
+  const webgl = useMemo(() => webglSupported(), [])
+
+  /*
+   * Portrait is required, matching the constraint the projection maths already
+   * documents. The overlay is additive in every other respect — if any condition
+   * here fails the worker keeps the camera feed and the flat markers, and nothing
+   * about the drill becomes unavailable.
+   */
+  const show3D = overlay3D && webgl && cameraReady && !orientationDead && portrait
+
+  /*
+   * Where the floor path leads. Only in aim mode, and only to the target the worker
+   * is closest to aiming at, because that is the one the drill is asking them to
+   * find. In view mode there is no single destination, and a path that swung
+   * between anchors as the worker turned would be noise rather than guidance.
+   *
+   * This resolves to an id — a stable string — so the memoised overlay re-renders
+   * when the destination genuinely changes and not on every throttled tick.
+   */
+  let guideAnchorId = null
+  if (mode === 'aim' && projected.length) {
+    let best = Infinity
+    for (const { anchor, p } of projected) {
+      if (p.angularError < best) {
+        best = p.angularError
+        guideAnchorId = anchor.id
+      }
+    }
+  }
+
   /* ---------------- error state ---------------- */
 
   if (cameraError) {
@@ -406,6 +468,25 @@ export default function ARDrill({
         </div>
       )}
 
+      {/*
+        3D overlay, beneath the marker layer in paint order so labels and edge
+        arrows always stay readable on top of the geometry. Suspense falls back to
+        null: while the renderer chunk is downloading the worker sees the camera and
+        the flat markers, which is the same thing they would see if it never
+        arrived.
+      */}
+      {show3D && (
+        <Suspense fallback={null}>
+          <ARScene3D
+            viewRef={viewRef}
+            vFov={fov.vFov}
+            anchors={visibleAnchors}
+            aimedAnchorId={aimedAnchorId}
+            guideAnchorId={guideAnchorId}
+          />
+        </Suspense>
+      )}
+
       {/* Markers */}
       {cameraReady &&
         !orientationDead &&
@@ -415,7 +496,39 @@ export default function ARDrill({
             // Off-screen anchors become an edge arrow, so the worker knows
             // which way to turn instead of hunting blindly.
             const verticalOnly = Math.abs(p.relBearing) <= fov.hFov / 2
-            if (verticalOnly) return null
+            if (verticalOnly) {
+              /*
+               * Horizontally in frame but above or below it — the worker is
+               * facing the right way and only needs to tilt. This used to render
+               * nothing at all, which meant an anchor could be one degree
+               * outside the top of the frame and give no hint it existed. It also
+               * became reachable more often once framing started being decided by
+               * the projected position rather than the raw angle, since off-axis
+               * vertical stretch pushes corner anchors out slightly sooner.
+               *
+               * The horizontal position is still meaningful here, so the arrow
+               * sits over the anchor's column rather than in the middle.
+               */
+              const above = p.relElevation > 0
+              return (
+                <div
+                  key={anchor.id}
+                  className="absolute flex flex-col items-center pointer-events-none"
+                  style={{
+                    left: `${Math.min(94, Math.max(6, p.x * 100))}%`,
+                    [above ? 'top' : 'bottom']: 6,
+                    transform: 'translateX(-50%)',
+                  }}
+                  aria-hidden="true"
+                >
+                  {!above && <Pictogram name={meta.pictogram} size={22} />}
+                  <span className="font-display font-bold text-lg leading-none" style={{ color: meta.color }}>
+                    {above ? '⌃' : '⌄'}
+                  </span>
+                  {above && <Pictogram name={meta.pictogram} size={22} />}
+                </div>
+              )
+            }
             return (
               <div
                 key={anchor.id}

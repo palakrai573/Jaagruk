@@ -116,3 +116,44 @@ export function shouldUseAr(stored) {
 export function arBlockHintKey(reason) {
   return reason === AR_BLOCK.INSECURE_CONTEXT ? 'ar_block_insecure_hint' : null
 }
+
+/*
+ * Can this device render the 3D overlay?
+ *
+ * Separate from arBlocker() on purpose. A phone with a camera and a compass but no
+ * working WebGL is still perfectly capable of the AR drill — it just gets the flat
+ * marker layer instead of geometry. Folding this into arBlocker() would deny those
+ * devices the camera view entirely over a renderer they do not need.
+ *
+ * The result is cached because browsers cap the number of simultaneous WebGL
+ * contexts at somewhere around eight to sixteen, and probing on every render would
+ * both waste them and risk evicting the live drill context. The probe context is
+ * explicitly discarded via WEBGL_lose_context for the same reason.
+ */
+let webglCache = null
+
+export function webglSupported() {
+  if (webglCache !== null) return webglCache
+  try {
+    if (typeof document === 'undefined') {
+      webglCache = false
+      return webglCache
+    }
+    const canvas = document.createElement('canvas')
+    const gl =
+      canvas.getContext('webgl2') ||
+      canvas.getContext('webgl') ||
+      canvas.getContext('experimental-webgl')
+    webglCache = !!gl
+    try {
+      gl?.getExtension('WEBGL_lose_context')?.loseContext()
+    } catch {
+      /* the probe is disposable either way */
+    }
+    return webglCache
+  } catch {
+    // Some locked-down or headless environments throw rather than return null.
+    webglCache = false
+    return webglCache
+  }
+}

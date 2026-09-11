@@ -1,6 +1,27 @@
-import { Suspense } from 'react'
+import { Suspense, createContext, useContext } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls, Html } from '@react-three/drei'
+
+/*
+ * These meshes are shared with the AR overlay (see ARScene3D), which needs them
+ * WITHOUT the floating drei labels: the AR view already draws its own DOM label
+ * layer, and doubling it up gives every object two captions. Rather than thread a
+ * flag through ten components, labels read a context that defaults to on, so this
+ * scene is unchanged and AR switches them off in one place.
+ *
+ * Html is also relatively expensive — it mounts real DOM per label and forces a
+ * layout sync each frame — which is affordable in a static viewer and not on a
+ * mid-range phone already running the camera, a hand tracker and a 3D pass.
+ */
+const ShowLabelsContext = createContext(true)
+
+export function HideMeshLabels({ children }) {
+  return <ShowLabelsContext.Provider value={false}>{children}</ShowLabelsContext.Provider>
+}
+
+function Label(props) {
+  return useContext(ShowLabelsContext) ? <Html {...props} /> : null
+}
 
 /* -------------------- FLOOR -------------------- */
 
@@ -15,9 +36,9 @@ function Floor() {
 
 /* -------------------- WORKER -------------------- */
 
-function Worker() {
+function Worker({ position = [-2.5, -0.5, 0] }) {
   return (
-    <group position={[-2.5, -0.5, 0]}>
+    <group position={position}>
       {/* Body */}
       <mesh position={[0, 0, 0]}>
         <boxGeometry args={[0.7, 1.2, 0.45]} />
@@ -54,7 +75,7 @@ function Worker() {
         <meshStandardMaterial color="#17202a" />
       </mesh>
 
-      <Html position={[0, 1.65, 0]} center>
+      <Label position={[0, 1.65, 0]} center>
         <div
           style={{
             background: '#1565c0',
@@ -68,16 +89,16 @@ function Worker() {
         >
           WORKER
         </div>
-      </Html>
+      </Label>
     </group>
   )
 }
 
 /* -------------------- FIRE -------------------- */
 
-function Fire() {
+function Fire({ position = [2, -0.5, 0] }) {
   return (
-    <group position={[2, -0.5, 0]}>
+    <group position={position}>
       {/* Outer flame */}
       <mesh>
         <coneGeometry args={[0.7, 1.8, 16]} />
@@ -98,7 +119,7 @@ function Fire() {
         />
       </mesh>
 
-      <Html position={[0, 1.5, 0]} center>
+      <Label position={[0, 1.5, 0]} center>
         <div
           style={{
             background: '#d32f2f',
@@ -111,16 +132,16 @@ function Fire() {
         >
           FIRE
         </div>
-      </Html>
+      </Label>
     </group>
   )
 }
 
 /* -------------------- FIRE EXTINGUISHER -------------------- */
 
-function FireExtinguisher() {
+function FireExtinguisher({ position = [3.4, -0.7, 0] }) {
   return (
-    <group position={[3.4, -0.7, 0]}>
+    <group position={position}>
       <mesh>
         <cylinderGeometry args={[0.28, 0.32, 1.3, 20]} />
         <meshStandardMaterial color="#c62828" />
@@ -136,7 +157,7 @@ function FireExtinguisher() {
         <meshStandardMaterial color="#222222" />
       </mesh>
 
-      <Html position={[0, 1.1, 0]} center>
+      <Label position={[0, 1.1, 0]} center>
         <div
           style={{
             background: '#c62828',
@@ -150,16 +171,16 @@ function FireExtinguisher() {
         >
           EXTINGUISHER
         </div>
-      </Html>
+      </Label>
     </group>
   )
 }
 
 /* -------------------- ELECTRICAL PANEL -------------------- */
 
-function ElectricalPanel() {
+function ElectricalPanel({ position = [2, 0, 0] }) {
   return (
-    <group position={[2, 0, 0]}>
+    <group position={position}>
       {/* Main panel */}
       <mesh>
         <boxGeometry args={[2.3, 2.6, 0.6]} />
@@ -206,7 +227,7 @@ function ElectricalPanel() {
         <meshStandardMaterial color="#111111" />
       </mesh>
 
-      <Html position={[0, 1.7, 0]} center>
+      <Label position={[0, 1.7, 0]} center>
         <div
           style={{
             background: '#f9a825',
@@ -219,16 +240,16 @@ function ElectricalPanel() {
         >
           HIGH VOLTAGE
         </div>
-      </Html>
+      </Label>
     </group>
   )
 }
 
 /* -------------------- MACHINERY -------------------- */
 
-function Machinery() {
+function Machinery({ position = [2, -0.2, 0] }) {
   return (
-    <group position={[2, -0.2, 0]}>
+    <group position={position}>
       {/* Machine body */}
       <mesh>
         <boxGeometry args={[2.8, 1.8, 1.8]} />
@@ -260,7 +281,7 @@ function Machinery() {
         />
       </mesh>
 
-      <Html position={[0, 2, 0]} center>
+      <Label position={[0, 2, 0]} center>
         <div
           style={{
             background: '#ef6c00',
@@ -274,16 +295,16 @@ function Machinery() {
         >
           HYDRAULIC PRESS
         </div>
-      </Html>
+      </Label>
     </group>
   )
 }
 
 /* -------------------- MINE -------------------- */
 
-function MineTunnel() {
+function MineTunnel({ position = [0, 0, 0] }) {
   return (
-    <group>
+    <group position={position}>
       {/* Tunnel back wall */}
       <mesh position={[2, 0.5, -1]}>
         <boxGeometry args={[4, 4, 0.3]} />
@@ -325,7 +346,7 @@ function MineTunnel() {
         <meshStandardMaterial color="#8d6e63" />
       </mesh>
 
-      <Html position={[2, 2.9, 0]} center>
+      <Label position={[2, 2.9, 0]} center>
         <div
           style={{
             background: '#f9a825',
@@ -339,16 +360,16 @@ function MineTunnel() {
         >
           MINE / CONFINED SPACE
         </div>
-      </Html>
+      </Label>
     </group>
   )
 }
 
 /* -------------------- GAS DETECTOR -------------------- */
 
-function GasDetector() {
+function GasDetector({ position = [3, -0.3, 0.7] }) {
   return (
-    <group position={[3, -0.3, 0.7]}>
+    <group position={position}>
       <mesh>
         <boxGeometry args={[0.6, 1, 0.25]} />
         <meshStandardMaterial color="#263238" />
@@ -363,7 +384,7 @@ function GasDetector() {
         />
       </mesh>
 
-      <Html position={[0, 0.8, 0]} center>
+      <Label position={[0, 0.8, 0]} center>
         <div
           style={{
             background: '#2e7d32',
@@ -377,16 +398,16 @@ function GasDetector() {
         >
           GAS DETECTOR
         </div>
-      </Html>
+      </Label>
     </group>
   )
 }
 
 /* -------------------- DUST MACHINE -------------------- */
 
-function DustMachine() {
+function DustMachine({ position = [2, -0.1, 0] }) {
   return (
-    <group position={[2, -0.1, 0]}>
+    <group position={position}>
       <mesh>
         <boxGeometry args={[2.5, 2, 1.6]} />
         <meshStandardMaterial color="#6d4c41" />
@@ -425,7 +446,7 @@ function DustMachine() {
         />
       </mesh>
 
-      <Html position={[0, 2.6, 0]} center>
+      <Label position={[0, 2.6, 0]} center>
         <div
           style={{
             background: '#795548',
@@ -438,16 +459,16 @@ function DustMachine() {
         >
           DUST HAZARD
         </div>
-      </Html>
+      </Label>
     </group>
   )
 }
 
 /* -------------------- WAREHOUSE -------------------- */
 
-function Warehouse() {
+function Warehouse({ position = [2, -0.5, 0] }) {
   return (
-    <group position={[2, -0.5, 0]}>
+    <group position={position}>
       {/* Forklift body */}
       <mesh>
         <boxGeometry args={[2.2, 1, 1.2]} />
@@ -477,7 +498,7 @@ function Warehouse() {
         <meshStandardMaterial color="#8d6e63" />
       </mesh>
 
-      <Html position={[0, 1.8, 0]} center>
+      <Label position={[0, 1.8, 0]} center>
         <div
           style={{
             background: '#f9a825',
@@ -490,9 +511,30 @@ function Warehouse() {
         >
           FORKLIFT
         </div>
-      </Html>
+      </Label>
     </group>
   )
+}
+
+/*
+ * Shared with the AR overlay. Exported rather than copied so there is exactly one
+ * definition of what a fire or an extinguisher looks like — two would drift apart,
+ * and a worker who learns an object in the 3D briefing has to recognise the same
+ * object in the field.
+ *
+ * Each takes a `position` defaulting to the coordinates this scene has always used,
+ * so the viewer below renders them prop-less and unchanged. AR passes its own.
+ */
+export {
+  Worker,
+  Fire,
+  FireExtinguisher,
+  ElectricalPanel,
+  Machinery,
+  MineTunnel,
+  GasDetector,
+  DustMachine,
+  Warehouse,
 }
 
 /* -------------------- SCENE SELECTOR -------------------- */
