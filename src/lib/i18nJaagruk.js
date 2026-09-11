@@ -157,6 +157,9 @@ const IDENTITY = {
 
   err_NAME_TOO_SHORT: { en: 'Please enter at least 2 characters.', hi: 'कम से कम 2 अक्षर लिखें।', bn: 'অন্তত ২টি অক্ষর লিখুন।', or: 'ଅତିକମରେ ୨ଟି ଅକ୍ଷର ଲେଖନ୍ତୁ।', ur: 'کم از کم 2 حروف لکھیں۔' },
   err_NAME_TOO_LONG: { en: 'That name is too long.', hi: 'यह नाम बहुत लंबा है।', bn: 'নামটি খুব দীর্ঘ।', or: 'ନାମ ବହୁତ ଲମ୍ବା।', ur: 'یہ نام بہت لمبا ہے۔' },
+  // A name of pure digits used to be accepted, which is how "1234" became a
+  // worker record indistinguishable from a real one.
+  err_NAME_INVALID: { en: 'Enter a name, not just numbers.', hi: 'नाम लिखें, केवल अंक नहीं।', bn: 'নাম লিখুন, শুধু সংখ্যা নয়।', or: 'ନାମ ଲେଖନ୍ତୁ, କେବଳ ଅଙ୍କ ନୁହେଁ।', ur: 'نام لکھیں، صرف ہندسے نہیں۔' },
   err_PHONE_INVALID: { en: 'Enter a 10-digit phone number, or leave it blank.', hi: '10 अंकों का नंबर लिखें, या खाली छोड़ दें।', bn: '১০ সংখ্যার নম্বর লিখুন, বা খালি রাখুন।', or: '୧୦ ଅଙ୍କର ନମ୍ବର ଲେଖନ୍ତୁ, କିମ୍ବା ଖାଲି ଛାଡ଼ନ୍ତୁ।', ur: '10 ہندسوں کا نمبر لکھیں، یا خالی چھوڑ دیں۔' },
   err_PIN_FORMAT: { en: 'The PIN must be 4 to 6 digits.', hi: 'पिन 4 से 6 अंकों का होना चाहिए।', bn: 'পিন ৪ থেকে ৬ সংখ্যার হতে হবে।', or: 'PIN ୪ରୁ ୬ ଅଙ୍କର ହେବା ଆବଶ୍ୟକ।', ur: 'پن 4 سے 6 ہندسوں کا ہونا چاہیے۔' },
   err_PIN_TOO_SIMPLE: { en: 'Pick a less obvious PIN — not 1234 or all the same digit.', hi: 'कम स्पष्ट पिन चुनें — 1234 या एक ही अंक नहीं।', bn: 'কম সহজ পিন বাছুন — ১২৩৪ বা একই অঙ্ক নয়।', or: 'କମ ସ୍ପଷ୍ଟ PIN ବାଛନ୍ତୁ — ୧୨୩୪ କିମ୍ବା ସମାନ ଅଙ୍କ ନୁହେଁ।', ur: 'کم واضح پن منتخب کریں — 1234 یا ایک ہی ہندسہ نہیں۔' },

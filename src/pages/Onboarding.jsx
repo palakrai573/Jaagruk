@@ -278,7 +278,10 @@ export default function Onboarding() {
                 type="tel"
                 inputMode="numeric"
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                /* Digits and the usual separators only, with a length cap. The
+                   field previously accepted anything, and validation was the only
+                   thing standing between a keypad-mash and a worker record. */
+                onChange={(e) => setPhone(e.target.value.replace(/[^\d+\s-]/g, '').slice(0, 16))}
                 placeholder="98765 43210"
                 autoComplete="tel"
                 className={`${wiring.className} font-mono`}

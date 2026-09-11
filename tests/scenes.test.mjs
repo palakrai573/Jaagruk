@@ -65,16 +65,33 @@ describe('every module has its own 3D scene', () => {
 })
 
 describe('the scenes stay usable on a phone', () => {
-  test('animation is gated on the reduced-motion preference', () => {
-    // Every useFrame in this file drives decorative motion. Each one has to be
-    // skippable, or the scene keeps moving for someone who asked the OS to stop.
+  test('every animated component consults the reduced-motion preference', () => {
+    /*
+     * The invariant is "consults it", not "skips animation", because the two kinds
+     * of motion here need opposite handling. Flicker and bobbing are ornament and
+     * are switched off. The fire going out and the padlock going on are the ANSWER
+     * being shown — those still happen under reduced motion, they just arrive at
+     * once instead of easing (see useMotionSpeed).
+     *
+     * An earlier version of this test counted `if (reduced) return` and demanded one
+     * per useFrame. It failed correctly, then turned out to be asking for the wrong
+     * thing: satisfying it literally would have hidden the simulation's output from
+     * anyone who set the preference.
+     */
     const frames = (SRC.match(/useFrame\(/g) || []).length
     assert.ok(frames > 0, 'expected animated scenes')
-    const guards = (SRC.match(/if \(reduced\) return/g) || []).length
+    const consults = (SRC.match(/usePrefersReducedMotion\(\)|useMotionSpeed\(/g) || []).length
     assert.ok(
-      guards >= frames,
-      `${frames} useFrame blocks but only ${guards} reduced-motion guards`,
+      consults >= frames,
+      `${frames} useFrame blocks but only ${consults} consult the motion preference`,
     )
+  })
+
+  test('consequential motion is not simply disabled under reduced motion', () => {
+    // Guards the distinction above: useMotionSpeed must exist and be used, rather
+    // than someone "fixing" a future failure by returning early everywhere.
+    assert.ok(SRC.includes('function useMotionSpeed'), 'useMotionSpeed should exist')
+    assert.ok((SRC.match(/useMotionSpeed\(/g) || []).length >= 3, 'expected it to be used')
   })
 
   test('the pixel ratio is capped', () => {

@@ -4,6 +4,9 @@ import {
   supervisorPinIsSet,
   setSupervisorPin,
   verifySupervisorPin,
+  supervisorLockoutRemainingMs,
+  supervisorAttemptsRemaining,
+  validatePin,
   getActiveSiteId,
   listWorkers,
 } from '../lib/identity.js'
@@ -70,30 +73,58 @@ function Gate({ onUnlock, t }) {
   const [confirm, setConfirm] = useState('')
   const [error, setError] = useState(null)
   const [busy, setBusy] = useState(false)
+  const [lockMs, setLockMs] = useState(() => supervisorLockoutRemainingMs())
   const needsSetup = !supervisorPinIsSet()
+
+  // Tick the lockout down so the gate re-enables itself without a reload.
+  useEffect(() => {
+    if (lockMs <= 0) return undefined
+    const id = setInterval(() => {
+      const next = supervisorLockoutRemainingMs()
+      setLockMs(next)
+      if (next <= 0) clearInterval(id)
+    }, 1000)
+    return () => clearInterval(id)
+  }, [lockMs])
 
   const submit = async () => {
     setBusy(true)
     setError(null)
     try {
       if (needsSetup) {
-        if (!/^\d{4,6}$/.test(pin)) {
-          setError('err_PIN_FORMAT')
+        // One shared rule now lives in identity.validatePin, so this gate cannot
+        // drift weaker than worker registration again. It previously accepted
+        // 0000 and 1234.
+        const problems = validatePin(pin, { confirm })
+        if (problems.length) {
+          setError(`err_${problems[0]}`)
           return
         }
-        if (pin !== confirm) {
-          setError('err_PIN_MISMATCH')
-          return
-        }
-        await setSupervisorPin(pin)
+        await setSupervisorPin(pin, { confirm })
         onUnlock()
         return
       }
       const ok = await verifySupervisorPin(pin)
-      if (ok) onUnlock()
-      else setError('ad_gate_wrong')
-    } catch {
-      setError('err_PIN_FORMAT')
+      if (ok) {
+        setLockMs(0)
+        onUnlock()
+      } else {
+        setError('ad_gate_wrong')
+        setLockMs(supervisorLockoutRemainingMs())
+      }
+    } catch (err) {
+      /*
+       * LOCKED_OUT is thrown rather than returned so it cannot be confused with a
+       * wrong PIN. Surfacing it distinctly matters: telling a supervisor their PIN
+       * is wrong when the gate is simply throttled sends them to reset something
+       * that was never broken.
+       */
+      if (err?.message === 'LOCKED_OUT') {
+        setError('err_LOCKED_OUT')
+        setLockMs(err.retryInMs || supervisorLockoutRemainingMs())
+      } else {
+        setError(`err_${err?.message || 'PIN_FORMAT'}`)
+      }
     } finally {
       setBusy(false)
     }
@@ -137,10 +168,29 @@ function Gate({ onUnlock, t }) {
 
       {error && <p className="text-xs text-hazard-text text-center mb-4">{t(error)}</p>}
 
+      {/*
+        Throttling made visible. Without a countdown, a supervisor who has been
+        locked out sees only a button that does nothing and reasonably concludes the
+        app is broken. The remaining attempts are shown before the lock trips, so
+        the limit is never a surprise.
+      */}
+      {lockMs > 0 ? (
+        <p className="font-mono text-[11px] text-ink-tertiary text-center mb-4">
+          {Math.ceil(lockMs / 1000)}s
+        </p>
+      ) : (
+        !needsSetup &&
+        error === 'ad_gate_wrong' && (
+          <p className="font-mono text-[10px] text-ink-tertiary text-center mb-4">
+            {supervisorAttemptsRemaining()} {t('err_attempts_left')}
+          </p>
+        )
+      )}
+
       <button
         type="button"
         onClick={submit}
-        disabled={busy || pin.length < 4}
+        disabled={busy || pin.length < 4 || lockMs > 0}
         className="w-full bg-brand text-ink-onBrand font-display font-bold uppercase py-3 rounded disabled:opacity-40"
       >
         {needsSetup ? t('save_label') : t('ad_gate_unlock')}

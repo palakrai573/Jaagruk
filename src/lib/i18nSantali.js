@@ -295,6 +295,7 @@ export const SANTALI_STRINGS = {
   /* ---------------- errors ---------------- */
   err_attempts_left: 'ᱠᱩᱨᱩᱢᱩᱴᱩ ᱵᱟᱠᱤ',
   err_LOCKED_OUT: 'ᱟᱭᱢᱟ ᱫᱷᱟᱣ ᱵᱷᱩᱞ ᱮᱱᱟ ᱾ ᱫᱚᱦᱲᱟ ᱠᱩᱨᱩᱢᱩᱴᱩ ᱞᱟᱦᱟ ᱛᱷᱤᱨ ᱢᱮ ᱾',
+  err_NAME_INVALID: 'ᱧᱩᱛᱩᱢ ᱚᱞ ᱢᱮ, ᱠᱷᱟᱹᱞᱤ ᱮᱞ ᱵᱟᱝ ᱾',
   err_NAME_TOO_LONG: 'ᱱᱚᱶᱟ ᱧᱩᱛᱩᱢ ᱟᱹᱰᱤ ᱡᱤᱞᱤᱧ ᱾',
   err_NAME_TOO_SHORT: 'ᱠᱚᱢ ᱛᱮ ᱠᱚᱢ 2 ᱟᱹᱠᱷᱚᱨ ᱚᱞ ᱢᱮ ᱾',
   err_PHONE_INVALID: '10 ᱮᱞ ᱯᱷᱚᱱ ᱱᱟᱢᱵᱚᱨ ᱚᱞ ᱢᱮ, ᱥᱮ ᱠᱷᱟᱞᱤ ᱵᱟᱰᱟᱭ ᱢᱮ ᱾',

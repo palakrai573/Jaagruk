@@ -2,6 +2,7 @@ import { Suspense, createContext, useContext, useRef, useMemo } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, Html, ContactShadows } from '@react-three/drei'
 import { usePrefersReducedMotion } from './ui/motion.js'
+import { SCENE_ACTION, resolvesHazard, escalatesHazard } from '../lib/sceneAction.js'
 
 /*
  * These meshes are shared with the AR overlay (see ARScene3D), which needs them
@@ -15,6 +16,51 @@ import { usePrefersReducedMotion } from './ui/motion.js'
  * mid-range phone already running the camera, a hand tracker and a 3D pass.
  */
 const ShowLabelsContext = createContext(true)
+
+/*
+ * The worker's chosen action, so the scene can play it out.
+ *
+ * Delivered by context rather than by props because the things that need to react
+ * are scattered — the fire, the worker, the conveyor — and threading a prop through
+ * every mesh to reach three of them would touch every component in this file for no
+ * benefit. Null means no answer yet: the scene sits at rest.
+ */
+const SceneActionContext = createContext(null)
+
+function useSceneAction() {
+  return useContext(SceneActionContext)
+}
+
+/**
+ * Ease a value toward a target, frame-rate independently.
+ *
+ * `1 - pow(k, dt)` rather than `dt * k`: the naive form changes speed with frame
+ * rate, so the same animation would run visibly faster on a 120Hz phone than on a
+ * 30Hz one. Used for every transition in this file so they all settle together.
+ */
+function approach(current, target, dt, speed = 3) {
+  return current + (target - current) * (1 - Math.pow(0.5, dt * speed))
+}
+
+/*
+ * Reduced motion draws a line through the MIDDLE of this scene, not around it.
+ *
+ * There are two kinds of movement here and they deserve opposite treatment:
+ *
+ *   Decorative — flame flicker, the walking bob, beacon blink, jet jitter. Pure
+ *     ornament. Switched off entirely.
+ *   Consequential — the fire going out, the worker leaving, the padlock going on,
+ *     the conveyor stopping. This is the ANSWER being shown. Hiding it would remove
+ *     the feature rather than calm it, and would leave a worker who set the
+ *     preference with the static diagram everyone else just stopped having.
+ *
+ * So consequential transitions still happen, they simply arrive at once instead of
+ * easing. This returns the easing rate to use: normal, or high enough that
+ * `approach` lands on its target within a single frame.
+ */
+function useMotionSpeed(base) {
+  return usePrefersReducedMotion() ? 1000 : base
+}
 
 export function HideMeshLabels({ children }) {
   return <ShowLabelsContext.Provider value={false}>{children}</ShowLabelsContext.Provider>
@@ -104,7 +150,19 @@ function Fire({ position = [2, -0.5, 0] }) {
   const outer = useRef(null)
   const inner = useRef(null)
   const glow = useRef(null)
+  const group = useRef(null)
   const reduced = usePrefersReducedMotion()
+  const dieSpeed = useMotionSpeed(2.2)
+  const action = useSceneAction()
+
+  /*
+   * How big the fire is, as a multiplier that eases toward its target.
+   *
+   * This is the change the whole reactive-scene effort was about: choose the CO2
+   * extinguisher and the fire goes out, in front of you. Choose to open the door on
+   * a hot fire and it grows. Previously both showed an identical, unchanging flame.
+   */
+  const size = useRef(1)
 
   /*
    * Flicker. A static cone reads as an orange traffic bollard; the irregular
@@ -115,21 +173,32 @@ function Fire({ position = [2, -0.5, 0] }) {
    * The light flickers with it, so the flame appears to be the thing lighting
    * the scene rather than a lit object sitting in it.
    */
-  useFrame((state) => {
-    if (reduced) return
+  useFrame((state, delta) => {
+    // Ease toward the outcome. Out entirely when the hazard was correctly dealt
+    // with, half again as big when the answer made things worse.
+    const target = resolvesHazard(action) ? 0 : escalatesHazard(action) ? 1.5 : 1
+    // Clamped delta: returning to a backgrounded tab delivers one enormous frame,
+    // which would otherwise snap the fire to its target in a single jump.
+    size.current = approach(size.current, target, Math.min(delta, 0.1), dieSpeed)
+    const s = size.current
+
+    if (group.current) {
+      group.current.scale.setScalar(Math.max(0.0001, s))
+      // Hide completely once out, so no sliver of geometry remains.
+      group.current.visible = s > 0.02
+    }
+
     const t = state.clock.elapsedTime
-    const a = Math.sin(t * 9) * 0.5 + Math.sin(t * 14.7) * 0.5
-    if (outer.current) {
-      outer.current.scale.set(1 + a * 0.05, 1 + a * 0.11, 1 + a * 0.05)
-    }
-    if (inner.current) {
-      inner.current.scale.set(1 - a * 0.06, 1 + a * 0.16, 1 - a * 0.06)
-    }
-    if (glow.current) glow.current.intensity = 2.4 + a * 0.9
+    // Flicker gets more violent as the fire grows, and stops as it dies.
+    const a = reduced ? 0 : (Math.sin(t * 9) * 0.5 + Math.sin(t * 14.7) * 0.5) * s
+    if (outer.current) outer.current.scale.set(1 + a * 0.05, 1 + a * 0.11, 1 + a * 0.05)
+    if (inner.current) inner.current.scale.set(1 - a * 0.06, 1 + a * 0.16, 1 - a * 0.06)
+    // The light dies with the flame, which is what sells it as the light source.
+    if (glow.current) glow.current.intensity = Math.max(0, (2.4 + a * 0.9) * s)
   })
 
   return (
-    <group position={position}>
+    <group ref={group} position={position}>
       {/*
         The flame lights its own surroundings. Warm, short-range, and the single
         biggest contributor to the scene looking lit rather than flat.
@@ -555,6 +624,167 @@ function Warehouse({ position = [2, -0.5, 0] }) {
   )
 }
 
+/* -------------------- ACTION EFFECTS -------------------- */
+
+/*
+ * These render only while an action is playing. Each is deliberately literal: a
+ * worker should be able to say what happened without reading anything, because the
+ * point of the scene reacting is that the consequence is visible rather than
+ * described.
+ */
+
+/** A cone of discharged agent, from the extinguisher toward the fire. */
+function AgentJet() {
+  const ref = useRef(null)
+  const reduced = usePrefersReducedMotion()
+
+  useFrame((state, delta) => {
+    const m = ref.current
+    if (!m) return
+    // Grows out along its length, so it reads as being sprayed rather than
+    // appearing all at once.
+    const t = reduced ? 1 : Math.min(1, (m.userData.age = (m.userData.age || 0) + delta) / 0.5)
+    m.scale.set(t, 1, t)
+    if (!reduced) {
+      // Slight jitter: a discharge is not a smooth cone.
+      m.rotation.z = Math.PI / 2 + Math.sin(state.clock.elapsedTime * 22) * 0.03
+    }
+  })
+
+  return (
+    /* Positioned between the extinguisher (x 3.4) and the fire (x 2), pointing
+       along -X. Rotated so the cone's axis lies horizontal. */
+    <mesh ref={ref} position={[2.75, -0.35, 0]} rotation={[0, 0, Math.PI / 2]}>
+      <coneGeometry args={[0.42, 1.5, 18, 1, true]} />
+      <meshStandardMaterial
+        color="#F2F1ED"
+        emissive="#F2F1ED"
+        emissiveIntensity={0.3}
+        transparent
+        opacity={0.62}
+        side={DoubleSide}
+        depthWrite={false}
+      />
+    </mesh>
+  )
+}
+
+/** Water mist onto a dust source. */
+function WaterMist() {
+  const drops = useRef([])
+  const reduced = usePrefersReducedMotion()
+
+  const seeds = useMemo(
+    () => Array.from({ length: 9 }, (_, i) => ({ x: 1.2 + (i % 3) * 0.5, z: -0.4 + Math.floor(i / 3) * 0.4, o: i * 0.31 })),
+    [],
+  )
+
+  useFrame((state, delta) => {
+    if (reduced) return
+    for (const d of drops.current) {
+      if (!d) continue
+      d.position.y -= delta * 1.6
+      if (d.position.y < -1.4) d.position.y = 1.5
+    }
+  })
+
+  return (
+    <group>
+      {seeds.map((s, i) => (
+        <mesh
+          key={s.o}
+          ref={(el) => {
+            drops.current[i] = el
+          }}
+          position={[s.x, 1.5 - s.o, s.z]}
+        >
+          <sphereGeometry args={[0.055, 8, 8]} />
+          <meshStandardMaterial color="#8fc4e8" transparent opacity={0.75} depthWrite={false} />
+        </mesh>
+      ))}
+    </group>
+  )
+}
+
+/** Flashing beacon: the alarm has been raised. */
+function Beacon() {
+  const light = useRef(null)
+  const lens = useRef(null)
+  const reduced = usePrefersReducedMotion()
+
+  useFrame((state) => {
+    // A square wave, not a sine: real beacons blink, they do not breathe.
+    const on = reduced ? 1 : Math.sin(state.clock.elapsedTime * 7) > 0 ? 1 : 0.12
+    if (light.current) light.current.intensity = 3.2 * on
+    if (lens.current) lens.current.material.emissiveIntensity = 0.35 + on * 1.4
+  })
+
+  return (
+    <group position={[0, 2.6, -1.6]}>
+      <pointLight ref={light} color="#FFB020" intensity={3.2} distance={11} decay={2} />
+      <mesh ref={lens}>
+        <sphereGeometry args={[0.28, 16, 12]} />
+        <meshStandardMaterial color="#FFB020" emissive="#FFB020" emissiveIntensity={1} />
+      </mesh>
+      <mesh position={[0, -0.3, 0]}>
+        <cylinderGeometry args={[0.2, 0.24, 0.22, 14]} />
+        <meshStandardMaterial color="#3a3f45" roughness={0.5} metalness={0.6} />
+      </mesh>
+    </group>
+  )
+}
+
+/** A padlock, to show the isolation actually went on. */
+function Padlock({ position = [2, 1.4, 0.5] }) {
+  const ref = useRef(null)
+  const reduced = usePrefersReducedMotion()
+
+  useFrame((state, delta) => {
+    const g = ref.current
+    if (!g) return
+    // Drops into place and settles, so the moment of locking is visible. Under
+    // reduced motion it is simply there — the lock still appears, it just does not
+    // travel.
+    const age = (g.userData.age = (g.userData.age || 0) + delta)
+    const t = reduced ? 1 : Math.min(1, age / 0.45)
+    g.position.y = position[1] + (1 - t) * 0.7
+    g.scale.setScalar(0.6 + t * 0.4)
+  })
+
+  return (
+    <group ref={ref} position={position}>
+      <mesh>
+        <boxGeometry args={[0.34, 0.28, 0.14]} />
+        <meshStandardMaterial color="#2E7D4F" roughness={0.4} metalness={0.5} />
+      </mesh>
+      <mesh position={[0, 0.22, 0]} rotation={[Math.PI / 2, 0, 0]}>
+        <torusGeometry args={[0.11, 0.035, 8, 16, Math.PI]} />
+        <meshStandardMaterial color="#c8ccd0" roughness={0.35} metalness={0.9} />
+      </mesh>
+    </group>
+  )
+}
+
+/** A respirator on the worker's face. */
+function RespiratorOnWorker() {
+  const ref = useRef(null)
+  const reduced = usePrefersReducedMotion()
+
+  useFrame((state, delta) => {
+    const m = ref.current
+    if (!m) return
+    const t = reduced ? 1 : Math.min(1, (m.userData.age = (m.userData.age || 0) + delta) / 0.3)
+    m.scale.setScalar(t)
+  })
+
+  return (
+    <mesh ref={ref} position={[0, 0.92, 0.3]}>
+      <sphereGeometry args={[0.19, 14, 12]} />
+      <meshStandardMaterial color="#2b3034" roughness={0.55} metalness={0.2} />
+    </mesh>
+  )
+}
+
 /* -------------------- ROOF & STRATA -------------------- */
 
 /*
@@ -734,6 +964,16 @@ function MineHaulage({ position = [1.6, -0.4, 0] }) {
   const rollers = useRef([])
   const lumps = useRef([])
   const reduced = usePrefersReducedMotion()
+  const action = useSceneAction()
+
+  /*
+   * Correctly isolating the conveyor stops it. This is the visible payoff for the
+   * lockout answer in the haulage module — the belt was running a second ago and now
+   * it is not, which is the whole thing the module is trying to teach.
+   */
+  const stopped = resolvesHazard(action) && action?.kind === SCENE_ACTION.ISOLATE
+  const speed = useRef(1)
+  const spinDown = useMotionSpeed(2.5)
 
   // Fixed pseudo-random offsets so the coal does not sit in a suspiciously even
   // row, but is stable across re-renders.
@@ -743,7 +983,12 @@ function MineHaulage({ position = [1.6, -0.4, 0] }) {
   )
 
   useFrame((state, delta) => {
-    if (reduced) return
+    // Spin down rather than cutting dead: a loaded belt coasts, and the deceleration
+    // is what makes it read as having been stopped rather than switched off in a cut.
+    speed.current = approach(speed.current, stopped ? 0 : 1, Math.min(delta, 0.1), spinDown)
+    const v = speed.current
+    if (reduced || v < 0.01) return
+    delta *= v
     for (const r of rollers.current) if (r) r.rotation.z -= delta * 3.2
     /*
      * Coal travels along the belt and wraps. Moving real lumps rather than
@@ -921,6 +1166,90 @@ function ScenarioObjects({ scenarioId }) {
   }
 }
 
+/* -------------------- THE WORKER, ACTING -------------------- */
+
+/*
+ * Where the worker ends up for each action, as an offset from where they start.
+ *
+ * Movement is the cheapest and clearest way to show a decision: leaving is
+ * unmistakably different from backing off, which is unmistakably different from
+ * walking toward a casualty. It also means the correct answer to "get out" is
+ * demonstrated rather than asserted.
+ */
+const WORKER_MOVE = {
+  [SCENE_ACTION.EVACUATE]: [3.6, 0],
+  [SCENE_ACTION.RETREAT]: [-1.6, 0],
+  [SCENE_ACTION.ASSIST]: [1.4, 0.6],
+  [SCENE_ACTION.ENGAGE]: [1.2, 0],
+  [SCENE_ACTION.EXTINGUISH]: [0.9, 0],
+  [SCENE_ACTION.ISOLATE]: [1.1, 0.3],
+  [SCENE_ACTION.ASSESS]: [0.5, 0],
+}
+
+/**
+ * The existing Worker mesh, wrapped so it can move and gain a respirator.
+ *
+ * Wrapping rather than editing Worker keeps that mesh exactly as the AR overlay and
+ * the rest of this file expect it, and means the animation lives in one place
+ * instead of inside a component that has no business knowing about drill answers.
+ */
+function ActingWorker() {
+  const group = useRef(null)
+  const action = useSceneAction()
+  const reduced = usePrefersReducedMotion()
+  const walkSpeed = useMotionSpeed(2)
+
+  const target = WORKER_MOVE[action?.kind] || [0, 0]
+
+  useFrame((state, delta) => {
+    const g = group.current
+    if (!g) return
+    const dt = Math.min(delta, 0.1)
+    // Original Worker position was [-2.5, -0.5, 0]; offsets are relative to it.
+    g.position.x = approach(g.position.x, -2.5 + target[0], dt, walkSpeed)
+    g.position.z = approach(g.position.z, target[1], dt, walkSpeed)
+
+    // Face the direction of travel, so walking backwards never happens.
+    const facing = target[0] < -0.01 ? -1 : 1
+    g.rotation.y = approach(g.rotation.y, facing > 0 ? 0 : Math.PI, dt, walkSpeed + 1)
+
+    if (!reduced && Math.abs(g.position.x - (-2.5 + target[0])) > 0.05) {
+      // A small bob while moving reads as walking rather than sliding.
+      g.position.y = -0.5 + Math.abs(Math.sin(state.clock.elapsedTime * 9)) * 0.06
+    } else {
+      g.position.y = approach(g.position.y, -0.5, dt, 4)
+    }
+  })
+
+  return (
+    <group ref={group} position={[-2.5, -0.5, 0]}>
+      <Worker position={[0, 0, 0]} />
+      {action?.kind === SCENE_ACTION.PROTECT && <RespiratorOnWorker />}
+    </group>
+  )
+}
+
+/** Whichever effect the current action calls for. */
+function ActionEffects() {
+  const action = useSceneAction()
+  if (!action) return null
+
+  switch (action.kind) {
+    // The jet only appears when the extinguisher was the RIGHT answer. Spraying CO2
+    // and having the fire grow anyway would be an incoherent thing to show.
+    case SCENE_ACTION.EXTINGUISH:
+      return action.safe ? <AgentJet /> : null
+    case SCENE_ACTION.SUPPRESS:
+      return action.safe ? <WaterMist /> : null
+    case SCENE_ACTION.ALERT:
+      return <Beacon />
+    case SCENE_ACTION.ISOLATE:
+      return action.safe ? <Padlock /> : null
+    default:
+      return null
+  }
+}
+
 /* -------------------- 3D WORLD -------------------- */
 
 function Scene({ scenarioId }) {
@@ -962,9 +1291,11 @@ function Scene({ scenarioId }) {
         color="#000000"
       />
 
-      <Worker />
+      <ActingWorker />
 
       <ScenarioObjects scenarioId={scenarioId} />
+
+      <ActionEffects />
 
       <OrbitControls
         enablePan={false}
@@ -983,7 +1314,12 @@ function Scene({ scenarioId }) {
 
 /* -------------------- MAIN COMPONENT -------------------- */
 
-export default function SafetyScene3D({ scenarioId }) {
+/**
+ * @param action  { kind, safe } from sceneAction.actionForChoice, or null before the
+ *                worker has answered. Driving the scene from the chosen answer is
+ *                what turns this from a rotating diagram into a simulation.
+ */
+export default function SafetyScene3D({ scenarioId, action = null }) {
   return (
     <div
       style={{
@@ -1010,7 +1346,9 @@ export default function SafetyScene3D({ scenarioId }) {
         dpr={[1, 1.75]}
       >
         <Suspense fallback={null}>
-          <Scene scenarioId={scenarioId} />
+          <SceneActionContext.Provider value={action}>
+            <Scene scenarioId={scenarioId} />
+          </SceneActionContext.Provider>
         </Suspense>
       </Canvas>
 

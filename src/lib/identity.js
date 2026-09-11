@@ -110,8 +110,90 @@ export function setActiveSiteId(siteId) {
 /* Worker records                                                      */
 /* ================================================================== */
 
+/**
+ * Reduce a typed phone number to its canonical ten digits.
+ *
+ * This used to be `.replace(/\D/g,'').slice(-10)`, and the blind slice was a
+ * validation hole rather than a convenience: ANY long run of digits became a
+ * "valid" ten-digit number by truncation. Typing fourteen nines produced
+ * 9999999999 and passed every check downstream, which is exactly the "any number
+ * is accepted" behaviour that prompted this.
+ *
+ * Country code and trunk prefix are now stripped EXPLICITLY, so anything else of
+ * the wrong length stays the wrong length and fails validation instead of being
+ * silently trimmed into shape.
+ */
 export function normalisePhone(phone) {
-  return String(phone || '').replace(/\D/g, '').slice(-10)
+  const digits = String(phone || '').replace(/\D/g, '')
+  if (digits.length === 12 && digits.startsWith('91')) return digits.slice(2)
+  if (digits.length === 13 && digits.startsWith('091')) return digits.slice(3)
+  if (digits.length === 11 && digits.startsWith('0')) return digits.slice(1)
+  return digits
+}
+
+/*
+ * Indian mobile numbers begin 6, 7, 8 or 9. The app is built for DGMS sites in
+ * Jharkhand, so this is a real constraint rather than an arbitrary one, and it is
+ * what rejects 0000000000 and 1234567890 — both of which passed the old
+ * length-only test.
+ */
+const MOBILE_RE = /^[6-9]\d{9}$/
+
+export const PIN_MIN_LENGTH = 4
+export const PIN_MAX_LENGTH = 6
+
+/**
+ * Is this PIN trivially guessable?
+ *
+ * A blocklist of four literals was the old rule and it missed 1111 in five of its
+ * six lengths, plus 2345, 9876, 1122 and every other obvious run. This derives the
+ * weak cases instead of listing them, so it holds for any supported length.
+ */
+export function isWeakPin(pin) {
+  const s = String(pin || '')
+  // Fails closed. Anything that is not a plain digit string has not been shown to
+  // be strong, and a predicate guarding a credential should not answer "fine" to a
+  // question it does not understand. validatePin checks format first, so in normal
+  // use this branch is unreachable — it is here for the direct caller.
+  if (!/^\d+$/.test(s)) return true
+  // All one digit: 0000, 111111.
+  if (/^(\d)\1+$/.test(s)) return true
+
+  // Ascending or descending consecutive runs: 1234, 4321, 6789, 987654.
+  let ascending = true
+  let descending = true
+  for (let i = 1; i < s.length; i += 1) {
+    const delta = s.charCodeAt(i) - s.charCodeAt(i - 1)
+    if (delta !== 1) ascending = false
+    if (delta !== -1) descending = false
+  }
+  if (ascending || descending) return true
+
+  // A repeated two-digit pair: 1212, 121212.
+  if (s.length % 2 === 0 && /^(\d\d)\1+$/.test(s)) return true
+
+  return false
+}
+
+/**
+ * One PIN rule, used everywhere a PIN is set.
+ *
+ * It exists because there were three separate rules. Registration rejected weak
+ * PINs; `changePin` and `setSupervisorPin` checked only `\d{4,6}`. So a worker
+ * forced to pick a strong PIN could immediately change it to 0000, and the
+ * supervisor PIN — the single credential guarding the compliance dashboard, the
+ * hazard board, chain integrity and the statutory export — could be 1234. The
+ * weakest rule was protecting the most sensitive thing.
+ *
+ * @returns array of error codes; empty means acceptable.
+ */
+export function validatePin(pin, { confirm } = {}) {
+  const errors = []
+  const clean = String(pin || '')
+  if (!new RegExp(`^\\d{${PIN_MIN_LENGTH},${PIN_MAX_LENGTH}}$`).test(clean)) errors.push('PIN_FORMAT')
+  else if (isWeakPin(clean)) errors.push('PIN_TOO_SIMPLE')
+  if (confirm !== undefined && clean !== String(confirm || '')) errors.push('PIN_MISMATCH')
+  return errors
 }
 
 /**
@@ -123,15 +205,14 @@ export function validateRegistration({ name, phone, pin, pinConfirm }) {
   const cleanName = String(name || '').trim()
   if (cleanName.length < 2) errors.push('NAME_TOO_SHORT')
   if (cleanName.length > 60) errors.push('NAME_TOO_LONG')
+  // A name of pure digits or punctuation is not a name. It got through before,
+  // which is how "1234" became a worker record.
+  if (cleanName && !/\p{L}/u.test(cleanName)) errors.push('NAME_INVALID')
 
   const cleanPhone = normalisePhone(phone)
-  if (cleanPhone && cleanPhone.length !== 10) errors.push('PHONE_INVALID')
+  if (cleanPhone && !MOBILE_RE.test(cleanPhone)) errors.push('PHONE_INVALID')
 
-  const cleanPin = String(pin || '')
-  if (!/^\d{4,6}$/.test(cleanPin)) errors.push('PIN_FORMAT')
-  if (/^(\d)\1+$/.test(cleanPin)) errors.push('PIN_TOO_SIMPLE')
-  if (['1234', '12345', '123456', '4321', '0000'].includes(cleanPin)) errors.push('PIN_TOO_SIMPLE')
-  if (pinConfirm !== undefined && cleanPin !== String(pinConfirm || '')) errors.push('PIN_MISMATCH')
+  errors.push(...validatePin(pin, { confirm: pinConfirm }))
 
   return [...new Set(errors)]
 }
@@ -196,8 +277,15 @@ export async function updateWorker(id, patch) {
   return next
 }
 
-export async function changePin(id, newPin) {
-  if (!/^\d{4,6}$/.test(String(newPin || ''))) throw new Error('PIN_FORMAT')
+export async function changePin(id, newPin, { confirm } = {}) {
+  // Same rule as registration. Previously this checked format only, so the
+  // strong-PIN requirement at sign-up could be undone thirty seconds later.
+  const errors = validatePin(newPin, { confirm })
+  if (errors.length) {
+    const err = new Error(errors[0])
+    err.codes = errors
+    throw err
+  }
   const verifier = await hashPin(newPin)
   return updateWorker(id, { pinHash: verifier })
 }
@@ -326,10 +414,26 @@ export function isSupervisorSession() {
  * The compliance dashboard sits behind a local PIN. This is a demo-grade
  * speed bump, not authorization — see the notice rendered on the page itself.
  */
-export async function setSupervisorPin(pin) {
-  if (!/^\d{4,6}$/.test(String(pin || ''))) throw new Error('PIN_FORMAT')
+/*
+ * The lockout ledger is keyed by worker id. The supervisor PIN has no worker, so
+ * it borrows a reserved key that cannot collide with a generated id (those are all
+ * `w_` + 9 random chars).
+ */
+export const SUPERVISOR_LOCK_ID = '__supervisor__'
+
+export async function setSupervisorPin(pin, { confirm } = {}) {
+  // Held to the same standard as a worker PIN. It used to be weaker, which was
+  // backwards: this one credential opens the compliance dashboard, the hazard
+  // board, chain integrity and the statutory CSV export.
+  const errors = validatePin(pin, { confirm })
+  if (errors.length) {
+    const err = new Error(errors[0])
+    err.codes = errors
+    throw err
+  }
   const verifier = await hashPin(pin)
   lsSetJson(LS.SUPERVISOR_PIN, verifier)
+  clearFailures(SUPERVISOR_LOCK_ID)
 }
 
 export function supervisorPinIsSet() {
@@ -337,14 +441,47 @@ export function supervisorPinIsSet() {
   return !!v?.hash
 }
 
+/** Milliseconds until the supervisor gate will accept another attempt. */
+export function supervisorLockoutRemainingMs() {
+  return lockoutRemainingMs(SUPERVISOR_LOCK_ID)
+}
+
+export function supervisorAttemptsRemaining() {
+  return attemptsRemaining(SUPERVISOR_LOCK_ID)
+}
+
+/**
+ * Verify the supervisor PIN, with the same throttling worker sign-in has.
+ *
+ * WHY THIS CHANGED: worker login has had a five-attempt lockout with escalating
+ * delays since it was written. This gate had none — so the credential guarding the
+ * most sensitive screen in the app was the one that could be brute-forced at full
+ * speed, offline, with no penalty. A four-digit PIN is ten thousand guesses, which
+ * is seconds of scripted attempts against an unthrottled check.
+ *
+ * Throws LOCKED_OUT (with retryInMs) rather than returning false, so the caller
+ * cannot mistake "too many attempts" for "wrong PIN".
+ */
 export async function verifySupervisorPin(pin) {
   const verifier = lsGetJson(LS.SUPERVISOR_PIN, null)
   if (!verifier?.hash) return false
-  return verifyPin(pin, verifier)
+
+  const remaining = lockoutRemainingMs(SUPERVISOR_LOCK_ID)
+  if (remaining > 0) {
+    const err = new Error('LOCKED_OUT')
+    err.retryInMs = remaining
+    throw err
+  }
+
+  const ok = await verifyPin(pin, verifier)
+  if (ok) clearFailures(SUPERVISOR_LOCK_ID)
+  else recordFailure(SUPERVISOR_LOCK_ID)
+  return ok
 }
 
 export function clearSupervisorPin() {
   lsRemove(LS.SUPERVISOR_PIN)
+  clearFailures(SUPERVISOR_LOCK_ID)
 }
 
 /* ================================================================== */

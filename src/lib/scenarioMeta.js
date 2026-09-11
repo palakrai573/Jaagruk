@@ -104,6 +104,30 @@ export function scenarioMeta(scenarioId) {
 /* Per-step                                                            */
 /* ================================================================== */
 
+/*
+ * Every reaction window is widened by this factor.
+ *
+ * The per-step values below were each reasoned about individually and their
+ * RELATIVE ordering is the content — a drummy roof overhead is tighter than a
+ * permit decision, and that ranking is what the module teaches. So the windows are
+ * scaled here rather than being re-typed one by one, which would have meant
+ * re-litigating fifty-four judgements to make a uniform change.
+ *
+ * Raised because the original values were set while the clock started the instant
+ * the step appeared — including the seconds spent listening to the question being
+ * read out. With narration now finishing before the clock starts, the old windows
+ * were tight for a reason that no longer exists, and they were tight on top of a
+ * penalty that should never have been there.
+ */
+export const TARGET_MS_SCALE = 1.25
+
+const FALLBACK_TARGET_MS = 9000
+
+export function scaledTargetMs(raw) {
+  const base = Number.isFinite(raw) && raw > 0 ? raw : FALLBACK_TARGET_MS
+  return Math.round(base * TARGET_MS_SCALE)
+}
+
 /**
  * `targetMs` is the reaction-time baseline the latency grader measures against.
  * Answer inside it and the decision reads as confident; take more than twice as
@@ -615,7 +639,7 @@ export function enrichScenario(scenario, opts = {}) {
       ...step,
       choices,
       maxPoints,
-      targetMs: sm.targetMs,
+      targetMs: scaledTargetMs(sm.targetMs),
       pictogram: sm.pictogram,
       aim: sm.aim || null,
     }

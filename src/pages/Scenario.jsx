@@ -15,12 +15,47 @@ import { shouldUseAr, arBlocker, AR_BLOCK_KEYS } from '../lib/arSupport.js'
 import { enqueue, SYNC_KIND } from '../lib/sync.js'
 import { LS, lsGetBool, lsGetBoolOrNull, lsSetBool } from '../lib/local.js'
 import SafetyScene3D from '../components/SafetyScene3D.jsx'
+import { actionForChoice } from '../lib/sceneAction.js'
 import ARDrill from '../components/ARDrill.jsx'
 import Pictogram from '../lib/pictograms.jsx'
 import { ChoiceCard, LatencyBar, FeedbackPanel, ReadinessRing, VoiceButton } from '../components/DrillUI.jsx'
 import { Button, Card, Badge, EmptyState } from '../components/ui/index.js'
 import { useLanguage } from '../context/LanguageContext.jsx'
 import { langName, contentNotice, scenarioContentIsEnglish } from '../lib/i18n.js'
+
+/*
+ * Spoken option number to zero-based choice index.
+ *
+ * The numbering here has to match the numbering spokenPrompt() reads out, since
+ * that narration is what tells the worker which number to say.
+ */
+const VOICE_OPTION_INDEX = {
+  [COMMAND.ONE]: 0,
+  [COMMAND.TWO]: 1,
+  [COMMAND.THREE]: 2,
+  [COMMAND.FOUR]: 3,
+}
+
+/**
+ * What gets read aloud for a step: the situation, then every option, numbered.
+ *
+ * THE OPTIONS USED TO BE SPOKEN ONLY IN PICTOGRAM MODE. Outside it, the phone read
+ * the situation and then went silent, so a worker who cannot read — or is wearing a
+ * respirator and holding a torch, or is simply listening rather than staring at the
+ * screen — was asked to choose between options they had never been told. Pictogram
+ * mode is for workers who cannot read text at all; needing the choices read out is
+ * not the same condition, and tying the two together meant most listeners got half
+ * a question.
+ *
+ * The numbering matters as well as the words: it is what makes "one" and "two"
+ * usable as spoken answers, so this is also the script for voice input.
+ */
+function spokenPrompt(step) {
+  if (!step) return ''
+  const choices = Array.isArray(step.choices) ? step.choices : []
+  if (!choices.length) return step.prompt || ''
+  return `${step.prompt}. ${choices.map((c, i) => `${i + 1}. ${c.text}`).join('. ')}`
+}
 
 export default function Scenario() {
   const { id } = useParams()
@@ -58,7 +93,22 @@ export default function Scenario() {
   const [result, setResult] = useState(null)
   const [saveNote, setSaveNote] = useState(null)
 
-  const [stepStartedAt, setStepStartedAt] = useState(() => Date.now())
+  /*
+   * TWO timestamps, because a reader and a listener receive the question at
+   * different moments and neither should be penalised for the other's channel.
+   *
+   *   stepShownAt    the step appeared and could be READ
+   *   clockStartedAt narration of the prompt and every option FINISHED, so a
+   *                  listener now knows the situation. Null until then.
+   *
+   * Latency measures from clockStartedAt when it exists, and from stepShownAt when
+   * the worker answers before narration finished — which a literate worker legitimately
+   * can. Measuring from clockStartedAt only would have handed anyone who read ahead a
+   * latency of zero; measuring from stepShownAt only is the old bug, where every
+   * worker was charged for the seconds the phone spent talking.
+   */
+  const [stepShownAt, setStepShownAt] = useState(() => Date.now())
+  const [clockStartedAt, setClockStartedAt] = useState(null)
   const [aimedThisStep, setAimedThisStep] = useState(false)
 
   /* ---------------- presentation modes ---------------- */
@@ -157,28 +207,40 @@ export default function Scenario() {
   // not an enhancement, so it always runs.
   useEffect(() => {
     if (!step || finished) return undefined
-    setStepStartedAt(Date.now())
+    setStepShownAt(Date.now())
+    setClockStartedAt(null)
     setAimedThisStep(false)
 
-    const spoken = pictogramMode
-      ? `${step.prompt} ${step.choices.map((c, i) => `${i + 1}. ${c.text}`).join('. ')}`
-      : step.prompt
+    const spoken = spokenPrompt(step)
 
-    const token = speak(spoken, lang, { interrupt: true })
+    /*
+     * The clock starts when the reading finishes, not when the step appears.
+     *
+     * `speak` returns 0 when speech synthesis is unavailable — no voice installed,
+     * an unsupported browser, a muted-by-policy WebView. In that case nothing will
+     * ever call onEnd, so the clock has to start immediately or the worker would
+     * face a timer that never runs and a bar that never moves.
+     */
+    const token = speak(spoken, lang, {
+      interrupt: true,
+      onEnd: () => setClockStartedAt(Date.now()),
+    })
+    if (!token) setClockStartedAt(Date.now())
+
     return () => stopSpeaking(token)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [step?.id, pictogramMode, lang])
+  }, [step?.id, lang])
 
   // Stop any audio when leaving the page entirely.
   useEffect(() => () => stopSpeaking(), [])
 
   const repeatPrompt = useCallback(() => {
     if (!step) return
-    const spoken = pictogramMode
-      ? `${step.prompt} ${step.choices.map((c, i) => `${i + 1}. ${c.text}`).join('. ')}`
-      : step.prompt
-    speak(spoken, lang)
-  }, [step, pictogramMode, lang])
+    // Repeating does not restart the clock. A worker who asks to hear it again has
+    // already had the situation described once; resetting the timer would make
+    // "say that again" a way to buy unlimited thinking time.
+    speak(spokenPrompt(step), lang)
+  }, [step, lang])
 
   /* ---------------- answering ---------------- */
 
@@ -186,7 +248,9 @@ export default function Scenario() {
     async (choice) => {
       if (!step || feedback) return
 
-      const latencyMs = Date.now() - stepStartedAt
+      // See the note on the two timestamps above: whichever moment the worker
+      // actually received the question from.
+      const latencyMs = Date.now() - (clockStartedAt || stepShownAt)
       const grade = gradeLatency(latencyMs, step.targetMs)
       const safe = choice.points >= step.maxPoints
 
@@ -224,7 +288,7 @@ export default function Scenario() {
         }
       }
     },
-    [step, feedback, stepStartedAt, lang, scenario]
+    [step, feedback, clockStartedAt, stepShownAt, lang, scenario]
   )
 
   /* ---------------- finishing ---------------- */
@@ -288,6 +352,18 @@ export default function Scenario() {
     }
   }, [stepIndex, totalSteps, decisions, finish])
 
+  /* ---------------- scene reaction ---------------- */
+
+  /*
+   * What the 3D scene should play. Derived from the answer just given, so it is null
+   * while the worker is still deciding and the scene sits at rest.
+   *
+   * Keyed off `feedback` — the chosen choice — which means it clears automatically
+   * when `next()` clears the feedback, and the next step starts from a neutral
+   * scene without any separate reset.
+   */
+  const sceneAction = useMemo(() => actionForChoice(feedback, step), [feedback, step])
+
   /* ---------------- voice ---------------- */
 
   const onVoiceCommand = useCallback(
@@ -296,12 +372,21 @@ export default function Scenario() {
         repeatPrompt()
         return
       }
+      /*
+       * Spoken option number to choice index, table-driven. The chain of ternaries
+       * this replaces stopped at TWO, so "three" was silently ignored on the 22
+       * steps that offer a third option — the worker said a valid answer and
+       * nothing happened.
+       */
+      const index = VOICE_OPTION_INDEX[command]
+
       if (feedback) {
-        if (command === COMMAND.ONE || command === COMMAND.TWO) next()
+        // On the feedback screen any option number, or "next", means carry on.
+        if (index !== undefined || command === COMMAND.NEXT) next()
         return
       }
-      const index = command === COMMAND.ONE ? 0 : command === COMMAND.TWO ? 1 : -1
-      if (index >= 0 && step?.choices?.[index]) choose(step.choices[index])
+
+      if (index !== undefined && step?.choices?.[index]) choose(step.choices[index])
     },
     [feedback, step, choose, next, repeatPrompt]
   )
@@ -566,7 +651,7 @@ export default function Scenario() {
           )}
         </ARDrill>
       ) : (
-        <SafetyScene3D scenarioId={scenario.id} />
+        <SafetyScene3D scenarioId={scenario.id} action={sceneAction} />
       )}
 
       {/* border-s / ps, not border-l / pl — the rule mirrors for Urdu. */}
@@ -597,7 +682,10 @@ export default function Scenario() {
         </button>
       </div>
 
-      {!feedback && <LatencyBar startedAt={stepStartedAt} targetMs={step.targetMs} />}
+      {/* startedAt is null until narration ends, and LatencyBar already renders a
+          still, zeroed bar in that case — so the worker sees the timer waiting for
+          the question to finish rather than already running against them. */}
+      {!feedback && <LatencyBar startedAt={clockStartedAt} targetMs={step.targetMs} />}
 
       {/* Choices */}
       {!feedback && (

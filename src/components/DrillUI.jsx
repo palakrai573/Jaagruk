@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import Pictogram from '../lib/pictograms.jsx'
 import {
   GRADE,
@@ -340,7 +340,19 @@ export function VoiceButton({ choiceCount = 2, onCommand, disabled = false, clas
   const [error, setError] = useState(null)
   const supported = speechRecognitionSupported()
 
-  const allowed = [COMMAND.ONE, COMMAND.TWO, COMMAND.REPEAT, COMMAND.HELP].slice(0, choiceCount === 1 ? 3 : 4)
+  /*
+   * Only the option numbers that actually exist on screen are live, so "three"
+   * cannot fire on a two-option question and pick nothing.
+   *
+   * This replaces `[ONE, TWO, REPEAT, HELP].slice(0, choiceCount === 1 ? 3 : 4)`,
+   * which was wrong in both directions: it still allowed TWO on a single-option
+   * step, and it never allowed THREE on the 22 steps that have three options.
+   */
+  const allowed = useMemo(() => {
+    const numbers = [COMMAND.ONE, COMMAND.TWO, COMMAND.THREE, COMMAND.FOUR]
+    const n = Math.max(0, Math.min(numbers.length, toNumberOr(choiceCount, 0)))
+    return [...numbers.slice(0, n), COMMAND.REPEAT, COMMAND.HELP]
+  }, [choiceCount])
 
   useEffect(() => {
     if (!supported) return undefined

@@ -253,7 +253,13 @@ export function speak(text, lang = 'en', opts = {}) {
   const chunks = chunkText(spoken)
   if (!chunks.length) return 0
 
-  const { rate = 0.95, pitch = 1, onEnd, onStart, interrupt = true } = opts
+  /*
+   * 0.88 rather than 0.95. Slightly under the previous pace, because these are
+   * safety instructions being heard once, often in a second language, sometimes
+   * over plant noise — and because the drill's clock now waits for narration to
+   * finish, so a slower read no longer costs the worker any score.
+   */
+  const { rate = 0.88, pitch = 1, onEnd, onStart, interrupt = true } = opts
 
   const locale = String(lang).includes('-') ? lang : speechLocaleFor(lang)
   const voice = pickVoice(locale)
@@ -349,6 +355,16 @@ export const COMMAND = {
   NO: 'NO',
   ONE: 'ONE',
   TWO: 'TWO',
+  /*
+   * THREE and FOUR exist because 22 of the 54 drill decisions offer three options
+   * and the lexicon stopped at two — so a worker answering by voice could not pick
+   * the third choice on 40% of the questions, with no indication why. FOUR is
+   * carried ahead of the content: nothing offers four options today, and
+   * tests/voice.test.mjs fails if a step ever offers more options than there are
+   * commands to name them.
+   */
+  THREE: 'THREE',
+  FOUR: 'FOUR',
   LEFT: 'LEFT',
   RIGHT: 'RIGHT',
   EXIT: 'EXIT',
@@ -392,6 +408,19 @@ const AUTHORED_PHRASES = {
     'two', 'second', 'option two', 'number two',
     'दो', 'दूसरा', 'do', 'dusra', 'doosra',
     'ᱵᱟᱨ', 'bar', 'baria',
+  ],
+  [COMMAND.THREE]: [
+    'three', 'third', 'option three', 'number three',
+    'तीन', 'तीसरा', 'teen', 'tin', 'tisra', 'teesra',
+    // Santali 3 is ᱯᱮ (pe). "pe" alone is two characters and would fuzzy-match far
+    // too much, so only the fuller romanisations are listed; the Ol Chiki form is
+    // exact and safe.
+    'ᱯᱮ', 'peya',
+  ],
+  [COMMAND.FOUR]: [
+    'four', 'fourth', 'option four', 'number four',
+    'चार', 'चौथा', 'char', 'chautha', 'chautha',
+    'ᱯᱩᱱ', 'punea',
   ],
   [COMMAND.LEFT]: [
     'left', 'left side', 'go left',
