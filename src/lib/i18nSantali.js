@@ -147,7 +147,9 @@ export const SANTALI_STRINGS = {
   /* ---------------- assessment / voice input ---------------- */
   as_AUDIO: 'ᱢᱟᱭᱠ ᱵᱟᱝ ᱡᱷᱤᱡ ᱦᱩᱭ ᱞᱮᱱᱟ ᱾',
   as_grade_unknown: 'ᱚᱠᱛᱚ ᱵᱟᱝ ᱞᱮᱠᱷᱟ',
-  as_NETWORK: 'ᱱᱚᱶᱟ ᱡᱤᱱᱤᱥ ᱨᱮ ᱨᱚᱲ ᱵᱟᱰᱟᱭ ᱞᱟᱹᱜᱤᱫ ᱡᱚᱲᱟᱣ ᱞᱟᱹᱠᱛᱤ ᱾',
+  /* as_NETWORK moved into i18nJaagruk.js when its wording changed to name the
+     offline voice pack. An inline value wins over this overlay, so leaving the old
+     sentence here would have been a second, contradicting Santali for one key. */
   as_NO_MATCH: 'ᱵᱟᱝ ᱟᱸᱡᱚᱢ ᱞᱮᱱᱟ ᱾ "ᱢᱤᱫ" ᱥᱮ "ᱵᱟᱨ" ᱨᱚᱲ ᱢᱮ, ᱥᱮ ᱛᱚᱯᱟᱣ ᱢᱮ ᱾',
   as_NO_SPEECH: 'ᱪᱮᱫ ᱦᱚᱸ ᱵᱟᱝ ᱟᱸᱡᱚᱢ ᱞᱮᱱᱟ ᱾ ᱯᱷᱚᱱ ᱱᱟᱜᱟᱢ ᱨᱮ ᱨᱚᱲ ᱢᱮ ᱾',
   as_PERMISSION_DENIED: 'ᱢᱟᱭᱠ ᱦᱩᱠᱩᱢ ᱵᱟᱝ ᱧᱟᱢ ᱞᱮᱱᱟ, ᱚᱱᱟᱛᱮ ᱨᱚᱲ ᱛᱮ ᱛᱮᱞᱟ ᱵᱚᱸᱫᱚ ᱾',

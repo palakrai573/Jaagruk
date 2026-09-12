@@ -21,8 +21,10 @@ import {
   matchCommand,
   normaliseTranscript,
   asrRetryPolicy,
+  asrLocaleChain,
   msSinceSpeech,
   ASR_ERROR,
+  ASR_LOCALE_ESCALATE_AFTER,
   SELF_HEARING_GUARD_MS,
 } from '../src/lib/speech.js'
 
@@ -275,5 +277,141 @@ describe('the self-hearing guard', () => {
     // A fresh page has never spoken, so the guard must not block the first answer.
     assert.equal(msSinceSpeech(), Number.POSITIVE_INFINITY)
     assert.ok(msSinceSpeech() >= SELF_HEARING_GUARD_MS, 'the first answer must be accepted')
+  })
+})
+
+/* ------------------------------------------- offline, in a second language */
+
+describe('offline recognition in a language with no on-device model', () => {
+  /*
+   * THE REPORTED BUG, from a phone with the net off: English voice answers worked and
+   * Hindi ones did not. Saying "ek" or "do" was never caught.
+   *
+   * Recognition on Chrome/Android is served by the Android speech service, which can
+   * only work offline for languages whose pack has been downloaded. Devices ship an
+   * English model; Hindi is an opt-in download most workers have never made. With no
+   * pack and no network the engine reports `network` — and the listener retried the
+   * same locale on a backoff, forever, while the live indicator kept saying
+   * "listening" because a restart counts as listening.
+   *
+   * Two independent defects, and fixing either alone would have left it broken:
+   *
+   *   1. Nothing ever moved off the failing locale. No transcript was produced at all.
+   *   2. Even with a transcript, `ek` and `do` are two characters, and editBudget
+   *      requires an exact match at that length. Every other command had a longer
+   *      form to fall back on; the two used on every single question had none, and no
+   *      numeral form either — which is what engines most often return.
+   */
+
+  test('a Hindi request falls back to a locale a device is likely to have', () => {
+    const chain = asrLocaleChain('hi')
+    assert.equal(chain[0], 'hi-IN', 'the requested language must still be tried first')
+    assert.ok(chain.length > 1, 'hi-IN with no offline pack must have somewhere to go')
+    assert.equal(chain[chain.length - 1], 'en-IN')
+  })
+
+  test('Santali inherits the chain, because its recognition locale IS Hindi', () => {
+    // sat maps to hi-IN for recognition, so it must not need its own entry — and must
+    // not be left without a fallback because the table is keyed by locale not language.
+    assert.deepEqual(asrLocaleChain('sat'), asrLocaleChain('hi'))
+  })
+
+  test('English has nowhere to fall back to, and needs nowhere', () => {
+    const chain = asrLocaleChain('en')
+    assert.deepEqual(chain, ['en-IN'], 'a fallback for English would be a downgrade to itself')
+  })
+
+  test('a chain never repeats a locale', () => {
+    for (const code of ['en', 'hi', 'sat', 'bn', 'or', 'ur']) {
+      const chain = asrLocaleChain(code)
+      assert.equal(new Set(chain).size, chain.length, `${code}: ${chain.join(' -> ')}`)
+    }
+  })
+
+  test('an explicit locale tag is passed through rather than re-resolved', () => {
+    assert.equal(asrLocaleChain('hi-IN')[0], 'hi-IN')
+  })
+
+  test('the escalation threshold tolerates one blip but not a wall', () => {
+    /*
+     * One network error is also what a momentary drop looks like on a network-backed
+     * recogniser, and downgrading the model on the first hiccup would quietly cost
+     * accuracy for someone who is actually online. Two in a row is the offline
+     * signature.
+     */
+    assert.ok(ASR_LOCALE_ESCALATE_AFTER >= 2, 'one failure is a blip, not a verdict')
+    assert.ok(ASR_LOCALE_ESCALATE_AFTER <= 3, 'more than this and the worker is left waiting')
+  })
+})
+
+describe('a spoken number is caught however the engine writes it down', () => {
+  const expect = (spoken, command) => {
+    const m = matchCommand(spoken, { allowed: OPTION_COMMANDS })
+    assert.ok(m, `"${spoken}" matched nothing`)
+    assert.equal(m.command, command, `"${spoken}" gave ${m.command}`)
+  }
+
+  test('digits, which is what most engines actually return', () => {
+    // None of these was in the lexicon. "one" and "ek" both commonly transcribe as
+    // "1", so on any engine that does that, the two most-used commands matched nothing.
+    expect('1', COMMAND.ONE)
+    expect('2', COMMAND.TWO)
+    expect('3', COMMAND.THREE)
+    expect('4', COMMAND.FOUR)
+  })
+
+  test('digits in Devanagari and Urdu script', () => {
+    expect('१', COMMAND.ONE)
+    expect('२', COMMAND.TWO)
+    expect('۱', COMMAND.ONE)
+    expect('۲', COMMAND.TWO)
+  })
+
+  test('a digit inside a sentence', () => {
+    expect('option 2', COMMAND.TWO)
+    expect('number 3 please', COMMAND.THREE)
+  })
+
+  test('a longer number is not mistaken for the digit it starts with', () => {
+    // The exact-match rule for short phrases is what makes this safe: "10" is not "1".
+    for (const spoken of ['10', '21', '100']) {
+      const m = matchCommand(spoken, { allowed: OPTION_COMMANDS })
+      assert.ok(!m, `"${spoken}" should not select an option, got ${m?.command}`)
+    }
+  })
+
+  test('Hindi feminine ordinals, which a speaker may well use', () => {
+    expect('पहली', COMMAND.ONE)
+    expect('दूसरी', COMMAND.TWO)
+    expect('तीसरी', COMMAND.THREE)
+  })
+
+  test('common romanisation variants of the Hindi numbers', () => {
+    expect('ek', COMMAND.ONE)
+    expect('do', COMMAND.TWO)
+    expect('doh', COMMAND.TWO)
+    expect('teen', COMMAND.THREE)
+    expect('chaar', COMMAND.FOUR)
+  })
+
+  test('every option still has a path that survives one transcription slip', () => {
+    /*
+     * The property the reported bug violated. `ek` and `do` are two characters, so
+     * editBudget gives them zero tolerance — correct in itself, since one edit on a
+     * short word reaches too many unrelated ones. But it meant the two commands used
+     * on every question had NO fuzzy path at all, while every other command did.
+     *
+     * So each option must own at least one phrase of four characters or more, which is
+     * where editBudget starts allowing an edit. This does not assert that any
+     * particular slip is absorbed — it asserts the option is not cornered into
+     * requiring perfect transcription.
+     */
+    for (const command of OPTION_COMMANDS) {
+      const forgiving = (COMMAND_PHRASES[command] || []).filter((p) => p.length >= 4)
+      assert.ok(
+        forgiving.length > 0,
+        `${command} has no phrase long enough to tolerate a single ASR slip`,
+      )
+    }
   })
 })

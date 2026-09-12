@@ -691,7 +691,28 @@ const ASSESSMENT = {
   as_NO_SPEECH: { en: 'Heard nothing. Try again closer to the phone.', hi: 'कुछ सुना नहीं। फ़ोन के पास बोलें।', bn: 'কিছু শোনা যায়নি। ফোনের কাছে বলুন।', or: 'କିଛି ଶୁଣାଗଲା ନାହିଁ। ଫୋନ ପାଖରେ କୁହନ୍ତୁ।', ur: 'کچھ سنائی نہیں دیا۔ فون کے قریب بولیں۔' },
   as_PERMISSION_DENIED: { en: 'Microphone permission was refused, so voice answers are off.', hi: 'माइक्रोफ़ोन अनुमति नहीं मिली, इसलिए आवाज़ से उत्तर बंद है।', bn: 'মাইক্রোফোন অনুমতি নেই, তাই ভয়েস উত্তর বন্ধ।', or: 'ମାଇକ୍ରୋଫୋନ ଅନୁମତି ନାହିଁ, ତେଣୁ ଭଏସ ଉତ୍ତର ବନ୍ଦ।', ur: 'مائیکروفون اجازت نہیں، اس لیے آواز سے جواب بند۔' },
   as_UNSUPPORTED: { en: 'This browser cannot listen for spoken answers.', hi: 'यह ब्राउज़र बोले गए उत्तर नहीं सुन सकता।', bn: 'এই ব্রাউজার কথ্য উত্তর শুনতে পারে না।', or: 'ଏହି ବ୍ରାଉଜର କଥିତ ଉତ୍ତର ଶୁଣିପାରିବ ନାହିଁ।', ur: 'یہ براؤزر بولے گئے جواب نہیں سن سکتا۔' },
-  as_NETWORK: { en: 'Speech recognition needs a connection on this device.', hi: 'इस डिवाइस पर वाक् पहचान को कनेक्शन चाहिए।', bn: 'এই ডিভাইসে স্পিচ রিকগনিশনের সংযোগ দরকার।', or: 'ଏହି ଡିଭାଇସରେ ସ୍ପିଚ ରିକଗନିଶନ ପାଇଁ ସଂଯୋଗ ଦରକାର।', ur: 'اس ڈیوائس پر تقریر کی شناخت کے لیے کنکشن درکار۔' },
+  /* Was "Speech recognition needs a connection on this device." — true, and useless.
+     It named the symptom and no remedy, on the one screen where the worker can still
+     just tap. The offline fix is a downloaded voice pack, so say that. */
+  as_NETWORK: {
+    en: 'Voice needs either a connection or an offline voice pack for this language. Tap an option instead.',
+    hi: 'आवाज़ के लिए कनेक्शन या इस भाषा का ऑफ़लाइन वॉइस पैक चाहिए। विकल्प पर टैप करें।',
+    sat: 'ᱨᱚᱲ ᱵᱟᱰᱟᱭ ᱞᱟᱹᱜᱤᱫ ᱡᱚᱲᱟᱣ ᱥᱮ ᱱᱚᱶᱟ ᱯᱟᱹᱨᱥᱤ ᱨᱮᱭᱟᱜ ᱚᱯᱷᱞᱟᱭᱤᱱ ᱵᱷᱚᱭᱥ ᱯᱮᱠ ᱞᱟᱹᱠᱛᱤ ᱾ ᱵᱟᱪᱷᱟᱣ ᱨᱮ ᱛᱚᱯᱟᱣ ᱢᱮ ᱾',
+    bn: 'ভয়েসের জন্য সংযোগ বা এই ভাষার অফলাইন ভয়েস প্যাক দরকার। বিকল্পে ট্যাপ করুন।',
+    or: 'ଭଏସ ପାଇଁ ସଂଯୋଗ କିମ୍ବା ଏହି ଭାଷାର ଅଫଲାଇନ ଭଏସ ପ୍ୟାକ ଦରକାର। ବିକଳ୍ପରେ ଟ୍ୟାପ କରନ୍ତୁ।',
+    ur: 'آواز کے لیے کنکشن یا اس زبان کا آف لائن وائس پیک درکار۔ آپشن پر ٹیپ کریں۔',
+  },
+  /* Shown when recognition fell back to English because this device has no offline
+     model for the worker's language. Names the remedy that works right now — say the
+     English number — rather than reporting a failure, because nothing has failed. */
+  as_voice_english_only: {
+    en: 'Listening in English. Say “one”, “two” or “three” — or tap.',
+    hi: 'अंग्रेज़ी में सुन रहा है। “one”, “two” या “three” बोलें — या टैप करें।',
+    sat: 'ᱤᱝᱜᱽᱞᱤᱥ ᱛᱮ ᱟᱸᱡᱚᱢ ᱠᱟᱱᱟ ᱾ “one”, “two” ᱥᱮ “three” ᱨᱚᱲ ᱢᱮ — ᱥᱮ ᱛᱚᱯᱟᱣ ᱢᱮ ᱾',
+    bn: 'ইংরেজিতে শুনছে। “one”, “two” বা “three” বলুন — বা ট্যাপ করুন।',
+    or: 'ଇଂରାଜୀରେ ଶୁଣୁଛି। “one”, “two” କିମ୍ବା “three” କୁହନ୍ତୁ — କିମ୍ବା ଟ୍ୟାପ କରନ୍ତୁ।',
+    ur: 'انگریزی میں سن رہا ہے۔ “one”، “two” یا “three” بولیں — یا ٹیپ کریں۔',
+  },
   as_AUDIO: { en: 'The microphone could not be opened.', hi: 'माइक्रोफ़ोन नहीं खुला।', bn: 'মাইক্রোফোন খোলা যায়নি।', or: 'ମାଇକ୍ରୋଫୋନ ଖୋଲିପାରିଲା ନାହିଁ।', ur: 'مائیکروفون نہیں کھلا۔' },
   as_UNKNOWN: { en: 'Voice input had a problem. Tap instead.', hi: 'आवाज़ में दिक्कत हुई। टैप करें।', bn: 'ভয়েসে সমস্যা হয়েছে। ট্যাপ করুন।', or: 'ଭଏସରେ ସମସ୍ୟା। ଟ୍ୟାପ କରନ୍ତୁ।', ur: 'آواز میں مسئلہ ہوا۔ ٹیپ کریں۔' },
 

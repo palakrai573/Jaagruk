@@ -45,6 +45,63 @@ export function speechLocaleFor(lang) {
 }
 
 /* ================================================================== */
+/* Recognition locale fallback                                         */
+/* ================================================================== */
+
+/**
+ * Recognition locales to try when the preferred one cannot run on this device.
+ *
+ * WHY THIS EXISTS — the bug it fixes is specific and was reported from a phone.
+ * With the net off, English voice answers worked and Hindi ones did not: saying
+ * "ek" or "do" was never caught.
+ *
+ * Recognition on Chrome/Android is served by the Android speech service, which can
+ * only work offline for languages whose pack has been downloaded. Devices ship an
+ * English model; Hindi is an opt-in download most workers have never made. With no
+ * pack and no network the engine reports `network` — and the old listener retried
+ * `hi-IN` on an exponential backoff, forever, against a wall that could not move.
+ * The live indicator kept saying "listening" because a restart counts as listening,
+ * so the worker spoke Hindi into a microphone that was never going to hear them and
+ * nothing on screen said otherwise.
+ *
+ * Falling back to a locale that does have a model is the right answer here, and it
+ * is not a hack, because the lexicon was never single-language: COMMAND_PHRASES
+ * accepts English, Devanagari, romanised Hindi, Ol Chiki and romanised Santali for
+ * every command, precisely because workers in Jharkhand code-switch. An English
+ * model transcribing a Hindi speaker is a worse recogniser, not a useless one — and
+ * the numerals now in the lexicon are what most engines return for a spoken digit in
+ * any language.
+ *
+ * The caller is told when this happens (`onLocaleChange`), because the reliable move
+ * once the model is English is to say the English number, and the worker can only do
+ * that if the app says so.
+ */
+export const ASR_FALLBACK_LOCALE = {
+  'hi-IN': ['en-IN'],
+  'bn-IN': ['en-IN'],
+  'or-IN': ['en-IN'],
+  'ur-PK': ['en-IN'],
+}
+
+/**
+ * How many consecutive `network` failures before trying the next locale.
+ *
+ * Two, not one. A single failure is also what a genuine momentary connection drop
+ * looks like on a network-backed recogniser, and downgrading the model on the first
+ * hiccup would quietly cost accuracy for anyone who is actually online. Two in a row
+ * with no successful result in between is the offline signature, and at a 1s then 2s
+ * backoff the switch happens inside about three seconds.
+ */
+export const ASR_LOCALE_ESCALATE_AFTER = 2
+
+/** The locales to try, in order, for an app language or an explicit tag. */
+export function asrLocaleChain(lang) {
+  const preferred = String(lang).includes('-') ? lang : speechLocaleFor(lang)
+  const fallbacks = (ASR_FALLBACK_LOCALE[preferred] || []).filter((l) => l !== preferred)
+  return [preferred, ...fallbacks]
+}
+
+/* ================================================================== */
 /* Capability checks                                                   */
 /* ================================================================== */
 
@@ -452,19 +509,44 @@ const AUTHORED_PHRASES = {
     'नहीं', 'नही', 'गलत', 'nahi', 'nahin', 'galat',
     'ᱵᱟᱝ', 'bang', 'ban', 'baŋ',
   ],
+  /*
+   * THE NUMERALS ARE THE IMPORTANT ADDITION HERE, and they were missing.
+   *
+   * Speech engines very often transcribe a spoken number as a digit rather than a
+   * word — "one" and "ek" both commonly come back as "1". None of the four digit
+   * forms was in this table, so on any engine that does that, the two most-used
+   * commands in the app matched nothing.
+   *
+   * It matters more for Hindi than for English, and that is the reported bug.
+   * `editBudget` requires an exact match for anything three characters or shorter,
+   * which is correct — one edit on a short word reaches far too many unrelated ones,
+   * which is why "bar" must not fire on "car". But the Hindi words for one and two
+   * are `ek` and `do`: two characters each, so zero tolerance, on the two commands a
+   * worker uses on every single question. Every other command had a longer form to
+   * fall back on; these had none. A digit is short too, but a bare "1" token is
+   * unambiguous in a way a two-letter word is not, so the exact-match rule costs
+   * nothing there.
+   *
+   * Devanagari and Extended Arabic-Indic digits are included because a Hindi or Urdu
+   * recogniser returns numerals in its own script. They survive normaliseTranscript,
+   * which strips marks and punctuation but not letters or digits.
+   */
   [COMMAND.ONE]: [
     'one', 'first', 'option one', 'number one',
-    'एक', 'पहला', 'ek', 'pehla', 'pahla',
+    '1', '१', '۱',
+    'एक', 'पहला', 'पहली', 'ek', 'pehla', 'pahla', 'pehli',
     'ᱢᱤᱫ', 'mit', "mit'",
   ],
   [COMMAND.TWO]: [
     'two', 'second', 'option two', 'number two',
-    'दो', 'दूसरा', 'do', 'dusra', 'doosra',
+    '2', '२', '۲',
+    'दो', 'दूसरा', 'दूसरी', 'do', 'doh', 'dusra', 'doosra', 'dusri',
     'ᱵᱟᱨ', 'bar', 'baria',
   ],
   [COMMAND.THREE]: [
     'three', 'third', 'option three', 'number three',
-    'तीन', 'तीसरा', 'teen', 'tin', 'tisra', 'teesra',
+    '3', '३', '۳',
+    'तीन', 'तीसरा', 'तीसरी', 'teen', 'tin', 'tisra', 'teesra', 'tisri',
     // Santali 3 is ᱯᱮ (pe). "pe" alone is two characters and would fuzzy-match far
     // too much, so only the fuller romanisations are listed; the Ol Chiki form is
     // exact and safe.
@@ -472,7 +554,8 @@ const AUTHORED_PHRASES = {
   ],
   [COMMAND.FOUR]: [
     'four', 'fourth', 'option four', 'number four',
-    'चार', 'चौथा', 'char', 'chautha', 'chautha',
+    '4', '४', '۴',
+    'चार', 'चौथा', 'चौथी', 'char', 'chaar', 'chautha', 'chauthi',
     'ᱯᱩᱱ', 'punea',
   ],
   [COMMAND.LEFT]: [
@@ -819,6 +902,13 @@ export function createCommandListener({
    * so a captured value would be stale by the time it mattered.
    */
   shouldAccept = null,
+  /*
+   * Called when recognition switches locale because the requested one could not run
+   * here — offline with no language pack being the case that matters. The drill uses
+   * it to tell the worker which language the microphone is now listening in, since
+   * that changes what they should say.
+   */
+  onLocaleChange = null,
 } = {}) {
   if (!speechRecognitionSupported()) {
     onError?.(ASR_ERROR.UNSUPPORTED)
@@ -833,6 +923,14 @@ export function createCommandListener({
   let rec = null
   let listening = false
   let destroyed = false
+  /*
+   * Which locale the engine is actually running. Separate from `lang`, because the
+   * requested language may have no model on this device and the whole point is to
+   * keep listening in something that does rather than retrying nothing forever.
+   */
+  const localeChain = asrLocaleChain(lang)
+  let localeIndex = 0
+  let networkFailures = 0
   /*
    * `wanted` is the caller's intent; `listening` is the engine's actual state. They
    * are separate because the engine stops constantly on its own in hands-free mode and
@@ -855,7 +953,8 @@ export function createCommandListener({
   }
 
   const build = () => {
-    const r = createRecognizer(lang, { continuous: handsFree })
+    // The resolved locale, not the app language: after an escalation these differ.
+    const r = createRecognizer(localeChain[localeIndex], { continuous: handsFree })
     if (!r) return null
 
     r.onresult = (event) => {
@@ -865,7 +964,17 @@ export function createCommandListener({
         const result = event.results[i]
         for (let j = 0; j < result.length; j += 1) alternatives.push(result[j].transcript)
       }
-      if (alternatives.length) onTranscript?.(alternatives[0], alternatives)
+      if (alternatives.length) {
+        onTranscript?.(alternatives[0], alternatives)
+        /*
+         * Any transcript at all proves this locale has a working model, so the
+         * network tally resets here rather than on a successful match. A phrase the
+         * lexicon does not know is still evidence the engine can hear — counting it
+         * towards a locale downgrade would eventually move a working recogniser off
+         * the worker's own language because they said something unexpected.
+         */
+        networkFailures = 0
+      }
 
       let match = null
       for (const alt of alternatives) {
@@ -915,6 +1024,33 @@ export function createCommandListener({
         wanted = false
         onError?.(mapped)
         return
+      }
+
+      /*
+       * A `network` error offline is not a blip, it is the permanent condition — and
+       * on Android it is also what a missing offline language pack looks like. Retrying
+       * the same locale is retrying nothing. Move down the chain instead.
+       *
+       * Reported rather than silent: once the model is English, the reliable thing for
+       * a Hindi speaker to say is the English number, and they can only know that if
+       * the app tells them.
+       */
+      if (mapped === ASR_ERROR.NETWORK) {
+        networkFailures += 1
+        if (networkFailures >= ASR_LOCALE_ESCALATE_AFTER && localeIndex < localeChain.length - 1) {
+          localeIndex += 1
+          networkFailures = 0
+          failures = 0
+          onLocaleChange?.(localeChain[localeIndex], {
+            fallback: localeIndex > 0,
+            requested: localeChain[0],
+          })
+          // Don't also report the network error: the situation is being handled, and a
+          // warning beside a working microphone is just noise.
+          return
+        }
+      } else {
+        networkFailures = 0
       }
 
       /*
@@ -1007,6 +1143,10 @@ export function createCommandListener({
     supported: true,
     get listening() {
       return listening
+    },
+    /** The locale actually in use, which is not always the one requested. */
+    get locale() {
+      return localeChain[localeIndex]
     },
     start() {
       if (destroyed) return

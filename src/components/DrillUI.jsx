@@ -9,7 +9,12 @@ import {
   DEFAULT_TARGET_MS,
 } from '../lib/assessment.js'
 import { toNumberOr } from '../lib/num.js'
-import { COMMAND, createCommandListener, ASR_ERROR, speechRecognitionSupported } from '../lib/speech.js'
+import {
+  COMMAND,
+  createCommandListener,
+  ASR_ERROR,
+  speechRecognitionSupported,
+} from '../lib/speech.js'
 import { useLanguage } from '../context/LanguageContext.jsx'
 
 /**
@@ -375,6 +380,13 @@ export function VoiceButton({
    * with one they cannot switch off from the screen they are looking at.
    */
   const [muted, setMuted] = useState(false)
+  /*
+   * Set when recognition could not run in the worker's language and fell back — with
+   * the net off and no Hindi language pack on the device, which is the common case.
+   * It is not an error: the microphone is working. But it changes what the worker
+   * should say, so it is shown as guidance rather than swallowed.
+   */
+  const [fellBackToEnglish, setFellBackToEnglish] = useState(false)
   const supported = speechRecognitionSupported()
 
   /*
@@ -413,6 +425,12 @@ export function VoiceButton({
         setError(null)
         onCommand?.(match.command)
       },
+      onLocaleChange: (_locale, info) => {
+        // Clear any network warning: the microphone is listening again, just in a
+        // different language, and the hint below says which.
+        setError(null)
+        setFellBackToEnglish(!!info?.fallback)
+      },
       onError: (code) => {
         /*
          * Silence and unmatched audio are not reported in hands-free mode — the
@@ -430,6 +448,9 @@ export function VoiceButton({
     })
 
     listenerRef.current = listener
+    // A rebuild starts a fresh locale chain, so the previous run's fallback state
+    // must not leak into it and claim English on a device that can do Hindi.
+    setFellBackToEnglish(false)
     // Starts itself. Not gated on a tap — that gate was the thing being removed.
     if (!muted) listener.start()
 
@@ -495,6 +516,19 @@ export function VoiceButton({
       <p className="font-mono text-2xs text-ink-tertiary text-center mt-2">
         {muted ? t('as_say_one_or_two') : t('as_speak_or_tap')}
       </p>
+
+      {/*
+        Guidance, not an error — the microphone is working, it is just listening in
+        English because this device has no offline model for the worker's language.
+        Warning tone rather than hazard: nothing is broken and tapping still works.
+        Telling them is the whole value, because saying the English number is the one
+        thing that reliably works in this state.
+      */}
+      {fellBackToEnglish && !muted && (
+        <p className="font-mono text-2xs text-warning-text text-center mt-1.5" role="status">
+          {t('as_voice_english_only')}
+        </p>
+      )}
 
       {errorKey && (
         <p className="font-mono text-2xs text-hazard-text text-center mt-1.5" role="status">
