@@ -351,7 +351,7 @@ export default function SiteSetup() {
           value={site?.name || ''}
           onChange={(e) => setSite((prev) => ({ ...prev, name: e.target.value }))}
           onBlur={(e) => handleRenameSite(e.target.value)}
-          className="w-full bg-surface-0 border border-line-subtle rounded px-4 py-3 text-sm focus:border-brand outline-none"
+          className="w-full bg-surface-0 border border-line-control rounded px-4 py-3 text-sm focus:border-brand outline-none focus-visible:outline-2 focus-visible:outline-offset-1"
         />
       </div>
 
@@ -418,7 +418,7 @@ export default function SiteSetup() {
             onChange={(e) => setNewZoneName(e.target.value)}
             aria-label={t('site_new_zone')}
             placeholder={t('site_zone_name_prompt')}
-            className="flex-1 bg-surface-0 border border-line-subtle rounded px-4 py-2.5 text-sm focus:border-brand outline-none"
+            className="flex-1 bg-surface-0 border border-line-control rounded px-4 py-2.5 text-sm focus:border-brand outline-none focus-visible:outline-2 focus-visible:outline-offset-1"
           />
           <button
             type="button"
@@ -515,7 +515,7 @@ export default function SiteSetup() {
                   onChange={(e) => setPendingLabel(e.target.value)}
                   aria-label={t('site_marker_label')}
                   placeholder={t('site_marked')}
-                  className="w-full bg-surface-0 border border-line-subtle rounded px-4 py-2.5 text-sm mb-4 focus:border-brand outline-none"
+                  className="w-full bg-surface-0 border border-line-control rounded px-4 py-2.5 text-sm mb-4 focus:border-brand outline-none focus-visible:outline-2 focus-visible:outline-offset-1"
                 />
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -538,7 +538,7 @@ export default function SiteSetup() {
                 </div>
 
                 {headingSource === HEADING_SOURCE.NONE && (
-                  <p className="font-mono text-[11px] text-hazard mt-4">{t('ar_no_compass_body')}</p>
+                  <p className="font-mono text-[11px] text-hazard-text mt-4">{t('ar_no_compass_body')}</p>
                 )}
               </div>
 
@@ -569,7 +569,7 @@ export default function SiteSetup() {
                         await refresh()
                       }}
                       aria-label={t('site_delete_anchor')}
-                      className="font-mono text-[10px] uppercase text-ink-tertiary hover:text-hazard shrink-0"
+                      className="font-mono text-[10px] uppercase text-ink-tertiary hover:text-hazard-text shrink-0"
                     >
                       <span aria-hidden="true">✕</span>
                     </button>

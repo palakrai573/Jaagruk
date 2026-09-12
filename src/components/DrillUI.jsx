@@ -177,10 +177,15 @@ export function LatencyBar({ startedAt, targetMs, paused = false }) {
           <span className="opacity-60"> / {formatLatency(target)}</span>
         </span>
       </div>
+      {/* scaleX, not width — this bar ticks continuously while the worker decides,
+          and the same decision is being timed to the millisecond and scored. A
+          width animation reflows on every frame; a transform does not touch layout
+          at all. The 0.02 floor keeps a sliver visible so the bar reads as empty
+          rather than as missing. */}
       <div className="h-2 bg-surface-inset rounded-full overflow-hidden">
         <div
-          className="h-full latency-bar rounded-full"
-          style={{ width: `${Math.max(2, ratio * 100)}%`, backgroundColor: fill }}
+          className="bar-fill bar-fill--tick"
+          style={{ '--fill': Math.max(0.02, ratio), backgroundColor: fill }}
         />
       </div>
     </div>
@@ -291,7 +296,7 @@ export function ReadinessRing({ readiness = 0, accuracy = null, speed = null, si
             strokeLinecap="round"
             strokeDasharray={circumference}
             strokeDashoffset={circumference * (1 - clamped / 100)}
-            style={{ transition: 'stroke-dashoffset 700ms var(--ease-out)' }}
+            style={{ transition: 'stroke-dashoffset var(--dur-draw) var(--ease-out)' }}
           />
         </svg>
 

@@ -59,7 +59,11 @@ export function Dialog({
         aria-modal="true"
         aria-labelledby={title ? 'dialog-title' : undefined}
         tabIndex={-1}
-        className="relative w-full sm:max-w-md bg-surface-2 border border-line rounded-t-2xl sm:rounded-2xl
+        /* surface-1 plus shadow-4, not surface-2. On the light theme elevation is a
+           shadow, not a shade — surface-2 is now a tinted interaction fill, which on
+           a dialog would read as a greyed-out panel rather than one floating above
+           the page. */
+        className="relative w-full sm:max-w-md bg-surface-1 border border-line rounded-t-2xl sm:rounded-2xl
                    shadow-4 rise-in max-h-[90dvh] overflow-y-auto
                    pb-[env(safe-area-inset-bottom)] sm:pb-0"
       >
@@ -218,8 +222,8 @@ export function usePrompt() {
             maxLength={maxLength}
             autoFocus
             aria-label={state.options.title || ''}
-            className="w-full bg-surface-inset border border-line rounded-lg px-4 py-3 text-base text-ink
-                       placeholder:text-ink-disabled outline-none focus:border-brand
+            className="w-full bg-surface-inset border border-line-control rounded-lg px-4 py-3 text-base text-ink
+                       placeholder:text-ink-placeholder outline-none focus:border-brand
                        focus-visible:outline-2 focus-visible:outline-offset-1 min-h-touch"
           />
           <p className="font-mono text-2xs text-ink-tertiary mt-2 text-end tabular-nums">

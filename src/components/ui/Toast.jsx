@@ -92,12 +92,17 @@ export function ToastProvider({ children }) {
   )
 }
 
+/* surface-1, not surface-2. A toast floats above the page, and on the light theme
+   that is expressed by a white card plus a shadow — surface-2 is a tinted
+   interaction fill and would have read as a disabled panel. The tone is carried by
+   the 1px border, which is the point of doing it this way: the surface stays neutral
+   so the semantic colour is the only thing that changes between tones. */
 const TONES = {
-  neutral: 'bg-surface-2 border-line text-ink',
-  brand: 'bg-surface-2 border-brand-border text-ink',
-  safe: 'bg-surface-2 border-safe-border text-ink',
-  warning: 'bg-surface-2 border-warning-border text-ink',
-  hazard: 'bg-surface-2 border-hazard-border text-ink',
+  neutral: 'bg-surface-1 border-line text-ink',
+  brand: 'bg-surface-1 border-brand-border text-ink',
+  safe: 'bg-surface-1 border-safe-border text-ink',
+  warning: 'bg-surface-1 border-warning-border text-ink',
+  hazard: 'bg-surface-1 border-hazard-border text-ink',
 }
 
 const BARS = {

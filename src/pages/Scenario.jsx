@@ -535,10 +535,7 @@ export default function Scenario() {
           aria-valuemin={1}
           aria-valuemax={totalSteps}
         >
-          <div
-            className="h-full bg-brand rounded-full transition-[width] duration-slow ease-out"
-            style={{ width: `${((stepIndex + 1) / totalSteps) * 100}%` }}
-          />
+          <div className="bar-fill bg-brand" style={{ '--fill': (stepIndex + 1) / totalSteps }} />
         </div>
       </div>
 

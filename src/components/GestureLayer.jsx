@@ -176,8 +176,16 @@ export default function GestureLayer({ enabled = false, onStatusChange }) {
       {!dismissedNotice && (status === GESTURE_STATUS.LOADING || status === GESTURE_STATUS.DEGRADED || failed) && (
         <div
           /* bottom-24 left two pixels of clearance over the nav once the gesture
-             inset was counted. Measured from the nav now. */
-          className="fixed bottom-[calc(var(--nav-total)+0.75rem)] md:bottom-6 left-1/2 -translate-x-1/2 z-50 max-w-[90vw] bg-surface-2-light border border-line-lighter rounded-lg px-4 py-3 flex items-start gap-3 shadow-2xl fade-in"
+             inset was counted. Measured from the nav now.
+
+             `bg-surface-2-light` and `border-line-lighter` used to be here. Neither
+             exists in the Tailwind colour scale — they are names from the palette
+             that was replaced — so Tailwind emitted no rule for either and this
+             notice had NO background and NO border at all: grey caption text
+             floating directly on the live camera feed, which is where it is least
+             readable. Nothing failed, because an unknown utility is not an error,
+             it is simply absent. Section 13 of the a11y gate now catches this. */
+          className="fixed bottom-[calc(var(--nav-total)+0.75rem)] md:bottom-6 left-1/2 -translate-x-1/2 z-50 max-w-[90vw] bg-surface-1 border border-line rounded-lg px-4 py-3 flex items-start gap-3 shadow-4 fade-in"
           role="status"
         >
           <Pictogram name={failed ? 'warning' : status === GESTURE_STATUS.DEGRADED ? 'slow' : 'gloves'} size={22} />

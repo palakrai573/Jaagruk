@@ -10,6 +10,11 @@ import { readdirSync, readFileSync, statSync } from 'node:fs'
 import { join, relative, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { LANGUAGES, t } from '../src/lib/i18n.js'
+// Read rather than hardcoded, so the colour scale and the check cannot drift apart.
+import tailwindConfig from '../tailwind.config.js'
+
+const tailwindColors = tailwindConfig.theme.extend.colors
+const tailwindBackgroundImages = tailwindConfig.theme.extend.backgroundImage || {}
 
 // Paths resolve from this file rather than the working directory, so the gate
 // gives the same answer whether it runs via npm from the root or directly.
@@ -125,6 +130,20 @@ if (SELFTEST) {
           exemption is written too loosely it swallows the fault on the line above
           and this check goes quiet again. */}
       <div className="pr-[10px] pl-[calc(1rem+var(--safe-l))]" />
+      {/* A colour family that exists with a shade that does not — the shape of the
+          bug that left the gesture notice with no background. Alongside it, real
+          names that must NOT be flagged: a side-qualified border colour, a border
+          width, an opacity modifier, a camelCase shade and a background image. */}
+      <div className="bg-surface-2-light border-line-lighter" />
+      {/* An outline removed with nothing put back. No correct example beside it:
+          the check reads a 300-character window, so a compliant control here would
+          sit inside the fault's own window and mask it. The false-positive side is
+          covered by the real codebase — Field.jsx and Dialog.jsx both split
+          outline-none and its replacement across lines, and the gate passes. */}
+      <input aria-label="x" className="outline-none focus:border-brand" />
+      {/* A duration that is not on the token scale. */}
+      <div style={{ transition: 'opacity 333ms linear' }} />
+      <div className="border-s-2 border-s-brand bg-surface-2/40 text-ink-onBrand bg-hazard-stripes" />
       <span style={{ background: 'rgba(255,255,255,0.05)' }}>x</span>
       <h1>a</h1><h4>b</h4>
     `,
@@ -305,16 +324,109 @@ ok('no positive tabIndex (would break focus order)', badTab.length === 0, badTab
 
 console.log('\n=== 5. REDUCED MOTION ESCAPE FOR EVERY ANIMATION ===')
 const css = readFileSync(resolve('src/index.css'), 'utf8')
-const reducedSections = css.split('prefers-reduced-motion').slice(1).join('\n')
-// Animation classes the app defines and uses.
-const animClasses = [...css.matchAll(/^\.([a-z-]+)\s*\{[^}]*animation:/gm)].map((m) => m[1])
-const missingEscape = animClasses.filter((c) => !reducedSections.includes(c))
+
+/* THIS CHECK COULD NOT FAIL, AND DID NOT, FOR ITS WHOLE LIFE.
+ *
+ * It used to build its haystack as `css.split('prefers-reduced-motion').slice(1)`,
+ * which is everything after the FIRST occurrence of that string. The first
+ * occurrence is the global duration-zeroing block near the top of index.css, well
+ * above every animated class in the file — so the haystack contained the entire
+ * rest of the stylesheet, including each class's own definition. Every class name
+ * therefore "appeared in a reduced-motion section" by matching itself, the
+ * missing-escape list was always empty, and the check reported a guarantee it had
+ * never tested. It was also absent from the selftest's EXPECTED list, so
+ * `a11y:selftest` did not notice either.
+ *
+ * Now it extracts the BODIES of the @media blocks by brace-matching, and looks for
+ * each class only in there.
+ */
+function reducedMotionBodies(source) {
+  const bodies = []
+  const re = /@media\s*\([^)]*prefers-reduced-motion[^)]*\)\s*\{/g
+  let m
+  while ((m = re.exec(source))) {
+    // Walk from the opening brace to its match, so nested rule blocks are included
+    // and the block does not end at the first `}` of the first rule inside it.
+    let depth = 1
+    let i = m.index + m[0].length
+    const start = i
+    while (i < source.length && depth > 0) {
+      if (source[i] === '{') depth += 1
+      else if (source[i] === '}') depth -= 1
+      i += 1
+    }
+    bodies.push(source.slice(start, i - 1))
+  }
+  return bodies.join('\n')
+}
+
+const reducedSections = reducedMotionBodies(css)
 ok(
-  `all ${animClasses.length} animated classes are disabled under reduced motion`,
-  missingEscape.length === 0,
-  missingEscape.join(', ')
+  'the reduced-motion blocks were located',
+  reducedSections.length > 0 && reducedSections.length < css.length * 0.6,
+  `extracted ${reducedSections.length} of ${css.length} characters — if this is most of the file the extraction is wrong again`
 )
+
+/* Every class that runs a keyframe animation, and every class that transitions.
+ * Transitions matter as much as animations here: the generic rule only zeroes
+ * durations, which stops a transition but can leave a bar mid-travel. */
+/* Planted in the stylesheet rather than the JSX, because this is the only check
+ * that reads CSS — the synthetic .jsx file cannot reach it. */
+const cssUnderTest = SELFTEST
+  ? `${css}\n.selftest-unescaped { animation: selftest-spin 1s linear infinite; }\n`
+  : css
+
+const animClasses = [...cssUnderTest.matchAll(/^\.([a-z-]+(?:--[a-z-]+)?)\s*\{[^}]*animation:/gm)].map((m) => m[1])
+const missingEscape = animClasses.filter((c) => !new RegExp(`\\.${c}\\b`).test(reducedSections))
+// Label is fixed rather than interpolated with the count, so the selftest can
+// assert on it; the count goes in the detail line.
+ok(
+  'every animated class is disabled under reduced motion',
+  missingEscape.length === 0,
+  `${animClasses.length} animated classes found · ` +
+    missingEscape.map((c) => `.${c} has no reduced-motion escape`).join(', ')
+)
+if (missingEscape.length === 0) console.log(`     ${animClasses.length} animated classes, all escaped`)
 ok('reveal is reset to visible, not left hidden', /opacity:\s*1\s*!important/.test(reducedSections))
+
+/* NO BESPOKE DURATIONS.
+ * tokens.css says motion is two scales and two easings, and "anything bespoke is a
+ * bug". It was prose, so the app accumulated 160, 400, 520, 700, 800, 900, 1100,
+ * 1400, 1600, 2000, 14000 and 24000 — some of them duplicating a token's value
+ * under a different literal, which is how a duration ends up almost matching the
+ * one beside it. Enforced now, in the stylesheet and in inline styles.
+ *
+ * 0.01ms is the reduced-motion kill switch, which has to be a literal: it is not a
+ * duration, it is the absence of one. */
+const durationLiterals = []
+const DURATION = /(?<![\w-])(\d+(?:\.\d+)?)m?s(?![\w-])/g
+{
+  let src = readFileSync(resolve('src/index.css'), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '')
+  for (const m of src.matchAll(DURATION)) {
+    if (m[1] === '0.01') continue
+    durationLiterals.push(`src/index.css: ${m[0]} — use a --dur-* token`)
+  }
+}
+for (const { path, src } of files) {
+  /* Only inside a transition or animation declaration — a 300 in a setTimeout is
+   * not a motion token. Comments are stripped first, or prose describing a
+   * duration reads as one.
+   *
+   * The value class deliberately allows quotes. An earlier version excluded them,
+   * which meant it stopped at the opening quote of every inline style in the app —
+   * `transition: 'opacity 333ms linear'` matched nothing at all. It was passing on
+   * the JSX half of the codebase by never looking at it, caught by the selftest. */
+  for (const decl of strip(src).matchAll(/(?:transition|animation)(?:-duration)?:\s*([^;}\n]+)/g)) {
+    for (const m of decl[1].matchAll(DURATION)) {
+      durationLiterals.push(`${path}: ${m[0]} in "${decl[1].trim().slice(0, 60)}" — use a --dur-* token`)
+    }
+  }
+}
+ok(
+  'no bespoke motion durations outside the token scale',
+  durationLiterals.length === 0,
+  [...new Set(durationLiterals)].join('\n     ')
+)
 
 console.log('\n=== 6. WIDTH BUDGET AT 320px ===')
 // Page container 280px after px-5; a p-5 card leaves ~240px, a p-6 card ~232px.
@@ -460,7 +572,118 @@ for (const { path, src } of files) {
     literals.push(`${path}: ${m[0]}`)
   }
 }
+
+/* The stylesheet was never read by this check, and a hex literal was never matched
+ * by it, so BOTH escapes applied at once to the loading skeleton: its gradient stops
+ * were #2a2e33 and #343a41 in src/index.css. Every skeleton in the app was therefore
+ * a dark grey block on the light theme — on the exact screens a user sees first,
+ * while data loads — and the gate stayed green.
+ *
+ * Hex is checked here rather than in .jsx because a stylesheet is where it is
+ * idiomatic to write one, so this is where it needs a rule. Exempt: the print block,
+ * which is ink on paper and has no theme, and the fixed dark plates the AR overlays
+ * draw on video. */
+const CSS_FILES = ['src/index.css', 'src/styles/tokens.css']
+const CSS_LITERAL_EXEMPT = [
+  // A certificate printed for a site file is black on white, whatever the screen was.
+  /@media print\s*\{[\s\S]*?\n\}/g,
+  // Camera-feed effects: the surface behind the pixel is video.
+  /\.ar-smoke\s*\{[\s\S]*?\}/g,
+  /\.ar-pulse\s*\{[\s\S]*?\}/g,
+  /@keyframes ar-[\w-]+\s*\{[\s\S]*?\n\}/g,
+  // The grid and bloom masks use #000 as a mask alpha, not as a colour.
+  /mask-image:[^;]+;/g,
+]
+const cssSources = CSS_FILES.map((path) => ({ path, src: readFileSync(resolve(path), 'utf8') }))
+if (SELFTEST) {
+  // The .jsx fixture cannot reach the stylesheet half of this check, so the fault
+  // is planted in the source it actually reads.
+  cssSources.push({ path: 'src/__selftest.css', src: '.x { background: #2a2e33; color: rgb(12, 34, 56); }' })
+}
+for (const { path, src: raw } of cssSources) {
+  let src = raw.replace(/\/\*[\s\S]*?\*\//g, '')
+  for (const exempt of CSS_LITERAL_EXEMPT) src = src.replace(exempt, ' ')
+  for (const m of src.matchAll(/#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})\b/g)) {
+    literals.push(`${path}: ${m[0]} — use rgb(var(--token))`)
+  }
+  for (const m of src.matchAll(/rgba?\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}/g)) {
+    literals.push(`${path}: ${m[0]}…) — use rgb(var(--token))`)
+  }
+}
 ok('no white/black colour literals outside the allowlist', literals.length === 0, literals.join('\n     '))
+
+console.log('\n=== 14. A SUPPRESSED OUTLINE IS ALWAYS REPLACED ===')
+/* `outline-none` on its own removes the keyboard focus indicator, which fails WCAG
+ * 2.4.7. Fifteen controls carried it with nothing but `focus:border-brand` beside
+ * it — a 1px hue change, which is not an indicator for anyone who cannot resolve
+ * that hue, and which was only drawing a visible ring at all because the global
+ * :focus-visible rule happens to sit after @tailwind utilities in index.css. Moving
+ * that rule, or wrapping it in @layer base, would have silently removed focus
+ * indication from all fifteen at once with nothing failing.
+ *
+ * So the replacement has to be stated at the call site, not inherited from source
+ * order. Checked per line, because that is the granularity a className is written
+ * at and it keeps the message pointing at something findable. */
+/* A character window rather than a line. Both UI primitives build their class list
+ * as a multi-line concatenation, so `outline-none` and the ring that replaces it sit
+ * on different lines — a per-line check reported those two as faults while they were
+ * in fact the correct pattern. */
+const bareOutlineNone = []
+for (const { path, src } of files) {
+  for (const m of src.matchAll(/\boutline-none\b/g)) {
+    const window = src.slice(Math.max(0, m.index - 300), m.index + 300)
+    if (/focus(?:-visible)?:outline/.test(window)) continue
+    const line = src.slice(0, m.index).split('\n').length
+    bareOutlineNone.push(`${path}:${line} outline-none with no focus-visible:outline to replace it`)
+  }
+}
+ok('no control removes its focus ring without replacing it', bareOutlineNone.length === 0, bareOutlineNone.join('\n     '))
+
+console.log('\n=== 13. EVERY COLOUR UTILITY RESOLVES TO A REAL TOKEN ===')
+/* An unknown Tailwind utility is not an error. It compiles to nothing, silently,
+ * and the element renders without whatever that class was supposed to give it.
+ *
+ * That is not hypothetical. `bg-surface-2-light border-line-lighter` sat on the
+ * gesture-status notice — two names from the palette that was replaced during the
+ * rebuild. Both produced no CSS, so the notice explaining why hand tracking had
+ * stopped rendered as unstyled caption text directly over the live camera feed,
+ * with no plate behind it and nothing to fail.
+ *
+ * So: for any utility whose value starts with one of this project's colour
+ * families, the whole name has to exist in the Tailwind colour scale. Names outside
+ * those families are Tailwind's own and are left alone. */
+const colourNames = new Set()
+for (const [family, value] of Object.entries(tailwindColors)) {
+  if (typeof value === 'string') {
+    colourNames.add(family)
+    continue
+  }
+  for (const key of Object.keys(value)) {
+    colourNames.add(key === 'DEFAULT' ? family : `${family}-${key}`)
+  }
+}
+// Background-image utilities share the bg- prefix and the family word.
+for (const key of Object.keys(tailwindBackgroundImages)) colourNames.add(key)
+
+const FAMILIES = new Set(Object.keys(tailwindColors))
+// border-s-brand, border-t-line: the side goes between the prefix and the colour.
+const SIDE = /^(?:[stebxy]|inline-start|inline-end)-/
+const unknownUtilities = []
+for (const { path, src } of files) {
+  for (const m of src.matchAll(/\b(?:bg|text|border|fill|stroke|outline|ring|divide|decoration|accent|caret|from|via|to)-([A-Za-z0-9-]+)/g)) {
+    let name = m[1].replace(SIDE, '')
+    // Trailing numeric border widths and the like: border-s-2 is a width, not a colour.
+    if (/^\d+$/.test(name)) continue
+    if (!FAMILIES.has(name.split('-')[0])) continue
+    if (colourNames.has(name)) continue
+    unknownUtilities.push(`${path}: ${m[0]} — "${name}" is not in the colour scale`)
+  }
+}
+ok(
+  'every colour utility names a token that exists',
+  unknownUtilities.length === 0,
+  [...new Set(unknownUtilities)].join('\n     ')
+)
 
 console.log('\n=== 12. HEADING ORDER ===')
 // Per-file analysis cannot see across composition: Home renders h1 directly and
@@ -523,6 +746,12 @@ if (SELFTEST) {
     'field-tier buttons reach the 56px minimum',
     'no white/black colour literals outside the allowlist',
     'heading levels do not skip within a file',
+    // Absent from this list until now, which is why nobody noticed the check had
+    // been passing on a haystack that contained the answer.
+    'every animated class is disabled under reduced motion',
+    'every colour utility names a token that exists',
+    'no control removes its focus ring without replacing it',
+    'no bespoke motion durations outside the token scale',
   ]
   const flagged = new Set(findings.map((f) => f.label))
   const vacuous = EXPECTED.filter((l) => !flagged.has(l))

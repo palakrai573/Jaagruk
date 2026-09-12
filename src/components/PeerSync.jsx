@@ -189,7 +189,7 @@ export default function PeerSync({ siteId = null, onComplete }) {
         <div className="bg-hazard/10 border border-hazard/40 rounded p-3 mb-4 flex items-start gap-2">
           <Pictogram name="warning" size={18} />
           <div>
-            <p className="text-xs text-hazard">{t(error)}</p>
+            <p className="text-xs text-hazard-text">{t(error)}</p>
             {error === 'bd_failed' && <p className="text-[11px] text-ink-tertiary mt-1">{t('bd_failed_hint')}</p>}
           </div>
         </div>
@@ -290,7 +290,7 @@ export default function PeerSync({ siteId = null, onComplete }) {
             onChange={(e) => setPasted(e.target.value)}
             placeholder={t('bd_paste_placeholder')}
             rows={2}
-            className="w-full bg-surface-0 border border-line-subtle rounded px-3 py-2 font-mono text-[10px] focus:border-brand outline-none"
+            className="w-full bg-surface-0 border border-line-control rounded px-3 py-2 font-mono text-[10px] focus:border-brand outline-none focus-visible:outline-2 focus-visible:outline-offset-1"
           />
           <button
             type="button"
@@ -312,7 +312,7 @@ export default function PeerSync({ siteId = null, onComplete }) {
         <div className="text-center py-4">
           <span className="inline-flex items-center gap-2 mb-4">
             <span className="w-2 h-2 rounded-full bg-safe live-dot" />
-            <span className="font-mono text-[11px] uppercase tracking-widest text-safe">{t('bd_connected')}</span>
+            <span className="font-mono text-[11px] uppercase tracking-widest text-safe-text">{t('bd_connected')}</span>
           </span>
 
           <div className="grid grid-cols-2 gap-3">

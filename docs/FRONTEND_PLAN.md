@@ -259,17 +259,40 @@ states everywhere. Optimistic UI where safe.
 320 / 360 / 390 / 430 / 768 / 1024 / 1440 × 2 themes × 6 languages × RTL × reduced-motion.
 Overflow, sticky, touch targets, focus order, contrast audit.
 
-Automated as `npm run a11y` (`scripts/a11y-gate.mjs`), 16 checks over every `.jsx` file:
+Automated as `npm run a11y` (`scripts/a11y-gate.mjs`), 20 checks over every `.jsx` file:
 accessible names, form labelling, decorative SVG, focus order, reduced-motion escapes,
 320 px width budget, RTL logical properties and mirrored glyphs, live regions, translation
-length pressure, field-tier touch targets, theme-blind colour literals, heading order.
+length pressure, field-tier touch targets, theme-blind colour literals, heading order,
+colour utilities that name a token which actually exists, focus rings that are replaced when
+suppressed, and motion durations that come from the token scale.
+
+The contrast half of this phase is `npm run contrast` (`scripts/contrast-gate.mjs`), which
+computes WCAG relative luminance from `tokens.css` for both themes rather than asserting
+ratios in prose. See "Contrast was never checked" below.
 
 `npm run a11y:selftest` plants one instance of each fault in a synthetic file and asserts
-every check catches it — 9/9 of the file-reading checks are confirmed live. This exists
+every check catches it — 13/13 of the file-reading checks are confirmed live. This exists
 because the first version of the accessible-name check passed on a button that had no name:
 `/<[^>]*>/` stops at the `>` inside `onClick={() => …}`, leaking handler source into what
 the check treated as visible label text. A gate that reports safety it never checked is
 worse than no gate.
+
+It has since earned its keep three more times, and all three were the same failure in
+different clothes — a check whose regex could not see the syntax actually in use:
+
+- The **reduced-motion** check built its haystack as everything after the first occurrence
+  of `prefers-reduced-motion`. That occurrence is the global duration-zeroing block near the
+  top of `index.css`, above every animated class in the file — so every class name matched
+  its own definition, the missing-escape list was always empty, and the check had never
+  tested anything. It brace-matches the `@media` block bodies now.
+- The **physical-utility** check knew `pl-4` and `pl-px` but not `pl-[…]`, so the arbitrary
+  value form walked straight past it.
+- The **duration** check excluded quotes from its value pattern, so it stopped at the
+  opening quote of every `style={{ transition: '…' }}` in the codebase and only ever read
+  the stylesheet.
+
+Each of those was found by adding the check to the selftest's expected list, not by reading
+the code. That is the argument for the selftest in one sentence.
 
 **What it found and fixed:** 20 unlabelled form controls (six `<label>`s with no `htmlFor`
 beside `<input>`s with no `id`); a `<Field>` in the sign-in flow whose label pointed at an
@@ -279,8 +302,38 @@ own white glyph on the light theme; three `rgba(255,255,255,0.05)` chip backgrou
 on the light theme; four Onboarding fields sized 50 px on a tier that promises 56 px, plus a
 20 px supervisor checkbox and a 38 px copy-code button.
 
-**Not covered:** rendered layout. Static analysis cannot see a wrapped heading or a clipped
-sticky bar. The device matrix in `docs/DEPLOYMENT.md` §10 is still required.
+**Contrast was never checked.** The phase listed "contrast audit" and the tokens carried
+ratios in comments — "7.71:1 dark, 5.15:1 light", "ISO yellow on white is about 1.9:1" — and
+nothing computed any of them. Prose cannot fail a build, so `npm run contrast` now does,
+from `tokens.css`, resolving `var()` chains, for both themes. What it found on first run:
+
+- **The light elevation ramp did not exist.** `--surface-1`, `-2` and `-3` were all pure
+  white: four named steps, two actual values. A neutral `Badge` had no chip behind it,
+  `CardActions`' `bg-surface-2/40` composited white onto white, and a `Card` inside a raised
+  `Section` was an invisible card. Dark elevates by lightening and light cannot, because
+  white is the ceiling — so 2 and 3 now tint *away* from the card in both themes, and
+  overlays (Dialog, Toast, the nav sheet) use `--surface-1` plus a shadow instead, since on a
+  light theme elevation is a shadow rather than a shade.
+- **`--brand-hover` was lighter than `--brand`** in light — teal-600 over a teal-700 base.
+  The primary button passed at rest and fell to 3.74:1 under the cursor, so it failed AA in
+  the state a worker is looking at when they commit to the tap. `--brand-pressed` was also
+  byte-identical to `--brand-text`.
+- **`--border-subtle` was `--surface-3`** in dark, both steel-800, so a subtle border on a
+  chip was not faint, it was mathematically invisible.
+- **`--text-tertiary`** measured 4.42:1 on the page and 4.19:1 on an input in light, and it
+  is the colour every caption and hint uses.
+- **Placeholders were `--text-disabled`**, about 2.3:1 in both themes. 1.4.3 exempts inactive
+  controls, not hints — a placeholder tells you what to type, so it is content. Hence
+  `--text-placeholder`, and `--border-control` at 3:1 for 1.4.11, because inputs sit on
+  `--surface-inset` which is within 1.06:1 of the page: the border is the only thing marking
+  where the field is.
+- **25 uses of a raw ISO fill as a text colour** across seven files. `text-hazard` is the red
+  chosen to match a prohibition sign; `text-hazard-text` is the same meaning corrected per
+  theme. Green confirmations and red error messages were failing contrast on dark.
+
+**Not covered:** rendered layout, and colours composed at runtime. Static analysis cannot see
+a wrapped heading, a clipped sticky bar, `text-hazard-text/70`, or ink over a photograph. The
+device matrix in `docs/DEPLOYMENT.md` §10 is still required.
 
 ### ☑ Phase 7 — Copy & i18n completion
 

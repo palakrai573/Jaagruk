@@ -89,10 +89,29 @@ body {
   }
 }
 
+/* The one place the focus ring is defined. Everywhere else sets width and offset
+   only, so this is what every control's ring actually looks like.
+   
+   `border-radius` used to be set here, to var(--radius-sm). An outline follows the
+   element's border box, so that did not round the ring — it re-rounded the ELEMENT
+   while it held focus. Every pill in the app visibly squared off to 4px the moment
+   you tabbed to it: badges, status dots, the toast dismiss, the progress track, the
+   dialog grab handle. Removed; each element keeps its own radius and modern
+   browsers follow it with the outline.
+   
+   The colour is --focus-ring rather than --brand because hover already recolours
+   borders to --brand, and a focus ring in the same hue as the hover state is a
+   weaker signal than it should be. */
 :focus-visible {
-  outline: 2px solid rgb(var(--brand));
+  outline: 2px solid rgb(var(--focus-ring));
   outline-offset: 2px;
-  border-radius: var(--radius-sm);
+}
+
+/* On a brand-filled control the ring would be teal on teal. */
+.bg-brand:focus-visible,
+.bg-brand-hover:focus-visible,
+.bg-brand-pressed:focus-visible {
+  outline-color: rgb(var(--focus-ring-on-brand));
 }
 
 .stripe-divider {
@@ -116,7 +135,7 @@ body {
     radial-gradient(circle at 70% 65%, rgba(40, 40, 40, 0.8) 0%, rgba(40, 40, 40, 0) 50%),
     linear-gradient(to top, rgba(30, 30, 30, 0.75), rgba(30, 30, 30, 0.15));
   background-size: 180% 180%, 200% 200%, 100% 100%;
-  animation: ar-smoke-drift 14s ease-in-out infinite alternate;
+  animation: ar-smoke-drift var(--dur-ambient) var(--ease-in-out) infinite alternate;
 }
 
 @keyframes ar-smoke-drift {
@@ -130,7 +149,7 @@ body {
 
 /* Pulsing ring for anchor markers the worker is being asked to find. */
 .ar-pulse {
-  animation: ar-pulse 1.6s ease-in-out infinite;
+  animation: ar-pulse var(--dur-pulse) var(--ease-in-out) infinite;
 }
 
 @keyframes ar-pulse {
@@ -143,18 +162,63 @@ body {
   }
 }
 
-/* Countdown urgency bar for timed decisions. */
-.latency-bar {
-  transition: width 120ms linear, background-color 300ms linear;
+/* ---------------------------------------------------------------- */
+/* Bar fills — progress, readiness, countdown                        */
+/* ---------------------------------------------------------------- */
+
+/* WHY THESE SCALE INSTEAD OF RESIZING
+   Seven places animated `width`, which is a layout property: the browser reflows,
+   repaints and only then composites, every frame. Six of them were cosmetic. The
+   seventh was the countdown in a timed decision, which updates continuously while
+   a worker is deciding — so the app was doing its most layout-expensive animation
+   at the exact moment it is measuring that worker's reaction time in milliseconds
+   and scoring them on it. A frame lost there is not a cosmetic problem, it is a
+   number in a certificate.
+
+   `transform: scaleX()` is compositor-only: no reflow, no repaint, and it runs off
+   the main thread, so a busy render cannot stall it.
+
+   The fill is deliberately square. Scaling a rounded element stretches its corner
+   radii into ellipses; the rail above it is `rounded-full overflow-hidden`, which
+   rounds the leading end for free and clips the rest. */
+.bar-fill {
+  width: 100%;
+  height: 100%;
+  transform-origin: 0 50%;
+  transform: scaleX(var(--fill, 0));
+  transition: transform var(--dur-slow) var(--ease-out);
 }
 
-/* Gesture cursor — sits above everything, never intercepts pointer events. */
+/* A bar grows from the side the language starts on. transform-origin is physical,
+   so RTL needs saying explicitly — otherwise Urdu fills right-to-left visually
+   while growing from the left edge. */
+[dir='rtl'] .bar-fill {
+  transform-origin: 100% 50%;
+}
+
+/* The countdown. Short and linear because it represents time passing at a constant
+   rate: easing it would misreport how much of the target is gone. will-change is
+   justified here and only here — one bar, animating continuously, for the duration
+   of a decision. */
+.bar-fill--tick {
+  transition: transform var(--dur-fast) linear, background-color var(--dur-base) linear;
+  will-change: transform;
+}
+
+/* Data arriving rather than responding to a touch. */
+.bar-fill--draw {
+  transition: transform var(--dur-draw) var(--ease-out);
+}
+
+/* Gesture cursor — sits above everything, never intercepts pointer events.
+   z-index reads the token rather than repeating 60, which is what --z-cursor is
+   for; a hardcoded copy is how a stacking order drifts out of step. */
 .gesture-cursor {
   position: fixed;
-  z-index: 60;
+  z-index: var(--z-cursor);
   pointer-events: none;
   transform: translate(-50%, -50%);
-  transition: opacity 160ms linear;
+  transition: opacity var(--dur-fast) linear;
 }
 
 @media print {
@@ -184,7 +248,7 @@ body {
 /* Entrance for cards and rows. Staggered by an inline animation-delay at the
    call site so a grid resolves in sequence rather than all at once. */
 .rise-in {
-  animation: rise-in 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: rise-in var(--dur-slow) var(--ease-out) both;
 }
 
 @keyframes rise-in {
@@ -199,7 +263,7 @@ body {
 }
 
 .fade-in {
-  animation: fade-in 400ms ease-out both;
+  animation: fade-in var(--dur-slow) var(--ease-out) both;
 }
 
 @keyframes fade-in {
@@ -216,7 +280,7 @@ body {
    every chart width. */
 .spark-draw {
   stroke-dasharray: 1200;
-  animation: spark-draw 1100ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: spark-draw var(--dur-draw) var(--ease-out) both;
 }
 
 @keyframes spark-draw {
@@ -228,11 +292,22 @@ body {
   }
 }
 
-/* Loading placeholder. Keeps layout stable so content does not jump in. */
+/* Loading placeholder. Keeps layout stable so content does not jump in.
+
+   The stops were #2a2e33 and #343a41 — hardcoded dark greys, so every skeleton in
+   the app was a dark block on the light theme. It escaped the colour-literal gate
+   because that check only read .jsx and only matched rgb()/rgba(); hex in a
+   stylesheet was invisible to it. Tokens now, so the placeholder is the same
+   distance from its surface in both themes. */
 .skeleton {
-  background: linear-gradient(90deg, #2a2e33 25%, #343a41 50%, #2a2e33 75%);
+  background: linear-gradient(
+    90deg,
+    rgb(var(--surface-2)) 25%,
+    rgb(var(--surface-3)) 50%,
+    rgb(var(--surface-2)) 75%
+  );
   background-size: 200% 100%;
-  animation: skeleton-sweep 1400ms linear infinite;
+  animation: skeleton-sweep var(--dur-sweep) linear infinite;
 }
 
 @keyframes skeleton-sweep {
@@ -246,7 +321,8 @@ body {
 
 /* Row hover lift for interactive lists. */
 .row-hover {
-  transition: background-color 160ms ease, border-color 160ms ease, transform 160ms ease;
+  transition: background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
 }
 
 .row-hover:hover {
@@ -255,7 +331,7 @@ body {
 
 /* Live indicator dot. */
 .live-dot {
-  animation: live-pulse 2s ease-in-out infinite;
+  animation: live-pulse var(--dur-pulse) var(--ease-in-out) infinite;
 }
 
 @keyframes live-pulse {
@@ -272,9 +348,12 @@ body {
 /* Gesture cursor                                                    */
 /* ---------------------------------------------------------------- */
 
-/* Highlight applied to whichever gesture target the hand pointer is over. */
+/* Highlight applied to whichever gesture target the hand pointer is over.
+   ISO yellow, from the token rather than a copy of its hex — it is deliberately the
+   caution hue and deliberately theme-invariant, since the hand pointer is being
+   used over a camera feed. */
 [data-gesture-hover='true'] {
-  outline: 2px solid #ffb020;
+  outline: 2px solid rgb(var(--warning));
   outline-offset: 2px;
 }
 
@@ -288,7 +367,11 @@ body {
   .skeleton,
   .live-dot,
   .ar-smoke,
-  .ar-pulse {
+  .ar-pulse,
+  /* Tailwind's spinner. The generic rule above only zeroes its duration, which
+     stops it at whatever angle it happened to reach — a tilted spinner reads as
+     broken. Switched off entirely so it is a static mark. */
+  .animate-spin {
     animation: none !important;
   }
 
@@ -301,7 +384,20 @@ body {
   }
 
   .skeleton {
-    background: #2a2e33;
+    background: rgb(var(--surface-2));
+  }
+
+  /* The bars keep their scaleX — that is the VALUE, and hiding it would leave a
+     progress bar reading empty. Only the movement between values goes. */
+  .bar-fill,
+  .bar-fill--tick,
+  .bar-fill--draw {
+    transition: none !important;
+    will-change: auto !important;
+  }
+
+  .gesture-cursor {
+    transition: none !important;
   }
 }
 
@@ -346,7 +442,7 @@ body {
 /* Slow drift for the hero's ambient gradient. Long enough that it reads as depth
    rather than as something moving. */
 .ambient-drift {
-  animation: ambient-drift 24s var(--ease-in-out) infinite alternate;
+  animation: ambient-drift var(--dur-ambient) var(--ease-in-out) infinite alternate;
 }
 
 @keyframes ambient-drift {

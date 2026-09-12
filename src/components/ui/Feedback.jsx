@@ -118,10 +118,8 @@ export function Progress({ value = 0, max = 100, tone = 'brand', size = 'md', la
         className={`${height} w-full bg-surface-inset rounded-full overflow-hidden`}
       >
         <div
-          className={`h-full rounded-full transition-[width] duration-slow ease-out ${
-            PROGRESS_TONES[tone] || PROGRESS_TONES.brand
-          }`}
-          style={{ width: `${pct}%` }}
+          className={`bar-fill ${PROGRESS_TONES[tone] || PROGRESS_TONES.brand}`}
+          style={{ '--fill': pct / 100 }}
         />
       </div>
     </div>

@@ -220,7 +220,7 @@ export default function ReportHazard() {
         </div>
 
         {submitted.persisted === false && (
-          <p className="font-mono text-[11px] text-hazard mb-6">{t('hz_storage_full')}</p>
+          <p className="font-mono text-[11px] text-hazard-text mb-6">{t('hz_storage_full')}</p>
         )}
         {!isOnline() && <p className="font-mono text-[11px] text-ink-tertiary mb-6">{t('offline_label')}</p>}
 
@@ -343,7 +343,7 @@ export default function ReportHazard() {
             </button>
           )}
 
-          {photoError && <p className="font-mono text-[11px] text-hazard mt-3">{t(photoError)}</p>}
+          {photoError && <p className="font-mono text-[11px] text-hazard-text mt-3">{t(photoError)}</p>}
         </Section>
       )}
 
@@ -356,14 +356,14 @@ export default function ReportHazard() {
                 <div className="flex items-center justify-between gap-3 border border-line-subtle rounded-lg p-4">
                   <span className="flex items-center gap-3">
                     <Pictogram name="listen" size={26} />
-                    <span className="font-mono text-xs text-safe">
+                    <span className="font-mono text-xs text-safe-text">
                       {t('hz_voice_saved')} · {Math.round(voice.durationMs / 1000)}s
                     </span>
                   </span>
                   <button
                     type="button"
                     onClick={() => setVoice(null)}
-                    className="font-mono text-[10px] uppercase text-ink-tertiary hover:text-hazard"
+                    className="font-mono text-[10px] uppercase text-ink-tertiary hover:text-hazard-text"
                   >
                     {t('hz_voice_remove')}
                   </button>
@@ -376,7 +376,7 @@ export default function ReportHazard() {
                     else startRecording()
                   }}
                   className={`w-full rounded-lg border py-4 flex items-center justify-center gap-3 font-mono text-sm ${
-                    recording ? 'border-hazard text-hazard bg-hazard/10' : 'border-line-subtle text-ink-tertiary hover:border-brand'
+                    recording ? 'border-hazard text-hazard-text bg-hazard/10' : 'border-line-subtle text-ink-tertiary hover:border-brand'
                   }`}
                 >
                   <Pictogram name="listen" size={24} />
@@ -385,7 +385,7 @@ export default function ReportHazard() {
                     : t('hz_add_voice')}
                 </button>
               )}
-              {voiceError && <p className="font-mono text-[11px] text-hazard mt-3">{t(voiceError)}</p>}
+              {voiceError && <p className="font-mono text-[11px] text-hazard-text mt-3">{t(voiceError)}</p>}
             </>
           ) : (
             <p className="font-mono text-[11px] text-ink-tertiary">{t('hz_MIC_UNSUPPORTED')}</p>
@@ -403,7 +403,7 @@ export default function ReportHazard() {
             onChange={(e) => setNote(e.target.value.slice(0, 400))}
             placeholder={t('hz_note_placeholder')}
             rows={3}
-            className="w-full bg-surface-0 border border-line-subtle rounded px-4 py-3 text-sm focus:border-brand outline-none"
+            className="w-full bg-surface-0 border border-line-control rounded px-4 py-3 text-sm focus:border-brand outline-none focus-visible:outline-2 focus-visible:outline-offset-1"
           />
         </Section>
       )}
@@ -423,7 +423,7 @@ export default function ReportHazard() {
                 id={zoneSelectId}
                 value={zoneId || ''}
                 onChange={(e) => setZoneId(e.target.value)}
-                className="w-full bg-surface-0 border border-line-subtle rounded px-4 py-3 text-sm focus:border-brand outline-none mb-4"
+                className="w-full bg-surface-0 border border-line-control rounded px-4 py-3 text-sm focus:border-brand outline-none focus-visible:outline-2 focus-visible:outline-offset-1 mb-4"
               >
                 {zones.map((z) => (
                   <option key={z.id} value={z.id}>

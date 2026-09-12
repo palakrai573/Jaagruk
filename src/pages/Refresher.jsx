@@ -211,7 +211,7 @@ export default function Refresher() {
           <button
             type="button"
             onClick={closeQuiz}
-            className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary hover:text-hazard"
+            className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary hover:text-hazard-text"
           >
             {t('cancel_label')}
           </button>
@@ -355,7 +355,7 @@ export default function Refresher() {
                 <div className="min-w-0">
                   <p className="font-bold text-sm">{entry.domain}</p>
                   {entry.overdueDays >= 1 && (
-                    <p className="font-mono text-[11px] text-hazard mt-0.5">
+                    <p className="font-mono text-[11px] text-hazard-text mt-0.5">
                       {t('rf_overdue_by')} {Math.floor(entry.overdueDays)} {t('rf_days')}
                     </p>
                   )}
@@ -403,12 +403,12 @@ export default function Refresher() {
         <h2 className="font-display font-bold text-xl uppercase mb-3">{t('rf_enable_reminders')}</h2>
 
         {notifyState === 'granted' && (
-          <p className="font-mono text-xs text-safe flex items-center gap-2 mb-3">
+          <p className="font-mono text-xs text-safe-text flex items-center gap-2 mb-3">
             <Pictogram name="correct" size={18} />
             {t('rf_reminders_on')}
           </p>
         )}
-        {notifyState === 'denied' && <p className="font-mono text-xs text-hazard mb-3">{t('rf_reminders_blocked')}</p>}
+        {notifyState === 'denied' && <p className="font-mono text-xs text-hazard-text mb-3">{t('rf_reminders_blocked')}</p>}
         {notifyState === 'unsupported' && (
           <p className="font-mono text-xs text-ink-tertiary mb-3">{t('rf_reminders_unsupported')}</p>
         )}
@@ -441,7 +441,7 @@ function RetentionRow({ row, t, onStart }) {
         <p className="font-bold text-sm truncate">{row.domain}</p>
         <p className="font-mono text-[10px] text-ink-tertiary mt-1">
           {!row.attempted && t('rf_never_trained')}
-          {row.attempted && row.due && <span className="text-hazard">{t('rf_due_now')}</span>}
+          {row.attempted && row.due && <span className="text-hazard-text">{t('rf_due_now')}</span>}
           {row.attempted && !row.due && row.daysUntil !== null && (
             <span>
               {t('rf_next_in')} {Math.max(0, Math.ceil(row.daysUntil))} {t('rf_days')}

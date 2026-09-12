@@ -336,7 +336,7 @@ export default function App() {
             className="md:hidden fixed inset-0 bg-black/60 z-30"
           />
           <div
-            className="md:hidden fixed inset-x-3 bg-surface-2 border border-line rounded-xl p-3 z-sheet shadow-4 rise-in
+            className="md:hidden fixed inset-x-3 bg-surface-1 border border-line rounded-xl p-3 z-sheet shadow-4 rise-in
                        bottom-[var(--nav-total)]"
           >
             <div className="grid grid-cols-3 gap-2">

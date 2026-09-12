@@ -19,9 +19,21 @@ import { Link } from 'react-router-dom'
 
 const SURFACE = 'bg-surface-1 border border-line-subtle rounded-xl'
 
+/* `transition`, not `transition-all`. They are different utilities and the
+ * difference matters: `all` transitions every animatable property, so a card would
+ * tween a height or a padding if one ever became conditional — a layout animation
+ * nobody asked for, on the property class that costs the most. Bare `transition` is
+ * Tailwind's curated list — colour, background, border, opacity, box-shadow,
+ * transform, filter — which is exactly what a card changes and nothing else.
+ *
+ * The active state is new. Hover does not exist on a phone: the interaction was
+ * hover-lift then navigate, so a worker tapping a card on a touchscreen got no
+ * acknowledgement at all between the tap and the route change. Pressing now settles
+ * the card back down and drops the shadow — the same physical metaphor in reverse. */
 const INTERACTIVE =
-  'transition-all duration-base ease-out ' +
+  'transition duration-base ease-out ' +
   'hover:border-brand-border hover:shadow-3 hover:-translate-y-0.5 ' +
+  'active:translate-y-0 active:shadow-1 active:border-brand ' +
   'focus-within:border-brand-border focus-within:shadow-3'
 
 /**

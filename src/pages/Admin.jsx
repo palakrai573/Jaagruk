@@ -152,7 +152,7 @@ function Gate({ onUnlock, t }) {
         aria-label={needsSetup ? t('ob_choose_pin') : t('ob_enter_pin')}
         placeholder="••••"
         autoFocus
-        className="w-full bg-surface-inset border border-line-subtle rounded px-4 py-3 font-mono text-2xl tracking-[0.4em] text-center focus:border-brand outline-none mb-4"
+        className="w-full bg-surface-inset border border-line-control rounded px-4 py-3 font-mono text-2xl tracking-[0.4em] text-center focus:border-brand outline-none focus-visible:outline-2 focus-visible:outline-offset-1 mb-4"
       />
 
       {needsSetup && (
@@ -163,7 +163,7 @@ function Gate({ onUnlock, t }) {
           onChange={(e) => setConfirm(e.target.value.replace(/\D/g, '').slice(0, 6))}
           aria-label={t('ob_confirm_pin')}
           placeholder="••••"
-          className="w-full bg-surface-inset border border-line-subtle rounded px-4 py-3 font-mono text-2xl tracking-[0.4em] text-center focus:border-brand outline-none mb-4"
+          className="w-full bg-surface-inset border border-line-control rounded px-4 py-3 font-mono text-2xl tracking-[0.4em] text-center focus:border-brand outline-none focus-visible:outline-2 focus-visible:outline-offset-1 mb-4"
         />
       )}
 
@@ -517,7 +517,7 @@ function Console({ t, onLock }) {
                   onChange={(e) => setSearch(e.target.value)}
                   aria-label={t('admin_search')}
                   placeholder={t('admin_search')}
-                  className="bg-surface-1 border border-line-subtle rounded px-3 py-2 text-sm font-mono focus:border-brand outline-none"
+                  className="bg-surface-1 border border-line-control rounded px-3 py-2 text-sm font-mono focus:border-brand outline-none focus-visible:outline-2 focus-visible:outline-offset-1"
                 />
                 <button
                   type="button"
@@ -835,7 +835,7 @@ function SyncPanel({ t, queue, siteId, onSync, onExport, onImportClick, onPeerCo
         onChange={(e) => setApiKeyState(e.target.value)}
         placeholder={t('set_key_placeholder')}
         autoComplete="off"
-        className="w-full max-w-sm bg-surface-inset border border-line-subtle rounded px-4 py-3 font-mono text-sm focus:border-brand outline-none"
+        className="w-full max-w-sm bg-surface-inset border border-line-control rounded px-4 py-3 font-mono text-sm focus:border-brand outline-none focus-visible:outline-2 focus-visible:outline-offset-1"
       />
       <button
         type="button"

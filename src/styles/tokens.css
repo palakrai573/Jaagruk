@@ -62,6 +62,17 @@
      Copper. Hero gradient only — the ore-and-steel note. Never semantic. */
   --ore: 184 92 56;
 
+  /* ---------------- camera-overlay ink ----------------
+     Theme-invariant, for the same reason as the ISO hues but a different one in
+     kind: these are drawn on a fixed dark plate over a live camera feed, so the
+     surface behind the pixel is video, not a themed surface. A per-theme token
+     would make the light theme darken this text against a plate that stayed
+     black. Contrast is asserted against that plate in the contrast gate. */
+  --media-ink: 242 244 245;
+  --media-safe-text: 110 231 160;
+  --media-hazard-text: 255 138 128;
+  --media-warning-text: 255 190 80;
+
   /* ================================================================
      DARK THEME (default — correct for a shaft, a night shift, and OLED)
      ================================================================ */
@@ -72,15 +83,36 @@
   --surface-3: var(--steel-800);
   --surface-inset: 8 10 11;
 
-  --border-subtle: var(--steel-800);
-  --border-default: var(--steel-700);
-  --border-strong: var(--steel-600);
+  /* --border-subtle was steel-800, which is also --surface-3 — so a subtle border
+     on a chip or a badge was not faint, it was mathematically invisible. The whole
+     dark ramp was also too dark to read as structure: --border-default reached
+     1.39:1 against the card it enclosed. Stepped up so each level is a level. */
+  --border-subtle: var(--steel-700);
+  --border-default: 62 70 78;
+  --border-strong: 88 98 107;
+
+  /* The boundary of something you operate, as opposed to a divider. WCAG 1.4.11
+     asks 3:1 of it, and neither --border-subtle nor --border-default was close;
+     inputs here sit on --surface-inset, which is within 1.06:1 of the page, so the
+     border is the only thing saying "this is a field". Kept separate from
+     --border-default so raising it does not make every card edge shout. */
+  --border-control: 100 109 118;
 
   --text-primary: var(--steel-50);
   --text-secondary: var(--steel-200);
   --text-tertiary: var(--steel-300);
   --text-disabled: var(--steel-500);
   --text-on-brand: var(--steel-950);
+
+  /* Placeholder text is content: it tells you what to type. WCAG 1.4.3 exempts
+     inactive controls, not hints, so this cannot be --text-disabled — which was
+     what it used to be, at 2.3:1. */
+  --text-placeholder: 130 139 147;
+
+  /* The focus ring. Its own token rather than --brand, because hover already
+     recolours the border to --brand and the two states then differed only by ring
+     width. Brighter than brand so an offset ring reads as focus at a glance. */
+  --focus-ring: var(--teal-300);
 
   /* brand roles */
   --brand: var(--teal-500);
@@ -89,6 +121,8 @@
   --brand-text: var(--teal-300);
   --brand-subtle: var(--teal-950);
   --brand-border: var(--teal-800);
+  /* Ring for a brand-coloured surface, where --focus-ring would sit teal on teal. */
+  --focus-ring-on-brand: var(--steel-950);
 
   /* semantic fills keep the ISO hue; text variants are lightened for contrast
      against a dark surface, where #2E7D4F green only reaches about 3:1 */
@@ -135,31 +169,66 @@
    ================================================================== */
 
 [data-theme='light'] {
+  /* SURFACE 1, 2 AND 3 WERE ALL PURE WHITE.
+     Four named steps, two actual values — so the ramp read as four levels in dark
+     and two in light, and everything built on the upper steps quietly lost its
+     fill: a neutral Badge (--surface-3) had no chip behind it, CardActions'
+     `bg-surface-2/40` composited white onto white, and a Card on a raised Section
+     was an invisible card.
+
+     The direction has to invert here, and that is the part worth understanding.
+     Dark elevates by lightening. Light cannot: white is the ceiling, so a card
+     sits at white and anything layered ON that card has to move AWAY from white to
+     be seen. So 2 and 3 tint downward in light and upward in dark. What the two
+     themes share is the property that matters — each step is visibly distinct from
+     the card it is drawn on.
+
+     Which also means 2 and 3 are interaction fills (hover, pressed, chip), not
+     elevation. Overlays that float above the page — Dialog, Toast, the nav sheet —
+     use --surface-1 plus a shadow, because on a light theme elevation is a shadow,
+     not a shade. */
   --surface-0: 247 248 249;
   --surface-1: 255 255 255;
-  --surface-2: 255 255 255;
-  --surface-3: 255 255 255;
+  --surface-2: 240 243 245;
+  --surface-3: 230 234 238;
   --surface-inset: 240 242 244;
 
   /* Slightly darker than a conventional light-theme border. A card here sits on
      white while the page is #F7F8F9, so the edge has to register against both
      surfaces; the usual near-white border disappears against one of them. */
-  --border-subtle: 226 230 233;
-  --border-default: 199 205 210;
-  --border-strong: 172 180 187;
+  --border-subtle: 224 228 232;
+  --border-default: 186 193 200;
+  --border-strong: 150 159 167;
+  --border-control: 126 135 143;
 
   --text-primary: 20 23 26;
   --text-secondary: 78 87 95;
-  --text-tertiary: 107 117 125;
+  /* Was 107 117 125, which measured 4.42:1 on the page and 4.19:1 on an input —
+     under AA in both places, and this is the colour every caption and hint uses.
+     Tuned against the darkest surface it lands on (--surface-3, the chip fill),
+     not against the page, or it passes in one place and fails in the other. */
+  --text-tertiary: 92 101 109;
   --text-disabled: 160 168 175;
   --text-on-brand: 255 255 255;
+  --text-placeholder: 96 104 112;
 
+  --focus-ring: var(--teal-700);
+
+  /* --brand-hover was teal-600, one shade LIGHTER than the teal-700 base. So a
+     primary button passed contrast at rest and dropped to 3.74:1 under the cursor —
+     failing AA in the state the worker is looking at when they commit to the tap.
+     Hover and pressed now both darken, and --brand-pressed is no longer the same
+     value as --brand-text. */
   --brand: var(--teal-700);
-  --brand-hover: var(--teal-600);
-  --brand-pressed: var(--teal-800);
+  --brand-hover: var(--teal-800);
+  --brand-pressed: var(--teal-900);
   --brand-text: var(--teal-800);
   --brand-subtle: 236 253 250;
   --brand-border: var(--teal-200);
+  --focus-ring-on-brand: 255 255 255;
+
+  /* Copper at 10% over white was all but gone. The hero bloom is the only user. */
+  --ore: 158 74 42;
 
   /* fills stay ISO; text darkens to clear AA on white */
   --hazard: var(--iso-red);
@@ -227,10 +296,31 @@
   --radius-xl: 16px;
   --radius-2xl: 24px;
 
-  /* motion — three durations, two easings. Anything bespoke is a bug. */
+  /* MOTION — two scales, two easings.
+   *
+   * This said "three durations, two easings. Anything bespoke is a bug", and then
+   * the app used 160, 400, 700, 800, 900, 1100, 1400, 1600, 2000, 14000 and 24000
+   * anyway. The rule was not wrong about interaction; it was incomplete, because it
+   * only named one of the two kinds of motion here and everything in the other kind
+   * had nowhere to go.
+   *
+   * INTERACTION responds to a touch, so it has to finish before the finger leaves.
+   * Three steps, and anything bespoke here really is a bug.
+   *
+   * NARRATIVE runs on its own: a figure counting up, a chart drawing itself, a
+   * shimmer telling you to wait, a gradient breathing behind a hero. These are
+   * deliberately slower than a human reaction and their timings are not
+   * interchangeable with the ones above.
+   */
   --dur-fast: 120ms;
   --dur-base: 240ms;
   --dur-slow: 520ms;
+
+  --dur-draw: 900ms;
+  --dur-sweep: 1400ms;
+  --dur-pulse: 2000ms;
+  --dur-ambient: 24s;
+
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 

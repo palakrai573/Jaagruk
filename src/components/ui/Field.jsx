@@ -13,8 +13,15 @@ import { useId } from 'react'
 // `size="field"` gives a 56px control. Onboarding and hazard reporting are used
 // with gloves on, and a 40px input is a missed tap.
 
+// border-line-control, not the default border: --surface-inset is within 1.06:1 of
+// the page, so the border is the only thing marking where the field is, and WCAG
+// 1.4.11 asks 3:1 of exactly that. The decorative border levels stay quieter.
+//
+// placeholder:text-ink-placeholder, not ink-disabled. A placeholder tells you what
+// to type, so it is content; 1.4.3 exempts inactive controls, not hints. It was
+// reading at 2.3:1 in both themes.
 const CONTROL_BASE =
-  'w-full bg-surface-inset border rounded-lg text-ink placeholder:text-ink-disabled ' +
+  'w-full bg-surface-inset border border-line-control rounded-lg text-ink placeholder:text-ink-placeholder ' +
   'transition-colors duration-fast outline-none ' +
   'focus:border-brand focus-visible:outline-2 focus-visible:outline-offset-1 ' +
   'disabled:opacity-50 disabled:cursor-not-allowed'

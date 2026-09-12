@@ -231,7 +231,14 @@ export function RadarChart({ axes = [], size = 260, showLabels = true }) {
         <line key={i} x1={cx} y1={cy} x2={axis.x2} y2={axis.y2} stroke={CHART_COLOR.grid} strokeWidth="1" />
       ))}
 
-      {/* Value polygon */}
+      {/* Value polygon and its vertices, revealed together by opacity — the one
+          property here that CSS can actually transition. */}
+      <g
+        style={{
+          opacity: mounted ? 1 : 0,
+          transition: reduced ? undefined : 'opacity var(--dur-draw) var(--ease-out)',
+        }}
+      >
       <polygon
         points={points}
         fill={fill}
@@ -239,7 +246,16 @@ export function RadarChart({ axes = [], size = 260, showLabels = true }) {
         stroke={fill}
         strokeWidth="2"
         strokeLinejoin="round"
-        style={{ transition: reduced ? undefined : 'all 900ms cubic-bezier(0.22, 1, 0.36, 1)' }}
+        /* No transition here, and that is a correction rather than a removal.
+           This carried `all 900ms`, intended to grow the polygon from the centre as
+           `mounted` flips the vertex radii from 0 to their values. `points` is an
+           SVG attribute, not a CSS property, so no browser has ever tweened it —
+           the shape always snapped. What `all` did instead was catch `fill` and
+           `stroke`, so toggling the theme cross-faded this one chart over 900ms
+           while every other surface on the page changed over 240ms.
+
+           The reveal is the opacity fade on the enclosing group, which is a real CSS
+           property and composites. */
       />
 
       {/* Vertex dots, with the weakest domain called out */}
@@ -256,10 +272,12 @@ export function RadarChart({ axes = [], size = 260, showLabels = true }) {
             fill={isWeak ? CHART_COLOR.hazard : fill}
             stroke={CHART_COLOR.surface}
             strokeWidth="1.5"
-            style={{ transition: reduced ? undefined : 'all 900ms cubic-bezier(0.22, 1, 0.36, 1)' }}
+            /* Same as the polygon: cx and cy are attributes, so `all` only ever
+               transitioned the colours. */
           />
         )
       })}
+      </g>
 
       {/* Labels */}
       {showLabels &&
@@ -388,10 +406,16 @@ export function StackedBar({ segments = [], height = 12, showLegend = true }) {
         {shown.map((seg) => (
           <span
             key={seg.label}
+            /* This one stays a width transition, unlike the other bars in the app,
+               and the reason is that it is segmented. The siblings share a flex
+               row, so scaling one would slide it over its neighbours instead of
+               resizing it. Acceptable here because it animates once when the chart
+               appears rather than continuously: a single reflow, not one per frame.
+               Duration comes from the token rather than a bespoke 800ms. */
             style={{
               width: `${seg.pct}%`,
               background: seg.color,
-              transition: reduced ? undefined : 'width 800ms cubic-bezier(0.22, 1, 0.36, 1)',
+              transition: reduced ? undefined : 'width var(--dur-draw) var(--ease-out)',
             }}
             title={`${seg.label}: ${Math.round(seg.pct)}%`}
           />
@@ -499,7 +523,7 @@ export function DecayCurve({ points = [], width = 260, height = 96, threshold = 
       </svg>
 
       {crossing && (
-        <p className="font-mono text-[10px] text-hazard mt-1">
+        <p className="font-mono text-[10px] text-hazard-text mt-1">
           {t('ch_falls_below')} {crossing.day} {t('rf_days')}
         </p>
       )}
@@ -561,7 +585,7 @@ export function StatCard({ label, value, suffix = '', series, trend: trendValue,
       <div className="flex items-start justify-between gap-2 mb-1">
         <span
           className={`font-display font-bold text-3xl leading-none ${
-            warn ? 'text-hazard' : accent ? 'text-brand-text' : 'text-ink'
+            warn ? 'text-hazard-text' : accent ? 'text-brand-text' : 'text-ink'
           }`}
         >
           <AnimatedNumber value={value} suffix={suffix} />

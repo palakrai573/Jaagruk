@@ -26,13 +26,31 @@ export default {
           subtle: token('border-subtle'),
           DEFAULT: token('border-default'),
           strong: token('border-strong'),
+          // The boundary of something you operate. Carries the WCAG 1.4.11 3:1
+          // requirement; the three above are decoration and deliberately quieter.
+          control: token('border-control'),
         },
         ink: {
           DEFAULT: token('text-primary'),
           secondary: token('text-secondary'),
           tertiary: token('text-tertiary'),
           disabled: token('text-disabled'),
+          // Separate from `disabled`: a placeholder is content, and 1.4.3 only
+          // exempts inactive controls. It was `disabled`, at 2.3:1.
+          placeholder: token('text-placeholder'),
           onBrand: token('text-on-brand'),
+        },
+        focus: {
+          DEFAULT: token('focus-ring'),
+          onBrand: token('focus-ring-on-brand'),
+        },
+        // Theme-invariant ink for anything drawn on a fixed plate over the camera
+        // feed, where the surface behind the pixel is video rather than a theme.
+        media: {
+          ink: token('media-ink'),
+          safe: token('media-safe-text'),
+          hazard: token('media-hazard-text'),
+          warning: token('media-warning-text'),
         },
 
         // ---- brand ----
@@ -83,8 +101,13 @@ export default {
         // out: in the old palette amber was the accent, not a caution signal, and
         // mapping it to raw ISO yellow made every accent both semantically wrong
         // and, as text on a light surface, about 1.9:1 — unreadable. It was mapped
-        // to `brand` (7.71:1 dark, 5.15:1 light) for the migration, and call sites
-        // now name `brand-*` or `warning-*` explicitly according to meaning.
+        // to `brand` for the migration, and call sites now name `brand-*` or
+        // `warning-*` explicitly according to meaning.
+        //
+        // Those ratios used to be asserted here in prose and nowhere else, which is
+        // how a hover shade lighter than its own base survived in the light theme.
+        // `npm run contrast` computes them now; run it rather than trusting a
+        // comment, including this one.
       },
 
       fontFamily: {
@@ -128,9 +151,18 @@ export default {
       },
 
       transitionDuration: {
+        // Interaction: has to finish before the finger leaves.
         fast: 'var(--dur-fast)',
         base: 'var(--dur-base)',
         slow: 'var(--dur-slow)',
+        // Narrative: a figure counting up, a chart drawing itself. Deliberately
+        // slower than a human reaction, and not interchangeable with the three
+        // above. Named so that the alternative to the three is another token
+        // rather than a bespoke number in a style attribute, which is what the
+        // codebase had eleven of.
+        draw: 'var(--dur-draw)',
+        sweep: 'var(--dur-sweep)',
+        pulse: 'var(--dur-pulse)',
       },
 
       transitionTimingFunction: {

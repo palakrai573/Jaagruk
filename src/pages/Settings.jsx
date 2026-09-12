@@ -334,7 +334,7 @@ export default function Settings() {
           value={endpoint}
           onChange={(e) => setEndpoint(e.target.value)}
           placeholder="https://…"
-          className="w-full bg-surface-inset border border-line-subtle rounded px-4 py-3 font-mono text-sm focus:border-brand outline-none"
+          className="w-full bg-surface-inset border border-line-control rounded px-4 py-3 font-mono text-sm focus:border-brand outline-none focus-visible:outline-2 focus-visible:outline-offset-1"
         />
         {endpointError && <p className="text-xs text-hazard-text mt-2">{t(endpointError)}</p>}
 
@@ -358,7 +358,7 @@ export default function Settings() {
           onChange={(e) => setResetText(e.target.value)}
           aria-label={t('st_reset_confirm')}
           placeholder={t('st_reset_confirm')}
-          className="w-full bg-surface-inset border border-line-subtle rounded px-4 py-2.5 font-mono text-sm focus:border-hazard outline-none mb-3"
+          className="w-full bg-surface-inset border border-line-control rounded px-4 py-2.5 font-mono text-sm focus:border-hazard outline-none focus-visible:outline-2 focus-visible:outline-offset-1 mb-3"
         />
         <button
           type="button"

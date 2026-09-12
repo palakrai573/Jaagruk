@@ -176,7 +176,7 @@ export default function ChatBox() {
               onKeyDown={onKeyDown}
               aria-label={t('chat_placeholder')}
               placeholder={t('chat_placeholder')}
-              className="flex-1 bg-surface-1 border border-line-subtle rounded px-3 py-2 text-sm focus:border-brand outline-none"
+              className="flex-1 bg-surface-1 border border-line-control rounded px-3 py-2 text-sm focus:border-brand outline-none focus-visible:outline-2 focus-visible:outline-offset-1"
             />
             <button
               onClick={send}

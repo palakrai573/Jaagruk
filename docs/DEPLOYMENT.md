@@ -278,6 +278,12 @@ Do these **on a real phone**, not a desktop browser. Several of them cannot fail
 | 10e | **Enter tracked AR, then look for Exit** | Exit is above the gesture bar and reachable. In an XR session the overlay covers the whole screen, so this is the one place where a missing inset locks a worker into an immersive session. |
 | 10f | **Switch to Urdu, then rotate to landscape** | Content clears the cutout on whichever side it physically is. The insets are applied as physical left/right, so they must not swap when the document flips to RTL. |
 | 10g | **System font size and display size at maximum** | Nav labels wrap rather than clip; no control loses its tap target. |
+| 10h | **Switch to the light theme and open Dashboard** | Cards read as cards: a white card on the grey page, a neutral `Badge` with a visible chip behind it, a toast that floats rather than sits flat. `npm run contrast` proves the token values; only a screen proves the result. |
+| 10i | **Light theme, press and hold a primary button** | It gets *darker*, not lighter. It used to lighten, which dropped the white label to 3.74:1 at exactly the moment of the tap. |
+| 10j | **Reload a data screen on a slow connection, both themes** | The loading skeletons match their surface. They were hardcoded dark grey, so on light they were black blocks on the first screen a user ever sees. |
+| 10k | **Tab through a form with a keyboard** | Every control shows a 2 px offset ring, and a pill-shaped control **keeps its round shape** while focused. The ring used to re-round the element itself to 4 px, so every badge and dot visibly squared off. |
+| 10l | **Run a timed drill and watch the countdown bar** | Smooth at the same moment the app is timing the decision to the millisecond. This is the one animation whose cost lands inside a measurement that goes into a certificate. |
+| 10m | **Turn on "Remove animations" in Android accessibility settings** | Every screen renders complete and static: progress bars still show their value, the spinner is a static mark rather than frozen mid-tilt, no reveal is stuck invisible. |
 | 11 | Deploy a change, reload twice | New version is picked up (validates §5) |
 
 Check 4 is the one that matters most. It is the claim the whole project rests on, and it is

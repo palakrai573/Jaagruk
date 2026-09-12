@@ -267,7 +267,7 @@ export default function BuddyDrill() {
           <div className="bg-hazard/10 border border-hazard/40 rounded p-3 mb-6 flex items-start gap-3">
             <Pictogram name="warning" size={20} />
             <div>
-              <p className="text-xs text-hazard">{t(error)}</p>
+              <p className="text-xs text-hazard-text">{t(error)}</p>
               {error === 'bd_failed' && <p className="text-[11px] text-ink-tertiary mt-1">{t('bd_failed_hint')}</p>}
             </div>
           </div>
@@ -383,7 +383,7 @@ export default function BuddyDrill() {
                 onChange={(e) => setPasted(e.target.value)}
                 placeholder={t('bd_paste_placeholder')}
                 rows={3}
-                className="w-full bg-surface-0 border border-line-subtle rounded px-3 py-2 font-mono text-[11px] focus:border-brand outline-none"
+                className="w-full bg-surface-0 border border-line-control rounded px-3 py-2 font-mono text-[11px] focus:border-brand outline-none focus-visible:outline-2 focus-visible:outline-offset-1"
               />
               <button
                 type="button"
@@ -460,7 +460,7 @@ export default function BuddyDrill() {
           </div>
         )}
 
-        {saved && <p className="font-mono text-[11px] text-safe mb-6">{t('bd_saved')}</p>}
+        {saved && <p className="font-mono text-[11px] text-safe-text mb-6">{t('bd_saved')}</p>}
 
         <div className="grid gap-3">
           <button
@@ -532,7 +532,7 @@ export default function BuddyDrill() {
               {t('bd_checkins_label')}: {drill?.checkIns?.made ?? 0} / {CHECK_IN_ROUNDS}
             </span>
             {(drill?.checkIns?.missed ?? 0) > 0 && (
-              <span className="font-mono text-[11px] text-hazard">
+              <span className="font-mono text-[11px] text-hazard-text">
                 {t('bd_checkin_missed')}: {drill.checkIns.missed}
               </span>
             )}
@@ -554,7 +554,7 @@ export default function BuddyDrill() {
               </button>
             </>
           ) : (
-            <p className="font-mono text-xs text-safe flex items-center gap-2">
+            <p className="font-mono text-xs text-safe-text flex items-center gap-2">
               <Pictogram name="correct" size={18} />
               {t('bd_checkin_done')}
             </p>
@@ -566,7 +566,7 @@ export default function BuddyDrill() {
       {phase === BUDDY_PHASE.DISTRESS && drill?.myRole === BUDDY_ROLE.RESPONDER && (
         <div className="border-2 border-hazard rounded-lg p-6 mb-6 text-center ar-pulse">
           <Pictogram name="warning" size={54} className="mx-auto mb-4" />
-          <p className="font-display font-bold text-2xl uppercase text-hazard mb-5">{t('bd_buddy_down')}</p>
+          <p className="font-display font-bold text-2xl uppercase text-hazard-text mb-5">{t('bd_buddy_down')}</p>
           <button
             type="button"
             onClick={() => drillRef.current?.acknowledgeDistress()}
@@ -634,7 +634,7 @@ export default function BuddyDrill() {
         onClick={() => {
           drillRef.current?.abort('user')
         }}
-        className="w-full font-mono text-xs text-ink-tertiary hover:text-hazard underline mt-8"
+        className="w-full font-mono text-xs text-ink-tertiary hover:text-hazard-text underline mt-8"
       >
         {t('bd_end_drill')}
       </button>

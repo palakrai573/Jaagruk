@@ -650,10 +650,7 @@ function DomainRow({ row, series, t }) {
       {/* Progress toward the pass mark */}
       <div className="w-20 shrink-0">
         <div className="h-1.5 bg-surface-inset rounded-full overflow-hidden">
-          <div
-            className="h-full rounded-full"
-            style={{ width: `${value}%`, background: color, transition: 'width 800ms cubic-bezier(0.22,1,0.36,1)' }}
-          />
+          <div className="bar-fill bar-fill--draw" style={{ '--fill': value / 100, background: color }} />
         </div>
       </div>
 

@@ -409,7 +409,7 @@ export default function Onboarding() {
 
               {signInError && (
                 <div className="bg-hazard/10 border border-hazard/40 rounded p-3 mb-4">
-                  <p className="text-xs text-hazard">{t(`err_${signInError}`)}</p>
+                  <p className="text-xs text-hazard-text">{t(`err_${signInError}`)}</p>
                   {signInError === 'PIN_WRONG' && (
                     <p className="font-mono text-[10px] text-ink-tertiary mt-1">
                       {attemptsRemaining(selectedWorker.id)} {t('err_attempts_left')}
@@ -419,7 +419,7 @@ export default function Onboarding() {
               )}
 
               {lockMs > 0 && (
-                <p className="font-mono text-[11px] text-hazard text-center mb-4">
+                <p className="font-mono text-[11px] text-hazard-text text-center mb-4">
                   {t('err_LOCKED_OUT')} {Math.ceil(lockMs / 1000)}s
                 </p>
               )}
@@ -486,7 +486,7 @@ export default function Onboarding() {
             <button
               type="button"
               onClick={signOut}
-              className="font-mono text-[11px] text-ink-tertiary hover:text-hazard underline mt-2"
+              className="font-mono text-[11px] text-ink-tertiary hover:text-hazard-text underline mt-2"
             >
               {t('ob_sign_out')}
             </button>
@@ -507,9 +507,14 @@ function StageDots({ stage }) {
   return (
     <div className="flex gap-2 justify-center mb-8" aria-hidden="true">
       {order.map((s, i) => (
+        /* One width, scaled — `transition-all` across a w-8/w-4 swap animated
+           layout and, being `all`, would have animated anything else that changed
+           too. Fixed width plus scaleX is the same movement on the compositor. */
         <span
           key={s}
-          className={`h-1.5 rounded-full transition-all ${i <= activeIndex ? 'bg-brand w-8' : 'bg-surface-3 w-4'}`}
+          className={`h-1.5 w-8 rounded-full origin-center transition-transform duration-base ease-out ${
+            i <= activeIndex ? 'bg-brand scale-x-100' : 'bg-surface-3 scale-x-50'
+          }`}
         />
       ))}
     </div>
@@ -564,7 +569,7 @@ function ErrorList({ errors, t }) {
       className="bg-hazard-subtle border border-hazard-border rounded-xl p-3 mb-4 space-y-1"
     >
       {errors.map((code) => (
-        <p key={code} className="text-xs text-hazard flex items-start gap-2">
+        <p key={code} className="text-xs text-hazard-text flex items-start gap-2">
           <Pictogram name="warning" size={16} />
           {t(`err_${code}`)}
         </p>
