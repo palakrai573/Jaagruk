@@ -120,6 +120,11 @@ if (SELFTEST) {
       <svg viewBox="0 0 4 4"><path d="M0 0" /></svg>
       <div tabIndex={3} />
       <div className="min-w-[900px] ml-4 text-left left-2" />
+      {/* The arbitrary-value form of a physical utility, which the check missed
+          once. Alongside it, the inset form that is legitimately exempt: if the
+          exemption is written too loosely it swallows the fault on the line above
+          and this check goes quiet again. */}
+      <div className="pr-[10px] pl-[calc(1rem+var(--safe-l))]" />
       <span style={{ background: 'rgba(255,255,255,0.05)' }}>x</span>
       <h1>a</h1><h4>b</h4>
     `,
@@ -338,10 +343,24 @@ for (const { path, src } of files) {
   // `left-1/2` paired with `-translate-x-1/2` is the horizontal-centring idiom.
   // Transforms are unaffected by `dir`, so it behaves identically in RTL and is
   // not a bug — strip those pairs before checking.
-  const cleaned = src.replace(/left-1\/2(\s+[-\w:[\]/]+)*\s+-translate-x-1\/2/g, ' ')
+  let cleaned = src.replace(/left-1\/2(\s+[-\w:[\]/]+)*\s+-translate-x-1\/2/g, ' ')
+
+  // Device insets are the one physical case in ordinary UI. A display cutout and a
+  // gesture bar are facts about the glass: they do not move when Urdu sets the
+  // document to RTL, so `padding-inline-start` would hand the left inset to the
+  // right edge and clip content under the camera in landscape. Only the four
+  // `--safe-*` variables are exempted, and only where they are the whole value —
+  // `pl-4` and `pl-[10px]` are still faults.
+  cleaned = cleaned.replace(
+    /\b(?:ml|mr|pl|pr)-\[(?:calc\()?[^[\]]*var\(--safe-[trlb]\)[^[\]]*\]/g,
+    ' '
+  )
 
   const hits = [
-    ...(cleaned.match(/\b(?:ml|mr|pl|pr)-(?:\d|px|auto)/g) || []),
+    // `\[` included deliberately: the arbitrary-value form was invisible to this
+    // check until a `pl-[var(--safe-l)]` landed in App.jsx and the gate stayed
+    // green, which is the exact failure mode the selftest exists to prevent.
+    ...(cleaned.match(/\b(?:ml|mr|pl|pr)-(?:\d|px|auto|\[)/g) || []),
     ...(cleaned.match(/\btext-(?:left|right)\b/g) || []),
     ...(cleaned.match(/\b(?:left|right)-(?:\d|px|\[)/g) || []),
     ...(cleaned.match(/\b(?:rounded-[lr]|border-[lr])-\d/g) || []),

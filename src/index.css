@@ -23,6 +23,37 @@ html {
   /* Fallbacks for the first paint, before fonts.js sets the language stack. */
   --font-display: 'Barlow Condensed', system-ui, sans-serif;
   --font-body: 'Inter', system-ui, sans-serif;
+
+  /*
+   * DEVICE INSETS AND LAYOUT CONSTANTS
+   *
+   * index.html sets `viewport-fit=cover`, which is what lets the app paint edge to
+   * edge — and also what puts content underneath the status bar, the punch-hole and
+   * the gesture bar unless every fixed element accounts for it. Installed as a PWA
+   * on a phone with gesture navigation (Nothing Phone, Galaxy S24 and essentially
+   * everything current) that inset is real: roughly 24-48px at the top and up to
+   * 34px at the bottom.
+   *
+   * These exist as variables because the bottom navigation's height was previously
+   * hand-copied into four different files as magic numbers — bottom-20, bottom-24,
+   * bottom-36 — each a separate guess at "just above the nav". Three of them were
+   * wrong once the gesture inset was included: the chat button sat UNDER the nav,
+   * the gesture notice cleared it by two pixels, and the gesture pill collided with
+   * the header. Naming the constant once is what stops that recurring.
+   *
+   * The `, 0px` fallback matters: env() is unsupported in older WebViews and in the
+   * Capacitor shell on some Android versions, where an unresolved value would make
+   * the whole calc() invalid and collapse the padding to nothing.
+   */
+  --safe-t: env(safe-area-inset-top, 0px);
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --safe-l: env(safe-area-inset-left, 0px);
+  --safe-r: env(safe-area-inset-right, 0px);
+
+  /* Height of the mobile bottom navigation, excluding the device inset. */
+  --nav-h: 3.75rem;
+  /* What anything floating above the nav must actually clear. */
+  --nav-total: calc(var(--nav-h) + var(--safe-b));
 }
 
 body {

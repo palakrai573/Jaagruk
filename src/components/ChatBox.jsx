@@ -106,13 +106,21 @@ export default function ChatBox() {
         aria-expanded={open}
         // hover:bg-white was a leftover from the dark-only build. On the light
         // theme the label is white, so hovering erased the glyph.
-        className="fixed bottom-20 md:bottom-6 end-5 z-30 w-14 h-14 rounded-full bg-brand text-ink-onBrand font-display font-bold text-2xl shadow-lg flex items-center justify-center hover:bg-brand-hover transition-colors"
+        /*
+          Was bottom-20 (80px), which put it UNDERNEATH the bottom navigation on any
+          phone with gesture navigation: the bar is 60px plus an inset of up to 34px,
+          so the button was unreachable on exactly the current handsets. Now measured
+          from the nav itself rather than guessed.
+        */
+        className="fixed bottom-[calc(var(--nav-total)+0.75rem)] md:bottom-6 end-5 z-30 w-14 h-14 rounded-full bg-brand text-ink-onBrand font-display font-bold text-2xl shadow-lg flex items-center justify-center hover:bg-brand-hover transition-colors"
       >
         <span aria-hidden="true">{open ? '×' : '?'}</span>
       </button>
 
       {open && (
-        <div className="fixed bottom-36 md:bottom-24 end-5 z-30 w-[92vw] max-w-sm h-[60vh] max-h-[520px] bg-surface-1 border border-line-subtle rounded-lg shadow-2xl flex flex-col overflow-hidden">
+        /* Sits above the button, which sits above the nav. dvh rather than vh so the
+           panel does not extend behind the mobile browser's collapsing address bar. */
+        <div className="fixed bottom-[calc(var(--nav-total)+5rem)] md:bottom-24 end-5 z-30 w-[92vw] max-w-sm h-[55dvh] max-h-[520px] bg-surface-1 border border-line-subtle rounded-lg shadow-2xl flex flex-col overflow-hidden">
           <div className="px-4 py-3 border-b border-line-subtle bg-surface-0 flex items-center justify-between">
             <span className="font-display font-bold text-brand-text uppercase tracking-wide text-sm">{t('chat_title')}</span>
             <button

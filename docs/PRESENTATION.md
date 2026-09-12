@@ -458,7 +458,7 @@ SYNC (whenever, never blocking)
 | Hand tracking | **@mediapipe/tasks-vision** (WASM) | Same model family as native MediaPipe Hands. Loaded from CDN at runtime and cached, so it never inflates the base bundle. |
 | Peer-to-peer | **WebRTC RTCDataChannel + QR signalling** | No signalling server and no internet. Offer/answer trimmed then `deflate-raw` compressed: 1054 → 663 chars, dropping the code from QR version 19 to 14 so a cheap phone camera reads it first time. |
 | Voice | **Web Speech API** | Synthesis and recognition with per-language locale mapping and a fixed command lexicon with fuzzy matching. |
-| Offline shell | **Service worker + Workbox** (`vite-plugin-pwa`) | 11 precached entries, ~1.6 MB. App boots with no network on first cold start after install. |
+| Offline shell | **Service worker + Workbox** (`vite-plugin-pwa`) | 35 precached entries, ~2.24 MiB. App boots with no network on first cold start after install. |
 | 3D fallback | **three.js + React Three Fiber** | For phones with no usable camera or compass, the drill runs as a 3D scene rather than refusing to start. |
 | Charts | **Hand-rolled inline SVG** | No charting library. Bundle already carries three.js, and these must render offline with zero runtime deps. |
 
@@ -645,13 +645,13 @@ UI action
 | ≥ 2 complete AR training modules | **9 modules, 54 timed decisions**, covering all 5 named domains + manual handling, roof & strata, working at height and mine haulage |
 | Assessment engine | Accuracy + latency grading, hesitation detection, decaying readiness |
 | QR certificate + verification | Signed hash-chained ledger; QR carries the whole record for offline verify |
-| Hindi + Santali localisation | 6 languages, 601 keys each at 100%; Santali in Ol Chiki, machine-authored and flagged unverified |
+| Hindi + Santali localisation | 6 languages, 628 keys each at 100%; Santali in Ol Chiki, machine-authored and flagged unverified |
 | Offline functionality | Train, assess, certify, verify — all with no network |
 | Web admin compliance dashboard | Compliance, hesitation-risk list, hazard board, chain integrity, QR verify, statutory CSV |
 
-> **Codebase:** 74 source files, ~26 300 lines. Domain logic 13 500 lines across 33 pure
-> modules; 14 pages; 22 components; 16 routes. 171 executable checks in 1 800 lines of tests.
-> **Build:** no warnings. ~2.2 MB precached across 36 entries.
+> **Codebase:** 81 source files, ~30 100 lines. Domain logic 15 200 lines across 36 pure
+> modules; 14 pages; 14 components; 16 routes. 317 executable checks in 3 100 lines of tests.
+> **Build:** no warnings. ~2.24 MB precached across 37 entries.
 
 **Say**
 
@@ -1125,20 +1125,23 @@ Every number here is from the code, not rounded up for effect. Safe to be challe
 - WebRTC signalling: raw SDP 1054 → `trimSdp` 882 → `deflate-raw` + base64url **663 chars**
   (37% smaller; QR version 19 → 14). Without `CompressionStream` the trim-only fallback is
   1196 chars — still works, just a denser code
-- Shipped bundle: 1643 KB raw → 474 KB gzip → **390 KB brotli** (76% smaller). First install
-  62 s on 2G, 4.2 s on 3G, 0.6 s on 4G; **0 bytes on every launch after**
+- Shipped code: 1988 KiB raw → 561 KiB gzip → **451 KiB brotli** (77% smaller). Precached shell
+  including fonts: 2293 KiB → **771 KiB brotli**. First install 126 s on 2G, 8.4 s on 3G, 1.3 s
+  on 4G; **0 bytes on every launch after**
 - Hazard photo: 720 px cap at JPEG q0.62 — a 12 MP photo (~3500 KB) lands at 45–70 KB (≈98%)
 - 39 ISO 7010-style inline SVG pictograms
-- 6 languages, ~430 UI keys. Hindi/Bengali/Odia/Urdu 100%; Santali ~38%, flagged in-app
+- 6 languages, 628 UI keys, all six at 100%; Santali machine-authored and flagged unverified
+  in-app
 - Gesture confirm paths: pinch, or 1.2 s dwell (glove fallback)
 - AR "turn around" prompt fires when every marker is > 90° off
 
 **Build**
-- 690 modules transformed, no warnings
-- `three` 848 kB · `index` 482 kB · `react` 164 kB · CSS 24 kB
-- 11 precached entries, ≈ 1.6 MB
+- 727 modules transformed, no warnings
+- Bytes on disk: `index` 891.8 KiB · `three` 833.6 KiB · `react` 159.9 KiB · CSS 48.8 KiB
+  (Vite's console prints characters, not bytes — see the note in `README.md`)
+- 35 precached entries, ≈ 2.24 MiB
 - Capacitor 8, `minSdk 29` (Android 10+), app id `in.gov.jharkhand.jaagruk`
-- Build time ≈ 8 s
+- Build time ≈ 5 s
 
 **Statutory alignment**
 - CSV export formatted for Mines Act 1952 and Factories Act 1948 record-keeping

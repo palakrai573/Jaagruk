@@ -234,7 +234,9 @@ npm run build            # must finish with no warnings
 npm run preview          # smoke test the production bundle locally
 ```
 
-- [ ] Build completes clean (expect ~690 modules, 11 precache entries, ≈1.6 MB)
+- [ ] Build completes clean (expect ~727 modules, 35 precache entries, ≈2292 KiB)
+- [ ] Precache entry count equals the number of distinct files — a count higher than the file
+      count means something is listed twice and every install fetches it twice
 - [ ] `dist/_headers` present
 - [ ] `dist/index.html` references `./assets/...` (relative, not `/assets/...`)
 - [ ] Target host serves over HTTPS
@@ -269,6 +271,13 @@ Do these **on a real phone**, not a desktop browser. Several of them cannot fail
 | 8f | **Exit the XR session and re-enter** | Alignment is **not** requested again; the site frame is deliberately held outside the session. |
 | 9 | Two phones on one hotspot → buddy drill | QR pairing connects |
 | 10 | Install to home screen, relaunch offline | Opens standalone, data intact |
+| 10a | **Installed, on a gesture-navigation phone** (Nothing Phone, Galaxy S24 / S24 FE, Pixel 6+) | The wordmark and the menu button clear the status bar and the punch-hole. `viewport-fit=cover` means the app paints edge to edge, so a header that ignores `safe-area-inset-top` renders *underneath* the clock. |
+| 10b | **Scroll any long page to the very bottom** | The last row is fully visible above the bottom bar, with a gutter. Nothing is hidden behind it. |
+| 10c | **Tap the assistant button (bottom right)** | The button is fully above the bottom bar and tappable — it was under it before the layout constants landed. The panel that opens sits above the button, not behind the bar. |
+| 10d | **Start a drill with gesture control on** | The "hands detected" notice clears the bottom bar; the running pill clears the header. Both were within two pixels of colliding. |
+| 10e | **Enter tracked AR, then look for Exit** | Exit is above the gesture bar and reachable. In an XR session the overlay covers the whole screen, so this is the one place where a missing inset locks a worker into an immersive session. |
+| 10f | **Switch to Urdu, then rotate to landscape** | Content clears the cutout on whichever side it physically is. The insets are applied as physical left/right, so they must not swap when the document flips to RTL. |
+| 10g | **System font size and display size at maximum** | Nav labels wrap rather than clip; no control loses its tap target. |
 | 11 | Deploy a change, reload twice | New version is picked up (validates §5) |
 
 Check 4 is the one that matters most. It is the claim the whole project rests on, and it is
@@ -288,3 +297,5 @@ the one a judge is most likely to test personally.
 | Updates never reach devices | `sw.js` / `index.html` cached | Apply the `no-cache` headers in §5 |
 | Buddy drill pairs but never connects | Phones on different networks | Same wifi or hotspot — documented limitation |
 | Sync works in browser, fails in APK | CORS missing `https://localhost`, or HTTP endpoint | See §8 |
+| Header under the status bar, or content under the bottom bar | An old WebView that does not support `env()`, so the whole `calc()` is invalid and the padding collapses | Already guarded: every inset is `env(safe-area-inset-*, 0px)` with an explicit fallback. If it still happens, check `viewport-fit=cover` survived in `index.html` |
+| Bottom bar looks correct but the edge of it mis-taps | Bar painted with the inset but the tap target not extended into it | The bar takes `padding-bottom: var(--safe-b)`, which grows it rather than shifting it — do not swap that for a margin |

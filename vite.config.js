@@ -15,6 +15,16 @@ export default defineConfig({
       // NOTE: `includeAssets` previously listed favicon.ico, which does not exist
       // in public/. Workbox warned and skipped it on every build. The PWA icons
       // are declared in the manifest below and picked up by globPatterns.
+      //
+      // ...which is also why this is off. It defaults to true, and it adds every
+      // manifest icon to the precache manifest a second time on top of the copy
+      // globPatterns already found under public/. That produced 37 precache
+      // entries for 35 distinct files: pwa-192.png and pwa-512.png were each
+      // listed twice, so a phone installing the app fetched and stored both
+      // icons twice. globPatterns still covers `**/*.png`, so the icons stay
+      // precached and offline behaviour is unchanged — the duplicate is all that
+      // goes.
+      includeManifestIcons: false,
       manifest: {
         name: 'Jaagruk — Industrial Safety Training & Certification',
         short_name: 'Jaagruk',

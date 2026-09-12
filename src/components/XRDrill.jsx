@@ -322,7 +322,23 @@ export default function XRDrill({
         translated, screen-readable controls serve both.
       */}
       <div ref={overlayRef} className={active ? 'fixed inset-0 z-50 pointer-events-none' : ''}>
-        <div className={active ? 'absolute inset-x-0 bottom-0 p-4 pointer-events-auto' : ''}>
+        {/*
+          The device inset matters more here than anywhere else in the app. In an XR
+          session the overlay genuinely covers the whole screen, so without this the
+          Exit and Tap buttons sat under the gesture bar — and Exit being unreachable
+          means a worker cannot get out of an immersive session by tapping, which is
+          the one control that must never be blocked.
+
+          pl/pr, not ps/pe: the insets describe the hardware, so they must not mirror
+          when Urdu sets the document to RTL.
+        */}
+        <div
+          className={
+            active
+              ? 'absolute inset-x-0 bottom-0 p-4 pb-[calc(1rem+var(--safe-b))] pl-[calc(1rem+var(--safe-l))] pr-[calc(1rem+var(--safe-r))] pointer-events-auto'
+              : ''
+          }
+        >
           {!active ? (
             <div className="flex flex-col gap-3">
               <button

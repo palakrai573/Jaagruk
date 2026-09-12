@@ -425,9 +425,9 @@ matters because those are the values hashed into a certificate.
 4. **Santali UI is 100% covered and 0% verified.** These are two different numbers and the
    app reports them separately, because conflating them is how software ends up lying.
 
-   All 601 UI strings now exist in Ol Chiki. None has been checked by a Santali speaker.
-   The 360 gathered into `src/lib/i18nSantali.js` let a reviewer work through one file; the
-   other 241 in `i18n.js` / `i18nJaagruk.js` are equally unreviewed, so the file split is
+   All 626 UI strings now exist in Ol Chiki. None has been checked by a Santali speaker.
+   The 377 gathered into `src/lib/i18nSantali.js` let a reviewer work through one file; the
+   other 249 in `i18n.js` / `i18nJaagruk.js` are equally unreviewed, so the file split is
    organisational rather than a quality boundary.
 
    The honesty mechanism is that **the in-app notice keys off a verification flag, not off
@@ -455,7 +455,7 @@ matters because those are the values hashed into a certificate.
    Santali; they resolve to Hindi. Drill prose is where a wrong verb changes what a worker
    physically does, so it waits for a speaker rather than being filled in.
 
-   `npm run santali:worksheet` regenerates `docs/santali-worksheet.csv`: all 601 strings
+   `npm run santali:worksheet` regenerates `docs/santali-worksheet.csv`: all 626 strings
    with English and Hindi source, the current Santali, and the file to correct it in,
    ordered by consequence so drill and hazard instructions come before supervisor
    dashboards.

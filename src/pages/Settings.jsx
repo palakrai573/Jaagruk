@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useId } from 'react'
 import { Link } from 'react-router-dom'
-import { getApiKey, setApiKey, getProvider, setProvider } from '../lib/api.js'
+/* The API key controls moved to the supervisor console, so this page no longer imports
+   anything from api.js. See the note in the AI panel below. */
 import { LANGUAGES, allCoverage } from '../lib/i18n.js'
 import { voiceAvailability, speak, SPEECH_IS_SUBSTITUTE, shouldUseVoice } from '../lib/speech.js'
 import { gestureBlocker, gestureStatusKey } from '../lib/gesture.js'
@@ -28,12 +29,10 @@ import { useLanguage } from '../context/LanguageContext.jsx'
 export default function Settings() {
   const { t, lang, setLang } = useLanguage()
 
-  const keyId = useId()
+
   const endpointId = useId()
 
-  const [key, setKey] = useState(() => getApiKey())
-  const [provider, setProviderState] = useState(() => getProvider())
-  const [saved, setSaved] = useState(false)
+
 
   const [pictogramMode, setPictogramMode] = useState(() => lsGetBool(LS.MODE_PICTOGRAM, false))
   // Same resolution as the drill screen, so this switch reflects what a drill will
@@ -78,12 +77,6 @@ export default function Settings() {
     return () => clearTimeout(timer)
   }, [refresh])
 
-  const saveProvider = () => {
-    setApiKey(key.trim())
-    setProvider(provider)
-    setSaved(true)
-    setTimeout(() => setSaved(false), 2000)
-  }
 
   const saveEndpoint = () => {
     const result = setSyncEndpoint(endpoint)

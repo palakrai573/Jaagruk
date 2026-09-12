@@ -246,36 +246,55 @@ All figures below are **measured**, not estimated. Reproduce them by inspecting 
 ### Shipped bundle
 
 ```
-                          raw        gzip      brotli
-three.js runtime      ████████████████████████████████████████  828.5 KB
-        → brotli      █████████                                 183.3 KB   ▼ 78%
+                          raw                                    brotli
+app + domain logic    ████████████████████████████████████████  891.8 KiB
+        → brotli      █████████                                 194.5 KiB   ▼ 78%
 
-app + domain logic    ████████████████████████████              586.7 KB
-        → brotli      ██████                                    132.5 KB   ▼ 77%
+three.js runtime      █████████████████████████████████████     833.6 KiB
+        → brotli      ████████                                  184.3 KiB   ▼ 78%
 
-react + router        ███████                                   159.9 KB
-        → brotli      ██                                         45.7 KB   ▼ 71%
+react + router        ███████                                   159.9 KiB
+        → brotli      ██                                         45.7 KiB   ▼ 71%
 
-tailwind css          █                                           23.8 KB
-        → brotli      ▏                                            4.9 KB   ▼ 80%
+tailwind css          ██                                          48.8 KiB
+        → brotli      ▏                                           8.7 KiB   ▼ 82%
 
-workbox runtime       █                                           21.8 KB
-        → brotli      ▏                                            6.7 KB   ▼ 69%
+lazy AR / XR chunks   █                                           22.0 KiB
+        → brotli      ▏                                           7.4 KiB   ▼ 66%
+
+workbox runtime       █                                           21.8 KiB
+        → brotli      ▏                                           6.7 KiB   ▼ 69%
 ────────────────────────────────────────────────────────────────────────────────
-TOTAL (12 files)      1643.2 KB  →  473.7 KB gzip  →  390.1 KB brotli  ▼ 76%
+TOTAL (22 files)      1988.1 KiB  →  561.0 KiB gzip  →  451.4 KiB brotli  ▼ 77%
 ```
+
+Code only — fonts are counted separately below, and the remainder of the 22 is `index.html`,
+the web manifest and the service-worker glue.
+
+**Measure this off disk, not off the Vite console.** Vite and Workbox report the *character*
+length of a chunk. The app chunk carries the six-language string tables, where one Devanagari
+or Ol Chiki character is three UTF-8 bytes, so Vite prints `690.49 kB` for a file that is
+913,206 bytes. The service worker stores bytes, so bytes are the number that decides whether
+the app is installable on a cheap phone.
 
 **First install over the wire** (brotli), and every launch after:
 
 | Network | First install | Subsequent launches |
 |---|---|---|
-| 2G · 50 kbit/s | 62.4 s | **0 bytes** |
-| 3G · 750 kbit/s | 4.2 s | **0 bytes** |
-| 4G · 5 Mbit/s | 0.6 s | **0 bytes** |
+| 2G · 50 kbit/s | 126.3 s | **0 bytes** |
+| 3G · 750 kbit/s | 8.4 s | **0 bytes** |
+| 4G · 5 Mbit/s | 1.3 s | **0 bytes** |
 
-Zero bytes after install because the whole shell is precached — 11 entries. **three.js is split
-into its own chunk**, so a worker who never opens a 3D drill never downloads the renderer, and
-the shell stays cacheable across releases.
+That is the whole precached shell — 35 entries, 2292.9 KiB raw, 770.9 KiB brotli — not just the
+code, because the service worker fetches every precache entry during install. Fonts are most of
+the gap: Latin, Devanagari and Ol Chiki ship in the shell so Hindi and Santali are styled on a
+cold offline start, while Bengali, Odia and Urdu are runtime-cached on first use rather than
+charged to every worker's install.
+
+Zero bytes after install because the shell is precached in full. **three.js is split into its
+own chunk**, so a worker who never opens a 3D drill never downloads the renderer, and the shell
+stays cacheable across releases. The AR, XR and detection surfaces are separate lazy chunks
+again — 22 KiB in total, precached so they still work offline, but never parsed unless opened.
 
 ### WebRTC signalling payload — fitting a session into a scannable QR
 
@@ -394,7 +413,7 @@ in a browser, in the Android WebView, and in a Node script.
 | Hand tracking | **@mediapipe/tasks-vision** (WASM) | Same model family as native MediaPipe Hands. Fetched from CDN at runtime and cached to IndexedDB, so it never inflates the base bundle for the majority who will not enable it. |
 | Peer-to-peer | **WebRTC `RTCDataChannel`** + QR signalling | No signalling server, no internet. See the compression figures above. |
 | Voice | **Web Speech API** | Per-language locale mapping, fixed command lexicon, fuzzy matching. |
-| Offline shell | **Workbox** via `vite-plugin-pwa` | 11 precached entries. Cold-boots with the network off. |
+| Offline shell | **Workbox** via `vite-plugin-pwa` | 35 precached entries. Cold-boots with the network off. |
 | 3D fallback | **three.js + React Three Fiber** | Phones with no usable camera or compass run the drill as a 3D scene rather than refusing to start. |
 | Charts | **Hand-rolled inline SVG** | No charting library: the bundle already carries three.js, and these must render offline with zero runtime deps. Geometry (`charts.js`) is separated from rendering (`Charts.jsx`). |
 
@@ -532,8 +551,8 @@ npm run verify       # every gate below, then the build
 | `npm run a11y` | 16 structural accessibility and responsive checks over every `.jsx`: accessible names, form labelling, decorative SVG, focus order, reduced-motion escapes, the 320 px width budget, RTL logical properties and mirrored glyphs, live regions, field-tier touch targets, theme-blind colour literals, heading order. |
 | `npm run a11y:selftest` | Plants one instance of each fault in a synthetic file and asserts every check catches it. Exists because the first version of the accessible-name check passed a button that had no name — `/<[^>]*>/` stops at the `>` inside `onClick={() => …}`, leaking handler source into what the check read as label text. |
 | `npm run i18n` | English text stored in another language's slot; values written in the wrong script; figures dropped in translation (compared across numeral systems, so Bengali ৪ counts as 4); characters outside a shipped font subset, which render as a permanent box offline while failing nothing in the build; fallback chains that do not end in a fully covered language. Self-tests against the four nav labels that historically held English in the Santali slot. |
-| `npm run translit` | Ol Chiki → Devanagari transliteration: 14 hand-derived words, then all 583 Ol Chiki strings in the app, asserting no Ol Chiki survives and no vowel sign is left unattached. |
-| `npm run santali:worksheet` | Regenerates `docs/santali-worksheet.csv` — all 573 Santali strings with English and Hindi source, the current Ol Chiki, and which file to correct it in, ordered by consequence. |
+| `npm run translit` | Ol Chiki → Devanagari transliteration: 14 hand-derived words, then all 639 Ol Chiki strings in the app, asserting no Ol Chiki survives and no vowel sign is left unattached. |
+| `npm run santali:worksheet` | Regenerates `docs/santali-worksheet.csv` — all 626 Santali strings with English and Hindi source, the current Ol Chiki, and which file to correct it in, ordered by consequence. |
 
 **On Santali specifically:** coverage is 100%, verification is 0%. Those are tracked
 separately on purpose — `SANTALI_VERIFIED` in `src/lib/i18nSantali.js` is what the in-app

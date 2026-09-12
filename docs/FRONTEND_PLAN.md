@@ -330,7 +330,7 @@ wrong script.
 Santali and they resolve to Hindi. Drill prose is where a wrong verb changes what a worker
 physically does, which is a different risk from a mislabelled dashboard tab.
 
-`npm run santali:worksheet` regenerates `docs/santali-worksheet.csv`: all 573 strings with
+`npm run santali:worksheet` regenerates `docs/santali-worksheet.csv`: all 626 strings with
 English and Hindi source, the current Santali, and which file to correct it in, ordered by
 consequence.
 

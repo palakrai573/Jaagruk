@@ -1,5 +1,10 @@
 ﻿group,key,english,hindi,santali_current,santali_corrected,reviewer_note,edit_in_file
 1 · Drill and hazard instructions,ar_aim_prompt,Point the phone at the correct marker and hold,फ़ोन सही मार्कर पर रखें और स्थिर रखें,ᱯᱷᱚᱱ ᱴᱷᱤᱠ ᱢᱟᱨᱠᱚᱨ ᱛᱮ ᱫᱚᱦᱚᱭ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,ar_block_insecure,"The camera view needs a secure (https) connection, so drills will run in 3D.","कैमरा व्यू के लिए सुरक्षित (https) कनेक्शन चाहिए, इसलिए ड्रिल 3D में चलेंगी।","ᱠᱮᱢᱨᱟ ᱧᱮᱞ ᱞᱟᱹᱜᱤᱫ ᱨᱠᱷᱟ (https) ᱡᱚᱲᱟᱣ ᱞᱟᱹᱠᱛᱤ, ᱚᱱᱟᱛᱮ ᱛᱟᱞᱤᱢ 3D ᱛᱮ ᱠᱟᱹᱢᱤᱭᱟ ᱾",,,i18nSantali.js
+1 · Drill and hazard instructions,ar_block_insecure_hint,"Open the app over https, or from localhost while developing. Browsers block camera and compass access on plain http.","ऐप को https पर खोलें, या विकास के दौरान localhost से। सामान्य http पर ब्राउज़र कैमरा और कंपास रोक देते हैं।","ᱮᱯ ᱫᱚ https ᱨᱮ ᱡᱷᱤᱡ ᱢᱮ, ᱥᱮ ᱛᱮᱭᱟᱨ ᱚᱠᱛᱚ localhost ᱠᱷᱚᱱ ᱾ ᱥᱟᱫᱷᱟᱨᱚᱱ http ᱨᱮ ᱵᱨᱟᱣᱡᱚᱨ ᱠᱮᱢᱨᱟ ᱟᱨ ᱠᱚᱢᱯᱟᱥ ᱵᱚᱸᱫᱚᱭᱮᱫᱟ ᱾",,,i18nSantali.js
+1 · Drill and hazard instructions,ar_block_no_camera,"This browser cannot open a camera, so drills will run in 3D.","यह ब्राउज़र कैमरा नहीं खोल सकता, इसलिए ड्रिल 3D में चलेंगी।","ᱱᱚᱶᱟ ᱵᱨᱟᱣᱡᱚᱨ ᱠᱮᱢᱨᱟ ᱵᱟᱝ ᱡᱷᱤᱡ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ, ᱚᱱᱟᱛᱮ ᱛᱟᱞᱤᱢ 3D ᱛᱮ ᱠᱟᱹᱢᱤᱭᱟ ᱾",,,i18nSantali.js
+1 · Drill and hazard instructions,ar_block_no_orientation,"This device has no motion sensor, so markers cannot be placed on real directions. Drills run in 3D.","इस डिवाइस में मोशन सेंसर नहीं है, इसलिए मार्कर असली दिशा में नहीं लग सकते। ड्रिल 3D में चलेंगी।","ᱱᱚᱶᱟ ᱡᱤᱱᱤᱥ ᱨᱮ ᱢᱳᱥᱚᱱ ᱥᱮᱱᱥᱚᱨ ᱵᱟᱝ, ᱚᱱᱟᱛᱮ ᱢᱟᱨᱠᱚᱨ ᱠᱚ ᱥᱟᱹᱨᱤ ᱦᱚᱨ ᱨᱮ ᱵᱟᱝ ᱛᱮᱭᱟᱨ ᱦᱩᱭᱩᱜᱼᱟ ᱾ ᱛᱟᱞᱤᱢ 3D ᱛᱮ ᱠᱟᱹᱢᱤᱭᱟ ᱾",,,i18nSantali.js
+1 · Drill and hazard instructions,ar_block_unsupported,The camera view cannot run in this browser. Drills still work in 3D.,इस ब्राउज़र में कैमरा व्यू नहीं चल सकता। ड्रिल 3D में चलेंगी।,ᱱᱚᱶᱟ ᱵᱨᱟᱣᱡᱚᱨ ᱨᱮ ᱠᱮᱢᱨᱟ ᱧᱮᱞ ᱵᱟᱝ ᱮᱦᱚᱵ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ ᱾ ᱛᱟᱞᱤᱢ 3D ᱛᱮ ᱠᱟᱹᱢᱤᱭᱟ ᱾,,,i18nSantali.js
 1 · Drill and hazard instructions,ar_camera_denied,Camera permission was refused. Allow camera access in your browser settings to use the AR drill.,कैमरा अनुमति नहीं मिली। एआर ड्रिल के लिए ब्राउज़र सेटिंग्स में कैमरा अनुमति दें।,ᱠᱮᱢᱨᱟ ᱦᱩᱠᱩᱢ ᱵᱟᱝ ᱧᱟᱢ ᱞᱮᱱᱟ ᱾ AR ᱛᱟᱞᱤᱢ ᱞᱟᱹᱜᱤᱫ ᱵᱨᱟᱣᱡᱚᱨ ᱥᱮᱴᱤᱝᱥ ᱨᱮ ᱠᱮᱢᱨᱟ ᱵᱚᱞᱚ ᱮᱢ ᱢᱮ ᱾,,,i18nSantali.js
 1 · Drill and hazard instructions,ar_camera_in_use,The camera is being used by another app. Close it and try again.,कैमरा दूसरे ऐप में चल रहा है। उसे बंद करके फिर कोशिश करें।,ᱠᱮᱢᱨᱟ ᱮᱴᱟᱜ ᱮᱯ ᱨᱮ ᱠᱟᱹᱢᱤ ᱠᱟᱱᱟ ᱾ ᱚᱱᱟ ᱵᱚᱸᱫᱚᱭ ᱠᱟᱛᱮ ᱫᱚᱦᱲᱟ ᱠᱩᱨᱩᱢᱩᱴᱩᱭ ᱢᱮ ᱾,,,i18nSantali.js
 1 · Drill and hazard instructions,ar_camera_missing,No camera was found on this device.,इस डिवाइस पर कैमरा नहीं मिला।,ᱱᱚᱶᱟ ᱡᱤᱱᱤᱥ ᱨᱮ ᱠᱮᱢᱨᱟ ᱵᱟᱝ ᱧᱟᱢ ᱞᱮᱱᱟ ᱾,,,i18nSantali.js
@@ -7,6 +12,7 @@
 1 · Drill and hazard instructions,ar_camera_unsupported,This browser cannot open the camera.,यह ब्राउज़र कैमरा नहीं खोल सकता।,ᱱᱚᱶᱟ ᱵᱨᱟᱣᱡᱚᱨ ᱠᱮᱢᱨᱟ ᱵᱟᱝ ᱡᱷᱤᱡ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ ᱾,,,i18nSantali.js
 1 · Drill and hazard instructions,ar_enable_motion,Allow motion access,मोशन अनुमति दें,ᱢᱳᱥᱚᱱ ᱵᱚᱞᱚ ᱮᱢ ᱢᱮ,,,i18nSantali.js
 1 · Drill and hazard instructions,ar_generic_zone,This site has not been scanned. Showing a generic layout — ask your supervisor to run Site Setup.,यह साइट स्कैन नहीं हुई। सामान्य लेआउट दिख रहा है — सुपरवाइज़र से साइट सेटअप कराएं।,ᱱᱚᱶᱟ ᱴᱷᱟᱶ ᱵᱟᱝ ᱥᱠᱮᱱ ᱦᱩᱭ ᱟᱠᱟᱱᱟ ᱾ ᱥᱟᱫᱷᱟᱨᱚᱱ ᱱᱚᱠᱥᱟ ᱩᱫᱩᱜ ᱠᱟᱱᱟ — ᱥᱩᱯᱚᱨᱣᱟᱭᱡᱚᱨ ᱛᱮ ᱴᱷᱟᱶ ᱥᱟᱡᱟᱣ ᱠᱟᱹᱢᱤ ᱠᱟᱠᱷᱟᱨ ᱢᱮ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,ar_generic_zone_short,Generic,सामान्य,ᱥᱟᱫᱷᱟᱨᱚᱱ,,,i18nSantali.js
 1 · Drill and hazard instructions,ar_no_compass_body,"This device has no usable compass, so markers cannot be anchored to real directions. The 3D view teaches the same decisions.","इस डिवाइस में उपयोगी कंपास नहीं है, इसलिए मार्कर असली दिशा से नहीं जुड़ सकते। 3D व्यू वही निर्णय सिखाता है।","ᱱᱚᱶᱟ ᱡᱤᱱᱤᱥ ᱨᱮ ᱠᱟᱹᱢᱤᱭᱟᱜ ᱠᱚᱢᱯᱟᱥ ᱵᱟᱝ, ᱚᱱᱟᱛᱮ ᱢᱟᱨᱠᱚᱨ ᱠᱚ ᱥᱟᱹᱨᱤ ᱦᱚᱨ ᱨᱮ ᱵᱟᱝ ᱡᱚᱲᱟᱣ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ ᱾ 3D ᱧᱮᱞ ᱚᱱᱟ ᱜᱮ ᱴᱷᱮᱭᱟᱣ ᱠᱚ ᱦᱚᱠᱚᱭᱟ ᱾",,,i18nSantali.js
 1 · Drill and hazard instructions,ar_no_compass_title,No motion sensor,मोशन सेंसर नहीं,ᱢᱳᱥᱚᱱ ᱥᱮᱱᱥᱚᱨ ᱵᱟᱝ,,,i18nSantali.js
 1 · Drill and hazard instructions,ar_permission_body,Jaagruk uses the compass to keep hazard markers pointing at the real thing.,जागरुक कंपास से खतरा मार्कर को असली जगह पर रखता है।,ᱡᱟᱜᱨᱩᱠ ᱠᱚᱢᱯᱟᱥ ᱛᱮ ᱡᱚᱠᱷᱚᱢ ᱢᱟᱨᱠᱚᱨ ᱠᱚ ᱥᱟᱹᱨᱤ ᱡᱤᱱᱤᱥ ᱛᱮ ᱩᱫᱩᱜ ᱮᱫᱟᱭ ᱾,,,i18nSantali.js
@@ -32,17 +38,21 @@
 1 · Drill and hazard instructions,as_listen_again,Read it aloud again,फिर सुनाएं,ᱫᱚᱦᱲᱟ ᱟᱸᱡᱚᱢ,,,i18n.js / i18nJaagruk.js
 1 · Drill and hazard instructions,as_listening,Listening…,सुन रहा है…,ᱟᱸᱡᱚᱢ ᱠᱟᱱᱟ…,,,i18n.js / i18nJaagruk.js
 1 · Drill and hazard instructions,as_NETWORK,Speech recognition needs a connection on this device.,इस डिवाइस पर वाक् पहचान को कनेक्शन चाहिए।,ᱱᱚᱶᱟ ᱡᱤᱱᱤᱥ ᱨᱮ ᱨᱚᱲ ᱵᱟᱰᱟᱭ ᱞᱟᱹᱜᱤᱫ ᱡᱚᱲᱟᱣ ᱞᱟᱹᱠᱛᱤ ᱾,,,i18nSantali.js
-1 · Drill and hazard instructions,as_NO_MATCH,"Did not catch that. Say ""one"" or ""two"", or tap.","समझ नहीं आया। ""एक"" या ""दो"" बोलें, या टैप करें।","ᱵᱟᱝ ᱟᱸᱡᱚᱢ ᱞᱮᱱᱟ ᱾ ""ᱢᱤᱫ"" ᱥᱮ ""ᱵᱟᱨ"" ᱨᱚᱲ ᱢᱮ, ᱥᱮ ᱛᱚᱯᱟᱣ ᱢᱮ ᱾",,,i18nSantali.js
+1 · Drill and hazard instructions,as_NO_MATCH,"Did not catch that. Say the option number, or tap.","समझ नहीं आया। विकल्प का नंबर बोलें, या टैप करें।","ᱵᱟᱝ ᱟᱸᱡᱚᱢ ᱞᱮᱱᱟ ᱾ ""ᱢᱤᱫ"" ᱥᱮ ""ᱵᱟᱨ"" ᱨᱚᱲ ᱢᱮ, ᱥᱮ ᱛᱚᱯᱟᱣ ᱢᱮ ᱾",,,i18nSantali.js
 1 · Drill and hazard instructions,as_NO_SPEECH,Heard nothing. Try again closer to the phone.,कुछ सुना नहीं। फ़ोन के पास बोलें।,ᱪᱮᱫ ᱦᱚᱸ ᱵᱟᱝ ᱟᱸᱡᱚᱢ ᱞᱮᱱᱟ ᱾ ᱯᱷᱚᱱ ᱱᱟᱜᱟᱢ ᱨᱮ ᱨᱚᱲ ᱢᱮ ᱾,,,i18nSantali.js
 1 · Drill and hazard instructions,as_PERMISSION_DENIED,"Microphone permission was refused, so voice answers are off.","माइक्रोफ़ोन अनुमति नहीं मिली, इसलिए आवाज़ से उत्तर बंद है।","ᱢᱟᱭᱠ ᱦᱩᱠᱩᱢ ᱵᱟᱝ ᱧᱟᱢ ᱞᱮᱱᱟ, ᱚᱱᱟᱛᱮ ᱨᱚᱲ ᱛᱮ ᱛᱮᱞᱟ ᱵᱚᱸᱫᱚ ᱾",,,i18nSantali.js
 1 · Drill and hazard instructions,as_readiness,Readiness,तैयारी,ᱛᱮᱭᱟᱨᱤ,,,i18n.js / i18nJaagruk.js
-1 · Drill and hazard instructions,as_say_one_or_two,"Say ""one"" or ""two""","""एक"" या ""दो"" बोलें","""ᱢᱤᱫ"" ᱥᱮ ""ᱵᱟᱨ"" ᱨᱚᱲ",,,i18n.js / i18nJaagruk.js
-1 · Drill and hazard instructions,as_speak_answer,Speak your answer,बोलकर उत्तर दें,ᱨᱚᱲ ᱠᱟᱛᱮ ᱛᱮᱞᱟ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,as_say_one_or_two,Say the option number,विकल्प का नंबर बोलें,ᱵᱟᱪᱷᱟᱣ ᱨᱮᱭᱟᱜ ᱱᱚᱢᱵᱚᱨ ᱨᱚᱲ ᱢᱮ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,as_speak_or_tap,"Speak the option number, or tap — either works","विकल्प का नंबर बोलें, या टैप करें — दोनों चलेंगे","ᱵᱟᱪᱷᱟᱣ ᱨᱮᱭᱟᱜ ᱱᱚᱢᱵᱚᱨ ᱨᱚᱲ ᱢᱮ, ᱥᱮ ᱛᱚᱯᱟᱣ ᱢᱮ — ᱵᱟᱨᱭᱟ ᱜᱮ ᱠᱟᱹᱢᱤᱭᱟ",,,i18n.js / i18nJaagruk.js
 1 · Drill and hazard instructions,as_speed,Reaction speed,प्रतिक्रिया गति,ᱛᱮᱞᱟ ᱞᱚᱜᱚᱱ,,,i18n.js / i18nJaagruk.js
 1 · Drill and hazard instructions,as_target_time,Target,लक्ष्य,ᱞᱟᱠᱷᱟᱭ,,,i18n.js / i18nJaagruk.js
 1 · Drill and hazard instructions,as_time_pressure,You are being timed,आपका समय गिना जा रहा है,ᱟᱢᱟᱜ ᱚᱠᱛᱚ ᱞᱮᱠᱷᱟ ᱠᱟᱱᱟ,,,i18n.js / i18nJaagruk.js
 1 · Drill and hazard instructions,as_UNKNOWN,Voice input had a problem. Tap instead.,आवाज़ में दिक्कत हुई। टैप करें।,ᱨᱚᱲ ᱵᱚᱞᱚ ᱨᱮ ᱫᱩᱠ ᱦᱩᱭ ᱮᱱᱟ ᱾ ᱛᱚᱯᱟᱣ ᱢᱮ ᱾,,,i18nSantali.js
 1 · Drill and hazard instructions,as_UNSUPPORTED,This browser cannot listen for spoken answers.,यह ब्राउज़र बोले गए उत्तर नहीं सुन सकता।,ᱱᱚᱶᱟ ᱵᱨᱟᱣᱡᱚᱨ ᱨᱚᱲ ᱛᱮᱞᱟ ᱵᱟᱝ ᱟᱸᱡᱚᱢ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,as_voice_mute,Mute,बंद करें,ᱵᱚᱸᱫ ᱢᱮ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,as_voice_muted,Microphone off,माइक बंद,ᱢᱟᱭᱠ ᱵᱚᱸᱫ,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,as_voice_starting,Microphone starting…,माइक शुरू हो रहा है…,ᱢᱟᱭᱠ ᱮᱦᱚᱵ ᱠᱟᱱᱟ…,,,i18n.js / i18nJaagruk.js
+1 · Drill and hazard instructions,as_voice_unmute,Unmute,चालू करें,ᱮᱦᱚᱵ ᱢᱮ,,,i18n.js / i18nJaagruk.js
 1 · Drill and hazard instructions,as_your_time,Your time,आपका समय,ᱟᱢᱟᱜ ᱚᱠᱛᱚ,,,i18n.js / i18nJaagruk.js
 1 · Drill and hazard instructions,bd_acknowledge,I see it — respond,मैंने देखा — प्रतिक्रिया दें,ᱧᱮᱞ ᱠᱮᱫᱟᱹᱧ — ᱛᱮᱞᱟᱭ,,,i18n.js / i18nJaagruk.js
 1 · Drill and hazard instructions,bd_bad_code,That code could not be read. Scan it again.,यह कोड पढ़ा नहीं गया। फिर स्कैन करें।,ᱱᱚᱶᱟ ᱠᱚᱰ ᱵᱟᱝ ᱯᱟᱲᱦᱟᱣ ᱦᱩᱭ ᱞᱮᱱᱟ ᱾ ᱫᱚᱦᱲᱟ ᱥᱠᱮᱱ ᱢᱮ ᱾,,,i18nSantali.js
@@ -124,6 +134,7 @@
 1 · Drill and hazard instructions,buddy_step_resp2,The alarm is raised. Rescue is four minutes away. What now?,अलार्म बज गया। बचाव दल चार मिनट दूर है। अब क्या?,ᱟᱞᱟᱨᱢ ᱨᱩᱭ ᱮᱱᱟ ᱾ ᱩᱫᱷᱟᱹᱨ ᱫᱟᱞ ᱯᱩᱱ ᱢᱤᱱᱤᱴ ᱥᱟᱶ ᱦᱮᱡᱚᱜᱼᱟ ᱾ ᱛᱮᱦᱮᱸ ᱪᱮᱫ?,,,i18n.js / i18nJaagruk.js
 1 · Drill and hazard instructions,err_attempts_left,attempts left,प्रयास बाकी,ᱠᱩᱨᱩᱢᱩᱴᱩ ᱵᱟᱠᱤ,,,i18nSantali.js
 1 · Drill and hazard instructions,err_LOCKED_OUT,Too many wrong attempts. Wait before trying again.,बहुत बार गलत। फिर कोशिश करने से पहले रुकें।,ᱟᱭᱢᱟ ᱫᱷᱟᱣ ᱵᱷᱩᱞ ᱮᱱᱟ ᱾ ᱫᱚᱦᱲᱟ ᱠᱩᱨᱩᱢᱩᱴᱩ ᱞᱟᱦᱟ ᱛᱷᱤᱨ ᱢᱮ ᱾,,,i18nSantali.js
+1 · Drill and hazard instructions,err_NAME_INVALID,"Enter a name, not just numbers.","नाम लिखें, केवल अंक नहीं।","ᱧᱩᱛᱩᱢ ᱚᱞ ᱢᱮ, ᱠᱷᱟᱹᱞᱤ ᱮᱞ ᱵᱟᱝ ᱾",,,i18nSantali.js
 1 · Drill and hazard instructions,err_NAME_TOO_LONG,That name is too long.,यह नाम बहुत लंबा है।,ᱱᱚᱶᱟ ᱧᱩᱛᱩᱢ ᱟᱹᱰᱤ ᱡᱤᱞᱤᱧ ᱾,,,i18nSantali.js
 1 · Drill and hazard instructions,err_NAME_TOO_SHORT,Please enter at least 2 characters.,कम से कम 2 अक्षर लिखें।,ᱠᱚᱢ ᱛᱮ ᱠᱚᱢ 2 ᱟᱹᱠᱷᱚᱨ ᱚᱞ ᱢᱮ ᱾,,,i18nSantali.js
 1 · Drill and hazard instructions,err_PHONE_INVALID,"Enter a 10-digit phone number, or leave it blank.","10 अंकों का नंबर लिखें, या खाली छोड़ दें।","10 ᱮᱞ ᱯᱷᱚᱱ ᱱᱟᱢᱵᱚᱨ ᱚᱞ ᱢᱮ, ᱥᱮ ᱠᱷᱟᱞᱤ ᱵᱟᱰᱟᱭ ᱢᱮ ᱾",,,i18nSantali.js
@@ -205,7 +216,11 @@
 1 · Drill and hazard instructions,scan_analyzing,Analyzing…,विश्लेषण हो रहा है…,ᱧᱮᱞ ᱠᱟᱱᱟ…,,,i18nSantali.js
 1 · Drill and hazard instructions,scan_another,Scan Another Photo,दूसरी फोटो स्कैन करें,ᱮᱴᱟᱜ ᱯᱷᱚᱴᱚ ᱥᱠᱮᱱ ᱢᱮ,,,i18nSantali.js
 1 · Drill and hazard instructions,scan_desc,"Upload or capture a photo of a work area. The AI inspector marks hazards directly on the image, the way a safety officer would during a floor walk.","कार्यक्षेत्र की तस्वीर अपलोड करें या कैद करें। एआई इंस्पेक्टर तस्वीर पर सीधे खतरों को चिह्नित करता है, ठीक वैसे जैसे कोई सुरक्षा अधिकारी फ्लोर वॉक के दौरान करता है।","ᱠᱟᱹᱢᱤ ᱡᱟᱭᱜᱟ ᱨᱮᱭᱟᱜ ᱯᱷᱚᱴᱚ ᱟᱯᱞᱳᱰ ᱥᱮ ᱦᱟᱛᱟᱣ ᱢᱮ ᱾ AI ᱧᱮᱞᱚᱜᱤᱡ ᱪᱤᱛᱟᱹᱨ ᱨᱮ ᱜᱮ ᱡᱚᱠᱷᱚᱢ ᱠᱚ ᱪᱤᱱᱦᱟᱹᱭᱮᱫᱟ, ᱡᱮᱞᱮᱠᱟ ᱨᱠᱷᱟ ᱚᱯᱷᱤᱥᱚᱨ ᱡᱟᱭᱜᱟ ᱧᱮᱞ ᱚᱠᱛᱚ ᱨᱮ ᱠᱟᱹᱢᱤᱭᱮᱫᱟᱭ ᱾",,,i18nSantali.js
+1 · Drill and hazard instructions,scan_err_empty,The inspection returned nothing. This is not a clean result — try the scan again.,"जांच से कोई उत्तर नहीं आया। यह ""सब ठीक"" नहीं है — स्कैन दोबारा करें।","ᱧᱮᱞ ᱠᱟᱹᱢᱤ ᱠᱷᱚᱱ ᱪᱮᱫ ᱦᱚᱸ ᱵᱟᱝ ᱦᱮᱡ ᱞᱮᱱᱟ ᱾ ᱱᱚᱶᱟ ""ᱡᱚᱛᱚ ᱴᱷᱤᱠ"" ᱵᱟᱝ ᱠᱟᱱᱟ — ᱫᱚᱦᱲᱟ ᱥᱠᱮᱱ ᱢᱮ ᱾",,,i18nSantali.js
+1 · Drill and hazard instructions,scan_err_unreadable,"The inspection result could not be read, so nothing was checked. Try again with a clearer photo.","जांच का परिणाम पढ़ा नहीं जा सका, इसलिए कुछ भी जांचा नहीं गया। साफ़ फोटो से दोबारा कोशिश करें।","ᱧᱮᱞ ᱠᱟᱹᱢᱤ ᱨᱮᱭᱟᱜ ᱯᱷᱚᱞ ᱵᱟᱝ ᱯᱟᱲᱦᱟᱣ ᱦᱩᱭ ᱞᱮᱱᱟ, ᱚᱱᱟᱛᱮ ᱪᱮᱫ ᱦᱚᱸ ᱵᱟᱝ ᱡᱟᱹᱨᱩᱭ ᱦᱩᱭ ᱞᱮᱱᱟ ᱾ ᱯᱷᱟᱹᱨᱪᱟ ᱯᱷᱚᱴᱚ ᱛᱮ ᱫᱚᱦᱲᱟ ᱠᱩᱨᱩᱢᱩᱴᱩᱭ ᱢᱮ ᱾",,,i18nSantali.js
 1 · Drill and hazard instructions,scan_eyebrow,Hazard Scan,खतरा स्कैन,ᱡᱚᱠᱷᱚᱢ ᱥᱠᱮᱱ,,,i18nSantali.js
+1 · Drill and hazard instructions,scan_found_label,found,मिले,ᱧᱟᱢ ᱮᱱᱟ,,,i18nSantali.js
+1 · Drill and hazard instructions,scan_high_label,high severity,उच्च गंभीरता,ᱡᱟᱥᱛᱤ ᱡᱚᱠᱷᱚᱢ,,,i18nSantali.js
 1 · Drill and hazard instructions,scan_hint,Works with any work-area or training photo.,किसी भी कार्यक्षेत्र या प्रशिक्षण फोटो के साथ काम करता है।,ᱡᱟᱦᱟᱸ ᱠᱟᱹᱢᱤ ᱡᱟᱭᱜᱟ ᱥᱮ ᱛᱟᱞᱤᱢ ᱯᱷᱚᱴᱚ ᱥᱟᱶ ᱠᱟᱹᱢᱤᱭᱟ ᱾,,,i18nSantali.js
 1 · Drill and hazard instructions,scan_no_hazards,No hazards detected.,कोई खतरा नहीं मिला।,ᱡᱟᱦᱟᱸ ᱡᱚᱠᱷᱚᱢ ᱵᱟᱝ ᱧᱟᱢ ᱞᱮᱱᱟ ᱾,,,i18nSantali.js
 1 · Drill and hazard instructions,scan_no_key_body,Add a free Gemini or OpenAI key in Settings to run inspections.,निरीक्षण चलाने के लिए सेटिंग्स में एक मुफ्त Gemini या OpenAI कुंजी जोड़ें।,ᱧᱮᱞ ᱠᱟᱹᱢᱤ ᱮᱦᱚᱵ ᱞᱟᱹᱜᱤᱫ ᱥᱮᱴᱤᱝᱥ ᱨᱮ ᱢᱤᱫ ᱢᱩᱯᱷᱚᱛ Gemini ᱥᱮ OpenAI ᱠᱩᱸᱡᱤ ᱮᱢ ᱢᱮ ᱾,,,i18nSantali.js
@@ -215,13 +230,14 @@
 1 · Drill and hazard instructions,scan_run,Run AI Inspection,एआई निरीक्षण चलाएं,AI ᱧᱮᱞ ᱠᱟᱹᱢᱤ ᱮᱦᱚᱵ ᱢᱮ,,,i18nSantali.js
 1 · Drill and hazard instructions,scan_title,Point. Capture. Inspect.,दिखाएं। कैद करें। जांचें।,ᱩᱫᱩᱜ ᱢᱮ ᱾ ᱦᱟᱛᱟᱣ ᱢᱮ ᱾ ᱧᱮᱞ ᱢᱮ ᱾,,,i18nSantali.js
 2 · Worker-facing flows,chat_greeting,"Hi! I'm the Jaagruk assistant. Ask me anything about how this app works — AR drills, reaction-time scoring, the buddy drill, certificates, hazard reports, or anything you're unsure about.","नमस्ते! मैं जागरुक सहायक हूं। यह ऐप कैसे काम करता है — खतरा स्कैनिंग, परिदृश्य, सेटिंग्स, या जो भी आपको समझ न आए, मुझसे कुछ भी पूछें।","ᱡᱚᱦᱟᱨ! ᱤᱧ ᱡᱟᱜᱨᱩᱠ ᱜᱚᱲᱚ ᱠᱟᱱᱟᱹᱧ ᱾ ᱱᱚᱶᱟ ᱮᱯ ᱪᱮᱫ ᱞᱮᱠᱟ ᱠᱟᱹᱢᱤᱭᱟ — AR ᱛᱟᱞᱤᱢ, ᱚᱠᱛᱚ ᱞᱮᱠᱷᱟ, ᱡᱚᱲᱟᱣ ᱛᱟᱞᱤᱢ, ᱯᱚᱨᱢᱟᱱ, ᱡᱚᱠᱷᱚᱢ ᱠᱷᱚᱵᱚᱨ, ᱥᱮ ᱡᱟᱦᱟᱸ ᱠᱟᱛᱷᱟ ᱵᱟᱝ ᱵᱩᱡᱷᱟᱹᱣ ᱠᱷᱟᱱ — ᱤᱧ ᱛᱮ ᱠᱩᱠᱞᱤ ᱢᱮ ᱾",,,i18nSantali.js
-2 · Worker-facing flows,chat_no_key,Add a free API key in Settings first so I can respond — go to the Settings tab and paste a Gemini key.,पहले सेटिंग्स में एक मुफ्त एपीआई कुंजी जोड़ें ताकि मैं जवाब दे सकूं — सेटिंग्स टैब पर जाएं और Gemini कुंजी पेस्ट करें।,ᱢᱟᱲᱟᱝ ᱥᱮᱴᱤᱝᱥ ᱨᱮ ᱢᱤᱫ ᱢᱩᱯᱷᱚᱛ API ᱠᱩᱸᱡᱤ ᱮᱢ ᱢᱮ ᱚᱱᱟᱛᱮ ᱤᱧ ᱛᱮᱞᱟ ᱫᱟᱲᱮᱭᱟᱜᱼᱟᱹᱧ — ᱥᱮᱴᱤᱝᱥ ᱴᱮᱵ ᱛᱮ ᱪᱟᱞᱟᱜ ᱠᱟᱛᱮ Gemini ᱠᱩᱸᱡᱤ ᱮᱢ ᱢᱮ ᱾,,,i18nSantali.js
+2 · Worker-facing flows,chat_local_miss,"I only answer questions about this app, and I don't have that one. Try one of the questions below, or ask about drills, scores, certificates, voice, offline use or your data.","मैं केवल इस ऐप के बारे में जवाब देता हूं, और यह मेरे पास नहीं है। नीचे दिए सवालों में से कोई चुनें, या ड्रिल, अंक, प्रमाण-पत्र, आवाज़, ऑफ़लाइन उपयोग या अपने डेटा के बारे में पूछें।","ᱤᱧ ᱠᱷᱟᱹᱞᱤ ᱱᱚᱶᱟ ᱮᱯ ᱵᱟᱵᱚᱛ ᱛᱮᱞᱟ ᱮᱢᱟᱹᱧ, ᱟᱨ ᱱᱚᱶᱟ ᱤᱧ ᱠᱷᱚᱱ ᱵᱟᱝ ᱢᱮᱱᱟᱜᱼᱟ ᱾ ᱞᱟᱛᱟᱨ ᱨᱮᱭᱟᱜ ᱠᱩᱠᱞᱤ ᱠᱷᱚᱱ ᱡᱟᱦᱟᱸ ᱢᱤᱫ ᱵᱟᱪᱷᱟᱣ ᱢᱮ ᱾",,,i18n.js / i18nJaagruk.js
 2 · Worker-facing flows,chat_placeholder,Ask about this app…,इस ऐप के बारे में पूछें…,ᱱᱚᱶᱟ ᱮᱯ ᱵᱟᱵᱚᱛ ᱠᱩᱠᱞᱤ ᱢᱮ…,,,i18nSantali.js
 2 · Worker-facing flows,chat_send,Send,भेजें,ᱠᱩᱞ ᱢᱮ,,,i18n.js / i18nJaagruk.js
 2 · Worker-facing flows,chat_thinking,Thinking…,सोच रहा हूं…,ᱵᱷᱟᱵᱤᱡ ᱛᱟᱦᱮᱸᱱ…,,,i18n.js / i18nJaagruk.js
 2 · Worker-facing flows,chat_title,Jaagruk Assistant,जागरुक सहायक,ᱡᱟᱜᱨᱩᱠ ᱜᱚᱲᱚ,,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,home_ar_blocked,3D only,केवल 3D,3D ᱜᱮ,,,i18nSantali.js
+2 · Worker-facing flows,home_ar_ready,Camera AR ready,कैमरा एआर तैयार,ᱠᱮᱢᱨᱟ AR ᱛᱮᱭᱟᱨ,,,i18nSantali.js
 2 · Worker-facing flows,home_cta_buddy,Try the buddy drill,बडी ड्रिल आज़माएं,ᱡᱚᱲᱟᱣ ᱛᱟᱞᱤᱢ ᱠᱩᱨᱩᱢᱩᱴᱩᱭ,,,i18n.js / i18nJaagruk.js
-2 · Worker-facing flows,home_cta_scan,Scan a Hazard,खतरा स्कैन करें,ᱡᱚᱠᱷᱚᱢ ᱥᱠᱮᱱ ᱢᱮ,,,i18nSantali.js
 2 · Worker-facing flows,home_cta_train,Start Simulator,सिम्युलेटर शुरू करें,ᱥᱤᱢᱩᱞᱮᱴᱚᱨ ᱮᱦᱚᱵ ᱢᱮ,,,i18nSantali.js
 2 · Worker-facing flows,home_desc,"Jaagruk trains workers to recognize hazards before they become accidents, times how fast they react, and certifies them into a record that cannot be quietly edited — on a phone, with no headset and no signal needed.","जागरुक श्रमिकों को दुर्घटना होने से पहले खतरे पहचानना सिखाता है, उनकी प्रतिक्रिया की गति मापता है, और उन्हें ऐसे रिकॉर्ड में प्रमाणित करता है जिसे चुपचाप बदला नहीं जा सकता — फोन पर, बिना हेडसेट और बिना सिग्नल।","ᱡᱟᱜᱨᱩᱠ ᱠᱟᱹᱢᱤ ᱦᱚᱲ ᱠᱚ ᱡᱚᱠᱷᱚᱢ ᱵᱟᱰᱟᱭ ᱛᱟᱞᱤᱢ ᱮᱢᱟᱭ ᱟᱨ ᱚᱠᱛᱚ ᱞᱮᱠᱷᱟᱭ ᱾ ᱯᱷᱚᱱ ᱨᱮ ᱜᱮ, ᱦᱮᱰᱥᱮᱴ ᱟᱨ ᱥᱤᱜᱱᱟᱞ ᱵᱟᱝ ᱞᱟᱹᱠᱛᱤ ᱾",,,i18n.js / i18nJaagruk.js
 2 · Worker-facing flows,home_explore,Everything in Jaagruk,जागरुक में सब कुछ,ᱡᱟᱜᱨᱩᱠ ᱨᱮ ᱡᱚᱛᱚ,,,i18n.js / i18nJaagruk.js
@@ -317,14 +333,13 @@
 2 · Worker-facing flows,rf_start,Start 90-second check,90 सेकंड की जांच शुरू करें,90 ᱥᱮᱠᱮᱸᱰ ᱠᱩᱲᱟᱹᱭ ᱮᱦᱚᱵ,,,i18n.js / i18nJaagruk.js
 2 · Worker-facing flows,rf_title,Keep it fresh,याद बनाए रखें,ᱩᱭᱦᱟᱹᱨ ᱫᱚᱦᱚᱭ ᱢᱮ,,,i18n.js / i18nJaagruk.js
 2 · Worker-facing flows,rf_web_limit,Reminders appear when you open the app. A phone cannot be woken on a schedule from a web page — the installed Android build can.,रिमाइंडर ऐप खोलने पर दिखते हैं। वेब पेज से फ़ोन को समय पर जगाया नहीं जा सकता — इंस्टॉल किया Android बिल्ड कर सकता है।,ᱩᱭᱦᱟᱹᱨ ᱦᱚᱪᱚ ᱫᱚ ᱮᱯ ᱡᱷᱤᱡ ᱚᱠᱛᱚ ᱩᱫᱩᱜᱚᱜᱼᱟ ᱾ ᱣᱮᱵ ᱥᱟᱦᱴᱟ ᱠᱷᱚᱱ ᱯᱷᱚᱱ ᱚᱠᱛᱚ ᱨᱮ ᱵᱟᱝ ᱩᱠᱩᱢ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ — ᱮᱥᱮᱫ ᱠᱟᱱ Android ᱵᱤᱞᱰ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ ᱾,,,i18nSantali.js
+2 · Worker-facing flows,set_ai_local,"The Jaagruk assistant answers from this device. It needs no key, no account and no internet.","जागरुक सहायक इसी डिवाइस से जवाब देता है। इसे कोई कुंजी, खाता या इंटरनेट नहीं चाहिए।","ᱡᱟᱜᱨᱩᱠ ᱜᱚᱲᱚ ᱱᱚᱶᱟ ᱰᱤᱵᱟᱭᱤᱥ ᱠᱷᱚᱱ ᱜᱮ ᱛᱮᱞᱟ ᱮᱢᱟ ᱾ ᱡᱟᱦᱟᱸ ᱠᱩᱸᱡᱤ, ᱠᱷᱟᱛᱟ ᱥᱮ ᱤᱱᱴᱚᱨᱱᱮᱴ ᱵᱟᱝ ᱞᱟᱹᱠᱛᱤ ᱾",,,i18n.js / i18nJaagruk.js
+2 · Worker-facing flows,set_ai_supervisor,Only the optional photo hazard scan uses a cloud service. That is a site-wide setting and lives in the supervisor console.,केवल वैकल्पिक फ़ोटो खतरा स्कैन क्लाउड सेवा का उपयोग करता है। वह पूरे साइट की सेटिंग है और सुपरवाइज़र कंसोल में है।,ᱠᱷᱟᱹᱞᱤ ᱯᱷᱚᱴᱚ ᱡᱚᱠᱷᱚᱢ ᱥᱠᱮᱱ ᱠᱞᱟᱣᱰ ᱥᱮᱵᱟ ᱵᱮᱵᱷᱟᱨ ᱠᱟᱛᱮᱫᱟ ᱾ ᱚᱱᱟ ᱥᱩᱯᱚᱨᱣᱟᱭᱡᱚᱨ ᱠᱚᱱᱥᱚᱞ ᱨᱮ ᱢᱮᱱᱟᱜᱼᱟ ᱾,,,i18n.js / i18nJaagruk.js
 2 · Worker-facing flows,set_endpoint_label,Upload endpoint URL,अपलोड एंडपॉइंट URL,ᱟᱯᱞᱳᱰ ᱮᱱᱰᱯᱚᱭᱱᱴ URL,,,i18n.js / i18nJaagruk.js
 2 · Worker-facing flows,set_eyebrow,Settings,सेटिंग्स,ᱥᱮᱴᱤᱝᱥ,,,i18nSantali.js
-2 · Worker-facing flows,set_getting_key,Getting a free key:,मुफ्त कुंजी प्राप्त करना:,ᱢᱩᱯᱷᱚᱛ ᱠᱩᱸᱡᱤ ᱧᱟᱢ ᱦᱚᱨ:,,,i18nSantali.js
-2 · Worker-facing flows,set_key_hint1,Stored only in your browser's local storage. Never sent anywhere except directly to,केवल आपके ब्राउज़र के लोकल स्टोरेज में सहेजा गया। सीधे इसके अलावा कहीं नहीं भेजा जाता,ᱟᱢᱟᱜ ᱵᱨᱟᱣᱡᱚᱨ ᱨᱮᱭᱟᱜ ᱞᱚᱠᱟᱞ ᱥᱴᱳᱨᱮᱡ ᱨᱮ ᱜᱮ ᱥᱟᱸᱪᱟᱣ ᱟᱠᱟᱱᱟ ᱾ ᱱᱚᱶᱟ ᱵᱟᱹᱭᱨᱮ ᱛᱤᱱᱟᱹᱜ ᱦᱚᱸ ᱵᱟᱝ ᱠᱩᱞᱚᱜᱼᱟ,,,i18nSantali.js
 2 · Worker-facing flows,set_key_label,API Key,एपीआई कुंजी,API ᱠᱩᱸᱡᱤ,,,i18nSantali.js
 2 · Worker-facing flows,set_key_placeholder,Paste your API key,अपनी एपीआई कुंजी पेस्ट करें,ᱟᱢᱟᱜ API ᱠᱩᱸᱡᱤ ᱮᱢ ᱢᱮ,,,i18nSantali.js
 2 · Worker-facing flows,set_language_label,App Language,ऐप की भाषा,ᱮᱯ ᱨᱮᱭᱟᱜ ᱯᱟᱹᱨᱥᱤ,,,i18nSantali.js
-2 · Worker-facing flows,set_provider_hint,Gemini has the most generous free tier — recommended for a hackathon demo.,Gemini का मुफ्त टियर सबसे उदार है — हैकाथॉन डेमो के लिए अनुशंसित।,Gemini ᱨᱮᱭᱟᱜ ᱢᱩᱯᱷᱚᱛ ᱴᱤᱭᱟᱨ ᱡᱟᱥᱛᱤ ᱡᱟᱹᱥᱛᱤ — ᱦᱮᱠᱟᱛᱚᱱ ᱰᱮᱢᱳ ᱞᱟᱹᱜᱤᱫ ᱵᱮᱥ ᱾,,,i18nSantali.js
 2 · Worker-facing flows,set_provider_label,Provider,प्रदाता,ᱮᱢᱚᱜᱤᱡ,,,i18nSantali.js
 2 · Worker-facing flows,set_save,Save Settings,सेटिंग्स सहेजें,ᱥᱮᱴᱤᱝᱥ ᱥᱟᱸᱪᱟᱣ ᱢᱮ,,,i18nSantali.js
 2 · Worker-facing flows,set_saved,Saved ✓,सहेजा गया ✓,ᱥᱟᱸᱪᱟᱣ ᱮᱱᱟ ✓,,,i18nSantali.js
@@ -456,6 +471,7 @@
 4 · Supervisor surfaces,ad_import_done,Import complete,आयात पूर्ण,ᱟᱹᱜᱩ ᱦᱩᱭ ᱮᱱᱟ,,,i18nSantali.js
 4 · Supervisor surfaces,ad_import_failed,That file is not a Jaagruk bundle.,यह फ़ाइल जागरुक बंडल नहीं है।,ᱱᱚᱶᱟ ᱯᱷᱟᱭᱤᱞ ᱡᱟᱜᱨᱩᱠ ᱵᱟᱱᱰᱚᱞ ᱵᱟᱝ ᱠᱟᱱᱟ ᱾,,,i18nSantali.js
 4 · Supervisor surfaces,ad_import_trust,Also trust the signing devices in this bundle,इस बंडल के हस्ताक्षर डिवाइस पर भी भरोसा करें,ᱱᱚᱶᱟ ᱵᱟᱱᱰᱚᱞ ᱨᱮᱭᱟᱜ ᱥᱩᱦᱤ ᱡᱤᱱᱤᱥ ᱠᱚ ᱦᱚᱸ ᱯᱟᱛᱭᱟᱣ ᱢᱮ,,,i18nSantali.js
+4 · Supervisor surfaces,ad_key_warning,"Optional. Only the photo hazard scan uses this. A key entered here is stored on this device and is not secret — use a restricted key, never an account-wide one.","वैकल्पिक। केवल फ़ोटो खतरा स्कैन इसका उपयोग करता है। यहां डाली गई कुंजी इसी डिवाइस पर रहती है और गुप्त नहीं है — सीमित कुंजी लें, पूरे खाते की नहीं।",ᱵᱟᱪᱷᱟᱣ ᱨᱮᱭᱟᱜ ᱾ ᱠᱷᱟᱹᱞᱤ ᱯᱷᱚᱴᱚ ᱡᱚᱠᱷᱚᱢ ᱥᱠᱮᱱ ᱱᱚᱶᱟ ᱵᱮᱵᱷᱟᱨ ᱠᱟᱛᱮᱫᱟ ᱾ ᱱᱚᱰᱮ ᱮᱢ ᱠᱟᱱ ᱠᱩᱸᱡᱤ ᱱᱚᱶᱟ ᱰᱤᱵᱟᱭᱤᱥ ᱨᱮ ᱛᱟᱦᱮᱸᱱᱟ ᱟᱨ ᱩᱠᱩ ᱵᱟᱝ ᱠᱟᱱᱟ ᱾,,,i18n.js / i18nJaagruk.js
 4 · Supervisor surfaces,ad_ledger_empty,No certificates have been issued on this device.,इस डिवाइस पर कोई प्रमाणपत्र जारी नहीं हुआ।,ᱱᱚᱶᱟ ᱡᱤᱱᱤᱥ ᱨᱮ ᱡᱟᱦᱟᱸ ᱯᱚᱨᱢᱟᱱ ᱵᱟᱝ ᱮᱢ ᱞᱮᱱᱟ ᱾,,,i18nSantali.js
 4 · Supervisor surfaces,ad_ledger_intact,All records intact,सभी रिकॉर्ड अक्षुण्ण,ᱡᱚᱛᱚ ᱨᱮᱠᱚᱰ ᱴᱷᱤᱠ,,,i18nSantali.js
 4 · Supervisor surfaces,ad_ledger_intact_to,Chain intact up to record,रिकॉर्ड तक चेन अक्षुण्ण,ᱨᱮᱠᱚᱰ ᱦᱟᱹᱵᱤᱡ ᱥᱟᱸᱠᱞᱤ ᱴᱷᱤᱠ,,,i18nSantali.js
@@ -538,6 +554,9 @@
 5 · Other,clear_label,Clear,साफ़ करें,ᱯᱷᱟᱹᱨᱪᱟ,,,i18n.js / i18nJaagruk.js
 5 · Other,close_label,Close,बंद करें,ᱵᱚᱸᱫᱚᱭ,,,i18n.js / i18nJaagruk.js
 5 · Other,delete_label,Delete,हटाएं,ᱜᱷᱟᱹᱴᱟᱣ,,,i18n.js / i18nJaagruk.js
+5 · Other,demo_load,Load demo site,डेमो साइट लोड करें,ᱰᱮᱢᱚ ᱥᱟᱭᱤᱴ ᱞᱚᱰ ᱢᱮ,,,i18nSantali.js
+5 · Other,demo_loaded,Demo site loaded,डेमो साइट लोड हो गई,ᱰᱮᱢᱚ ᱥᱟᱭᱤᱴ ᱞᱚᱰ ᱮᱱᱟ,,,i18nSantali.js
+5 · Other,demo_note,"Adds a worked example site — three zones with exits, extinguishers, gas and lockout points already marked — so the camera drill can be tried without walking a real site first. No training records are created.","एक तैयार उदाहरण साइट जोड़ता है — तीन ज़ोन, जिनमें निकास, अग्निशामक, गैस और लॉकआउट पॉइंट पहले से चिह्नित हैं — ताकि असली साइट पर घूमे बिना कैमरा ड्रिल आज़माई जा सके। कोई प्रशिक्षण रिकॉर्ड नहीं बनता।","ᱢᱤᱫ ᱛᱮᱭᱟᱨ ᱩᱫᱩᱜ ᱥᱟᱭᱤᱴ ᱥᱮᱞᱮᱫᱟ — ᱯᱮᱭᱟ ᱡᱚᱱ, ᱚᱠᱟ ᱨᱮ ᱚᱰᱚᱠ ᱦᱚᱨ, ᱥᱮᱸᱜᱮᱞ ᱛᱩᱴᱟᱹᱣ, ᱜᱮᱥ ᱟᱨ ᱞᱚᱠᱟᱣᱴ ᱴᱷᱟᱶ ᱞᱟᱦᱟ ᱠᱷᱚᱱ ᱜᱮ ᱪᱤᱱᱦᱟᱹ ᱢᱮᱱᱟᱜᱼᱟ — ᱚᱱᱟᱛᱮ ᱥᱟᱹᱨᱤ ᱥᱟᱭᱤᱴ ᱨᱮ ᱵᱟᱝ ᱵᱩᱞᱮ ᱠᱟᱛᱮ ᱦᱚᱸ ᱠᱮᱢᱨᱟ ᱛᱟᱞᱤᱢ ᱧᱮᱞ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ ᱾ ᱡᱟᱦᱟᱸ ᱛᱟᱞᱤᱢ ᱨᱮᱠᱚᱰ ᱵᱟᱝ ᱛᱮᱭᱟᱨᱚᱜᱼᱟ ᱾",,,i18nSantali.js
 5 · Other,dismiss_label,Dismiss,हटाएं,ᱚᱰᱚᱠ,,,i18n.js / i18nJaagruk.js
 5 · Other,done_label,Done,पूर्ण,ᱦᱩᱭ ᱮᱱᱟ,,,i18n.js / i18nJaagruk.js
 5 · Other,error_label,Something went wrong,कुछ गलत हुआ,ᱚᱠᱟ ᱦᱚᱸ ᱵᱷᱩᱞ ᱦᱩᱭ ᱮᱱᱟ,,,i18n.js / i18nJaagruk.js
@@ -571,3 +590,38 @@
 5 · Other,th_system,Auto,स्वतः,ᱟᱡᱛᱮ,,,i18n.js / i18nJaagruk.js
 5 · Other,trust_label,Trust this signer,इस हस्ताक्षरकर्ता पर भरोसा करें,ᱱᱚᱶᱟ ᱥᱩᱦᱤ ᱠᱚ ᱯᱟᱛᱭᱟᱣ,,,i18n.js / i18nJaagruk.js
 5 · Other,trust_skip_label,Import without trusting,भरोसा किए बिना आयात करें,ᱵᱟᱝ ᱯᱟᱛᱭᱟᱣ ᱠᱟᱛᱮ ᱟᱹᱜᱩ,,,i18n.js / i18nJaagruk.js
+5 · Other,vision_idle,Detection off,पहचान बंद,ᱵᱟᱛᱟᱣ ᱵᱚᱸᱫ,,,i18nSantali.js
+5 · Other,vision_label,Live detection,लाइव पहचान,ᱞᱟᱭᱤᱵᱷ ᱵᱟᱛᱟᱣ,,,i18nSantali.js
+5 · Other,vision_loading,Loading detector…,डिटेक्टर लोड हो रहा है…,ᱵᱟᱛᱟᱣ ᱭᱚᱱᱛᱨᱚ ᱞᱚᱰ ᱠᱟᱱᱟ…,,,i18nSantali.js
+5 · Other,vision_model_failed,The detector could not load. The drill continues without it.,डिटेक्टर लोड नहीं हो सका। ड्रिल इसके बिना चलती रहेगी।,ᱵᱟᱛᱟᱣ ᱭᱚᱱᱛᱨᱚ ᱞᱚᱰ ᱵᱟᱝ ᱦᱩᱭ ᱞᱮᱱᱟ ᱾ ᱛᱟᱞᱤᱢ ᱚᱱᱟ ᱵᱟᱝ ᱠᱟᱛᱮ ᱦᱚᱸ ᱞᱟᱦᱟ ᱛᱮ ᱪᱟᱞᱟᱜᱼᱟ ᱾,,,i18nSantali.js
+5 · Other,vision_no_camera,No camera available for detection.,पहचान के लिए कैमरा उपलब्ध नहीं।,ᱵᱟᱛᱟᱣ ᱞᱟᱹᱜᱤᱫ ᱠᱮᱢᱨᱟ ᱵᱟᱝ ᱦᱮᱸᱡᱚᱜ ᱾,,,i18nSantali.js
+5 · Other,vision_none,Nothing detected,कुछ नहीं मिला,ᱡᱟᱦᱟᱸ ᱵᱟᱝ ᱧᱟᱢ ᱞᱮᱱᱟ,,,i18nSantali.js
+5 · Other,vision_people,People,लोग,ᱦᱚᱲ,,,i18nSantali.js
+5 · Other,vision_running,Detecting,पहचान चल रही है,ᱵᱟᱛᱟᱣ ᱠᱟᱱᱟ,,,i18nSantali.js
+5 · Other,vision_scope,Detects people and vehicles only,सिर्फ लोग और वाहन पहचानता है,ᱠᱷᱟᱹᱞᱤ ᱦᱚᱲ ᱟᱨ ᱜᱟᱰᱤ ᱵᱟᱛᱟᱣᱟ,,,i18nSantali.js
+5 · Other,vision_unsupported,This browser cannot run on-device detection.,यह ब्राउज़र डिवाइस पर पहचान नहीं चला सकता।,ᱱᱚᱶᱟ ᱵᱨᱟᱣᱡᱚᱨ ᱯᱷᱚᱱ ᱨᱮ ᱵᱟᱛᱟᱣ ᱵᱟᱝ ᱮᱦᱚᱵ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ ᱾,,,i18nSantali.js
+5 · Other,vision_vehicle_near,Vehicle close — keep clear,वाहन पास है — दूर रहें,ᱜᱟᱰᱤ ᱦᱟᱹᱲᱤᱡ ᱨᱮ — ᱟᱹᱲᱟᱹᱜ ᱛᱟᱦᱮᱸᱱ ᱢᱮ,,,i18nSantali.js
+5 · Other,vision_vehicles,Vehicles,वाहन,ᱜᱟᱰᱤ,,,i18nSantali.js
+5 · Other,xr_align_invalid,That point could not be used. Try again.,यह बिंदु उपयोग नहीं हो सका। फिर कोशिश करें।,ᱱᱚᱶᱟ ᱴᱷᱟᱶ ᱵᱮᱵᱷᱟᱨ ᱵᱟᱝ ᱦᱩᱭ ᱞᱮᱱᱟ ᱾ ᱫᱚᱦᱲᱟ ᱠᱩᱨᱩᱢᱩᱴᱩᱭ ᱢᱮ ᱾,,,i18nSantali.js
+5 · Other,xr_align_marker,Point at the printed marker plate and tap,छपी हुई मार्कर प्लेट पर निशाना लगाकर टैप करें,ᱪᱷᱟᱯᱟ ᱢᱟᱨᱠᱚᱨ ᱯᱞᱮᱴ ᱛᱮ ᱩᱫᱩᱜ ᱠᱟᱛᱮ ᱛᱚᱯᱟᱣ ᱢᱮ,,,i18nSantali.js
+5 · Other,xr_align_reference,Now tap a second fixed point further along,अब कुछ दूर एक दूसरा स्थिर बिंदु टैप करें,ᱱᱤᱛᱚᱜ ᱛᱷᱚᱰᱟ ᱡᱷᱤᱡ ᱨᱮ ᱵᱟᱨ ᱞᱮᱠᱟᱱ ᱴᱷᱤᱨ ᱴᱷᱟᱶ ᱛᱚᱯᱟᱣ ᱢᱮ,,,i18nSantali.js
+5 · Other,xr_align_too_close,Too close to the first point. Move further away and tap again.,पहले बिंदु के बहुत पास। और दूर जाकर फिर टैप करें।,ᱯᱩᱭᱞᱩ ᱴᱷᱟᱶ ᱠᱷᱚᱱ ᱟᱹᱰᱤ ᱦᱟᱹᱲᱤᱡ ᱾ ᱡᱷᱤᱡ ᱥᱮᱱ ᱠᱟᱛᱮ ᱫᱚᱦᱲᱟ ᱛᱚᱯᱟᱣ ᱢᱮ ᱾,,,i18nSantali.js
+5 · Other,xr_block_insecure,Tracked AR needs a secure (https) connection.,ट्रैक्ड एआर के लिए सुरक्षित (https) कनेक्शन चाहिए।,ᱴᱨᱮᱠ AR ᱞᱟᱹᱜᱤᱫ ᱨᱠᱷᱟ (https) ᱡᱚᱲᱟᱣ ᱞᱟᱹᱠᱛᱤ ᱾,,,i18nSantali.js
+5 · Other,xr_block_no_session,This device does not offer tracked AR. The compass camera view is used instead.,यह डिवाइस ट्रैक्ड एआर नहीं देता। कंपास कैमरा व्यू चलेगा।,ᱱᱚᱶᱟ ᱯᱷᱚᱱ ᱴᱨᱮᱠ AR ᱵᱟᱝ ᱮᱢᱟ ᱾ ᱠᱚᱢᱯᱟᱥ ᱠᱮᱢᱨᱟ ᱧᱮᱞ ᱠᱟᱹᱢᱤᱭᱟ ᱾,,,i18nSantali.js
+5 · Other,xr_block_no_webgl,"This device cannot render 3D, so tracked AR is unavailable.","यह डिवाइस 3D नहीं बना सकता, इसलिए ट्रैक्ड एआर उपलब्ध नहीं।","ᱱᱚᱶᱟ ᱯᱷᱚᱱ 3D ᱵᱟᱝ ᱛᱮᱭᱟᱨ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ, ᱚᱱᱟᱛᱮ ᱴᱨᱮᱠ AR ᱵᱟᱝ ᱦᱮᱸᱡᱚᱜ ᱾",,,i18nSantali.js
+5 · Other,xr_block_unsupported,This browser does not support tracked AR.,यह ब्राउज़र ट्रैक्ड एआर नहीं चला सकता।,ᱱᱚᱶᱟ ᱵᱨᱟᱣᱡᱚᱨ ᱴᱨᱮᱠ AR ᱵᱟᱝ ᱮᱦᱚᱵ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ ᱾,,,i18nSantali.js
+5 · Other,xr_depth_off,No depth sensing — markers draw in front of walls,डेप्थ सेंसिंग नहीं — मार्कर दीवारों के आगे दिखेंगे,ᱡᱷᱤᱡ ᱵᱟᱰᱟᱭ ᱵᱟᱝ — ᱢᱟᱨᱠᱚᱨ ᱠᱚ ᱠᱟᱸᱴ ᱞᱟᱦᱟ ᱨᱮ ᱧᱮᱞᱚᱜᱼᱟ,,,i18nSantali.js
+5 · Other,xr_depth_on,Depth sensing active,डेप्थ सेंसिंग चालू,ᱡᱷᱤᱡ ᱵᱟᱰᱟᱭ ᱠᱟᱹᱢᱤ ᱠᱟᱱᱟ,,,i18nSantali.js
+5 · Other,xr_enter,Start tracked AR,ट्रैक्ड एआर शुरू करें,ᱴᱨᱮᱠ AR ᱮᱦᱚᱵ ᱢᱮ,,,i18nSantali.js
+5 · Other,xr_enter_failed,Tracked AR could not start. The camera view still works.,ट्रैक्ड एआर शुरू नहीं हो सका। कैमरा व्यू अब भी चलेगा।,ᱴᱨᱮᱠ AR ᱵᱟᱝ ᱮᱦᱚᱵ ᱦᱩᱭ ᱞᱮᱱᱟ ᱾ ᱠᱮᱢᱨᱟ ᱧᱮᱞ ᱱᱤᱛᱚᱜ ᱦᱚᱸ ᱠᱟᱹᱢᱤᱭᱟ ᱾,,,i18nSantali.js
+5 · Other,xr_exit,Exit,बाहर,ᱵᱟᱦᱨᱮ ᱚᱰᱚᱠ,,,i18nSantali.js
+5 · Other,xr_hold_still,Hold still,स्थिर रखें,ᱴᱷᱤᱨ ᱫᱚᱦᱚᱭ ᱢᱮ,,,i18nSantali.js
+5 · Other,xr_intro,"Uses the phone motion tracking to place markers at their real distance, so they stay put as you walk.","फ़ोन की मोशन ट्रैकिंग से मार्कर उनकी असली दूरी पर रखे जाते हैं, इसलिए चलने पर भी वे टिके रहते हैं।","ᱯᱷᱚᱱ ᱨᱮᱭᱟᱜ ᱪᱟᱞᱟᱣ ᱴᱨᱮᱠᱤᱝ ᱛᱮ ᱢᱟᱨᱠᱚᱨ ᱠᱚ ᱟᱠᱚᱣᱟᱜ ᱥᱟᱹᱨᱤ ᱡᱷᱤᱡ ᱨᱮ ᱫᱚᱦᱚᱭᱚᱜᱼᱟ, ᱚᱱᱟᱛᱮ ᱪᱟᱞᱟᱣ ᱚᱠᱛᱚ ᱦᱚᱸ ᱚᱱᱟ ᱠᱚ ᱴᱷᱤᱨ ᱛᱟᱦᱮᱸᱱᱟ ᱾",,,i18nSantali.js
+5 · Other,xr_no_surface,No surface found there yet.,वहाँ अभी कोई सतह नहीं मिली।,ᱚᱱᱰᱮ ᱱᱤᱛᱚᱜ ᱡᱟᱦᱟᱸ ᱴᱷᱟᱶ ᱵᱟᱝ ᱧᱟᱢ ᱞᱮᱱᱟ ᱾,,,i18nSantali.js
+5 · Other,xr_note,Needs a recent Android phone with Google Play Services for AR. Where it is unavailable the compass camera view is used instead.,इसके लिए Google Play Services for AR वाला नया Android फ़ोन चाहिए। न होने पर कंपास कैमरा व्यू चलेगा।,ᱱᱚᱶᱟ ᱞᱟᱹᱜᱤᱫ Google Play Services for AR ᱥᱟᱶ ᱱᱟᱶᱟ Android ᱯᱷᱚᱱ ᱞᱟᱹᱠᱛᱤ ᱾ ᱵᱟᱝ ᱛᱟᱦᱮᱸᱱ ᱠᱷᱟᱱ ᱠᱚᱢᱯᱟᱥ ᱠᱮᱢᱨᱟ ᱧᱮᱞ ᱠᱟᱹᱢᱤᱭᱟ ᱾,,,i18nSantali.js
+5 · Other,xr_place_anchor,Point at an object and tap to mark it,किसी वस्तु पर निशाना लगाकर टैप करें,ᱡᱤᱱᱤᱥ ᱛᱮ ᱩᱫᱩᱜ ᱠᱟᱛᱮ ᱛᱚᱯᱟᱣ ᱢᱮ,,,i18nSantali.js
+5 · Other,xr_realign,Re-align,फिर संरेखित करें,ᱫᱚᱦᱲᱟ ᱛᱷᱤᱨ ᱢᱮ,,,i18nSantali.js
+5 · Other,xr_scanning,Move the phone slowly to find a surface,सतह खोजने के लिए फ़ोन धीरे-धीरे घुमाएँ,ᱴᱷᱟᱶ ᱧᱟᱢ ᱞᱟᱹᱜᱤᱫ ᱯᱷᱚᱱ ᱟᱞᱜᱟ ᱟᱞᱜᱟ ᱛᱮ ᱟᱭᱩᱨ ᱢᱮ,,,i18nSantali.js
+5 · Other,xr_tap_here,Tap here,यहाँ टैप करें,ᱱᱚᱰᱮ ᱛᱚᱯᱟᱣ ᱢᱮ,,,i18nSantali.js
+5 · Other,xr_tracking_limited,Not enough of the room mapped yet. Walk a few steps and look around.,कमरा अभी पूरा मैप नहीं हुआ। कुछ कदम चलें और चारों ओर देखें।,ᱚᱲᱟᱜ ᱱᱤᱛᱚᱜ ᱦᱟᱹᱵᱤᱡ ᱯᱩᱨᱟᱹ ᱢᱮᱯ ᱵᱟᱝ ᱦᱩᱭ ᱮᱱᱟ ᱾ ᱛᱷᱚᱰᱟ ᱡᱟᱦᱟᱸ ᱚᱲᱟᱜ ᱠᱟᱛᱮ ᱡᱚᱛᱚ ᱥᱮᱫ ᱧᱮᱞ ᱢᱮ ᱾,,,i18nSantali.js
+5 · Other,xr_tracking_lost,Lost track of the room. Move the phone slowly to pick it up again.,कमरे की ट्रैकिंग टूट गई। फ़ोन धीरे-धीरे घुमाकर फिर पकड़ें।,ᱚᱲᱟᱜ ᱴᱨᱮᱠᱤᱝ ᱟᱛ ᱮᱱᱟ ᱾ ᱯᱷᱚᱱ ᱟᱞᱜᱟ ᱟᱞᱜᱟ ᱛᱮ ᱟᱭᱩᱨ ᱠᱟᱛᱮ ᱫᱚᱦᱲᱟ ᱦᱟᱛᱟᱣ ᱢᱮ ᱾,,,i18nSantali.js

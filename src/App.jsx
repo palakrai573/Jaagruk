@@ -114,7 +114,13 @@ export default function App() {
   }, [location.pathname])
 
   return (
-    <div className="min-h-screen flex flex-col">
+    /*
+      min-h-dvh, not min-h-screen. `100vh` on mobile Chrome is the viewport with the
+      address bar HIDDEN, so a full-height shell is taller than what is actually visible
+      on load and the page starts life scrollable by the height of the browser chrome.
+      `dvh` tracks the real viewport as that bar collapses.
+    */
+    <div className="min-h-dvh flex flex-col">
       {/*
         HEADER WIDTH BUDGET — the reason this markup is specific.
 
@@ -141,7 +147,22 @@ export default function App() {
         No flex-wrap, deliberately: it previously let the nav drop onto a second row
         at ~380px, which made the sticky bar change height as you scrolled.
       */}
-      <header className="border-b border-line-subtle sticky top-0 bg-surface-0/90 backdrop-blur-md z-sticky">
+      {/*
+        pt for the device inset, not just for looks. With `viewport-fit=cover` the
+        document extends under the status bar, so an installed PWA on any current
+        Android drew the wordmark and the menu button beneath the clock and the
+        punch-hole. The padding is on the header rather than on the inner row so the
+        translucent backdrop still reaches the top edge of the screen — otherwise
+        there is a transparent strip above it and the content scrolls visibly through.
+      */}
+      <header
+        /* pl/pr, not ps/pe. A display cutout is a physical fact about the glass and
+           does not move when Urdu flips the writing direction. Logical properties
+           here would hand the left inset to the right edge in RTL, which in landscape
+           on a punch-hole phone clips the wordmark under the camera. */
+        className="border-b border-line-subtle sticky top-0 bg-surface-0/90 backdrop-blur-md z-sticky
+                   pt-[var(--safe-t)] pl-[var(--safe-l)] pr-[var(--safe-r)]"
+      >
         <div className="max-w-5xl mx-auto px-5 h-16 flex items-center justify-between gap-4">
           {/* Wordmark only — no tagline.
               With the tagline the widest language (English) came to 970px against
@@ -210,7 +231,14 @@ export default function App() {
         )}
       </header>
 
-      <main className="flex-1 pb-24 md:pb-0">
+      {/*
+        pb-24 was another guess at the nav's height: 96px against a bar that is 60px
+        plus the device's bottom inset. It cleared a 34px inset by two pixels and
+        would not clear the 48px some handsets report, hiding the last row of any
+        page behind the bar. Derived from the same constant the bar itself uses, plus
+        a gutter so the last element does not sit flush against it.
+      */}
+      <main className="flex-1 pb-[calc(var(--nav-total)+1.5rem)] md:pb-0">
         {isPartiallyTranslated(lang) && (
           <div className="bg-warning-subtle border-b border-warning-border px-5 py-2 text-center text-xs text-warning-text font-mono">
             {coverageNotice(lang)}
@@ -243,9 +271,13 @@ export default function App() {
           pixels of the tap target sit under the home indicator, so the bar looks
           right and mis-taps anyway. Each item is min-h-12 to stay thumb-sized. */}
       <nav
+        /* Height and inset now come from the shared constants, so anything that has
+           to float above this bar reads the same numbers instead of guessing.
+           pl/pr rather than ps/pe for the same reason as the header: the insets are
+           physical, so mirroring them for RTL puts them on the wrong edge. */
         className="md:hidden fixed bottom-0 inset-x-0 bg-surface-1/95 backdrop-blur-md border-t border-line-subtle
                    flex justify-around font-mono text-2xs z-nav
-                   pb-[env(safe-area-inset-bottom)]"
+                   pb-[var(--safe-b)] pl-[var(--safe-l)] pr-[var(--safe-r)]"
       >
         {PRIMARY_NAV.map((item) => (
           <NavLink
@@ -305,7 +337,7 @@ export default function App() {
           />
           <div
             className="md:hidden fixed inset-x-3 bg-surface-2 border border-line rounded-xl p-3 z-sheet shadow-4 rise-in
-                       bottom-[calc(3.75rem+env(safe-area-inset-bottom))]"
+                       bottom-[var(--nav-total)]"
           >
             <div className="grid grid-cols-3 gap-2">
               {SECONDARY_NAV.map((item) => (

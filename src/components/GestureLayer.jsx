@@ -175,7 +175,9 @@ export default function GestureLayer({ enabled = false, onStatusChange }) {
       {/* Status toast */}
       {!dismissedNotice && (status === GESTURE_STATUS.LOADING || status === GESTURE_STATUS.DEGRADED || failed) && (
         <div
-          className="fixed bottom-24 md:bottom-6 left-1/2 -translate-x-1/2 z-50 max-w-[90vw] bg-surface-2-light border border-line-lighter rounded-lg px-4 py-3 flex items-start gap-3 shadow-2xl fade-in"
+          /* bottom-24 left two pixels of clearance over the nav once the gesture
+             inset was counted. Measured from the nav now. */
+          className="fixed bottom-[calc(var(--nav-total)+0.75rem)] md:bottom-6 left-1/2 -translate-x-1/2 z-50 max-w-[90vw] bg-surface-2-light border border-line-lighter rounded-lg px-4 py-3 flex items-start gap-3 shadow-2xl fade-in"
           role="status"
         >
           <Pictogram name={failed ? 'warning' : status === GESTURE_STATUS.DEGRADED ? 'slow' : 'gloves'} size={22} />
@@ -194,7 +196,9 @@ export default function GestureLayer({ enabled = false, onStatusChange }) {
       {/* Live hint while tracking, so the user knows the two ways to confirm */}
       {running && (
         <div
-          className="fixed top-24 left-1/2 -translate-x-1/2 z-40 bg-surface-2/95 border border-brand/40 rounded-full px-3 py-1.5 flex items-center gap-2 pointer-events-none fade-in"
+          /* The header is 4rem plus the status-bar inset, so a fixed top-24 sat behind
+             it on any notched phone. Offset from the real header height instead. */
+          className="fixed top-[calc(var(--safe-t)+4.75rem)] left-1/2 -translate-x-1/2 z-40 bg-surface-2/95 border border-brand/40 rounded-full px-3 py-1.5 flex items-center gap-2 pointer-events-none fade-in"
           aria-hidden="true"
         >
           <span className="w-1.5 h-1.5 rounded-full bg-brand live-dot" />

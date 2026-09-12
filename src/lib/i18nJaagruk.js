@@ -666,7 +666,6 @@ const ASSESSMENT = {
   as_decide_now: { en: 'Decide now', hi: 'अभी निर्णय लें', sat: 'ᱛᱮᱦᱮᱸ ᱜᱮ ᱴᱷᱤᱠᱟᱹᱣ', bn: 'এখনই সিদ্ধান্ত নিন', or: 'ଏବେ ନିଷ୍ପତ୍ତି ନିଅନ୍ତୁ', ur: 'ابھی فیصلہ کریں' },
   as_time_pressure: { en: 'You are being timed', hi: 'आपका समय गिना जा रहा है', sat: 'ᱟᱢᱟᱜ ᱚᱠᱛᱚ ᱞᱮᱠᱷᱟ ᱠᱟᱱᱟ', bn: 'আপনার সময় গোনা হচ্ছে', or: 'ଆପଣଙ୍କ ସମୟ ଗଣାଯାଉଛି', ur: 'آپ کا وقت گنا جا رہا ہے' },
   as_listen_again: { en: 'Read it aloud again', hi: 'फिर सुनाएं', sat: 'ᱫᱚᱦᱲᱟ ᱟᱸᱡᱚᱢ', bn: 'আবার শোনান', or: 'ପୁଣି ଶୁଣାନ୍ତୁ', ur: 'دوبارہ سنائیں' },
-  as_speak_answer: { en: 'Speak your answer', hi: 'बोलकर उत्तर दें', sat: 'ᱨᱚᱲ ᱠᱟᱛᱮ ᱛᱮᱞᱟ', bn: 'বলে উত্তর দিন', or: 'କହି ଉତ୍ତର ଦିଅନ୍ତୁ', ur: 'بول کر جواب دیں' },
   as_listening: { en: 'Listening…', hi: 'सुन रहा है…', sat: 'ᱟᱸᱡᱚᱢ ᱠᱟᱱᱟ…', bn: 'শুনছি…', or: 'ଶୁଣୁଛି…', ur: 'سن رہا ہے…' },
   // Generalised away from "one or two": 22 of the 54 decisions have a third option,
   // so naming only the first two told a worker the third could not be spoken.
