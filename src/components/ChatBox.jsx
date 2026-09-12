@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { askSiteAssistant, getApiKey } from '../lib/api.js'
+import { findAnswer, answerText, suggestedQuestions, entryById, questionText } from '../lib/sahayak.js'
 import { useLanguage } from '../context/LanguageContext.jsx'
 import { langName } from '../lib/i18n.js'
 
@@ -9,7 +10,18 @@ export default function ChatBox() {
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
+  /* Questions already answered, so the chips stop offering them and keep being useful
+     as the conversation goes on. */
+  const [asked, setAsked] = useState([])
   const scrollRef = useRef(null)
+
+  /*
+   * Tappable questions. The most important part of this for the intended user: someone
+   * with gloves on, mid-shift, will not compose a sentence into a text box, but they will
+   * tap a question that is already written. It also makes the assistant's scope visible
+   * rather than leaving them to guess what it knows.
+   */
+  const chips = suggestedQuestions(lang, { exclude: asked, limit: 4 })
 
   useEffect(() => {
     if (open && messages.length === 0) {
@@ -24,30 +36,59 @@ export default function ChatBox() {
     }
   }, [messages, loading])
 
-  const send = async () => {
-    const text = input.trim()
+  /*
+   * Answered from the device first, and in almost every case entirely.
+   *
+   * The old flow refused to say anything without an API key, which asked a mine worker to
+   * obtain a Google Cloud credential and then failed underground where the app is most
+   * needed. Now the built-in knowledge base answers, offline and instantly. A remote model
+   * is consulted ONLY when the question is outside what the app can answer locally AND a
+   * key happens to be configured — so it is an optional enhancement rather than a
+   * prerequisite.
+   */
+  const answer = async (text) => {
     if (!text) return
     setInput('')
+    setMessages((m) => [...m, { role: 'user', content: text }])
 
-    if (!getApiKey()) {
-      setMessages((m) => [...m, { role: 'user', content: text }, { role: 'assistant', content: t('chat_no_key') }])
+    const hit = findAnswer(text)
+    if (hit) {
+      setAsked((prev) => (prev.includes(hit.entry.id) ? prev : [...prev, hit.entry.id]))
+      setMessages((m) => [...m, { role: 'assistant', content: answerText(hit.entry, lang) }])
       return
     }
 
-    const nextMessages = [...messages, { role: 'user', content: text }]
-    setMessages(nextMessages)
+    // Nothing local matched. Without a key this is the end of the road, and saying so
+    // plainly beats a generated paragraph the app has no basis for.
+    if (!getApiKey()) {
+      setMessages((m) => [...m, { role: 'assistant', content: t('chat_local_miss') }])
+      return
+    }
+
+    const history = [...messages, { role: 'user', content: text }]
+      .filter((m) => m.role === 'user' || m.role === 'assistant')
+      .map((m) => ({ role: m.role, content: m.content }))
+
     setLoading(true)
     try {
-      const history = nextMessages
-        .filter((m) => m.role === 'user' || m.role === 'assistant')
-        .map((m) => ({ role: m.role, content: m.content }))
       const reply = await askSiteAssistant(history, langName(lang))
-      setMessages((m) => [...m, { role: 'assistant', content: reply || '...' }])
-    } catch (e) {
-      setMessages((m) => [...m, { role: 'assistant', content: e.message || 'Something went wrong.' }])
+      setMessages((m) => [...m, { role: 'assistant', content: reply || t('chat_local_miss') }])
+    } catch {
+      // The remote path is a bonus; its failure must read as "I don't know that one",
+      // not as the assistant being broken.
+      setMessages((m) => [...m, { role: 'assistant', content: t('chat_local_miss') }])
     } finally {
       setLoading(false)
     }
+  }
+
+  const send = () => answer(input.trim())
+
+  /* Tapping a suggested question sends its exact authored wording, which retrieval is
+     tested to resolve back to the entry it came from. */
+  const askSuggestion = (id) => {
+    const entry = entryById(id)
+    if (entry) answer(questionText(entry, lang))
   }
 
   const onKeyDown = (e) => {
@@ -96,6 +137,26 @@ export default function ChatBox() {
             ))}
             {loading && (
               <div className="text-xs text-ink-tertiary font-mono">{t('chat_thinking')}</div>
+            )}
+
+            {/*
+              Pre-written questions, tappable. Placed after the messages so they behave
+              as "what could I ask next" rather than a menu the worker must get past, and
+              they disappear as each is used.
+            */}
+            {!loading && chips.length > 0 && (
+              <div className="flex flex-col gap-1.5 pt-1">
+                {chips.map((chip) => (
+                  <button
+                    key={chip.id}
+                    type="button"
+                    onClick={() => askSuggestion(chip.id)}
+                    className="text-start text-xs border border-line-subtle rounded-lg px-3 py-2 text-ink-secondary hover:border-brand hover:text-brand-text min-h-[44px]"
+                  >
+                    {chip.text}
+                  </button>
+                ))}
+              </div>
             )}
           </div>
 

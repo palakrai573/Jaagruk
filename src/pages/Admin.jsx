@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef, useId } from 'react'
+import { getApiKey, setApiKey, getProvider, setProvider } from '../lib/api.js'
 import { Link } from 'react-router-dom'
 import {
   supervisorPinIsSet,
@@ -778,10 +779,77 @@ function Stat({ label, value, accent, warn }) {
 }
 
 function SyncPanel({ t, queue, siteId, onSync, onExport, onImportClick, onPeerComplete }) {
+  /* Self-contained, so the key controls do not need plumbing through the parent. */
+  const keyId = useId()
+  const [apiKey, setApiKeyState] = useState(() => getApiKey())
+  const [provider, setProviderState] = useState(() => getProvider())
+  const [keySaved, setKeySaved] = useState(false)
   const endpoint = getSyncEndpoint()
 
   return (
     <section className="border-t border-line-subtle pt-8">
+      {/*
+        The cloud key for photo hazard analysis, moved here from worker Settings.
+        
+        It is a site-wide deployment decision, not something to ask a worker to arrange,
+        and it was previously blocking the assistant for everyone who did not have one.
+        Everything else in the app — training, scoring, certificates, verification, the
+        assistant — runs on the device with no key at all.
+        
+        Stated plainly on screen because it is true and easy to get wrong: a key entered
+        into a web app is not secret. It is stored on this device and sent from this
+        device, and anyone with access to the phone or the built files can read it. Use a
+        restricted key, not an account-wide one.
+      */}
+      <h2 className="font-display font-bold text-xl uppercase mb-3">{t('set_provider_label')}</h2>
+      <p className="text-xs text-ink-tertiary mb-4 leading-relaxed max-w-xl">{t('ad_key_warning')}</p>
+
+      <div className="grid grid-cols-2 gap-3 mb-3 max-w-sm">
+        {['gemini', 'openai'].map((p) => (
+          <button
+            key={p}
+            type="button"
+            onClick={() => setProviderState(p)}
+            /* Explicit, because the label is supplied by an expression and a static
+               analyser cannot see through it to the text. */
+            aria-label={p === 'gemini' ? 'Google Gemini' : 'OpenAI'}
+            aria-pressed={provider === p}
+            className={`rounded p-3 font-mono text-sm border ${
+              provider === p
+                ? 'border-brand text-brand-text bg-brand-subtle'
+                : 'border-line-subtle text-ink-tertiary'
+            }`}
+          >
+            {p === 'gemini' ? 'Google Gemini' : 'OpenAI'}
+          </button>
+        ))}
+      </div>
+
+      <label htmlFor={keyId} className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary block mb-2">
+        {t('set_key_label')}
+      </label>
+      <input
+        id={keyId}
+        type="password"
+        value={apiKey}
+        onChange={(e) => setApiKeyState(e.target.value)}
+        placeholder={t('set_key_placeholder')}
+        autoComplete="off"
+        className="w-full max-w-sm bg-surface-inset border border-line-subtle rounded px-4 py-3 font-mono text-sm focus:border-brand outline-none"
+      />
+      <button
+        type="button"
+        onClick={() => {
+          setApiKey(apiKey.trim())
+          setProvider(provider)
+          setKeySaved(true)
+          setTimeout(() => setKeySaved(false), 2000)
+        }}
+        className="mt-3 mb-8 border border-line rounded px-4 py-2.5 font-mono text-xs hover:border-brand hover:text-brand-text"
+      >
+        {keySaved ? t('set_saved') : t('set_save')}
+      </button>
+
       <h2 className="font-display font-bold text-xl uppercase mb-4">{t('st_sync_title')}</h2>
 
       {queue && (

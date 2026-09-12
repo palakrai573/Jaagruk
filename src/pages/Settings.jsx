@@ -251,58 +251,23 @@ export default function Settings() {
       <Panel>
         <SectionTitle pictogram="report_it" title={t('set_provider_label')} />
 
-        <div className="grid grid-cols-2 gap-3 mb-3">
-          <button
-            type="button"
-            onClick={() => setProviderState('gemini')}
-            className={`rounded p-3 font-mono text-sm border ${
-              provider === 'gemini' ? 'border-brand text-brand-text bg-brand-subtle' : 'border-line-subtle text-ink-tertiary'
-            }`}
-          >
-            Google Gemini
-          </button>
-          <button
-            type="button"
-            onClick={() => setProviderState('openai')}
-            className={`rounded p-3 font-mono text-sm border ${
-              provider === 'openai' ? 'border-brand text-brand-text bg-brand-subtle' : 'border-line-subtle text-ink-tertiary'
-            }`}
-          >
-            OpenAI
-          </button>
-        </div>
-        <p className="text-xs text-ink-tertiary mb-5">{t('set_provider_hint')}</p>
-
-        <label
-          htmlFor={keyId}
-          className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary block mb-2"
-        >
-          {t('set_key_label')}
-        </label>
-        <input
-          id={keyId}
-          type="password"
-          value={key}
-          onChange={(e) => setKey(e.target.value)}
-          placeholder={t('set_key_placeholder')}
-          autoComplete="off"
-          className="w-full bg-surface-inset border border-line-subtle rounded px-4 py-3 font-mono text-sm focus:border-brand outline-none"
-        />
-        <p className="text-xs text-ink-tertiary mt-2 mb-4 leading-relaxed">{t('set_key_hint1')}</p>
-
-        <button
-          type="button"
-          onClick={saveProvider}
-          className="w-full bg-brand text-ink-onBrand font-display font-bold uppercase py-3 rounded"
-        >
-          {saved ? t('set_saved') : t('set_save')}
-        </button>
-
-        <div className="mt-5 text-xs text-ink-tertiary space-y-1">
-          <p className="font-bold text-ink mb-1">{t('set_getting_key')}</p>
-          <p>• Gemini: aistudio.google.com/apikey</p>
-          <p>• OpenAI: platform.openai.com/api-keys</p>
-        </div>
+        {/*
+          THE API KEY FIELD USED TO LIVE HERE AND HAS BEEN REMOVED FROM THE WORKER VIEW.
+          
+          Three reasons. It asked a mine worker to go and obtain a Google Cloud credential
+          before the assistant would say a word. It failed in exactly the conditions this
+          app is built for, because a cloud call needs a signal that is not there
+          underground. And it put a credential in a browser, where it was never secret —
+          bundled client-side JavaScript ships to every device and can be read straight out
+          of the built assets, so "paste your key here" was offering privacy it could not
+          deliver.
+          
+          The assistant now answers from a knowledge base on the device, so there is
+          nothing for a worker to configure. Cloud photo analysis remains optional and is
+          a deployment decision, so its key moved behind the supervisor gate.
+        */}
+        <p className="text-sm text-ink-secondary leading-relaxed mb-3">{t('set_ai_local')}</p>
+        <p className="text-xs text-ink-tertiary leading-relaxed">{t('set_ai_supervisor')}</p>
       </Panel>
 
       {/* ---------------- storage ---------------- */}
