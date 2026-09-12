@@ -76,11 +76,25 @@ export function speechLocaleFor(lang) {
  * once the model is English is to say the English number, and the worker can only do
  * that if the app says so.
  */
+/**
+ * The last rung: let the engine use whatever the device's own default is.
+ *
+ * An empty `lang` is spec-defined as "the user agent's default language", and it is
+ * the only value guaranteed to have a model if the device has one at all. Needed
+ * because the first fallback was `en-IN`, and a phone set to `en-US` may have no
+ * `en-IN` pack either — so a chain that stopped at en-IN could still end at a locale
+ * this device cannot serve, which is the same dead end one step further along.
+ */
+export const ASR_DEVICE_DEFAULT = ''
+
 export const ASR_FALLBACK_LOCALE = {
-  'hi-IN': ['en-IN'],
-  'bn-IN': ['en-IN'],
-  'or-IN': ['en-IN'],
-  'ur-PK': ['en-IN'],
+  'hi-IN': ['en-IN', 'en-US', ASR_DEVICE_DEFAULT],
+  'bn-IN': ['en-IN', 'en-US', ASR_DEVICE_DEFAULT],
+  'or-IN': ['en-IN', 'en-US', ASR_DEVICE_DEFAULT],
+  'ur-PK': ['en-IN', 'en-US', ASR_DEVICE_DEFAULT],
+  // English asks for en-IN, which is also not guaranteed offline on a phone set to
+  // en-US or en-GB. It gets the same ladder minus the step it is already on.
+  'en-IN': ['en-US', ASR_DEVICE_DEFAULT],
 }
 
 /**
@@ -99,6 +113,11 @@ export function asrLocaleChain(lang) {
   const preferred = String(lang).includes('-') ? lang : speechLocaleFor(lang)
   const fallbacks = (ASR_FALLBACK_LOCALE[preferred] || []).filter((l) => l !== preferred)
   return [preferred, ...fallbacks]
+}
+
+/** True once the chain has walked past the language the worker actually chose. */
+export function isFallbackLocale(chain, index) {
+  return index > 0 && Array.isArray(chain) && index < chain.length
 }
 
 /* ================================================================== */
@@ -535,12 +554,23 @@ const AUTHORED_PHRASES = {
     'one', 'first', 'option one', 'number one',
     '1', '१', '۱',
     'एक', 'पहला', 'पहली', 'ek', 'pehla', 'pahla', 'pehli',
+    /*
+     * What an ENGLISH model actually writes down when a Hindi speaker says "ek".
+     * Relevant because the locale chain deliberately ends up on an English model when
+     * the device has no Hindi pack, and at that point "ek" is being transcribed by
+     * something with no Hindi in it. Three characters each, so they still require an
+     * exact match and carry no fuzzy blast radius, and none is a word likely to appear
+     * in a drill answer by accident.
+     */
+    'ake', 'ack', 'eck',
     'ᱢᱤᱫ', 'mit', "mit'",
   ],
   [COMMAND.TWO]: [
     'two', 'second', 'option two', 'number two',
     '2', '२', '۲',
     'दो', 'दूसरा', 'दूसरी', 'do', 'doh', 'dusra', 'doosra', 'dusri',
+    // Same reason as ONE: an English model's rendering of Hindi "do".
+    'dough', 'doe',
     'ᱵᱟᱨ', 'bar', 'baria',
   ],
   [COMMAND.THREE]: [
@@ -777,6 +807,22 @@ export const ASR_ERROR = {
   NO_SPEECH: 'NO_SPEECH',
   NO_MATCH: 'NO_MATCH',
   NETWORK: 'NETWORK',
+  /*
+   * The engine can hear, but not in the language it was asked for.
+   *
+   * This is the code Chrome actually fires when a locale has no model available —
+   * offline with no downloaded voice pack being the case that matters here — and it
+   * was not mapped at all. It fell through to UNKNOWN, whose retry policy gives up
+   * for good after five attempts, so offline Hindi answers died with "Voice input had
+   * a problem" and the locale fallback added for this exact situation never ran,
+   * because that only triggered on NETWORK.
+   *
+   * `language-not-supported` is in the SpeechRecognitionErrorCode enum alongside
+   * no-speech, audio-capture, not-allowed, network, aborted and service-not-allowed.
+   * Unlike a network error it is a definitive statement about this locale, so it does
+   * not need a second opinion before switching.
+   */
+  LANGUAGE_UNAVAILABLE: 'LANGUAGE_UNAVAILABLE',
   ABORTED: 'ABORTED',
   AUDIO: 'AUDIO',
   UNKNOWN: 'UNKNOWN',
@@ -820,6 +866,15 @@ export function asrRetryPolicy(code, consecutiveFailures = 0) {
     case ASR_ERROR.NETWORK:
       return { retry: true, delayMs: Math.min(8000, 1000 * 2 ** n), fatal: false }
 
+    /*
+     * This locale has no model. Retrying it changes nothing, so the value of a retry
+     * here is entirely that the listener switches locale first — hence a short delay
+     * and not fatal. The listener decides it IS fatal once the chain is exhausted,
+     * because at that point no locale on the device can serve this request.
+     */
+    case ASR_ERROR.LANGUAGE_UNAVAILABLE:
+      return { retry: true, delayMs: 200, fatal: false }
+
     /* No permission and no microphone are both permanent within this page. */
     case ASR_ERROR.PERMISSION_DENIED:
     case ASR_ERROR.AUDIO:
@@ -837,7 +892,7 @@ export function asrRetryPolicy(code, consecutiveFailures = 0) {
   }
 }
 
-function mapAsrError(code) {
+export function mapAsrError(code) {
   switch (code) {
     case 'not-allowed':
     case 'service-not-allowed':
@@ -848,6 +903,17 @@ function mapAsrError(code) {
       return ASR_ERROR.ABORTED
     case 'network':
       return ASR_ERROR.NETWORK
+    /*
+     * The two codes that were missing. `language-not-supported` is the whole reason
+     * offline Hindi stayed broken after the locale fallback landed: unmapped, it read
+     * as UNKNOWN, and UNKNOWN gives up permanently after five tries without ever
+     * trying another locale. `bad-grammar` is mapped explicitly rather than left to
+     * the default so that the default means "we have genuinely not seen this before".
+     */
+    case 'language-not-supported':
+      return ASR_ERROR.LANGUAGE_UNAVAILABLE
+    case 'bad-grammar':
+      return ASR_ERROR.UNKNOWN
     case 'audio-capture':
       return ASR_ERROR.AUDIO
     default:
@@ -859,7 +925,14 @@ export function createRecognizer(lang = 'en', { continuous = false } = {}) {
   const SR = typeof window !== 'undefined' ? window.SpeechRecognition || window.webkitSpeechRecognition : null
   if (!SR) return null
   const rec = new SR()
-  rec.lang = String(lang).includes('-') ? lang : speechLocaleFor(lang)
+  /*
+   * The device-default rung leaves `lang` alone deliberately. Assigning '' here would
+   * fall through speechLocaleFor to 'en-IN', which is the locale we are trying to get
+   * past — so the last resort would silently retry the previous rung forever.
+   */
+  if (lang !== ASR_DEVICE_DEFAULT) {
+    rec.lang = String(lang).includes('-') ? lang : speechLocaleFor(lang)
+  }
   rec.interimResults = false
   rec.maxAlternatives = 3
   /*
@@ -1027,26 +1100,48 @@ export function createCommandListener({
       }
 
       /*
-       * A `network` error offline is not a blip, it is the permanent condition — and
-       * on Android it is also what a missing offline language pack looks like. Retrying
-       * the same locale is retrying nothing. Move down the chain instead.
+       * Move down the locale chain rather than retrying a locale that cannot work.
        *
-       * Reported rather than silent: once the model is English, the reliable thing for
-       * a Hindi speaker to say is the English number, and they can only know that if
-       * the app tells them.
+       * Two codes lead here and they need different thresholds.
+       *
+       * LANGUAGE_UNAVAILABLE is the engine stating that this locale has no model. It
+       * is definitive, so it switches on the first occurrence — and it is the code
+       * that actually fires offline with no voice pack, which is why the earlier
+       * network-only version of this escalation never ran.
+       *
+       * NETWORK is ambiguous: offline it is permanent, but online it is also what a
+       * momentary drop looks like on a network-backed recogniser. Switching on the
+       * first one would quietly downgrade the model for someone who is simply on a bad
+       * link, so it takes two in a row with no transcript in between.
        */
-      if (mapped === ASR_ERROR.NETWORK) {
+      const definitive = mapped === ASR_ERROR.LANGUAGE_UNAVAILABLE
+      if (definitive || mapped === ASR_ERROR.NETWORK) {
         networkFailures += 1
-        if (networkFailures >= ASR_LOCALE_ESCALATE_AFTER && localeIndex < localeChain.length - 1) {
+        const threshold = definitive ? 1 : ASR_LOCALE_ESCALATE_AFTER
+        const hasNext = localeIndex < localeChain.length - 1
+
+        if (networkFailures >= threshold && hasNext) {
           localeIndex += 1
           networkFailures = 0
           failures = 0
           onLocaleChange?.(localeChain[localeIndex], {
             fallback: localeIndex > 0,
             requested: localeChain[0],
+            reason: mapped,
           })
-          // Don't also report the network error: the situation is being handled, and a
+          // Not also reported as an error: the situation is being handled, and a
           // warning beside a working microphone is just noise.
+          return
+        }
+
+        /*
+         * Chain exhausted and the engine still says it cannot serve the language. No
+         * further retry can change that, so stop wanting the microphone instead of
+         * looping — the drill's tap buttons were never affected and are the answer.
+         */
+        if (definitive && !hasNext) {
+          wanted = false
+          onError?.(mapped)
           return
         }
       } else {

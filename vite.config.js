@@ -8,6 +8,19 @@ export default defineConfig({
   // serves from https://localhost. Safe because routing is HashRouter — the
   // document path never changes, so relative URLs always resolve correctly.
   base: './',
+  /*
+   * A build stamp, shown in Settings.
+   *
+   * An installed PWA holds its precached shell until the service worker updates AND
+   * the page reloads — and offline it cannot update at all. So "I installed the app,
+   * went offline, and the fix is not there" is ambiguous between a bug and a stale
+   * install, and there was no way to tell which from the device. Now there is.
+   */
+  define: {
+    __BUILD_STAMP__: JSON.stringify(
+      new Date().toISOString().replace('T', ' ').slice(0, 16) + ' UTC'
+    ),
+  },
   plugins: [
     react(),
     VitePWA({

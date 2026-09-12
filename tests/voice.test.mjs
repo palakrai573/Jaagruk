@@ -22,8 +22,10 @@ import {
   normaliseTranscript,
   asrRetryPolicy,
   asrLocaleChain,
+  mapAsrError,
   msSinceSpeech,
   ASR_ERROR,
+  ASR_DEVICE_DEFAULT,
   ASR_LOCALE_ESCALATE_AFTER,
   SELF_HEARING_GUARD_MS,
 } from '../src/lib/speech.js'
@@ -307,7 +309,9 @@ describe('offline recognition in a language with no on-device model', () => {
     const chain = asrLocaleChain('hi')
     assert.equal(chain[0], 'hi-IN', 'the requested language must still be tried first')
     assert.ok(chain.length > 1, 'hi-IN with no offline pack must have somewhere to go')
-    assert.equal(chain[chain.length - 1], 'en-IN')
+    assert.ok(chain.includes('en-IN'), 'English is the realistic next model on an Indian phone')
+    // The last rung is asserted separately, below: it must be the device default
+    // rather than any named locale, since a named one can itself be missing.
   })
 
   test('Santali inherits the chain, because its recognition locale IS Hindi', () => {
@@ -316,9 +320,30 @@ describe('offline recognition in a language with no on-device model', () => {
     assert.deepEqual(asrLocaleChain('sat'), asrLocaleChain('hi'))
   })
 
-  test('English has nowhere to fall back to, and needs nowhere', () => {
+  test('even English needs a ladder, because en-IN is not guaranteed either', () => {
+    /*
+     * This test used to assert the opposite — that English had nowhere to fall back to
+     * and needed nowhere. That was wrong, and wrong in the same way the original bug
+     * was: the app asks for `en-IN`, and a phone set to en-US or en-GB may have no
+     * en-IN pack installed. A chain that stopped at en-IN could still end on a locale
+     * the device cannot serve, which is the identical dead end one rung further along.
+     */
     const chain = asrLocaleChain('en')
-    assert.deepEqual(chain, ['en-IN'], 'a fallback for English would be a downgrade to itself')
+    assert.equal(chain[0], 'en-IN')
+    assert.ok(chain.length > 1, 'en-IN is a request, not a guarantee')
+  })
+
+  test('every chain ends at the device default, which is the only guaranteed rung', () => {
+    // An empty lang is spec-defined as the user agent's own default. If the device can
+    // recognise anything at all, it can recognise that.
+    for (const code of ['en', 'hi', 'sat', 'bn', 'or', 'ur']) {
+      const chain = asrLocaleChain(code)
+      assert.equal(
+        chain[chain.length - 1],
+        ASR_DEVICE_DEFAULT,
+        `${code}: chain ends at ${chain[chain.length - 1]}, which may itself have no model`,
+      )
+    }
   })
 
   test('a chain never repeats a locale', () => {
@@ -412,6 +437,100 @@ describe('a spoken number is caught however the engine writes it down', () => {
         forgiving.length > 0,
         `${command} has no phrase long enough to tolerate a single ASR slip`,
       )
+    }
+  })
+})
+
+describe('the error code that actually fires when a language has no model', () => {
+  /*
+   * THE SECOND ROUND OF THE SAME BUG, and the reason the first fix did not work.
+   *
+   * The locale fallback was added and offline Hindi was still dead, because the
+   * fallback triggered on `network` and that is not the code Chrome sends. When a
+   * locale has no model the engine reports `language-not-supported` — a real member of
+   * SpeechRecognitionErrorCode, alongside no-speech, audio-capture, not-allowed,
+   * network, aborted and service-not-allowed — and mapAsrError did not handle it.
+   *
+   * So it fell through to UNKNOWN. UNKNOWN's retry policy gives up permanently after
+   * five attempts. Net result offline: five fast retries of a locale that could never
+   * work, then a dead microphone reporting "Voice input had a problem", and the
+   * fallback ladder built for precisely this situation never took a single step.
+   *
+   * The lesson worth keeping: a `default:` branch in an error mapper is a silent
+   * reclassification. It turned a specific, recoverable, well-named condition into a
+   * generic fatal one, and nothing failed.
+   */
+
+  test('language-not-supported is mapped, not swallowed by the default branch', () => {
+    assert.equal(mapAsrError('language-not-supported'), ASR_ERROR.LANGUAGE_UNAVAILABLE)
+    assert.notEqual(
+      mapAsrError('language-not-supported'),
+      ASR_ERROR.UNKNOWN,
+      'falling to UNKNOWN is what made this permanently fatal after five retries',
+    )
+  })
+
+  test('every code in the spec enum maps to something deliberate', () => {
+    // bad-grammar is mapped explicitly too, so that reaching `default` genuinely means
+    // "a code we have never seen" rather than "one we forgot".
+    const SPEC_CODES = [
+      'no-speech',
+      'aborted',
+      'audio-capture',
+      'network',
+      'not-allowed',
+      'service-not-allowed',
+      'bad-grammar',
+      'language-not-supported',
+    ]
+    for (const code of SPEC_CODES) {
+      const mapped = mapAsrError(code)
+      assert.ok(Object.values(ASR_ERROR).includes(mapped), `${code} -> ${mapped}`)
+      if (code !== 'bad-grammar') {
+        assert.notEqual(mapped, ASR_ERROR.UNKNOWN, `${code} should have its own meaning`)
+      }
+    }
+  })
+
+  test('a genuinely unknown code still reaches UNKNOWN', () => {
+    assert.equal(mapAsrError('some-future-code'), ASR_ERROR.UNKNOWN)
+    assert.equal(mapAsrError(undefined), ASR_ERROR.UNKNOWN)
+  })
+
+  test('an unavailable language retries promptly so the listener can switch locale', () => {
+    /*
+     * The retry is not there to try the same locale again — that cannot help. It is
+     * there so control returns to the listener, which advances the chain first. Hence
+     * short, and not fatal: the listener decides it is fatal once the chain runs out.
+     */
+    const p = asrRetryPolicy(ASR_ERROR.LANGUAGE_UNAVAILABLE)
+    assert.equal(p.retry, true)
+    assert.equal(p.fatal, false)
+    assert.ok(p.delayMs <= 500, `should switch quickly, got ${p.delayMs}ms`)
+  })
+
+  test('it does not decay into a fatal after repeated failures', () => {
+    // UNKNOWN goes fatal at 5. This must not, because each occurrence is on a
+    // DIFFERENT locale as the chain advances, and giving up mid-ladder would strand it.
+    for (const n of [0, 1, 3, 5, 6]) {
+      assert.equal(asrRetryPolicy(ASR_ERROR.LANGUAGE_UNAVAILABLE, n).fatal, false, `n=${n}`)
+    }
+  })
+
+  test('an English model rendering of the Hindi numbers is accepted', () => {
+    /*
+     * Once the ladder lands on an English model, "ek" is being transcribed by something
+     * with no Hindi in it. These are what such a model actually writes down. Three
+     * characters or more, so they still require an exact match and cannot fuzzy-match
+     * unrelated speech.
+     */
+    for (const spoken of ['ake', 'ack', 'eck']) {
+      const m = matchCommand(spoken, { allowed: OPTION_COMMANDS })
+      assert.equal(m?.command, COMMAND.ONE, `"${spoken}" gave ${m?.command}`)
+    }
+    for (const spoken of ['dough', 'doe']) {
+      const m = matchCommand(spoken, { allowed: OPTION_COMMANDS })
+      assert.equal(m?.command, COMMAND.TWO, `"${spoken}" gave ${m?.command}`)
     }
   })
 })

@@ -3,7 +3,14 @@ import { Link } from 'react-router-dom'
 /* The API key controls moved to the supervisor console, so this page no longer imports
    anything from api.js. See the note in the AI panel below. */
 import { LANGUAGES, allCoverage } from '../lib/i18n.js'
-import { voiceAvailability, speak, SPEECH_IS_SUBSTITUTE, shouldUseVoice } from '../lib/speech.js'
+import {
+  voiceAvailability,
+  speak,
+  SPEECH_IS_SUBSTITUTE,
+  shouldUseVoice,
+  asrLocaleChain,
+  speechRecognitionSupported,
+} from '../lib/speech.js'
 import { gestureBlocker, gestureStatusKey } from '../lib/gesture.js'
 import { arBlocker, shouldUseAr, AR_BLOCK_KEYS } from '../lib/arSupport.js'
 import { storageStatus, idbClearAll, requestPersistence } from '../lib/idb.js'
@@ -113,6 +120,7 @@ export default function Settings() {
   }
 
   const coverage = allCoverage()
+  const recognitionSupported = speechRecognitionSupported()
 
   return (
     <div className="max-w-2xl mx-auto px-5 py-10">
@@ -238,6 +246,50 @@ export default function Settings() {
             )
           })}
         </div>
+
+        {/*
+          The RECOGNITION side, which nothing reported until now.
+          
+          The panel above is text-to-speech: whether the phone can talk. It said
+          nothing about whether the phone can listen, and those fail independently —
+          offline, a device commonly has an English recogniser and no Hindi one, which
+          is exactly the case that broke Hindi voice answers with no way to see why
+          from the device.
+          
+          Shown as the chain rather than a yes/no, because the fallback ladder is the
+          behaviour: hi-IN first, then progressively less specific, ending at whatever
+          the device itself defaults to. If the first entry is the one in use, Hindi
+          recognition is working; if not, the drill says so while it is running.
+        */}
+        <p className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary mt-5 mb-2">
+          {t('st_asr_check')}
+        </p>
+        {!recognitionSupported ? (
+          <p className="font-mono text-[11px] text-warning-text">{t('as_UNSUPPORTED')}</p>
+        ) : (
+          <p className="font-mono text-[11px] text-ink-tertiary leading-relaxed">
+            {/* A middot rather than an arrow. An arrow carries a direction that has to
+                mirror for Urdu, and the order here is already conveyed by position and
+                stated in the hint below — so a neutral separator is simply correct
+                rather than something needing an RTL override. */}
+            {asrLocaleChain(lang)
+              .map((l) => l || t('st_asr_device_default'))
+              .join(' · ')}
+          </p>
+        )}
+        <p className="font-mono text-[10px] text-ink-tertiary mt-1.5 leading-relaxed">
+          {t('st_asr_offline_hint')}
+        </p>
+
+        {/*
+          The build stamp. An installed PWA serves its precached shell until the
+          service worker updates and the page reloads, and offline it cannot update at
+          all — so "I installed it, went offline, and the fix is not there" could mean
+          either a bug or a stale copy, with no way to tell them apart on the device.
+        */}
+        <p className="font-mono text-[10px] text-ink-tertiary mt-4">
+          {t('st_build')}: <span className="text-ink-secondary">{__BUILD_STAMP__}</span>
+        </p>
       </Panel>
 
       {/* ---------------- AI provider ---------------- */}

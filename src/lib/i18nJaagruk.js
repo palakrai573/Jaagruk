@@ -705,6 +705,17 @@ const ASSESSMENT = {
   /* Shown when recognition fell back to English because this device has no offline
      model for the worker's language. Names the remedy that works right now — say the
      English number — rather than reporting a failure, because nothing has failed. */
+  /* No locale on this device has a model, so recognition has genuinely stopped.
+     Distinct from as_NETWORK, which is recoverable, and from as_UNKNOWN, which is
+     what this used to be reported as before `language-not-supported` was mapped. */
+  as_LANGUAGE_UNAVAILABLE: {
+    en: 'This device cannot recognise speech offline. Tap an option, or download a voice pack.',
+    hi: 'यह डिवाइस ऑफ़लाइन आवाज़ नहीं पहचान सकता। विकल्प पर टैप करें, या वॉइस पैक डाउनलोड करें।',
+    sat: 'ᱱᱚᱶᱟ ᱡᱤᱱᱤᱥ ᱚᱯᱷᱞᱟᱭᱤᱱ ᱨᱮ ᱨᱚᱲ ᱵᱟᱝ ᱵᱟᱰᱟᱭ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ ᱾ ᱵᱟᱪᱷᱟᱣ ᱨᱮ ᱛᱚᱯᱟᱣ ᱢᱮ ᱾',
+    bn: 'এই ডিভাইস অফলাইনে কথা চিনতে পারে না। বিকল্পে ট্যাপ করুন, বা ভয়েস প্যাক ডাউনলোড করুন।',
+    or: 'ଏହି ଡିଭାଇସ ଅଫଲାଇନରେ କଥା ଚିହ୍ନିପାରେ ନାହିଁ। ବିକଳ୍ପରେ ଟ୍ୟାପ କରନ୍ତୁ, କିମ୍ବା ଭଏସ ପ୍ୟାକ ଡାଉନଲୋଡ କରନ୍ତୁ।',
+    ur: 'یہ ڈیوائس آف لائن آواز نہیں پہچان سکتا۔ آپشن پر ٹیپ کریں، یا وائس پیک ڈاؤن لوڈ کریں۔',
+  },
   as_voice_english_only: {
     en: 'Listening in English. Say “one”, “two” or “three” — or tap.',
     hi: 'अंग्रेज़ी में सुन रहा है। “one”, “two” या “three” बोलें — या टैप करें।',
@@ -942,6 +953,40 @@ const CONSOLE = {
   st_voice_check: { en: 'Voice availability on this device', hi: 'इस डिवाइस पर आवाज़ उपलब्धता', bn: 'এই ডিভাইসে ভয়েস উপলব্ধতা', or: 'ଏହି ଡିଭାଇସରେ ଭଏସ ଉପଲବ୍ଧତା', ur: 'اس ڈیوائس پر آواز کی دستیابی' },
   st_voice_missing: { en: 'no voice installed', hi: 'कोई आवाज़ इंस्टॉल नहीं', bn: 'কোনো ভয়েস ইনস্টল নেই', or: 'କୌଣସି ଭଏସ ଇନଷ୍ଟଲ ନାହିଁ', ur: 'کوئی آواز انسٹال نہیں' },
   st_voice_substitute: { en: 'read with a Hindi voice', hi: 'हिंदी आवाज़ से पढ़ा जाता है', sat: 'ᱦᱤᱱᱫᱤ ᱨᱚᱲ ᱛᱮ ᱯᱟᱲᱦᱟᱣ ᱦᱩᱭᱩᱜᱼᱟ', bn: 'হিন্দি ভয়েসে পড়া হয়', or: 'ହିନ୍ଦୀ ଭଏସରେ ପଢ଼ାଯାଏ', ur: 'ہندی آواز سے پڑھا جاتا ہے' },
+  /* The listening side. The panel above is only about whether the phone can talk;
+     these two fail independently, and offline they usually do. */
+  st_asr_check: {
+    en: 'Speech recognition order on this device',
+    hi: 'इस डिवाइस पर वाक् पहचान का क्रम',
+    sat: 'ᱱᱚᱶᱟ ᱡᱤᱱᱤᱥ ᱨᱮ ᱨᱚᱲ ᱵᱟᱰᱟᱭ ᱨᱮᱭᱟᱜ ᱛᱟᱲᱟᱝ',
+    bn: 'এই ডিভাইসে স্পিচ রিকগনিশনের ক্রম',
+    or: 'ଏହି ଡିଭାଇସରେ ସ୍ପିଚ ରିକଗନିଶନର କ୍ରମ',
+    ur: 'اس ڈیوائس پر تقریر کی شناخت کی ترتیب',
+  },
+  st_asr_device_default: {
+    en: 'device default',
+    hi: 'डिवाइस डिफ़ॉल्ट',
+    sat: 'ᱡᱤᱱᱤᱥ ᱨᱮᱭᱟᱜ ᱢᱩᱞ',
+    bn: 'ডিভাইস ডিফল্ট',
+    or: 'ଡିଭାଇସ ଡିଫଲ୍ଟ',
+    ur: 'ڈیوائس ڈیفالٹ',
+  },
+  st_asr_offline_hint: {
+    en: 'Offline, only languages whose voice pack is downloaded can be recognised. The first entry is tried first; the drill says so if it has to fall back.',
+    hi: 'ऑफ़लाइन में केवल उन भाषाओं को पहचाना जा सकता है जिनका वॉइस पैक डाउनलोड है। पहला विकल्प पहले आज़माया जाता है; बदलना पड़े तो ड्रिल बता देती है।',
+    sat: 'ᱚᱯᱷᱞᱟᱭᱤᱱ ᱨᱮ ᱡᱟᱦᱟᱸ ᱯᱟᱹᱨᱥᱤ ᱨᱮᱭᱟᱜ ᱵᱷᱚᱭᱥ ᱯᱮᱠ ᱰᱟᱣᱱᱞᱚᱰ ᱢᱮᱱᱟᱜᱼᱟ ᱩᱱᱤ ᱜᱮ ᱵᱟᱰᱟᱭ ᱦᱩᱭᱩᱜᱼᱟ ᱾',
+    bn: 'অফলাইনে কেবল যেসব ভাষার ভয়েস প্যাক ডাউনলোড আছে সেগুলিই চেনা যায়। প্রথমটি আগে চেষ্টা হয়; বদলাতে হলে ড্রিল জানিয়ে দেয়।',
+    or: 'ଅଫଲାଇନରେ କେବଳ ସେହି ଭାଷାଗୁଡ଼ିକ ଚିହ୍ନାଯାଏ ଯାହାର ଭଏସ ପ୍ୟାକ ଡାଉନଲୋଡ ଅଛି। ପ୍ରଥମଟି ଆଗେ ଚେଷ୍ଟା ହୁଏ; ବଦଳାଇବାକୁ ପଡ଼ିଲେ ଡ୍ରିଲ କହିଦିଏ।',
+    ur: 'آف لائن میں صرف ان زبانوں کو پہچانا جا سکتا ہے جن کا وائس پیک ڈاؤن لوڈ ہو۔ پہلا پہلے آزمایا جاتا ہے؛ بدلنا پڑے تو ڈرل بتا دیتی ہے۔',
+  },
+  st_build: {
+    en: 'Build',
+    hi: 'बिल्ड',
+    sat: 'ᱵᱤᱞᱰ',
+    bn: 'বিল্ড',
+    or: 'ବିଲ୍ଡ',
+    ur: 'بلڈ',
+  },
   st_sync_title: { en: 'Central upload (optional)', hi: 'केंद्रीय अपलोड (वैकल्पिक)', bn: 'কেন্দ্রীয় আপলোড (ঐচ্ছিক)', or: 'କେନ୍ଦ୍ରୀୟ ଅପଲୋଡ (ବିକଳ୍ପ)', ur: 'مرکزی اپ لوڈ (اختیاری)' },
   st_sync_hint: {
     en: 'Leave this blank and nothing ever leaves the device. If your organisation runs a collection endpoint, paste its https URL here.',
