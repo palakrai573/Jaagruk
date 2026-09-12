@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { getScenario } from '../lib/scenarios.js'
-import { translateScenario, SCENARIO_TRANSLATIONS } from '../lib/scenarioTranslations.js'
+import { translateScenario, scenarioContentLanguage } from '../lib/scenarioTranslations.js'
 import { enrichScenario, newAttemptSeed } from '../lib/scenarioMeta.js'
 import { askTrainer, getApiKey } from '../lib/api.js'
 import { speak, stopSpeaking, COMMAND, shouldUseVoice } from '../lib/speech.js'
@@ -21,7 +21,7 @@ import Pictogram from '../lib/pictograms.jsx'
 import { ChoiceCard, LatencyBar, FeedbackPanel, ReadinessRing, VoiceButton } from '../components/DrillUI.jsx'
 import { Button, Card, Badge, EmptyState } from '../components/ui/index.js'
 import { useLanguage } from '../context/LanguageContext.jsx'
-import { langName, contentNotice, scenarioContentIsEnglish } from '../lib/i18n.js'
+import { langName, narrationNotice, narrationStatus, NARRATION } from '../lib/i18n.js'
 
 /*
  * Spoken option number to zero-based choice index.
@@ -81,6 +81,22 @@ export default function Scenario() {
     if (!base) return null
     return enrichScenario(translateScenario(base, lang), { seed: attemptSeed })
   }, [id, lang, attemptSeed])
+
+  /*
+   * The language this drill is actually shown and read aloud in, which is not
+   * necessarily the one the worker chose.
+   *
+   * Santali has no scenario content for any of the nine modules, so it resolves to
+   * Hindi — and the app used to say nothing, because the only notice was gated on the
+   * content being ENGLISH and the Hindi fallback made that false. A worker picked
+   * Santali, heard Hindi, and was told only that the Santali menus were unreviewed.
+   *
+   * Computed here rather than at the render site because the intro narration below
+   * needs it too: a worker who cannot read the notice is precisely the worker it is
+   * for, so it is spoken as well as shown.
+   */
+  const spokenIn = scenario ? scenarioContentLanguage(scenario.id, lang) : lang
+  const languageNotice = narrationNotice(lang, spokenIn)
 
   const [stepIndex, setStepIndex] = useState(0)
   const [decisions, setDecisions] = useState([])
@@ -203,9 +219,33 @@ export default function Scenario() {
   useEffect(() => {
     if (!scenario || introSpokenRef.current) return undefined
     introSpokenRef.current = true
-    const token = speak(scenario.intro, lang)
+
+    /*
+     * The language notice is spoken FIRST, and in the worker's own language, before
+     * the drill switches to whatever language the content resolved to.
+     *
+     * This is the one place the two languages have to be handled in a single
+     * utterance queue, and it cannot be one speak() call: the notice is Ol Chiki for a
+     * Santali worker and has to go out on the Santali path so forSpeech transliterates
+     * it, while the intro is already Hindi Devanagari and has to go out as Hindi. One
+     * call would tag both with the same locale.
+     *
+     * So the notice is spoken with `lang`, and the intro is chained from its onEnd
+     * with `spokenIn`. Passing `spokenIn` rather than `lang` here is also a small
+     * correctness fix in its own right — the intro was being announced as Santali to
+     * the speech engine while containing Hindi text.
+     */
+    const speakIntro = () => speak(scenario.intro, spokenIn)
+
+    if (languageNotice) {
+      const token = speak(languageNotice, lang, { onEnd: speakIntro })
+      if (!token) speakIntro()
+      return () => stopSpeaking(token)
+    }
+
     // Cancel by token: a later speak() supersedes this one, and this cleanup
     // will not cancel narration it did not start.
+    const token = speakIntro()
     return () => stopSpeaking(token)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scenario])
@@ -228,7 +268,14 @@ export default function Scenario() {
      * ever call onEnd, so the clock has to start immediately or the worker would
      * face a timer that never runs and a bar that never moves.
      */
-    const token = speak(spoken, lang, {
+    /*
+     * spokenIn, not lang. The text here is whatever language the content resolved to,
+     * so tagging the utterance with the worker's chosen language was telling the speech
+     * engine "this is Santali" while handing it Hindi. Harmless today only because both
+     * map to hi-IN; it stops being harmless the moment a Santali voice exists or a
+     * Santali scenario translation lands, and at that point the bug would be silent.
+     */
+    const token = speak(spoken, spokenIn, {
       interrupt: true,
       onEnd: () => setClockStartedAt(Date.now()),
     })
@@ -236,7 +283,7 @@ export default function Scenario() {
 
     return () => stopSpeaking(token)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [step?.id, lang])
+  }, [step?.id, lang, spokenIn])
 
   // Stop any audio when leaving the page entirely.
   useEffect(() => () => stopSpeaking(), [])
@@ -246,8 +293,8 @@ export default function Scenario() {
     // Repeating does not restart the clock. A worker who asks to hear it again has
     // already had the situation described once; resetting the timer would make
     // "say that again" a way to buy unlimited thinking time.
-    speak(spokenPrompt(step), lang)
-  }, [step, lang])
+    speak(spokenPrompt(step), spokenIn)
+  }, [step, spokenIn])
 
   /* ---------------- answering ---------------- */
 
@@ -275,7 +322,7 @@ export default function Scenario() {
       setFeedback(choice)
       setFeedbackGrade(grade)
       setFeedbackLatency(latencyMs)
-      speak(choice.feedback, lang)
+      speak(choice.feedback, spokenIn)
 
       if (getApiKey()) {
         setAiLoading(true)
@@ -295,7 +342,7 @@ export default function Scenario() {
         }
       }
     },
-    [step, feedback, clockStartedAt, stepShownAt, lang, scenario]
+    [step, feedback, clockStartedAt, stepShownAt, lang, spokenIn, scenario]
   )
 
   /* ---------------- finishing ---------------- */
@@ -418,7 +465,7 @@ export default function Scenario() {
     )
   }
 
-  const contentUntranslated = scenarioContentIsEnglish(lang, scenario.id, SCENARIO_TRANSLATIONS)
+  const noticeIsHazard = narrationStatus(lang, spokenIn) === NARRATION.ENGLISH
 
   /* ---------------- results ---------------- */
 
@@ -610,13 +657,23 @@ export default function Scenario() {
         </div>
       )}
 
-      {/* Untranslated drill CONTENT is a safety problem, not an inconvenience —
-          a hazard instruction in a language the worker does not read. Hence
-          hazard tokens rather than the softer warning used for menu coverage. */}
-      {contentUntranslated && (
-        <div className="bg-hazard-subtle border border-hazard-border rounded-xl p-3.5 mb-5 flex items-start gap-3">
+      {/* Drill content in a language the worker did not choose.
+          
+          Two tones, because there are two situations. English is a safety problem for
+          this population — hence hazard tokens. Hindi for a Santali worker is not:
+          Hindi is the language of schooling in Jharkhand and the fallback was chosen
+          for exactly that reason. But it is still not what they asked for, and this
+          content is READ ALOUD, so it has to be said either way. */}
+      {languageNotice && (
+        <div
+          className={`rounded-xl p-3.5 mb-5 flex items-start gap-3 border ${
+            noticeIsHazard
+              ? 'bg-hazard-subtle border-hazard-border'
+              : 'bg-warning-subtle border-warning-border'
+          }`}
+        >
           <Pictogram name="warning" size={24} className="shrink-0" />
-          <p className="text-xs text-ink-secondary leading-relaxed">{contentNotice(lang)}</p>
+          <p className="text-xs text-ink-secondary leading-relaxed">{languageNotice}</p>
         </div>
       )}
 

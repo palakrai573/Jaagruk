@@ -4,6 +4,7 @@ import {
   COVERAGE_NOTICE,
   UNVERIFIED_NOTICE,
   CONTENT_NOTICE,
+  NARRATION_NOTICE,
 } from './i18nJaagruk.js'
 import { SANTALI_STRINGS, SANTALI_VERIFIED, SANTALI_REVIEW } from './i18nSantali.js'
 import { LS, lsGet, lsSet } from './local.js'
@@ -246,6 +247,10 @@ const STRINGS = {
     ur: 'میں صرف اس ایپ کے بارے میں جواب دیتا ہوں، اور یہ میرے پاس نہیں ہے۔ نیچے دیے سوالوں میں سے کوئی چنیں، یا ڈرل، اسکور، سرٹیفکیٹ، آواز، آف لائن استعمال یا اپنے ڈیٹا کے بارے میں پوچھیں۔',
     sat: 'ᱤᱧ ᱠᱷᱟᱹᱞᱤ ᱱᱚᱶᱟ ᱮᱯ ᱵᱟᱵᱚᱛ ᱛᱮᱞᱟ ᱮᱢᱟᱹᱧ, ᱟᱨ ᱱᱚᱶᱟ ᱤᱧ ᱠᱷᱚᱱ ᱵᱟᱝ ᱢᱮᱱᱟᱜᱼᱟ ᱾ ᱞᱟᱛᱟᱨ ᱨᱮᱭᱟᱜ ᱠᱩᱠᱞᱤ ᱠᱷᱚᱱ ᱡᱟᱦᱟᱸ ᱢᱤᱫ ᱵᱟᱪᱷᱟᱣ ᱢᱮ ᱾',
   },
+  /* Speaks the sender of a chat bubble for a screen reader. Visual users get the
+     alignment and the colour; a screen reader gets two identical streams of prose
+     unless the role is stated. */
+  chat_you: { en: 'You', hi: 'आप', sat: 'ᱟᱢ', bn: 'আপনি', or: 'ଆପଣ', ur: 'آپ' },
   chat_thinking: { en: 'Thinking…', hi: 'सोच रहा हूं…', bn: 'ভাবছি…', or: 'ଚିନ୍ତା କରୁଛି…', ur: 'سوچ رہا ہوں…', sat: 'ᱵᱷᱟᱵᱤᱡ ᱛᱟᱦᱮᱸᱱ…' },
   chat_send: { en: 'Send', hi: 'भेजें', bn: 'পাঠান', or: 'ପଠାନ୍ତୁ', ur: 'بھیجیں', sat: 'ᱠᱩᱞ ᱢᱮ' },
 
@@ -436,6 +441,42 @@ export function coverageNotice(lang) {
 /** Stronger notice for untranslated drill content. */
 export function contentNotice(lang) {
   return CONTENT_NOTICE[lang] || CONTENT_NOTICE.en
+}
+
+/** The language's own name, for telling a worker which language they are getting. */
+export function nativeLangName(code) {
+  return LANGUAGES.find((l) => l.code === code)?.native || 'English'
+}
+
+/**
+ * How the language a drill actually renders in relates to the one the worker chose.
+ *
+ * Three outcomes, not two, and that is the point. `resolved` comes from
+ * scenarioContentLanguage() in scenarioTranslations.js — passed in rather than
+ * recomputed here, because that module already owns the resolution and importing it
+ * would close a cycle (it imports LANGUAGE_FALLBACK from this file).
+ */
+export const NARRATION = { OWN: 'own', FALLBACK: 'fallback', ENGLISH: 'english' }
+
+export function narrationStatus(lang, resolved) {
+  if (lang === 'en' || !resolved || resolved === lang) return NARRATION.OWN
+  return resolved === 'en' ? NARRATION.ENGLISH : NARRATION.FALLBACK
+}
+
+/**
+ * What to tell the worker about the language of this drill, in their own language.
+ * Null when the drill is in the language they asked for and there is nothing to say.
+ *
+ * The English case keeps the existing hazard-toned CONTENT_NOTICE. A mid-chain
+ * fallback gets NARRATION_NOTICE, which names the language it actually resolved to
+ * rather than asserting English — the mistake that made the old notice untrustworthy.
+ */
+export function narrationNotice(lang, resolved) {
+  const status = narrationStatus(lang, resolved)
+  if (status === NARRATION.OWN) return null
+  if (status === NARRATION.ENGLISH) return CONTENT_NOTICE[lang] || CONTENT_NOTICE.en
+  const template = NARRATION_NOTICE[lang] || NARRATION_NOTICE.en
+  return template.replace('{language}', nativeLangName(resolved))
 }
 
 /**

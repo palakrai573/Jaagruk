@@ -645,6 +645,16 @@ const HAZARDS = {
 /* ================================================================== */
 
 const ASSESSMENT = {
+  /* Spoken prefix for the language badge on a module card, so a screen reader says
+     "shown in HI" instead of announcing a bare two-letter code. */
+  sl_shown_in: {
+    en: 'Shown in',
+    hi: 'इसमें दिखाया गया:',
+    sat: 'ᱱᱚᱶᱟ ᱛᱮ ᱧᱮᱞᱚᱜ ᱠᱟᱱᱟ:',
+    bn: 'এতে দেখানো হচ্ছে:',
+    or: 'ଏଥିରେ ଦେଖାଯାଉଛି:',
+    ur: 'اس میں دکھایا گیا:',
+  },
   as_readiness: { en: 'Readiness', hi: 'तैयारी', sat: 'ᱛᱮᱭᱟᱨᱤ', bn: 'প্রস্তুতি', or: 'ପ୍ରସ୍ତୁତି', ur: 'تیاری' },
   as_accuracy: { en: 'Correct answers', hi: 'सही उत्तर', sat: 'ᱴᱷᱤᱠ ᱛᱮᱞᱟ', bn: 'সঠিক উত্তর', or: 'ସଠିକ ଉତ୍ତର', ur: 'درست جوابات' },
   as_speed: { en: 'Reaction speed', hi: 'प्रतिक्रिया गति', sat: 'ᱛᱮᱞᱟ ᱞᱚᱜᱚᱱ', bn: 'প্রতিক্রিয়ার গতি', or: 'ପ୍ରତିକ୍ରିୟା ଗତି', ur: 'ردعمل کی رفتار' },
@@ -1464,6 +1474,38 @@ export const UNVERIFIED_NOTICE = {
 // a stronger warning than the UI notice above, because safety instructions
 // appearing in a language the worker cannot read is a real hazard, not a
 // cosmetic gap.
+/*
+ * Shown when a drill resolves to a language PART WAY down the fallback chain —
+ * today that means a Santali worker getting Hindi.
+ *
+ * This exists because the app was silent about it. CONTENT_NOTICE below is the
+ * only warning about drill language, and it renders behind
+ * scenarioContentIsEnglish(), which consults the fallback chain and so returns
+ * false for Santali the moment the Hindi fallback succeeds. That check was made
+ * fallback-aware on purpose — firing an "it is in English" warning while the
+ * screen was in fact Hindi named the wrong language and undermined a notice whose
+ * whole job is to be trusted. But the fix overshot: it left the one language with
+ * a mid-chain fallback as the one language that got no notice at all.
+ *
+ * So there are two notices now, because there are two situations. Falling to
+ * English is a hazard for this population. Falling to Hindi is not — Hindi is the
+ * language of schooling in Jharkhand and the fallback was chosen for that reason —
+ * but it is still not what the worker asked for, and the drill is READ ALOUD, so
+ * being told matters more here than anywhere else in the app.
+ *
+ * {language} is substituted with the native name of the language actually used, so
+ * a Santali worker sees "हिन्दी" — recognisable regardless of which script the rest
+ * of the sentence is in, and Devanagari is already in the precached font subset.
+ */
+export const NARRATION_NOTICE = {
+  en: 'This drill is shown and read aloud in {language}. A version in your own language is still being prepared \u2014 follow the pictograms and the signs on site if any wording is unclear.',
+  hi: 'यह ड्रिल {language} में दिखाई और सुनाई जा रही है। आपकी भाषा वाला संस्करण अभी तैयार हो रहा है — कोई शब्द समझ न आए तो चित्र-चिह्न और साइट के सुरक्षा साइन देखें।',
+  sat: 'ᱱᱚᱶᱟ ᱛᱟᱞᱤᱢ ᱫᱚ {language} ᱛᱮ ᱧᱮᱞᱚᱜ ᱟᱨ ᱨᱚᱲᱚᱜ ᱠᱟᱱᱟ ᱾ ᱟᱢᱟᱜ ᱯᱟᱹᱨᱥᱤ ᱨᱮᱭᱟᱜ ᱛᱟᱞᱤᱢ ᱛᱮᱭᱟᱨ ᱦᱩᱭᱩᱜ ᱠᱟᱱᱟ ᱾ ᱠᱟᱛᱷᱟ ᱵᱟᱝ ᱵᱩᱡᱷᱟᱹᱣ ᱠᱷᱟᱱ ᱪᱤᱛᱟᱹᱨ ᱟᱨ ᱨᱠᱷᱟ ᱪᱤᱱᱦᱟᱹ ᱠᱚ ᱟᱛᱮᱫ ᱢᱮ ᱾',
+  bn: 'এই ড্রিল {language}-এ দেখানো ও পড়ে শোনানো হচ্ছে। আপনার নিজের ভাষার সংস্করণ এখনও তৈরি হচ্ছে — কোনো শব্দ বুঝতে না পারলে ছবি-চিহ্ন ও সাইটের সুরক্ষা সাইন দেখুন।',
+  or: 'ଏହି ଡ୍ରିଲ {language}ରେ ଦେଖାଯାଉଛି ଏବଂ ପଢ଼ି ଶୁଣାଯାଉଛି। ଆପଣଙ୍କ ନିଜ ଭାଷାର ସଂସ୍କରଣ ଏପର୍ଯ୍ୟନ୍ତ ପ୍ରସ୍ତୁତ ହେଉଛି — କୌଣସି ଶବ୍ଦ ବୁଝି ନ ପାରିଲେ ଚିତ୍ର-ଚିହ୍ନ ଓ ସାଇଟର ସୁରକ୍ଷା ସାଇନ ଦେଖନ୍ତୁ।',
+  ur: 'یہ ڈرل {language} میں دکھائی اور پڑھ کر سنائی جا رہی ہے۔ آپ کی اپنی زبان کا نسخہ ابھی تیار ہو رہا ہے — کوئی لفظ سمجھ نہ آئے تو تصویری نشان اور سائٹ کے حفاظتی سائن دیکھیں۔',
+}
+
 export const CONTENT_NOTICE = {
   en: 'This module\u2019s safety content has not been translated yet and is shown in English.',
   hi: 'इस मॉड्यूल की सुरक्षा सामग्री का अनुवाद नहीं हुआ है और यह अंग्रेज़ी में दिख रही है।',

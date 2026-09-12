@@ -25,6 +25,7 @@ import { fileURLToPath } from 'node:url'
 import { t, SANTALI_VERIFIED } from '../src/lib/i18n.js'
 import { SANTALI_STRINGS } from '../src/lib/i18nSantali.js'
 import { SCENARIO_TRANSLATIONS } from '../src/lib/scenarioTranslations.js'
+import { SCENARIOS } from '../src/lib/scenarios.js'
 
 const ROOT = dirname(dirname(fileURLToPath(import.meta.url)))
 const OL_CHIKI = /[\u1C50-\u1C7F]/
@@ -92,9 +93,84 @@ for (const r of rows) counts.set(r.group, (counts.get(r.group) || 0) + 1)
 for (const [group, n] of [...counts].sort()) console.log(`  ${String(n).padStart(3)}  ${group}`)
 
 console.log(`\nVerified by a native speaker: ${SANTALI_VERIFIED ? 'yes' : 'NO — every row above is unchecked'}`)
-console.log(`Scenario content with no Santali: ${scenarioGaps.length} of ${Object.keys(SCENARIO_TRANSLATIONS).length} modules`)
+
+/* ================================================================== */
+/* Scenario content — a second worksheet, and a different kind of task */
+/* ================================================================== */
+
+/*
+ * WHY THIS IS SEPARATE, AND WHY IT IS EMPTY RATHER THAN MACHINE-FILLED
+ *
+ * The worksheet above is a CHECKING task: every row already has Santali in it and
+ * the reviewer's job is to correct what is wrong. This one is a WRITING task: there
+ * is no Santali to correct, because none was ever authored.
+ *
+ * That was a deliberate decision and it still holds. A UI label that reads oddly is
+ * a papercut. A drill instruction is the thing a worker acts on — "leave the
+ * extinguisher and evacuate" and "use the extinguisher then evacuate" differ by one
+ * word and by a life — and it is READ ALOUD, so a worker who cannot check it against
+ * the screen has no way to notice it is wrong. Machine-authoring 300-odd lines of
+ * that and shipping it unreviewed would be worse than the current Hindi fallback,
+ * which is at least correct Hindi in the language of schooling in Jharkhand.
+ *
+ * But "waits for a speaker" was not a plan, it was a sentence. Until now this script
+ * only PRINTED that nine modules had no Santali; it never produced anything a
+ * speaker could work from. This does: every translatable string, in order, with both
+ * source languages and an addressable path so a filled-in column can be imported
+ * back without anyone matching prose by eye.
+ */
+const scenarioRows = []
+for (const scenario of SCENARIOS) {
+  const hi = SCENARIO_TRANSLATIONS[scenario.id]?.hi
+  const push = (path, field, en, hindi) => {
+    if (!en) return
+    scenarioRows.push({ module: scenario.id, path, field, en, hi: hindi || '' })
+  }
+
+  push(`${scenario.id}.title`, 'title', scenario.title, hi?.title)
+  push(`${scenario.id}.intro`, 'intro', scenario.intro, hi?.intro)
+
+  scenario.steps.forEach((step, i) => {
+    push(`${scenario.id}.steps[${i}].prompt`, 'prompt', step.prompt, hi?.steps?.[i]?.prompt)
+    step.choices.forEach((choice, j) => {
+      push(
+        `${scenario.id}.steps[${i}].choices[${j}].text`,
+        'option',
+        choice.text,
+        hi?.steps?.[i]?.choices?.[j]?.text
+      )
+      push(
+        `${scenario.id}.steps[${i}].choices[${j}].feedback`,
+        'feedback',
+        choice.feedback,
+        hi?.steps?.[i]?.choices?.[j]?.feedback
+      )
+    })
+  })
+}
+
+const scenarioHeader = ['module', 'path', 'field', 'english', 'hindi', 'santali_new', 'translator_note']
+const scenarioLines = [scenarioHeader.join(',')]
+for (const r of scenarioRows) {
+  scenarioLines.push([r.module, r.path, r.field, r.en, r.hi, '', ''].map(cell).join(','))
+}
+writeFileSync(
+  join(ROOT, 'docs/santali-scenario-worksheet.csv'),
+  BOM + scenarioLines.join('\r\n') + '\r\n',
+  'utf8'
+)
+
+const byField = new Map()
+for (const r of scenarioRows) byField.set(r.field, (byField.get(r.field) || 0) + 1)
+
+console.log(
+  `\ndocs/santali-scenario-worksheet.csv written — ${scenarioRows.length} strings to TRANSLATE (not check)`
+)
+for (const [field, n] of [...byField].sort()) console.log(`  ${String(n).padStart(3)}  ${field}`)
+console.log(`\nScenario content with no Santali: ${scenarioGaps.length} of ${Object.keys(SCENARIO_TRANSLATIONS).length} modules`)
 for (const id of scenarioGaps) console.log(`       ${id}`)
 console.log(
-  '\nScenario prose is not machine-authored. Drill content is where a wrong verb\n' +
-    'changes what a worker does, so it resolves to Hindi and waits for a speaker.'
+  '\nUntil that column is filled by a Santali speaker, a worker who picks Santali is\n' +
+    'shown and read these drills in Hindi. The app now says so on the module list and\n' +
+    'again at the start of every drill, in Santali — see narrationNotice() in i18n.js.'
 )

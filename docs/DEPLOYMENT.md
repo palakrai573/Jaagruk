@@ -284,6 +284,9 @@ Do these **on a real phone**, not a desktop browser. Several of them cannot fail
 | 10k | **Tab through a form with a keyboard** | Every control shows a 2 px offset ring, and a pill-shaped control **keeps its round shape** while focused. The ring used to re-round the element itself to 4 px, so every badge and dot visibly squared off. |
 | 10l | **Run a timed drill and watch the countdown bar** | Smooth at the same moment the app is timing the decision to the millisecond. This is the one animation whose cost lands inside a measurement that goes into a certificate. |
 | 10m | **Turn on "Remove animations" in Android accessibility settings** | Every screen renders complete and static: progress bars still show their value, the spinner is a static mark rather than frozen mid-tilt, no reveal is stuck invisible. |
+| 10n | **Set the language to Santali, open the module list** | Every one of the nine modules carries an amber **HI** badge. The drill content has no Santali, so it resolves to Hindi — the badge is the app saying so before the worker commits to a drill. |
+| 10o | **Santali, start any drill, listen from the first second** | You hear a Santali sentence telling you the drill is in हिन्दी, *then* the Hindi intro. The notice is the only Santali audio in a drill and it is deliberately first. If you hear the Hindi intro immediately, the notice was skipped — check `narrationNotice()` returned non-null. |
+| 10p | **Open the assistant, press Escape** | It closes and focus returns to the launcher button. Then reopen and confirm a long answer keeps its paragraph breaks rather than running together. |
 | 11 | Deploy a change, reload twice | New version is picked up (validates §5) |
 
 Check 4 is the one that matters most. It is the claim the whole project rests on, and it is

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { SCENARIOS, CERTIFICATION_DOMAINS } from '../lib/scenarios.js'
-import { translateScenario, SCENARIO_TRANSLATIONS } from '../lib/scenarioTranslations.js'
+import { translateScenario, scenarioContentLanguage } from '../lib/scenarioTranslations.js'
 import { scenarioMeta } from '../lib/scenarioMeta.js'
 import { listAttempts, bestByDomain } from '../lib/assessment.js'
 import { retentionOverview } from '../lib/spaced.js'
@@ -10,7 +10,7 @@ import { PASS_THRESHOLD } from '../lib/certificate.js'
 import Pictogram from '../lib/pictograms.jsx'
 import { Chevron } from '../components/ui/index.js'
 import { useLanguage } from '../context/LanguageContext.jsx'
-import { scenarioContentIsEnglish } from '../lib/i18n.js'
+import { narrationStatus, NARRATION } from '../lib/i18n.js'
 
 /**
  * Module list.
@@ -83,7 +83,12 @@ export default function ScenarioList() {
           const meta = scenarioMeta(s.id)
           const row = byDomain.get(s.domain)
           const counts = CERTIFICATION_DOMAINS.includes(s.domain)
-          const untranslated = scenarioContentIsEnglish(lang, s.id, SCENARIO_TRANSLATIONS)
+          /* The language this module will actually be shown and read aloud in. The
+             badge below used to be a hardcoded "EN" behind a check that could never be
+             true for Santali, so the one language that always falls back was the one
+             language with no badge. Now it names whatever it resolves to. */
+          const spokenIn = scenarioContentLanguage(s.id, lang)
+          const languageStatus = narrationStatus(lang, spokenIn)
 
           return (
             <Link
@@ -142,10 +147,15 @@ export default function ScenarioList() {
                 )}
               </div>
 
-              {untranslated && (
-                <p className="font-mono text-[10px] text-hazard-text mt-3 flex items-center gap-1.5">
+              {languageStatus !== NARRATION.OWN && (
+                <p
+                  className={`font-mono text-[10px] mt-3 flex items-center gap-1.5 ${
+                    languageStatus === NARRATION.ENGLISH ? 'text-hazard-text' : 'text-warning-text'
+                  }`}
+                >
                   <Pictogram name="warning" size={12} />
-                  EN
+                  <span className="sr-only">{t('sl_shown_in')} </span>
+                  {spokenIn.toUpperCase()}
                 </p>
               )}
             </Link>

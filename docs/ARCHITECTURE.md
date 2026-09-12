@@ -425,7 +425,25 @@ matters because those are the values hashed into a certificate.
 4. **Santali UI is 100% covered and 0% verified.** These are two different numbers and the
    app reports them separately, because conflating them is how software ends up lying.
 
-   All 626 UI strings now exist in Ol Chiki. None has been checked by a Santali speaker.
+   **A worker who picks Santali hears Hindi in every drill, and the app now says so.**
+   Worth stating separately from coverage, because the two are easy to conflate. The
+   UI is 100% Ol Chiki; the nine scenario modules have no Santali at all, so
+   `scenarioContentLanguage` resolves `sat → hi` and the drill is shown *and read
+   aloud* in Hindi. The Ol Chiki→Devanagari transliterator runs on every `speak()`
+   call and is correct — it simply has no Ol Chiki to convert, because by then the
+   text is Hindi.
+
+   That fallback is deliberate: Hindi is the language of schooling in Jharkhand and
+   Devanagari is far more readable than Latin for this population. What was not
+   deliberate is that the app was silent about it. The only notice was gated on
+   `scenarioContentIsEnglish()`, which consults the fallback chain and therefore
+   returns false for Santali the moment the Hindi fallback succeeds — so the one
+   language with a mid-chain fallback was the one language guaranteed no notice.
+   `narrationNotice()` now names the language actually used, on the module list and
+   at the start of every drill, spoken in Santali before the drill switches to Hindi.
+   Two tones: falling to Hindi is a warning, falling to English is a hazard.
+
+   All 627 UI strings now exist in Ol Chiki. None has been checked by a Santali speaker.
    The 377 gathered into `src/lib/i18nSantali.js` let a reviewer work through one file; the
    other 249 in `i18n.js` / `i18nJaagruk.js` are equally unreviewed, so the file split is
    organisational rather than a quality boundary.
@@ -455,7 +473,15 @@ matters because those are the values hashed into a certificate.
    Santali; they resolve to Hindi. Drill prose is where a wrong verb changes what a worker
    physically does, so it waits for a speaker rather than being filled in.
 
-   `npm run santali:worksheet` regenerates `docs/santali-worksheet.csv`: all 626 strings
+   `npm run santali:worksheet` also regenerates `docs/santali-scenario-worksheet.csv`:
+   the 332 drill strings with no Santali, each with an addressable path
+   (`fire-explosion.steps[2].choices[1].feedback`) so a filled-in column imports
+   without anyone matching prose by eye. Deliberately left empty rather than
+   machine-filled — a drill instruction is what a worker acts on, "leave the
+   extinguisher and evacuate" and "use the extinguisher then evacuate" differ by one
+   word, and it is read aloud, so a worker cannot check it against the screen.
+
+   `npm run santali:worksheet` regenerates `docs/santali-worksheet.csv`: all 627 strings
    with English and Hindi source, the current Santali, and the file to correct it in,
    ordered by consequence so drill and hazard instructions come before supervisor
    dashboards.
