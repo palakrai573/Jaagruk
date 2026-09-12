@@ -171,6 +171,26 @@ const STRINGS = {
   list_points: { en: 'decision points', hi: 'निर्णय बिंदु', bn: 'সিদ্ধান্ত পয়েন্ট', or: 'ନିଷ୍ପତ୍ତି ପଏଣ୍ଟ', ur: 'فیصلہ پوائنٹس' },
 
   sc_complete: { en: 'Scenario Complete', hi: 'परिदृश्य पूर्ण', bn: 'পরিস্থিতি সম্পূর্ণ', or: 'ପରିସ୍ଥିତି ସମ୍ପୂର୍ଣ୍ଣ', ur: 'منظرنامہ مکمل' },
+  /* Between the last answer and the results. Short, but a real state: the attempt is
+     written to IndexedDB, retention is recorded and a sync is queued. */
+  sc_scoring: {
+    en: 'Scoring your run…',
+    hi: 'आपका परिणाम बनाया जा रहा है…',
+    sat: 'ᱟᱢᱟᱜ ᱞᱮᱠᱷᱟ ᱛᱮᱭᱟᱨ ᱦᱩᱭᱩᱜ ᱠᱟᱱᱟ…',
+    bn: 'আপনার ফলাফল তৈরি হচ্ছে…',
+    or: 'ଆପଣଙ୍କ ଫଳାଫଳ ପ୍ରସ୍ତୁତ ହେଉଛି…',
+    ur: 'آپ کا نتیجہ تیار ہو رہا ہے…',
+  },
+  /* Shown if a drill somehow runs out of steps without finishing — the guard that
+     replaced a null dereference which used to blank the whole app. */
+  sc_complete_body: {
+    en: 'This drill has no more steps. Pick a module to train again.',
+    hi: 'इस ड्रिल में और चरण नहीं हैं। फिर अभ्यास के लिए मॉड्यूल चुनें।',
+    sat: 'ᱱᱚᱶᱟ ᱛᱟᱞᱤᱢ ᱨᱮ ᱟᱨ ᱠᱟᱛᱷᱟ ᱵᱟᱝ ᱢᱮᱱᱟᱜᱼᱟ ᱾ ᱫᱚᱦᱲᱟ ᱛᱟᱞᱤᱢ ᱞᱟᱹᱜᱤᱫ ᱢᱚᱰᱩᱞ ᱵᱟᱪᱷᱟᱣ ᱢᱮ ᱾',
+    bn: 'এই ড্রিলে আর কোনো ধাপ নেই। আবার অভ্যাসের জন্য মডিউল বাছুন।',
+    or: 'ଏହି ଡ୍ରିଲରେ ଆଉ ପାଦ ନାହିଁ। ପୁଣି ଅଭ୍ୟାସ ପାଇଁ ମଡ୍ୟୁଲ ବାଛନ୍ତୁ।',
+    ur: 'اس ڈرل میں مزید مراحل نہیں۔ دوبارہ مشق کے لیے ماڈیول چنیں۔',
+  },
   sc_more: { en: 'More Scenarios', hi: 'और परिदृश्य', bn: 'আরও পরিস্থিতি', or: 'ଅଧିକ ପରିସ୍ଥିତି', ur: 'مزید منظرنامے' },
   sc_dashboard: { en: 'View Dashboard', hi: 'डैशबोर्ड देखें', bn: 'ড্যাশবোর্ড দেখুন', or: 'ଡ୍ୟାସବୋର୍ଡ ଦେଖନ୍ତୁ', ur: 'ڈیش بورڈ دیکھیں' },
   sc_safe: { en: 'Safe choice', hi: 'सुरक्षित विकल्प', bn: 'নিরাপদ পছন্দ', or: 'ସୁରକ୍ଷିତ ପସନ୍ଦ', ur: 'محفوظ انتخاب' },

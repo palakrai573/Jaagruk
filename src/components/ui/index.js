@@ -14,6 +14,7 @@ export { default as Field, TextField, TextAreaField } from './Field.jsx'
 export { default as Dialog, useConfirm, usePrompt } from './Dialog.jsx'
 export { ToastProvider, useToast } from './Toast.jsx'
 export { default as ThemeToggle } from './ThemeToggle.jsx'
+export { default as ErrorBoundary } from './ErrorBoundary.jsx'
 
 export {
   usePrefersReducedMotion,

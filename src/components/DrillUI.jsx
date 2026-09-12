@@ -399,6 +399,28 @@ export function VoiceButton({
   readyRef.current = ready && !disabled
 
   /*
+   * onCommand goes through a ref for the SAME reason `ready` does, and missing that
+   * was the cause of a white screen mid-drill.
+   *
+   * The listener is rebuilt only on [lang, choiceCount, muted], so it captured
+   * whichever onCommand existed at that moment and kept calling it for the rest of
+   * the module. In Scenario.jsx that handler closes over `step`, `feedback`, `choose`
+   * and `next` — so from step two onward, speaking an option ran step one's handler,
+   * which saw step one's already-answered `feedback` and therefore called step one's
+   * `next()`. That advanced the drill without recording the answer, and because
+   * `next` bounds-checked against a captured stepIndex while incrementing with a
+   * functional updater, the real index could be pushed past the last step. `step`
+   * became null, the render dereferenced it, and with no error boundary the whole app
+   * unmounted to a blank page.
+   *
+   * A ref is the fix rather than adding onCommand to the dependency array: the
+   * handler's identity changes on every answer, and rebuilding the recogniser that
+   * often would tear down and restart the microphone mid-question.
+   */
+  const onCommandRef = useRef(onCommand)
+  onCommandRef.current = onCommand
+
+  /*
    * Only the option numbers that actually exist on screen are live, so "three"
    * cannot fire on a two-option question and pick nothing.
    *
@@ -423,7 +445,8 @@ export function VoiceButton({
       shouldAccept: () => readyRef.current,
       onCommand: (match) => {
         setError(null)
-        onCommand?.(match.command)
+        // Through the ref, so this is always the current render's handler.
+        onCommandRef.current?.(match.command)
       },
       onLocaleChange: (_locale, info) => {
         // Clear any network warning: the microphone is listening again, just in a

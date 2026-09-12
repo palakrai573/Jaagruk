@@ -300,6 +300,96 @@ the one a judge is most likely to test personally.
 
 ---
 
+## 10A. Installing as a PWA so everything works offline
+
+Offline is not one switch. Three different mechanisms hold the app's assets, they fill
+up at different times, and one of them is not the app's to control at all. Getting a
+fully offline install means understanding which is which.
+
+### The three tiers
+
+| Tier | What is in it | When it arrives |
+|---|---|---|
+| **Precached** — 35 entries, ~2.3 MB | Every route and code chunk including the lazy AR, XR and detection ones; the stylesheet; `index.html`; the manifest; and the Latin, Devanagari and **Ol Chiki** font subsets | At install. Nothing further needed. |
+| **Runtime-cached** | Bengali, Odia and Urdu font subsets; the MediaPipe runtime, WASM and the two models (hand landmarker, object detector, ~4 MB) | **On first use, online.** Never fetched until something asks for them. |
+| **Not the app's** | Offline *speech recognition* language packs | Android system setting. See below. |
+
+The runtime tier is deliberate: Nastaliq alone is ~317 KB for two weights, and making
+every worker download it to install an app they will use in Hindi is the wrong
+default. But it means a feature you have never opened while online will not work
+offline. That is the single most common cause of "it worked in the demo and not on
+the day".
+
+### Install
+
+1. **Serve over HTTPS.** Not optional and not cosmetic: `crypto.subtle` (PIN hashing,
+   certificate signing), the camera and the microphone are all unavailable in an
+   insecure context. `http://` on a LAN IP will fail in ways that look like app bugs.
+   `localhost` is treated as secure, so local testing is fine.
+2. Open the site in **Chrome on Android**.
+3. Menu (⋮) → **Install app** or **Add to Home screen**. If the option is absent the
+   manifest or the service worker did not load — check §9.
+4. Launch it from the home-screen icon, not from the browser tab. The installed window
+   is what gets the standalone layout and the safe-area insets.
+
+### Then warm it up, before you go offline
+
+Do this once, online, in the installed app. It takes about a minute and it is what
+turns "installed" into "fully offline".
+
+- [ ] **Settings → check the Build stamp** matches what you deployed. An installed PWA
+      keeps serving its cached shell until the service worker updates *and* the page
+      reloads; offline it cannot update at all. This is the first thing to check
+      whenever a fix seems missing.
+- [ ] **Run one drill to the end.** Confirms the 3D scene chunk, the assessment and the
+      certificate path are all resident.
+- [ ] **Open a drill with AR on**, and once with **Live detection** on. Downloads the
+      MediaPipe runtime and the object detector. `vision.js` also copies the model
+      bytes into IndexedDB, which survives cache eviction, so this only has to happen
+      once per device.
+- [ ] **Enable gesture control once.** Same, for the hand landmarker.
+- [ ] **Switch language to each one you will demo.** Bengali, Odia and Urdu pull their
+      font on first use. Skip this and the text renders in boxes offline. Hindi and
+      Santali need nothing — their fonts are precached.
+- [ ] **Issue one certificate and verify it.** Exercises signing and QR generation.
+
+Then turn off wifi and mobile data, force-close the app, and reopen. It should boot
+straight into the home screen with no network at all — check 4 in §10 is the one that
+matters most.
+
+### Voice input offline is an OS setting, not an app setting
+
+This is the one thing the app cannot fix for you, so it is worth being plain about.
+
+Speech **output** is fully offline for every language: the app ships the text and the
+device's own text-to-speech reads it.
+
+Speech **input** is served by the Android speech service, which can only recognise
+offline in languages whose voice pack has been downloaded. Phones ship English.
+**Hindi is an opt-in download almost nobody has made.** Without it, offline Hindi
+recognition cannot work no matter what the app does — so the app detects it, falls back
+to an English model, and tells the worker to say the English number instead.
+
+To get real offline Hindi recognition:
+
+> **Android Settings → System → Languages & input → Voice input → Google (⚙) →
+> Offline speech recognition → All → Hindi → Download**
+
+The menu path varies by manufacturer; on Samsung it is under General management. Once
+installed, `hi-IN` succeeds offline, "एक" and "ek" are recognised directly, and the
+"Listening in English" hint never appears. Settings → *Speech recognition order on this
+device* shows the ladder the app will try.
+
+### What is genuinely never offline
+
+Only two things, and neither is needed for training, assessment, certification or
+verification:
+
+- **Photo hazard analysis** (`/scan`) — calls a cloud model, needs a key and a
+  connection. Everything else in the app runs on-device.
+- **Central upload** — the sync queue holds attempts locally and drains when a
+  connection returns, so being offline delays the upload rather than losing the record.
+
 ## 11. Common failures
 
 | Symptom | Cause | Fix |
@@ -312,5 +402,10 @@ the one a judge is most likely to test personally.
 | Updates never reach devices | `sw.js` / `index.html` cached | Apply the `no-cache` headers in §5 |
 | Buddy drill pairs but never connects | Phones on different networks | Same wifi or hotspot — documented limitation |
 | Sync works in browser, fails in APK | CORS missing `https://localhost`, or HTTP endpoint | See §8 |
+| **The screen went white** | An uncaught render error. It should now be impossible to see a blank screen: an ErrorBoundary wraps the routes and a second one wraps the whole tree | If you do see one, the build predates the boundary — check the Build stamp in Settings. If you see the "This screen stopped working" panel instead, open **Details** and send that text; it names the failing component |
+| A drill jumped a question, or scored fewer answers than you gave | Was a stale voice-command closure calling the previous step's handler | Fixed; `onCommand` is read through a ref and a per-step guard blocks duplicate submissions. Confirm the Build stamp |
+| Gesture control or Live detection spins forever offline | Their MediaPipe models were never fetched, because the feature was never opened while online | Warm-up, §10A. One online use per device is enough — the bytes go to IndexedDB |
+| Text renders as boxes in Bengali, Odia or Urdu offline | Those font subsets are runtime-cached, not precached | Switch to that language once while online, §10A |
+| Hindi voice answers do nothing offline, English works | No offline Hindi voice pack on the device | §10A, last section. The app falls back to English and says so; the real fix is the OS download |
 | Header under the status bar, or content under the bottom bar | An old WebView that does not support `env()`, so the whole `calc()` is invalid and the padding collapses | Already guarded: every inset is `env(safe-area-inset-*, 0px)` with an explicit fallback. If it still happens, check `viewport-fit=cover` survived in `index.html` |
 | Bottom bar looks correct but the edge of it mis-taps | Bar painted with the inset but the tap target not extended into it | The bar takes `padding-bottom: var(--safe-b)`, which grows it rather than shifting it — do not swap that for a margin |

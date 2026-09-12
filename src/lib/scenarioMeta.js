@@ -580,6 +580,41 @@ function shuffled(list, rand) {
   return out
 }
 
+/**
+ * The next step index, clamped to the content.
+ *
+ * WHY THIS IS A FUNCTION AND NOT TWO LINES AT THE CALL SITE
+ * It used to be, and the two lines disagreed with each other. The drill read
+ * `if (stepIndex + 1 < totalSteps) setStepIndex(i => i + 1)` — deciding with a value
+ * captured at render, mutating with the live one. Those match only while every caller
+ * is current, and one was not: a stale voice-command closure called it holding
+ * stepIndex 0 while the drill was on its last step, so the guard said "safe to
+ * advance" and the updater walked off the end. `steps[index]` came back undefined,
+ * the render dereferenced it, and with no error boundary the app went blank.
+ *
+ * Taking both from the same argument makes disagreement impossible, and being a pure
+ * function makes the invariant testable — which two lines inside a component were not.
+ *
+ * Hostile input is clamped rather than trusted: this decides what a worker sees next
+ * in a scored assessment, so NaN must not become the index.
+ */
+export function nextStepIndex(current, totalSteps) {
+  const total = Number.isFinite(totalSteps) ? Math.max(0, Math.floor(totalSteps)) : 0
+  if (total === 0) return 0
+  const last = total - 1
+  const i = Number.isFinite(current) ? Math.max(0, Math.floor(current)) : 0
+  if (i >= last) return last
+  return i + 1
+}
+
+/** Whether that index is the final step, so the caller knows to finish rather than advance. */
+export function isLastStep(current, totalSteps) {
+  const total = Number.isFinite(totalSteps) ? Math.max(0, Math.floor(totalSteps)) : 0
+  if (total === 0) return true
+  const i = Number.isFinite(current) ? Math.max(0, Math.floor(current)) : 0
+  return i >= total - 1
+}
+
 /** A fresh seed for one attempt. Callers hold this for the attempt's lifetime. */
 export function newAttemptSeed() {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`

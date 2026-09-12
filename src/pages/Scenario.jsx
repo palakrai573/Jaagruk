@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { getScenario } from '../lib/scenarios.js'
 import { translateScenario, scenarioContentLanguage } from '../lib/scenarioTranslations.js'
-import { enrichScenario, newAttemptSeed } from '../lib/scenarioMeta.js'
+import { enrichScenario, newAttemptSeed, nextStepIndex, isLastStep } from '../lib/scenarioMeta.js'
 import { askTrainer, getApiKey } from '../lib/api.js'
 import { speak, stopSpeaking, COMMAND, shouldUseVoice } from '../lib/speech.js'
 import { addLogEntry } from '../lib/store.js'
@@ -99,6 +99,14 @@ export default function Scenario() {
   const languageNotice = narrationNotice(lang, spokenIn)
 
   const [stepIndex, setStepIndex] = useState(0)
+  /* Mirrors stepIndex for callbacks that outlive the render they were created in.
+     next() reads this rather than the closure, so a stale caller cannot advance from
+     a position the drill left several steps ago. */
+  const stepIndexRef = useRef(0)
+  stepIndexRef.current = stepIndex
+  /* Set once the last step has been answered. Drives the finish effect below, so
+     scoring and persistence never run from inside a state updater. */
+  const [atEnd, setAtEnd] = useState(false)
   const [decisions, setDecisions] = useState([])
   const [feedback, setFeedback] = useState(null)
   const [feedbackGrade, setFeedbackGrade] = useState(null)
@@ -213,6 +221,9 @@ export default function Scenario() {
   /* ---------------- narration ---------------- */
 
   const introSpokenRef = useRef(false)
+  /* Which step has already been answered, checked synchronously so a duplicate voice
+     delivery cannot record a second decision for it. */
+  const answeredStepRef = useRef(null)
 
   // Intro narration. Depends on the memoised scenario, so it fires once per
   // module rather than once per render.
@@ -301,6 +312,19 @@ export default function Scenario() {
   const choose = useCallback(
     async (choice) => {
       if (!step || feedback) return
+      /*
+       * A ref guard as well as the state guard above, because the state one is not
+       * enough against voice.
+       *
+       * `feedback` is read from a closure, so two deliveries inside the same tick both
+       * see null and both proceed — and the recogniser does deliver twice, since it
+       * reports several alternatives per utterance and the continuous loop can replay
+       * one. That recorded two decisions for a single step, which then skewed the
+       * score for the whole attempt. A ref updates synchronously, so the second call
+       * sees the first.
+       */
+      if (answeredStepRef.current === step.id) return
+      answeredStepRef.current = step.id
 
       // See the note on the two timestamps above: whichever moment the worker
       // actually received the question from.
@@ -399,12 +423,52 @@ export default function Scenario() {
     setFeedbackLatency(0)
     setAiCoaching('')
 
-    if (stepIndex + 1 < totalSteps) {
-      setStepIndex((i) => i + 1)
-    } else {
-      finish(decisions)
-    }
-  }, [stepIndex, totalSteps, decisions, finish])
+    /*
+     * The bound is checked INSIDE the updater, against the live index.
+     *
+     * It used to read `if (stepIndex + 1 < totalSteps) setStepIndex(i => i + 1)`,
+     * which decides using a value captured at render and then mutates using the
+     * current one. Those are the same number as long as every caller is fresh — and
+     * they were not: a stale voice-command closure could call this with stepIndex
+     * captured at 0 while the real index was on the last step, so the guard said
+     * "safe to advance" and the updater pushed past the end. `step` resolved to null
+     * and the render died on it.
+     *
+     * Deciding and mutating on the same value makes it impossible to disagree,
+     * whatever the caller's vintage. `finish` moved into an effect below for the same
+     * reason: it must not fire from inside an updater, which React may call twice.
+     */
+    /*
+     * The live index comes from a ref, not from the closure.
+     *
+     * This is the same pattern DrillUI uses for `ready` and `onCommand`, and for the
+     * same reason: callers here outlive the render that created them. Reading the ref
+     * means a stale caller still advances from where the drill actually is, so the
+     * bounds check and the increment cannot disagree — which is what walked the index
+     * off the end of the content and blanked the app.
+     *
+     * A ref rather than a functional updater because deciding between "advance" and
+     * "finish" needs the value BEFORE choosing which state to set, and setAtEnd inside
+     * a setStepIndex updater would be a side effect in a function React may call twice.
+     */
+    const i = stepIndexRef.current
+    if (isLastStep(i, totalSteps)) setAtEnd(true)
+    else setStepIndex(nextStepIndex(i, totalSteps))
+  }, [totalSteps])
+
+  /*
+   * Finishing is an effect, not a branch inside next().
+   *
+   * finish() writes an attempt, records retention and enqueues a sync — none of which
+   * belongs inside a state updater, because React invokes those more than once in
+   * development and may replay them. Keying it off a flag means it runs exactly once
+   * per attempt and always with the decisions array as it actually stands.
+   */
+  useEffect(() => {
+    if (!atEnd || finished) return
+    finish(decisions)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [atEnd])
 
   /* ---------------- scene reaction ---------------- */
 
@@ -566,6 +630,48 @@ export default function Scenario() {
   }
 
   /* ---------------- drill ---------------- */
+
+  /*
+   * Defence in depth. Everything below dereferences `step` — step.prompt,
+   * step.choices.map, step.choices.length — so a null one took the whole app down,
+   * and `step` is `scenario?.steps?.[stepIndex] || null`, i.e. null the moment the
+   * index is out of range. The index can no longer get there, but "cannot happen"
+   * is a poor reason for the alternative to be a blank screen. If it does, this is a
+   * drill that has run out of steps, which means it is finished.
+   */
+  /*
+   * Scoring. Brief but not instant — finish() writes an attempt to IndexedDB, records
+   * retention and enqueues a sync — and it is a real state now that finishing happens
+   * in an effect rather than inline. Without this the last question would re-render for
+   * one frame between "Next" and the results, because feedback has been cleared and
+   * `finished` is not true yet.
+   */
+  if (atEnd && !finished) {
+    return (
+      <div className="max-w-3xl mx-auto px-5 py-24 text-center" role="status" aria-live="polite">
+        <p className="font-mono text-2xs uppercase tracking-[0.22em] text-brand-text mb-3">
+          {t('sc_complete')}
+        </p>
+        <p className="text-ink-secondary">{t('sc_scoring')}</p>
+      </div>
+    )
+  }
+
+  if (!step) {
+    return (
+      <div className="max-w-3xl mx-auto px-5 py-16">
+        <EmptyState
+          title={t('sc_complete')}
+          body={t('sc_complete_body')}
+          action={
+            <Button to="/train" variant="primary">
+              {t('nav_train')}
+            </Button>
+          }
+        />
+      </div>
+    )
+  }
 
   return (
     <div className="max-w-2xl mx-auto px-5 py-8 md:py-10">

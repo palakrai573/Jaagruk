@@ -17,7 +17,7 @@ import ReportHazard from './pages/ReportHazard.jsx'
 import LanguageSwitcher from './components/LanguageSwitcher.jsx'
 import ChatBox from './components/ChatBox.jsx'
 import GestureLayer from './components/GestureLayer.jsx'
-import { ThemeToggle, Chevron } from './components/ui/index.js'
+import { ThemeToggle, Chevron, ErrorBoundary } from './components/ui/index.js'
 import Pictogram from './lib/pictograms.jsx'
 import { useLanguage } from './context/LanguageContext.jsx'
 import { isPartiallyTranslated, coverageNotice } from './lib/i18n.js'
@@ -245,6 +245,17 @@ export default function App() {
           </div>
         )}
 
+        {/*
+          A page-level boundary, inside the chrome rather than around it.
+          
+          The outer boundary in main.jsx replaces the entire screen, which is right for a
+          provider failure and wrong for a single broken page: it takes the navigation
+          with it, so the only way out is a reload. Catching here keeps the header and
+          the bottom bar alive, so a worker whose drill just died can tap Dashboard and
+          carry on. Keyed on the route, so navigating away from a crashed page resets the
+          boundary instead of leaving it stuck on the error for the rest of the session.
+        */}
+        <ErrorBoundary key={location.pathname}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/start" element={<Onboarding />} />
@@ -264,6 +275,7 @@ export default function App() {
           {/* A mistyped hash should land somewhere useful, not on a blank page. */}
           <Route path="*" element={<NotFound t={t} />} />
         </Routes>
+        </ErrorBoundary>
       </main>
 
       {/* Mobile bottom bar.

@@ -27,7 +27,13 @@ import assert from 'node:assert/strict'
 
 import { SCENARIOS, CERTIFICATION_DOMAINS } from '../src/lib/scenarios.js'
 import { SCENARIO_TRANSLATIONS, translateScenario } from '../src/lib/scenarioTranslations.js'
-import { SCENARIO_META, enrichScenario, newAttemptSeed } from '../src/lib/scenarioMeta.js'
+import {
+  SCENARIO_META,
+  enrichScenario,
+  newAttemptSeed,
+  nextStepIndex,
+  isLastStep,
+} from '../src/lib/scenarioMeta.js'
 import { ANCHOR_TYPE } from '../src/lib/siteMap.js'
 import { DOMAIN_ORDER, CHAIN_FORMAT_VERSION } from '../src/lib/chain.js'
 import { LANGUAGES } from '../src/lib/i18n.js'
@@ -325,5 +331,94 @@ describe('certificate chain compatibility', () => {
 
   test('the chain format version is a positive integer', () => {
     assert.ok(Number.isInteger(CHAIN_FORMAT_VERSION) && CHAIN_FORMAT_VERSION > 0)
+  })
+})
+
+/* ================================================================== */
+describe('advancing a drill cannot walk off the end of it', () => {
+  /*
+   * THE WHITE SCREEN, from a phone: fire module, English, first question answered
+   * wrong, then speaking an option on the second question blanked the app.
+   *
+   * The chain, because each link is a separate lesson:
+   *
+   *   1. VoiceButton rebuilt its recogniser only on [lang, choiceCount, muted], so it
+   *      captured whichever onCommand existed then and kept calling it. From step two
+   *      onward, speaking an option ran STEP ONE's handler.
+   *   2. That handler saw step one's already-answered `feedback` and so called step
+   *      one's next().
+   *   3. next() read `if (stepIndex + 1 < totalSteps) setStepIndex(i => i + 1)` —
+   *      deciding with a value captured at render, mutating with the live one. Holding
+   *      stepIndex 0 while the drill was on its last step, the guard said "safe" and
+   *      the updater walked past the end.
+   *   4. `step` is `scenario?.steps?.[stepIndex] || null`, so it became null, and the
+   *      render dereferenced step.prompt.
+   *   5. No error boundary existed anywhere, so React unmounted everything: white.
+   *
+   * Link 3 is the one that is pure logic, so it is the one that can be tested here.
+   * The others are fixed by a ref, a render guard and an ErrorBoundary respectively.
+   * The property below is what makes link 3 impossible rather than unlikely: the
+   * decision and the increment come from the same argument, so no caller's vintage can
+   * make them disagree.
+   */
+
+  test('the index never exceeds the last step, from any starting point', () => {
+    for (const scenario of SCENARIOS) {
+      const total = scenario.steps.length
+      const last = total - 1
+      // Including values no legitimate caller would hold — which is the point, since
+      // the bug was an illegitimate caller.
+      for (const from of [0, 1, last - 1, last, last + 1, last + 5, 999]) {
+        const next = nextStepIndex(from, total)
+        assert.ok(next <= last, `${scenario.id}: from ${from} gave ${next}, past ${last}`)
+        assert.ok(next >= 0, `${scenario.id}: from ${from} gave ${next}`)
+        assert.ok(
+          scenario.steps[next] !== undefined,
+          `${scenario.id}: index ${next} does not address a step — this is the null that blanked the app`,
+        )
+      }
+    }
+  })
+
+  test('it advances by exactly one when there is somewhere to go', () => {
+    assert.equal(nextStepIndex(0, 6), 1)
+    assert.equal(nextStepIndex(3, 6), 4)
+    assert.equal(nextStepIndex(4, 6), 5)
+  })
+
+  test('it holds at the last step rather than running on', () => {
+    assert.equal(nextStepIndex(5, 6), 5)
+    assert.equal(nextStepIndex(6, 6), 5)
+  })
+
+  test('isLastStep and nextStepIndex agree, so the caller cannot be caught between them', () => {
+    // The original bug was precisely a disagreement between the check and the move.
+    for (const total of [1, 2, 6, 9]) {
+      for (let i = 0; i < total + 3; i += 1) {
+        const atEnd = isLastStep(i, total)
+        const next = nextStepIndex(i, total)
+        if (atEnd) assert.equal(next, total - 1, `total ${total}, i ${i}: should hold`)
+        else assert.ok(next > i, `total ${total}, i ${i}: should have moved`)
+      }
+    }
+  })
+
+  test('hostile input is clamped rather than becoming the index', () => {
+    // This decides what a worker sees next in a scored assessment. NaN must not get in.
+    for (const bad of [NaN, undefined, null, -1, -99, 'two', {}, Infinity]) {
+      const next = nextStepIndex(bad, 6)
+      assert.ok(Number.isInteger(next) && next >= 0 && next <= 5, `${String(bad)} -> ${next}`)
+    }
+    for (const badTotal of [NaN, undefined, 0, -3, 'six']) {
+      const next = nextStepIndex(0, badTotal)
+      assert.ok(Number.isInteger(next) && next >= 0, `total ${String(badTotal)} -> ${next}`)
+      assert.equal(isLastStep(0, badTotal), true, `total ${String(badTotal)} must read as finished`)
+    }
+  })
+
+  test('a single-step drill is immediately at its end', () => {
+    // Refresher builds short runs, so this is a real shape and not a degenerate one.
+    assert.equal(isLastStep(0, 1), true)
+    assert.equal(nextStepIndex(0, 1), 0)
   })
 })

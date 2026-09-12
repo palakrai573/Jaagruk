@@ -6,7 +6,7 @@ import { LanguageProvider } from './context/LanguageContext.jsx'
 import { migrateLegacyKeys } from './lib/local.js'
 import { requestPersistence } from './lib/idb.js'
 import { applyTheme, watchSystemTheme } from './lib/theme.js'
-import { ToastProvider } from './components/ui/index.js'
+import { ToastProvider, ErrorBoundary } from './components/ui/index.js'
 import './index.css'
 
 // Carry across settings saved under the app's previous name before anything
@@ -27,14 +27,23 @@ watchSystemTheme()
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <HashRouter>
-      <LanguageProvider>
-        {/* Inside LanguageProvider so toast copy can be translated, and outside
-            App so a toast survives route changes. */}
-        <ToastProvider>
-          <App />
-        </ToastProvider>
-      </LanguageProvider>
-    </HashRouter>
+    {/*
+      Outermost, above the router and the providers, so there is nothing left that can
+      throw without being caught. A second boundary sits around <Routes> inside App, so
+      a crashed PAGE keeps the header and the bottom navigation and the worker can walk
+      away from it; this one exists for the rarer case where the provider tree itself
+      fails, which the inner one would be inside of and could not catch.
+    */}
+    <ErrorBoundary>
+      <HashRouter>
+        <LanguageProvider>
+          {/* Inside LanguageProvider so toast copy can be translated, and outside
+              App so a toast survives route changes. */}
+          <ToastProvider>
+            <App />
+          </ToastProvider>
+        </LanguageProvider>
+      </HashRouter>
+    </ErrorBoundary>
   </React.StrictMode>
 )
