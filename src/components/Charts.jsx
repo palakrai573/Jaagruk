@@ -157,7 +157,7 @@ export function TrendPill({ trend }) {
   const arrow = direction === 'up' ? '▲' : direction === 'down' ? '▼' : '—'
 
   return (
-    <span className="font-mono text-[10px] inline-flex items-center gap-1" style={{ color }}>
+    <span className="font-mono text-2xs inline-flex items-center gap-1" style={{ color }}>
       <span aria-hidden="true">{arrow}</span>
       {Math.abs(delta)}
       <span className="sr-only">{direction === 'up' ? t('ch_trend_up') : t('ch_trend_down')}</span>
@@ -357,7 +357,7 @@ export function Heatmap({ heatmap, cellSize = 10, gap = 2 }) {
       </svg>
 
       <div className="flex items-center justify-between gap-4 mt-3 flex-wrap">
-        <span className="font-mono text-[10px] text-ink-tertiary">
+        <span className="font-mono text-2xs text-ink-tertiary">
           {heatmap.activeDays} / {heatmap.totalDays} {t('ch_active_days')}
         </span>
         <span className="flex items-center gap-1.5" aria-hidden="true">
@@ -425,7 +425,7 @@ export function StackedBar({ segments = [], height = 12, showLegend = true }) {
       {showLegend && (
         <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3">
           {shown.map((seg) => (
-            <span key={seg.label} className="font-mono text-[10px] flex items-center gap-1.5 text-ink-tertiary">
+            <span key={seg.label} className="font-mono text-2xs flex items-center gap-1.5 text-ink-tertiary">
               <span className="w-2 h-2 rounded-sm shrink-0" style={{ background: seg.color }} />
               {seg.label}
               <span className="text-ink">{Math.round(seg.pct)}%</span>
@@ -523,7 +523,7 @@ export function DecayCurve({ points = [], width = 260, height = 96, threshold = 
       </svg>
 
       {crossing && (
-        <p className="font-mono text-[10px] text-hazard-text mt-1">
+        <p className="font-mono text-2xs text-hazard-text mt-1">
           {t('ch_falls_below')} {crossing.day} {t('rf_days')}
         </p>
       )}

@@ -176,13 +176,13 @@ function Gate({ onUnlock, t }) {
         the limit is never a surprise.
       */}
       {lockMs > 0 ? (
-        <p className="font-mono text-[11px] text-ink-tertiary text-center mb-4">
+        <p className="font-mono text-2xs text-ink-tertiary text-center mb-4">
           {Math.ceil(lockMs / 1000)}s
         </p>
       ) : (
         !needsSetup &&
         error === 'ad_gate_wrong' && (
-          <p className="font-mono text-[10px] text-ink-tertiary text-center mb-4">
+          <p className="font-mono text-2xs text-ink-tertiary text-center mb-4">
             {supervisorAttemptsRemaining()} {t('err_attempts_left')}
           </p>
         )
@@ -199,7 +199,7 @@ function Gate({ onUnlock, t }) {
 
       <div className="bg-hazard/10 border border-hazard/40 rounded p-3 mt-8 flex items-start gap-3">
         <Pictogram name="warning" size={20} />
-        <p className="text-[11px] text-ink-tertiary leading-relaxed">{t('ad_auth_warning')}</p>
+        <p className="text-2xs text-ink-tertiary leading-relaxed">{t('ad_auth_warning')}</p>
       </div>
 
       <div className="text-center mt-6">
@@ -392,7 +392,7 @@ function Console({ t, onLock }) {
         <button
           type="button"
           onClick={onLock}
-          className="font-mono text-[10px] uppercase tracking-widest border border-line-subtle rounded px-3 py-2 text-ink-tertiary hover:border-brand hover:text-brand-text shrink-0"
+          className="font-mono text-2xs uppercase tracking-widest border border-line-subtle rounded px-3 py-2 text-ink-tertiary hover:border-brand hover:text-brand-text shrink-0"
         >
           {t('ad_gate_lock')}
         </button>
@@ -400,7 +400,7 @@ function Console({ t, onLock }) {
 
       <div className="bg-hazard/10 border border-hazard/40 rounded p-3 mb-8 flex items-start gap-3">
         <Pictogram name="warning" size={20} />
-        <p className="text-[11px] text-ink-tertiary leading-relaxed">{t('ad_auth_warning')}</p>
+        <p className="text-2xs text-ink-tertiary leading-relaxed">{t('ad_auth_warning')}</p>
       </div>
 
       {/* Import trust. Three outcomes, so the two actions are rendered as children
@@ -456,7 +456,7 @@ function Console({ t, onLock }) {
               setTab(item.id)
               if (item.id === 'ledger' && !chain) runChainCheck()
             }}
-            className={`flex items-center gap-2 rounded px-3 py-2 font-mono text-[11px] uppercase tracking-widest whitespace-nowrap shrink-0 ${
+            className={`flex items-center gap-2 rounded px-3 py-2 font-mono text-2xs uppercase tracking-widest whitespace-nowrap shrink-0 ${
               tab === item.id ? 'bg-brand text-ink-onBrand font-bold' : 'text-ink-tertiary border border-line-subtle'
             }`}
           >
@@ -489,12 +489,12 @@ function Console({ t, onLock }) {
                     <span className="text-sm font-bold min-w-0 flex-1 truncate">{domain}</span>
                     <span className="flex items-center gap-4 shrink-0">
                       {flagged > 0 && (
-                        <span className="font-mono text-[10px] text-brand-text flex items-center gap-1">
+                        <span className="font-mono text-2xs text-brand-text flex items-center gap-1">
                           <Pictogram name="slow" size={14} />
                           {flagged}
                         </span>
                       )}
-                      <span className="font-mono text-[10px] text-ink-tertiary">
+                      <span className="font-mono text-2xs text-ink-tertiary">
                         {scores.length} {t('ad_ledger_records')}
                       </span>
                       <span className="font-mono text-brand-text font-bold text-sm w-12 text-end">
@@ -543,7 +543,7 @@ function Console({ t, onLock }) {
                         {c.hesitationCount > 0 && <Pictogram name="slow" size={15} />}
                         <span className="truncate">{c.workerName}</span>
                       </p>
-                      <p className="font-mono text-[10px] text-ink-tertiary mt-0.5 break-all">
+                      <p className="font-mono text-2xs text-ink-tertiary mt-0.5 break-all">
                         {c.certId} · #{c.seq} · {new Date(c.issuedAt).toLocaleDateString()}
                       </p>
                     </div>
@@ -551,7 +551,7 @@ function Console({ t, onLock }) {
                       <span className="font-mono text-brand-text font-bold">{c.avgReadiness}%</span>
                       <Link
                         to={`/verify/${c.certId}`}
-                        className="font-mono text-[10px] uppercase border border-line-subtle rounded px-2.5 py-1.5 text-ink-tertiary hover:border-brand hover:text-brand-text"
+                        className="font-mono text-2xs uppercase border border-line-subtle rounded px-2.5 py-1.5 text-ink-tertiary hover:border-brand hover:text-brand-text"
                       >
                         {t('vf_check_now')}
                       </Link>
@@ -609,7 +609,7 @@ function Console({ t, onLock }) {
                       {t('ad_worst_pause')}: {formatLatency(risk.worstLatencyMs)}
                     </span>
                   </div>
-                  <p className="font-mono text-[10px] text-ink-tertiary">
+                  <p className="font-mono text-2xs text-ink-tertiary">
                     {risk.domains.join(' · ')} — {new Date(risk.at).toLocaleDateString()}
                   </p>
                 </div>
@@ -636,7 +636,7 @@ function Console({ t, onLock }) {
           {/* Bearing clusters — where reports pile up in the real space */}
           {hazards.length > 0 && (
             <div className="mb-8">
-              <h3 className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary mb-3">
+              <h3 className="font-mono text-2xs uppercase tracking-widest text-ink-tertiary mb-3">
                 {t('ad_zone_clusters')}
               </h3>
               <div className="flex flex-wrap gap-2">
@@ -645,7 +645,7 @@ function Console({ t, onLock }) {
                   .map((cluster) => (
                     <span
                       key={cluster.key}
-                      className="font-mono text-[10px] border border-line-subtle rounded px-2.5 py-1.5 flex items-center gap-2"
+                      className="font-mono text-2xs border border-line-subtle rounded px-2.5 py-1.5 flex items-center gap-2"
                       style={{ color: cluster.highCount > 0 ? 'rgb(var(--hazard-text))' : 'rgb(var(--text-tertiary))' }}
                     >
                       {cluster.zoneName || t('hz_no_direction')}
@@ -710,13 +710,13 @@ function Console({ t, onLock }) {
                       ? t('ad_ledger_intact')
                       : `${t('ad_ledger_intact_to')} #${Math.max(0, chain.firstBrokenIndex)}`}
                   </p>
-                  <p className="font-mono text-[10px] text-ink-tertiary">
+                  <p className="font-mono text-2xs text-ink-tertiary">
                     {chain.verifiedCount}/{chain.length} {t('ad_ledger_records')}
                   </p>
                   {chain.issues.length > 0 && (
                     <ul className="mt-3 space-y-1">
                       {chain.issues.map((issue) => (
-                        <li key={issue} className="text-[11px] text-ink-tertiary flex items-start gap-2">
+                        <li key={issue} className="text-2xs text-ink-tertiary flex items-start gap-2">
                           <Pictogram name="warning" size={13} />
                           {t(`chain_${issue}`)}
                         </li>
@@ -757,7 +757,7 @@ function Console({ t, onLock }) {
         </section>
       )}
 
-      <p className="text-[11px] text-ink-tertiary mt-12 leading-relaxed border-t border-line-subtle pt-6">
+      <p className="text-2xs text-ink-tertiary mt-12 leading-relaxed border-t border-line-subtle pt-6">
         {t('ad_statutory_note')}
       </p>
     </div>
@@ -825,7 +825,7 @@ function SyncPanel({ t, queue, siteId, onSync, onExport, onImportClick, onPeerCo
         ))}
       </div>
 
-      <label htmlFor={keyId} className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary block mb-2">
+      <label htmlFor={keyId} className="font-mono text-2xs uppercase tracking-widest text-ink-tertiary block mb-2">
         {t('set_key_label')}
       </label>
       <input
@@ -853,7 +853,7 @@ function SyncPanel({ t, queue, siteId, onSync, onExport, onImportClick, onPeerCo
       <h2 className="font-display font-bold text-xl uppercase mb-4">{t('st_sync_title')}</h2>
 
       {queue && (
-        <p className="font-mono text-[11px] text-ink-tertiary mb-4">
+        <p className="font-mono text-2xs text-ink-tertiary mb-4">
           {queue.total} {t('ad_sync_pending')}
           {!endpoint && ` · ${t('ad_sync_no_endpoint')}`}
         </p>
@@ -891,7 +891,7 @@ function SyncPanel({ t, queue, siteId, onSync, onExport, onImportClick, onPeerCo
       */}
       <PeerSync siteId={siteId} onComplete={onPeerComplete} />
 
-      <p className="text-[11px] text-ink-tertiary mt-4 leading-relaxed max-w-2xl">{t('ad_gossip_desc')}</p>
+      <p className="text-2xs text-ink-tertiary mt-4 leading-relaxed max-w-2xl">{t('ad_gossip_desc')}</p>
     </section>
   )
 }
@@ -932,7 +932,7 @@ function HazardCard({ report, t, onChange, reporter }) {
             </span>
           </div>
 
-          <p className="font-mono text-[10px] text-ink-tertiary mb-2">
+          <p className="font-mono text-2xs text-ink-tertiary mb-2">
             {new Date(report.at).toLocaleString()}
             {report.zoneName && ` · ${report.zoneName}`}
             {report.bearing !== null && ` · ${report.bearing}°`}

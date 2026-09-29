@@ -126,14 +126,14 @@ export default function DetectionOverlay({ videoRef }) {
       >
         {result.nearVehicle && (
           <span
-            className="font-display font-bold text-[11px] uppercase tracking-wide px-2 py-1 rounded"
+            className="font-display font-bold text-2xs uppercase tracking-wide px-2 py-1 rounded"
             style={{ background: NEAR_COLOUR, color: '#FFFFFF' }}
           >
             {t('vision_vehicle_near')}
           </span>
         )}
 
-        <span className="font-mono text-[10px] bg-black/75 text-white px-2 py-1 rounded">
+        <span className="font-mono text-2xs bg-black/75 text-white px-2 py-1 rounded">
           {failed
             ? t(visionStatusKey(status))
             : live

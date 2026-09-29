@@ -470,22 +470,22 @@ export default function ARDrill({
   const errorPanel = cameraError ? (
         <div role="status" className="absolute inset-0 z-50 bg-black flex flex-col items-center justify-center text-center px-6 gap-3">
           <Pictogram name="warning" size={44} />
-          <p className="font-display font-bold text-xl uppercase">{t('ar_unavailable')}</p>
-          <p className="text-white/70 text-sm max-w-sm">{t(CAMERA_ERROR_KEYS[cameraError] || 'ar_camera_unknown')}</p>
+          <p className="font-display font-bold text-xl uppercase text-media-ink">{t('ar_unavailable')}</p>
+          <p className="text-media-ink/70 text-sm max-w-sm">{t(CAMERA_ERROR_KEYS[cameraError] || 'ar_camera_unknown')}</p>
           {CAMERA_ERROR_HINTS[cameraError] && (
-            <p className="font-mono text-[11px] text-[#FFB020] max-w-sm leading-relaxed">
+            <p className="font-mono text-2xs text-media-warning max-w-sm leading-relaxed">
               {t(CAMERA_ERROR_HINTS[cameraError])}
             </p>
           )}
           <div className="flex gap-3 mt-2 flex-wrap justify-center">
             <button
               onClick={startCamera}
-              className="border border-white/30 rounded px-4 py-2 font-mono text-xs hover:border-[#FFB020] hover:text-[#FFB020]"
+              className="border border-media-ink/30 rounded px-4 py-2 font-mono text-xs text-media-ink hover:border-media-warning hover:text-media-warning"
             >
               {t('ar_retry')}
             </button>
             {onFallback && (
-              <button onClick={onFallback} className="bg-[#FFB020] text-[#101315] font-bold text-xs uppercase px-4 py-2 rounded">
+              <button onClick={onFallback} className="bg-media-warning text-black font-bold text-xs uppercase px-4 py-2 rounded">
                 {t('ar_use_3d')}
               </button>
             )}
@@ -679,7 +679,7 @@ export default function ARDrill({
                 <Pictogram name={meta.pictogram} size={30} label={anchor.label || meta.labelKey} />
               </div>
               <span
-                className="mt-1 font-mono text-[10px] uppercase tracking-wide px-1.5 py-0.5 rounded whitespace-nowrap"
+                className="mt-1 font-mono text-2xs uppercase tracking-wide px-1.5 py-0.5 rounded whitespace-nowrap"
                 // Fixed dark ink on a fixed ISO-coloured chip. Not a token: the
               // background is an ISO safety hue that is identical in both themes,
               // so the text on it must be too.
@@ -716,19 +716,19 @@ export default function ARDrill({
       <div className="absolute top-2 left-2 right-2 flex items-start justify-between gap-2 pointer-events-none">
         <div className="flex flex-col gap-1">
           {zoneName && (
-            <span className="font-mono text-[10px] uppercase tracking-widest bg-black/75 text-white px-2 py-1 rounded">
+            <span className="font-mono text-2xs uppercase tracking-widest bg-black/75 text-white px-2 py-1 rounded">
               {zoneName}
             </span>
           )}
           {isGenericZone && (
-            <span className="font-mono text-[10px] bg-[#FFB020]/90 text-[#101315] px-2 py-1 rounded max-w-[220px] leading-snug">
+            <span className="font-mono text-2xs bg-[#FFB020]/90 text-[#101315] px-2 py-1 rounded max-w-[220px] leading-snug">
               {t('ar_generic_zone')}
             </span>
           )}
         </div>
         <div className="flex flex-col items-end gap-1">
           {headingSource === HEADING_SOURCE.COMPASS && (
-            <span className="font-mono text-[10px] uppercase tracking-widest bg-black/75 text-safe px-2 py-1 rounded">
+            <span className="font-mono text-2xs uppercase tracking-widest bg-black/75 text-safe px-2 py-1 rounded">
               {Math.round(view.heading)}°
             </span>
           )}
@@ -744,7 +744,7 @@ export default function ARDrill({
               aria-pressed={detectOn}
               /* 44px, the WCAG target-size minimum. This is a control a worker may
                  be reaching for with gloves on, one-handed, holding the phone up. */
-              className="pointer-events-auto font-mono text-[10px] uppercase tracking-wide px-3 rounded min-h-[44px]"
+              className="pointer-events-auto font-mono text-2xs uppercase tracking-wide px-3 rounded min-h-[44px]"
               style={{
                 background: detectOn ? '#FFB020' : 'rgba(0,0,0,0.75)',
                 color: detectOn ? '#101315' : '#F2F1ED',
@@ -777,17 +777,17 @@ export default function ARDrill({
       {/* Landscape warning — the projection maths is only correct in portrait */}
       {!portrait && cameraReady && (
         <div className="absolute inset-x-0 bottom-0 bg-hazard/90 px-3 py-2 text-center">
-          <p className="font-mono text-[11px] text-white">{t('ar_rotate_portrait')}</p>
+          <p className="font-mono text-2xs text-white">{t('ar_rotate_portrait')}</p>
         </div>
       )}
 
       {/* Compass warnings */}
       {portrait && headingSource === HEADING_SOURCE.RELATIVE && (
         <div className="absolute inset-x-0 bottom-0 bg-[#FFB020]/90 px-3 py-2 flex items-center justify-between gap-2">
-          <p className="font-mono text-[10px] text-[#101315] leading-snug flex-1">{t('ar_relative_heading')}</p>
+          <p className="font-mono text-2xs text-[#101315] leading-snug flex-1">{t('ar_relative_heading')}</p>
           <button
             onClick={() => trackerRef.current?.recentre(0)}
-            className="bg-black text-[#FFB020] font-mono text-[10px] uppercase px-2.5 py-1 rounded shrink-0"
+            className="bg-black text-[#FFB020] font-mono text-2xs uppercase px-2.5 py-1 rounded shrink-0"
           >
             {t('ar_recentre')}
           </button>
@@ -798,7 +798,7 @@ export default function ARDrill({
         <div className="absolute inset-0 bg-black/85 flex flex-col items-center justify-center text-center px-6 gap-3">
           <Pictogram name="warning" size={40} />
           <p className="font-display font-bold text-lg uppercase">{t('ar_no_compass_title')}</p>
-          <p className="text-white/70 text-sm max-w-sm">{t('ar_no_compass_body')}</p>
+          <p className="text-media-ink/70 text-sm max-w-sm">{t('ar_no_compass_body')}</p>
           {onFallback && (
             <button onClick={onFallback} className="bg-[#FFB020] text-[#101315] font-bold text-xs uppercase px-4 py-2 rounded mt-1">
               {t('ar_use_3d')}
@@ -813,7 +813,7 @@ export default function ARDrill({
       {showFallbackOffer && onFallback && !orientationDead && (
         <button
           onClick={onFallback}
-          className="absolute bottom-2 right-2 bg-black/80 border border-white/30 rounded px-2.5 py-1 font-mono text-[10px] uppercase text-white"
+          className="absolute bottom-2 right-2 bg-black/80 border border-white/30 rounded px-2.5 py-1 font-mono text-2xs uppercase text-white"
         >
           {t('ar_use_3d')}
         </button>

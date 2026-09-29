@@ -43,7 +43,7 @@ export function SectionHeader({ eyebrow, title, lead, align = 'start', actions =
           <p className="font-mono text-2xs uppercase tracking-[0.22em] text-brand-text mb-3">{eyebrow}</p>
         ) : null}
         {title ? (
-          <h2 className="font-display font-bold text-2xl uppercase tracking-tight text-ink leading-[1.05] text-balance">
+          <h2 className="font-display font-bold text-2xl tracking-tight text-ink leading-[1.05] text-balance">
             {title}
           </h2>
         ) : null}

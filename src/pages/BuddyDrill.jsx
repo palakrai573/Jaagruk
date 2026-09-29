@@ -268,7 +268,7 @@ export default function BuddyDrill() {
             <Pictogram name="warning" size={20} />
             <div>
               <p className="text-xs text-hazard-text">{t(error)}</p>
-              {error === 'bd_failed' && <p className="text-[11px] text-ink-tertiary mt-1">{t('bd_failed_hint')}</p>}
+              {error === 'bd_failed' && <p className="text-2xs text-ink-tertiary mt-1">{t('bd_failed_hint')}</p>}
             </div>
           </div>
         )}
@@ -287,14 +287,14 @@ export default function BuddyDrill() {
                 <Pictogram name="report_it" size={32} />
                 <span className="min-w-0">
                   <span className="block font-bold text-sm">{t('bd_same_device')}</span>
-                  <span className="block text-[11px] text-ink-tertiary mt-1 leading-relaxed">
+                  <span className="block text-2xs text-ink-tertiary mt-1 leading-relaxed">
                     {t('bd_same_device_note')}
                   </span>
                 </span>
               </button>
             </div>
 
-            <p className="text-[11px] text-ink-tertiary mt-4 leading-relaxed text-center">{t('bd_failed_hint')}</p>
+            <p className="text-2xs text-ink-tertiary mt-4 leading-relaxed text-center">{t('bd_failed_hint')}</p>
           </div>
         )}
 
@@ -373,7 +373,7 @@ export default function BuddyDrill() {
             <div className="mt-5">
               <label
                 htmlFor={pasteId}
-                className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary block mb-2"
+                className="font-mono text-2xs uppercase tracking-widest text-ink-tertiary block mb-2"
               >
                 {t('bd_paste_instead')}
               </label>
@@ -383,7 +383,7 @@ export default function BuddyDrill() {
                 onChange={(e) => setPasted(e.target.value)}
                 placeholder={t('bd_paste_placeholder')}
                 rows={3}
-                className="w-full bg-surface-0 border border-line-control rounded px-3 py-2 font-mono text-[11px] focus:border-brand outline-none focus-visible:outline-2 focus-visible:outline-offset-1"
+                className="w-full bg-surface-0 border border-line-control rounded px-3 py-2 font-mono text-2xs focus:border-brand outline-none focus-visible:outline-2 focus-visible:outline-offset-1"
               />
               <button
                 type="button"
@@ -446,11 +446,11 @@ export default function BuddyDrill() {
 
         {drill?.buddy?.result ? (
           <div className="bg-surface-1 border border-line-subtle rounded-lg p-4 mb-6 text-start">
-            <p className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary mb-2">{t('bd_buddy_score')}</p>
+            <p className="font-mono text-2xs uppercase tracking-widest text-ink-tertiary mb-2">{t('bd_buddy_score')}</p>
             <p className="font-display font-bold text-2xl text-brand-text">{drill.buddy.result.readiness}%</p>
           </div>
         ) : (
-          <p className="font-mono text-[11px] text-ink-tertiary mb-6">{t('bd_waiting_score')}</p>
+          <p className="font-mono text-2xs text-ink-tertiary mb-6">{t('bd_waiting_score')}</p>
         )}
 
         {result.partial && (
@@ -460,7 +460,7 @@ export default function BuddyDrill() {
           </div>
         )}
 
-        {saved && <p className="font-mono text-[11px] text-safe-text mb-6">{t('bd_saved')}</p>}
+        {saved && <p className="font-mono text-2xs text-safe-text mb-6">{t('bd_saved')}</p>}
 
         <div className="grid gap-3">
           <button
@@ -485,12 +485,12 @@ export default function BuddyDrill() {
         <p className="font-mono text-brand-text text-xs tracking-[0.2em] uppercase">{t(`bd_phase_${phase}`)}</p>
         <span className="flex items-center gap-3">
           {loopback && (
-            <span className="font-mono text-[10px] uppercase text-brand-text border border-brand/50 rounded px-2 py-1">
+            <span className="font-mono text-2xs uppercase text-brand-text border border-brand/50 rounded px-2 py-1">
               {t('bd_same_device')}
             </span>
           )}
           <span
-            className="font-mono text-[10px] uppercase tracking-widest"
+            className="font-mono text-2xs uppercase tracking-widest"
             style={{ color: drill?.connected ? 'rgb(var(--safe-text))' : 'rgb(var(--hazard-text))' }}
           >
             {drill?.connected ? t('bd_connected') : t('bd_disconnected')}
@@ -503,7 +503,7 @@ export default function BuddyDrill() {
         <div className="bg-surface-1 border border-line-subtle rounded-lg p-4 mb-6 flex items-center gap-4">
           <Pictogram name={drill.myRole === BUDDY_ROLE.CASUALTY ? 'confined_space' : 'buddy'} size={38} />
           <div>
-            <p className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary">{t('bd_you_are')}</p>
+            <p className="font-mono text-2xs uppercase tracking-widest text-ink-tertiary">{t('bd_you_are')}</p>
             <p className="font-bold">
               {drill.myRole === BUDDY_ROLE.CASUALTY ? t('bd_role_casualty') : t('bd_role_responder')}
             </p>
@@ -528,11 +528,11 @@ export default function BuddyDrill() {
           <p className="text-sm text-ink-tertiary mb-5 leading-relaxed">{t('bd_monitoring_note')}</p>
 
           <div className="flex items-center justify-between gap-3 mb-5 flex-wrap">
-            <span className="font-mono text-[11px] text-ink-tertiary">
+            <span className="font-mono text-2xs text-ink-tertiary">
               {t('bd_checkins_label')}: {drill?.checkIns?.made ?? 0} / {CHECK_IN_ROUNDS}
             </span>
             {(drill?.checkIns?.missed ?? 0) > 0 && (
-              <span className="font-mono text-[11px] text-hazard-text">
+              <span className="font-mono text-2xs text-hazard-text">
                 {t('bd_checkin_missed')}: {drill.checkIns.missed}
               </span>
             )}
@@ -656,7 +656,7 @@ function RoleButton({ pictogram, label, hint, onClick }) {
       <Pictogram name={pictogram} size={42} />
       <span className="min-w-0">
         <span className="block font-bold">{label}</span>
-        <span className="block font-mono text-[11px] text-ink-tertiary mt-1">{hint}</span>
+        <span className="block font-mono text-2xs text-ink-tertiary mt-1">{hint}</span>
       </span>
     </button>
   )
@@ -676,7 +676,7 @@ function StepLabel({ index, text }) {
 function Row({ label, value }) {
   return (
     <div className="px-4 py-3 flex items-center justify-between gap-3">
-      <span className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary">{label}</span>
+      <span className="font-mono text-2xs uppercase tracking-widest text-ink-tertiary">{label}</span>
       <span className="text-sm font-bold">{value}</span>
     </div>
   )

@@ -212,7 +212,7 @@ export default function ReportHazard() {
           <Pictogram name={categoryMeta(submitted.category).pictogram} size={38} />
           <div className="min-w-0">
             <p className="font-bold text-sm">{t(categoryMeta(submitted.category).labelKey)}</p>
-            <p className="font-mono text-[10px] text-ink-tertiary mt-0.5">
+            <p className="font-mono text-2xs text-ink-tertiary mt-0.5">
               {submitted.zoneName || t('hz_no_direction')}
               {submitted.bearing !== null && ` · ${submitted.bearing}°`}
             </p>
@@ -220,9 +220,9 @@ export default function ReportHazard() {
         </div>
 
         {submitted.persisted === false && (
-          <p className="font-mono text-[11px] text-hazard-text mb-6">{t('hz_storage_full')}</p>
+          <p className="font-mono text-2xs text-hazard-text mb-6">{t('hz_storage_full')}</p>
         )}
-        {!isOnline() && <p className="font-mono text-[11px] text-ink-tertiary mb-6">{t('offline_label')}</p>}
+        {!isOnline() && <p className="font-mono text-2xs text-ink-tertiary mb-6">{t('offline_label')}</p>}
 
         <div className="grid gap-3">
           <button
@@ -267,7 +267,7 @@ export default function ReportHazard() {
               }`}
             >
               <Pictogram name={cat.pictogram} size={40} />
-              <span className="font-mono text-[10px] text-center leading-tight text-ink-tertiary">{t(cat.labelKey)}</span>
+              <span className="font-mono text-2xs text-center leading-tight text-ink-tertiary">{t(cat.labelKey)}</span>
             </button>
           ))}
         </div>
@@ -320,13 +320,13 @@ export default function ReportHazard() {
             <div className="rounded-lg overflow-hidden border border-line-subtle">
               <img src={photo.dataUrl} alt="" className="w-full block" />
               <div className="flex items-center justify-between gap-3 p-3 bg-surface-1">
-                <span className="font-mono text-[10px] text-ink-tertiary">
+                <span className="font-mono text-2xs text-ink-tertiary">
                   {photo.width}×{photo.height} · {Math.round(photo.bytes / 1024)} KB
                 </span>
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="font-mono text-[10px] uppercase text-ink-tertiary hover:text-brand-text"
+                  className="font-mono text-2xs uppercase text-ink-tertiary hover:text-brand-text"
                 >
                   {t('hz_retake_photo')}
                 </button>
@@ -343,7 +343,7 @@ export default function ReportHazard() {
             </button>
           )}
 
-          {photoError && <p className="font-mono text-[11px] text-hazard-text mt-3">{t(photoError)}</p>}
+          {photoError && <p className="font-mono text-2xs text-hazard-text mt-3">{t(photoError)}</p>}
         </Section>
       )}
 
@@ -363,7 +363,7 @@ export default function ReportHazard() {
                   <button
                     type="button"
                     onClick={() => setVoice(null)}
-                    className="font-mono text-[10px] uppercase text-ink-tertiary hover:text-hazard-text"
+                    className="font-mono text-2xs uppercase text-ink-tertiary hover:text-hazard-text"
                   >
                     {t('hz_voice_remove')}
                   </button>
@@ -385,15 +385,15 @@ export default function ReportHazard() {
                     : t('hz_add_voice')}
                 </button>
               )}
-              {voiceError && <p className="font-mono text-[11px] text-hazard-text mt-3">{t(voiceError)}</p>}
+              {voiceError && <p className="font-mono text-2xs text-hazard-text mt-3">{t(voiceError)}</p>}
             </>
           ) : (
-            <p className="font-mono text-[11px] text-ink-tertiary">{t('hz_MIC_UNSUPPORTED')}</p>
+            <p className="font-mono text-2xs text-ink-tertiary">{t('hz_MIC_UNSUPPORTED')}</p>
           )}
 
           <label
             htmlFor={noteId}
-            className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary block mt-5 mb-2"
+            className="font-mono text-2xs uppercase tracking-widest text-ink-tertiary block mt-5 mb-2"
           >
             {t('hz_note_optional')}
           </label>
@@ -415,7 +415,7 @@ export default function ReportHazard() {
             <>
               <label
                 htmlFor={zoneSelectId}
-                className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary block mb-2"
+                className="font-mono text-2xs uppercase tracking-widest text-ink-tertiary block mb-2"
               >
                 {t('hz_zone_label')}
               </label>
@@ -468,14 +468,14 @@ export default function ReportHazard() {
                   <Pictogram name={categoryMeta(report.category).pictogram} size={28} />
                   <span className="min-w-0">
                     <span className="block text-sm truncate">{t(categoryMeta(report.category).labelKey)}</span>
-                    <span className="block font-mono text-[10px] text-ink-tertiary">
+                    <span className="block font-mono text-2xs text-ink-tertiary">
                       {new Date(report.at).toLocaleDateString()}
                       {report.zoneName && ` · ${report.zoneName}`}
                     </span>
                   </span>
                 </span>
                 <span
-                  className="font-mono text-[10px] uppercase tracking-widest px-2 py-1 rounded shrink-0"
+                  className="font-mono text-2xs uppercase tracking-widest px-2 py-1 rounded shrink-0"
                   style={{
                     color: report.status === HAZARD_STATUS.RESOLVED ? 'rgb(var(--safe-text))' : 'rgb(var(--warning-text))',
                     // A white overlay was invisible on the light theme, so the
@@ -507,7 +507,7 @@ function Section({ number, title, hint, children }) {
         </span>
         <h2 className="font-display font-bold text-xl uppercase">{title}</h2>
       </div>
-      {hint && <p className="text-[11px] text-ink-tertiary mb-3 leading-relaxed">{hint}</p>}
+      {hint && <p className="text-2xs text-ink-tertiary mb-3 leading-relaxed">{hint}</p>}
       {children}
     </section>
   )

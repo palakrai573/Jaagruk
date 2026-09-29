@@ -265,7 +265,7 @@ export default function XRDrill({
   if (supported === false) {
     return (
       <div className="border border-line-subtle rounded-lg p-4">
-        <p className="font-mono text-[11px] text-ink-tertiary leading-relaxed">
+        <p className="font-mono text-2xs text-ink-tertiary leading-relaxed">
           {t(XR_BLOCK_KEYS[block] || 'xr_block_no_session')}
         </p>
       </div>
@@ -348,13 +348,13 @@ export default function XRDrill({
               >
                 {t('xr_enter')}
               </button>
-              <p className="font-mono text-[10px] text-ink-tertiary leading-relaxed">{t('xr_intro')}</p>
-              {error && <p className="font-mono text-[11px] text-hazard-text">{t(error)}</p>}
+              <p className="font-mono text-2xs text-ink-tertiary leading-relaxed">{t('xr_intro')}</p>
+              {error && <p className="font-mono text-2xs text-hazard-text">{t(error)}</p>}
             </div>
           ) : (
             <div className="rounded-lg p-3 flex flex-col gap-2" style={{ background: 'rgba(16,19,21,0.82)' }}>
               {zoneName && (
-                <span className="font-mono text-[10px] uppercase tracking-widest text-white/70">{zoneName}</span>
+                <span className="font-mono text-2xs uppercase tracking-widest text-white/70">{zoneName}</span>
               )}
 
               <p className="font-display font-bold text-sm uppercase text-white" role="status" aria-live="polite">
@@ -364,7 +364,7 @@ export default function XRDrill({
               {/* The baseline requirement, stated while it is being satisfied rather
                   than only when it is violated. */}
               {phase === PHASE.REFERENCE && (
-                <p className="font-mono text-[10px] text-white/70">
+                <p className="font-mono text-2xs text-white/70">
                   {MIN_ALIGNMENT_BASELINE_M}m
                 </p>
               )}
@@ -379,13 +379,13 @@ export default function XRDrill({
                 which they cannot do if the interface simply says "aligned".
               */}
               {phase === PHASE.READY && frame?.baseline && (
-                <p className="font-mono text-[10px] text-white/60 leading-snug">
+                <p className="font-mono text-2xs text-white/60 leading-snug">
                   {frame.baseline.toFixed(1)}m ·{' '}
                   {Math.round((alignmentErrorAtDistance(frame.baseline, 20) || 0) * 100)}cm @ 20m
                 </p>
               )}
 
-              {note && <p className="font-mono text-[11px] text-[#FFB020]">{t(note)}</p>}
+              {note && <p className="font-mono text-2xs text-[#FFB020]">{t(note)}</p>}
 
               {/* Occlusion is reported, never assumed. `known: false` means the
                   browser did not say, and claiming it either way would be a guess. */}
@@ -434,7 +434,7 @@ export default function XRDrill({
       {!active && (
         <div className="mt-3 flex items-start gap-2">
           <Pictogram name="warning" size={18} />
-          <p className="text-[11px] text-ink-tertiary leading-relaxed">{t('xr_note')}</p>
+          <p className="text-2xs text-ink-tertiary leading-relaxed">{t('xr_note')}</p>
         </div>
       )}
     </div>

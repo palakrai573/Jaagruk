@@ -341,7 +341,7 @@ export default function SiteSetup() {
       <div className="mb-8">
         <label
           htmlFor={siteNameId}
-          className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary block mb-2"
+          className="font-mono text-2xs uppercase tracking-widest text-ink-tertiary block mb-2"
         >
           {t('site_name_label')}
         </label>
@@ -381,7 +381,7 @@ export default function SiteSetup() {
                 <Pictogram name="assembly_point" size={26} />
                 <span className="min-w-0">
                   <span className="block font-bold text-sm truncate">{zone.name}</span>
-                  <span className="block font-mono text-[10px] text-ink-tertiary">
+                  <span className="block font-mono text-2xs text-ink-tertiary">
                     {(zone.anchors || []).length} {t('site_anchors_count')}
                   </span>
                 </span>
@@ -438,7 +438,7 @@ export default function SiteSetup() {
             <button
               type="button"
               onClick={() => setMarking((m) => !m)}
-              className="font-mono text-[10px] uppercase tracking-widest border border-line-subtle rounded px-3 py-2 text-ink-tertiary hover:border-brand hover:text-brand-text"
+              className="font-mono text-2xs uppercase tracking-widest border border-line-subtle rounded px-3 py-2 text-ink-tertiary hover:border-brand hover:text-brand-text"
             >
               {marking ? t('close_label') : t('site_start_marking')}
             </button>
@@ -529,7 +529,7 @@ export default function SiteSetup() {
                         className="rounded-lg border border-line-subtle bg-surface-0 p-3 flex flex-col items-center gap-2 hover:border-brand"
                       >
                         <Pictogram name={meta.pictogram} size={34} />
-                        <span className="font-mono text-[10px] text-center leading-tight text-ink-tertiary">
+                        <span className="font-mono text-2xs text-center leading-tight text-ink-tertiary">
                           {t(meta.labelKey)}
                         </span>
                       </button>
@@ -538,11 +538,11 @@ export default function SiteSetup() {
                 </div>
 
                 {headingSource === HEADING_SOURCE.NONE && (
-                  <p className="font-mono text-[11px] text-hazard-text mt-4">{t('ar_no_compass_body')}</p>
+                  <p className="font-mono text-2xs text-hazard-text mt-4">{t('ar_no_compass_body')}</p>
                 )}
               </div>
 
-              <p className="text-[11px] text-ink-tertiary leading-relaxed">{t('site_scan_note')}</p>
+              <p className="text-2xs text-ink-tertiary leading-relaxed">{t('site_scan_note')}</p>
             </>
           )}
 
@@ -557,7 +557,7 @@ export default function SiteSetup() {
                       <Pictogram name={meta.pictogram} size={26} />
                       <span className="min-w-0">
                         <span className="block text-sm truncate">{anchor.label}</span>
-                        <span className="block font-mono text-[10px] text-ink-tertiary">
+                        <span className="block font-mono text-2xs text-ink-tertiary">
                           {Math.round(anchor.bearing)}° · {Math.round(anchor.elevation)}°
                         </span>
                       </span>
@@ -569,7 +569,7 @@ export default function SiteSetup() {
                         await refresh()
                       }}
                       aria-label={t('site_delete_anchor')}
-                      className="font-mono text-[10px] uppercase text-ink-tertiary hover:text-hazard-text shrink-0"
+                      className="font-mono text-2xs uppercase text-ink-tertiary hover:text-hazard-text shrink-0"
                     >
                       <span aria-hidden="true">✕</span>
                     </button>

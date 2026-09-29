@@ -201,7 +201,7 @@ export default function Onboarding() {
                 }`}
               >
                 <span className="block text-xl mb-1">{l.native}</span>
-                <span className="block font-mono text-[10px] uppercase tracking-widest text-ink-tertiary">{l.label}</span>
+                <span className="block font-mono text-2xs uppercase tracking-widest text-ink-tertiary">{l.label}</span>
               </button>
             ))}
           </div>
@@ -374,7 +374,7 @@ export default function Onboarding() {
                   <Pictogram name={w.role === ROLE.SUPERVISOR ? 'report_it' : 'ppe'} size={32} />
                   <span className="min-w-0">
                     <span className="block font-bold text-sm truncate">{w.name}</span>
-                    {w.phone && <span className="block font-mono text-[11px] text-ink-tertiary">{w.phone}</span>}
+                    {w.phone && <span className="block font-mono text-2xs text-ink-tertiary">{w.phone}</span>}
                   </span>
                 </button>
               ))}
@@ -411,7 +411,7 @@ export default function Onboarding() {
                 <div className="bg-hazard/10 border border-hazard/40 rounded p-3 mb-4">
                   <p className="text-xs text-hazard-text">{t(`err_${signInError}`)}</p>
                   {signInError === 'PIN_WRONG' && (
-                    <p className="font-mono text-[10px] text-ink-tertiary mt-1">
+                    <p className="font-mono text-2xs text-ink-tertiary mt-1">
                       {attemptsRemaining(selectedWorker.id)} {t('err_attempts_left')}
                     </p>
                   )}
@@ -419,7 +419,7 @@ export default function Onboarding() {
               )}
 
               {lockMs > 0 && (
-                <p className="font-mono text-[11px] text-hazard-text text-center mb-4">
+                <p className="font-mono text-2xs text-hazard-text text-center mb-4">
                   {t('err_LOCKED_OUT')} {Math.ceil(lockMs / 1000)}s
                 </p>
               )}
@@ -463,10 +463,10 @@ export default function Onboarding() {
       {stage === STAGE.DONE && current && (
         <section className="text-center">
           <Pictogram name="correct" size={64} className="mx-auto mb-5" />
-          <p className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary mb-2">{t('ob_signed_in_as')}</p>
+          <p className="font-mono text-2xs uppercase tracking-widest text-ink-tertiary mb-2">{t('ob_signed_in_as')}</p>
           <h1 className="font-display font-bold text-3xl uppercase mb-1">{current.name}</h1>
           {current.role === ROLE.SUPERVISOR && (
-            <p className="font-mono text-[11px] text-brand-text mb-6">{t('site_eyebrow')}</p>
+            <p className="font-mono text-2xs text-brand-text mb-6">{t('site_eyebrow')}</p>
           )}
 
           <div className="grid gap-3 mt-8">
@@ -486,7 +486,7 @@ export default function Onboarding() {
             <button
               type="button"
               onClick={signOut}
-              className="font-mono text-[11px] text-ink-tertiary hover:text-hazard-text underline mt-2"
+              className="font-mono text-2xs text-ink-tertiary hover:text-hazard-text underline mt-2"
             >
               {t('ob_sign_out')}
             </button>
@@ -546,7 +546,7 @@ function BigChoice({ pictogram, label, onClick, disabled, hint }) {
       <Pictogram name={pictogram} size={44} />
       <span className="min-w-0">
         <span className="block font-bold">{label}</span>
-        {hint && <span className="block font-mono text-[11px] text-ink-tertiary mt-0.5">{hint}</span>}
+        {hint && <span className="block font-mono text-2xs text-ink-tertiary mt-0.5">{hint}</span>}
       </span>
     </button>
   )
@@ -584,7 +584,7 @@ function GuestExit({ t }) {
       <Link to="/train" className="font-mono text-xs text-ink-tertiary hover:text-brand-text underline">
         {t('ob_continue_guest')}
       </Link>
-      <p className="text-[11px] text-ink-tertiary mt-2 leading-relaxed">{t('ob_guest_note')}</p>
+      <p className="text-2xs text-ink-tertiary mt-2 leading-relaxed">{t('ob_guest_note')}</p>
     </div>
   )
 }

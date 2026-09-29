@@ -181,7 +181,7 @@ export default function PeerSync({ siteId = null, onComplete }) {
         <Pictogram name="buddy" size={30} />
         <div className="min-w-0">
           <h3 className="font-display font-bold text-lg uppercase leading-tight">{t('ad_gossip_title')}</h3>
-          <p className="text-[11px] text-ink-tertiary mt-1 leading-relaxed">{t('ad_gossip_desc')}</p>
+          <p className="text-2xs text-ink-tertiary mt-1 leading-relaxed">{t('ad_gossip_desc')}</p>
         </div>
       </div>
 
@@ -190,7 +190,7 @@ export default function PeerSync({ siteId = null, onComplete }) {
           <Pictogram name="warning" size={18} />
           <div>
             <p className="text-xs text-hazard-text">{t(error)}</p>
-            {error === 'bd_failed' && <p className="text-[11px] text-ink-tertiary mt-1">{t('bd_failed_hint')}</p>}
+            {error === 'bd_failed' && <p className="text-2xs text-ink-tertiary mt-1">{t('bd_failed_hint')}</p>}
           </div>
         </div>
       )}
@@ -220,7 +220,7 @@ export default function PeerSync({ siteId = null, onComplete }) {
       {/* Show my code */}
       {(stage === STAGE.HOST_SHOW || stage === STAGE.JOIN_SHOW) && (
         <>
-          <p className="font-mono text-[11px] text-ink-tertiary mb-3">
+          <p className="font-mono text-2xs text-ink-tertiary mb-3">
             {stage === STAGE.HOST_SHOW ? t('bd_host_step1') : t('bd_join_step2')}
           </p>
 
@@ -241,7 +241,7 @@ export default function PeerSync({ siteId = null, onComplete }) {
                 setCopied(false)
               }
             }}
-            className="w-full border border-line-subtle rounded py-2 font-mono text-[11px] text-ink-tertiary hover:border-brand hover:text-brand-text mb-3"
+            className="w-full border border-line-subtle rounded py-2 font-mono text-2xs text-ink-tertiary hover:border-brand hover:text-brand-text mb-3"
           >
             {copied ? t('bd_copied') : t('bd_copy_code')}
           </button>
@@ -257,10 +257,10 @@ export default function PeerSync({ siteId = null, onComplete }) {
           )}
 
           {stage === STAGE.JOIN_SHOW && (
-            <p className="font-mono text-[11px] text-ink-tertiary text-center mb-3">{t('bd_waiting_buddy')}</p>
+            <p className="font-mono text-2xs text-ink-tertiary text-center mb-3">{t('bd_waiting_buddy')}</p>
           )}
 
-          <button type="button" onClick={reset} className="w-full font-mono text-[11px] text-ink-tertiary underline">
+          <button type="button" onClick={reset} className="w-full font-mono text-2xs text-ink-tertiary underline">
             {t('cancel_label')}
           </button>
         </>
@@ -269,7 +269,7 @@ export default function PeerSync({ siteId = null, onComplete }) {
       {/* Scan their code */}
       {(stage === STAGE.HOST_SCAN || stage === STAGE.JOIN_SCAN) && (
         <>
-          <p className="font-mono text-[11px] text-ink-tertiary mb-3">
+          <p className="font-mono text-2xs text-ink-tertiary mb-3">
             {stage === STAGE.JOIN_SCAN ? t('bd_join_step1') : t('bd_host_step2')}
           </p>
 
@@ -280,7 +280,7 @@ export default function PeerSync({ siteId = null, onComplete }) {
 
           <label
             htmlFor={pasteId}
-            className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary block mt-4 mb-2"
+            className="font-mono text-2xs uppercase tracking-widest text-ink-tertiary block mt-4 mb-2"
           >
             {t('bd_paste_instead')}
           </label>
@@ -290,7 +290,7 @@ export default function PeerSync({ siteId = null, onComplete }) {
             onChange={(e) => setPasted(e.target.value)}
             placeholder={t('bd_paste_placeholder')}
             rows={2}
-            className="w-full bg-surface-0 border border-line-control rounded px-3 py-2 font-mono text-[10px] focus:border-brand outline-none focus-visible:outline-2 focus-visible:outline-offset-1"
+            className="w-full bg-surface-0 border border-line-control rounded px-3 py-2 font-mono text-2xs focus:border-brand outline-none focus-visible:outline-2 focus-visible:outline-offset-1"
           />
           <button
             type="button"
@@ -301,7 +301,7 @@ export default function PeerSync({ siteId = null, onComplete }) {
             {t('bd_use_code')}
           </button>
 
-          <button type="button" onClick={reset} className="w-full font-mono text-[11px] text-ink-tertiary underline mt-3">
+          <button type="button" onClick={reset} className="w-full font-mono text-2xs text-ink-tertiary underline mt-3">
             {t('cancel_label')}
           </button>
         </>
@@ -312,7 +312,7 @@ export default function PeerSync({ siteId = null, onComplete }) {
         <div className="text-center py-4">
           <span className="inline-flex items-center gap-2 mb-4">
             <span className="w-2 h-2 rounded-full bg-safe live-dot" />
-            <span className="font-mono text-[11px] uppercase tracking-widest text-safe-text">{t('bd_connected')}</span>
+            <span className="font-mono text-2xs uppercase tracking-widest text-safe-text">{t('bd_connected')}</span>
           </span>
 
           <div className="grid grid-cols-2 gap-3">
@@ -320,7 +320,7 @@ export default function PeerSync({ siteId = null, onComplete }) {
             <Counter label={t('hz_eyebrow')} value={progress.hazards} />
           </div>
 
-          <p className="font-mono text-[10px] text-ink-tertiary mt-4">{t('ps_exchanging')}</p>
+          <p className="font-mono text-2xs text-ink-tertiary mt-4">{t('ps_exchanging')}</p>
         </div>
       )}
 

@@ -1,8 +1,13 @@
-.worker-home,
-.worker-home * {
-  letter-spacing: 0;
-}
-
+/*
+ * Long compound words in Ol Chiki, Bengali and Urdu overflow a narrow nav label
+ * or a card title, and the default `break-word` will not split them. This is
+ * scoped to link labels rather than applied page-wide.
+ *
+ * The blanket `.worker-home * { letter-spacing: 0 }` that used to sit here is
+ * gone: it overrode every `tracking-widest` mono label on the page, so eyebrows
+ * and badges here rendered differently from the identical components on every
+ * other route. Tracking is part of how a mono label reads as a label.
+ */
 .worker-home a > span {
   white-space: normal;
   overflow-wrap: anywhere;

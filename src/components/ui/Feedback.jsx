@@ -52,7 +52,7 @@ export function EmptyState({ icon = null, title, body, action = null, className 
   return (
     <div className={`text-center py-12 px-5 ${className}`}>
       {icon ? <div className="mx-auto mb-4 opacity-60 w-fit">{icon}</div> : null}
-      {title ? <p className="font-display font-bold text-xl uppercase text-ink mb-2">{title}</p> : null}
+      {title ? <p className="font-display font-bold text-xl text-ink mb-2 text-balance">{title}</p> : null}
       {body ? <p className="text-sm text-ink-tertiary max-w-sm mx-auto leading-relaxed">{body}</p> : null}
       {action ? <div className="mt-6 flex justify-center">{action}</div> : null}
     </div>
@@ -73,7 +73,7 @@ export function ErrorState({ icon = null, title, body, action = null, className 
       className={`text-center py-10 px-5 border border-hazard-border bg-hazard-subtle rounded-xl ${className}`}
     >
       {icon ? <div className="mx-auto mb-4 w-fit">{icon}</div> : null}
-      {title ? <p className="font-display font-bold text-lg uppercase text-hazard-text mb-2">{title}</p> : null}
+      {title ? <p className="font-display font-bold text-lg text-hazard-text mb-2 text-balance">{title}</p> : null}
       {body ? <p className="text-sm text-ink-secondary max-w-sm mx-auto leading-relaxed">{body}</p> : null}
       {action ? <div className="mt-5 flex justify-center">{action}</div> : null}
     </div>

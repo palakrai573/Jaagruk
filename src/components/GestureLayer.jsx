@@ -210,7 +210,7 @@ export default function GestureLayer({ enabled = false, onStatusChange }) {
           aria-hidden="true"
         >
           <span className="w-1.5 h-1.5 rounded-full bg-brand live-dot" />
-          <span className="font-mono text-[10px] uppercase tracking-widest text-brand-text">{t('gesture_running')}</span>
+          <span className="font-mono text-2xs uppercase tracking-widest text-brand-text">{t('gesture_running')}</span>
         </div>
       )}
     </>

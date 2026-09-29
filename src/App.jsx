@@ -239,7 +239,7 @@ export default function App() {
         page behind the bar. Derived from the same constant the bar itself uses, plus
         a gutter so the last element does not sit flush against it.
       */}
-      <main className="flex-1 pb-[calc(var(--nav-total)+1.5rem)] md:pb-0">
+      <main className="flex-1 pb-[calc(var(--nav-total)+5rem)] md:pb-0">
         {isPartiallyTranslated(lang) && (
           <div className="bg-warning-subtle border-b border-warning-border px-5 py-2 text-center text-xs text-warning-text font-mono">
             {coverageNotice(lang)}
@@ -299,7 +299,7 @@ export default function App() {
             to={item.to}
             end={item.end}
             className={({ isActive }) =>
-              `relative flex flex-col items-center justify-center gap-1 flex-1 min-h-[52px] py-2 px-1
+              `relative flex flex-col items-center justify-center gap-1 flex-1 min-w-0 min-h-[52px] py-2 px-1
                transition-colors duration-fast ${isActive ? 'text-brand-text' : 'text-ink-tertiary'}`
             }
           >
@@ -314,7 +314,7 @@ export default function App() {
                   }`}
                 />
                 <Pictogram name={item.pictogram} size={22} />
-                <span className="leading-none truncate max-w-full">{t(item.key)}</span>
+                <span className="leading-none truncate w-full text-center">{t(item.key)}</span>
                 {/* Centred over the icon rather than at the item's far edge: the
                     bar items are flex-1 and wide, so a corner offset would put the
                     badge nowhere near the thing it counts. */}
@@ -330,13 +330,13 @@ export default function App() {
           type="button"
           onClick={() => setMoreOpen((o) => !o)}
           aria-expanded={moreOpen}
-          className={`flex flex-col items-center justify-center gap-1 flex-1 min-h-[52px] py-2 px-1
+          className={`flex flex-col items-center justify-center gap-1 flex-1 min-w-0 min-h-[52px] py-2 px-1
                       transition-colors duration-fast ${moreOpen ? 'text-brand-text' : 'text-ink-tertiary'}`}
         >
           <span className="text-xl leading-none h-[22px] flex items-center" aria-hidden="true">
             {moreOpen ? '×' : '⋯'}
           </span>
-          <span className="leading-none truncate max-w-full">{t('more_label')}</span>
+          <span className="leading-none truncate w-full text-center">{t('more_label')}</span>
         </button>
       </nav>
 

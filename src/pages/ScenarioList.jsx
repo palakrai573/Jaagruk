@@ -64,7 +64,7 @@ export default function ScenarioList() {
               <p className="font-display font-bold text-2xl">
                 {passed}/{CERTIFICATION_DOMAINS.length}
               </p>
-              <p className="font-mono text-[10px] text-ink-tertiary uppercase tracking-widest">
+              <p className="font-mono text-2xs text-ink-tertiary uppercase tracking-widest">
                 {t('cert_domains_passed')}
               </p>
             </div>
@@ -94,27 +94,25 @@ export default function ScenarioList() {
             <Link
               key={s.id}
               to={`/train/${s.id}`}
-              className="bg-surface-1 border border-line-subtle rounded-lg p-6 hover:border-brand transition-colors group flex flex-col"
+              className="bg-surface-1 border border-line-subtle rounded-lg p-5 hover:border-brand transition-colors group flex flex-col"
             >
               <div className="flex items-start justify-between gap-3 mb-4">
-                <Pictogram name={meta.pictogram} size={46} />
+                <Pictogram name={meta.pictogram} size={38} />
 
                 {row?.attempted && (
                   <span className="text-end shrink-0">
                     <span
-                      className="font-display font-bold text-2xl"
-                      style={{
-                        color:
-                          row.effectiveReadiness >= PASS_THRESHOLD
-                            ? 'rgb(var(--safe-text))'
-                            : row.effectiveReadiness > 0
-                              ? 'rgb(var(--warning-text))'
-                              : 'rgb(var(--text-tertiary))',
-                      }}
+                      className={`font-display font-bold text-2xl tabular-nums ${
+                        row.effectiveReadiness >= PASS_THRESHOLD
+                          ? 'text-safe-text'
+                          : row.effectiveReadiness > 0
+                            ? 'text-warning-text'
+                            : 'text-ink-tertiary'
+                      }`}
                     >
                       {row.effectiveReadiness}%
                     </span>
-                    <span className="block font-mono text-[9px] text-ink-tertiary uppercase tracking-widest">
+                    <span className="block font-mono text-2xs text-ink-tertiary uppercase tracking-widest">
                       {t('as_readiness')}
                     </span>
                   </span>
@@ -122,13 +120,13 @@ export default function ScenarioList() {
               </div>
 
               <p className="font-mono text-brand-text text-xs uppercase tracking-widest mb-2">{s.sector}</p>
-              <h2 className="font-display font-bold text-2xl uppercase mb-3 group-hover:text-brand-text leading-tight">
+              <h2 className="font-display font-bold text-xl mb-2 group-hover:text-brand-text leading-tight">
                 {s.title}
               </h2>
-              <p className="text-ink-tertiary text-sm leading-relaxed mb-4 flex-1">{s.intro}</p>
+              <p className="text-ink-tertiary text-sm leading-relaxed mb-4 flex-1 line-clamp-2">{s.intro}</p>
 
               {/* Status line */}
-              <div className="flex items-center gap-3 flex-wrap font-mono text-[10px] uppercase tracking-widest">
+              <div className="flex items-center gap-3 flex-wrap font-mono text-2xs uppercase tracking-widest">
                 <span className="text-ink-tertiary">
                   {s.steps.length} {t('list_points')}
                 </span>
@@ -149,7 +147,7 @@ export default function ScenarioList() {
 
               {languageStatus !== NARRATION.OWN && (
                 <p
-                  className={`font-mono text-[10px] mt-3 flex items-center gap-1.5 ${
+                  className={`font-mono text-2xs mt-3 flex items-center gap-1.5 ${
                     languageStatus === NARRATION.ENGLISH ? 'text-hazard-text' : 'text-warning-text'
                   }`}
                 >
@@ -171,7 +169,7 @@ export default function ScenarioList() {
         <div className="flex items-center gap-5">
           <Pictogram name="buddy" size={48} />
           <div className="min-w-0 flex-1">
-            <h2 className="font-display font-bold text-2xl uppercase mb-1">{t('bd_title')}</h2>
+            <h2 className="font-display font-bold text-xl mb-1">{t('bd_title')}</h2>
             <p className="text-ink-tertiary text-sm leading-relaxed">{t('bd_desc')}</p>
           </div>
         </div>

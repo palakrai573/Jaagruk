@@ -17,8 +17,12 @@ Department of Higher & Technical Education
 ![Offline](https://img.shields.io/badge/Offline-first-2E7D4F?style=flat-square)
 ![Backend](https://img.shields.io/badge/Backend-none_required-2E7D4F?style=flat-square)
 ![Languages](https://img.shields.io/badge/Languages-6-FFB020?style=flat-square)
+![Tests](https://img.shields.io/badge/tests-376_passing-2E7D4F?style=flat-square)
+![Gates](https://img.shields.io/badge/quality_gates-4-2E7D4F?style=flat-square)
 
 </div>
+
+---
 
 ## Kotlin Android App
 
@@ -28,17 +32,47 @@ The native Kotlin Android app is maintained in a separate repository. This repos
 
 ---
 
+## The app
+
+Every screenshot below is the running app at **412 × 915** — a Pixel-class Android viewport.
+
+<div align="center">
+
+| Home — new worker | Home — signed in | Scenario list |
+|:---:|:---:|:---:|
+| <img src="docs/screenshots/01-home-signed-out.jpg" width="250" alt="Signed-out home: a Works with no signal badge, the headline Two minutes to set up, and a numbered three-step strip"> | <img src="docs/screenshots/02-home-signed-in.jpg" width="250" alt="Signed-in home: 60% readiness with an amber progress bar, 2 of 5 domains passed, 1 refresher due, and colour-coded status rails on the scenario list"> | <img src="docs/screenshots/03-scenario-list.jpg" width="250" alt="Scenario list showing domains-passed progress and per-scenario readiness percentages"> |
+| Signed out, the page leads with setup cost and the three-step loop. | Readiness, domains passed and refreshers due, with per-domain status rails. | Nine modules, each showing current standing rather than just a title. |
+
+| Worker dashboard | Certification | Near-miss report |
+|:---:|:---:|:---:|
+| <img src="docs/screenshots/04-dashboard.jpg" width="250" alt="Dashboard with a readiness ring at 60, domains passed, sessions, slow-reaction flags and a recent trend sparkline"> | <img src="docs/screenshots/05-certification.jpg" width="250" alt="Certification page showing readiness ring, 2 of 5 domains passed, progress against a 70 percent pass threshold and a slow-reaction flag"> | <img src="docs/screenshots/06-report-hazard.jpg" width="250" alt="Near-miss report screen: a grid of ISO 7010 pictogram buttons for hazard types such as blocked exit, exposed wiring and missing machine guard"> |
+| Readiness ring, hesitation flags, trend. | Gated on **today's** decayed readiness, not the test date. | Zero-text pictogram entry — one photo and a tap. |
+
+| 3D drill runner |
+|:---:|
+| <img src="docs/screenshots/07-drill-3d.jpg" width="250" alt="3D drill scene showing labelled worker, fire and extinguisher objects above the scenario prompt and a timed decision"> |
+| Camera unavailable degrades to the 3D scene — the drill is never blocked. |
+
+</div>
+
+> **Note on the drill screenshot.** It shows the 3D fallback because the capture environment
+> blocks camera access. On a real handset over HTTPS the same screen renders the camera-anchored
+> AR overlay; `docs/DEPLOYMENT.md` explains why AR needs a secure context.
+
+---
+
 ## Contents
 
 | | |
 |---|---|
 | [The problem](#the-problem) · [Why a quiz app isn't enough](#why-the-obvious-build-isnt-enough) | The case |
-| [How it works](#how-it-works) · [The four layers](#the-four-layers) | The system |
-| [Efficiency and compression](#efficiency-and-compression) | **Measured numbers** |
-| [Architecture](#architecture) · [Tech stack](#tech-stack) · [Data model](#data-model) | The build |
+| [End to end](#how-it-works-end-to-end) · [The four layers](#the-four-layers) | The system |
+| [Architecture](#architecture) · [Tech stack](#tech-stack) · [Key components](#key-components) · [Data model](#data-model) | The build |
 | [Offline model](#offline-model) · [Security](#security-and-integrity) | The guarantees |
-| [Quick start](#quick-start) · [Deploy](#deploy) | Running it |
-| [Verification](#verification) · [Limitations](#honest-limitations) · [Roadmap](#roadmap) | The honesty |
+| [Efficiency and compression](#efficiency-and-compression) | **Measured numbers** |
+| [Native comparison](#native-reference-vs-this-implementation) · [Use cases](#use-cases) | The context |
+| [Quick start](#quick-start) · [Verification](#verification) | Running it |
+| [Advantages](#advantages) · [Limitations](#honest-limitations) · [Future scope](#future-scope) | The honesty |
 
 ---
 
@@ -71,14 +105,14 @@ three failures untouched.
 | The real problem | What a quiz-and-certificate app does | **What Jaagruk does** |
 |---|---|---|
 | Workers who *know* the right action still freeze | Nothing. Right/wrong scoring cannot see hesitation. | **Every decision is timed** against a per-step baseline. Correct-but-slow is flagged for retraining instead of quietly passed. |
-| Retention falls sharply within a week | Nothing. A one-time module makes the first exposure better, not stickier. | **Readiness decays** with time and recovers on a 90-second refresher. Certification is gated on today's score, not the test date. |
+| Retention falls sharply within a week | Nothing. A one-time module makes the first exposure better, not stickier. | **Readiness decays** with time and recovers on a refresher. Certification is gated on today's score, not the test date. |
 | The buddy system is two humans coordinating | Simulates the buddy as an AI character — trains none of the coordination. | **Two real phones** paired over WebRTC, no server, no internet. Scored on check-in discipline and how long you took to notice your buddy collapse. |
 
 Everything below is implementation detail. That table is the idea.
 
 ---
 
-## How it works
+## How it works, end to end
 
 ```
 SUPERVISOR · once per zone
@@ -119,356 +153,207 @@ funnel produces certificates; a loop produces competence.
 
 ### 1 · Train — in the corridor you would actually run down
 
-**Site-Scan AR.** An anchor is a **direction**, not a 3D point. A supervisor aims the phone at
-the real exit and taps; the app stores the magnetic bearing and elevation of that sighting.
-During a drill the marker reprojects at that bearing and stays over the real exit as the worker
-turns. *"The exit is left past the second pillar"* gets learned against real geometry.
+Two overlay layers are drawn over the live camera, and **they cannot disagree**. The flat
+marker layer is absolutely-positioned DOM; above it `ARScene3D` draws real geometry. Both are
+placed from **one** azimuth — `cameraQuaternion()` takes pitch and roll from the device
+quaternion but overrides its yaw to equal the same smoothed heading the DOM markers use.
+Feeding the raw sensor quaternion to the 3D camera would leave two independent estimates of
+where the worker is looking, and they diverge whenever the compass is off.
 
-Steel plants and shafts distort magnetic heading, so absent or low-accuracy compass data is
-**detected** — the app falls back to gyro-relative mode with an explicit re-centre control and
-tells the worker which mode he is in, rather than showing markers confidently in the wrong
-place. When every marker is more than 90° behind him, an explicit *turn around* prompt appears,
-because a small edge chevron is not enough.
+Projection is true perspective, `tan(θ)/tan(fov/2)`. The vertical term divides by `cos(θ)` as
+well, because off-axis vertical screen position genuinely depends on the horizontal angle.
+Anchors beyond 90° are intercepted rather than divided, since the perspective divide changes
+sign there and would fold an exit that is *behind* the worker back into the middle of frame.
 
-**Glove-friendly input.** Point-to-aim and pinch-to-select via MediaPipe hand tracking, with a
-**1.2-second dwell ring** as the precision fallback — heavy gloves are exactly what removes
-pinch precision. Voice answers run in parallel. Touch always works, and **nothing in the app is
-reachable only by gesture**.
+A second mode (`webxr.js` + `XRDrill`) runs a WebXR `immersive-ar` session — on Chrome for
+Android that is ARCore, giving real 6DoF tracking and hit-test placement with a measured
+distance. Cross-device persistence uses a printed marker and two taps rather than Cloud
+Anchors, so a zone scanned in XR still works on a phone that cannot run XR.
 
-**Zero-text pictogram mode.** 39 inline-SVG glyphs using ISO 7010 shape and colour semantics —
-the same signage already painted on a DGMS-regulated wall — plus audio narration. Onboarding
-itself is icon-and-voice driven, so a worker who cannot read selects a language by hearing it
-spoken and registers unaided. **No pictogram on a choice button reveals the answer.**
+Also in this layer: **MediaPipe hand tracking** (point to aim, pinch to confirm, 1.2 s dwell
+fallback for gloved hands), **voice I/O** as a first-class parallel input, and a **zero-text
+pictogram mode** where every step and choice renders as ISO 7010-style inline SVG with audio
+narration.
 
 ### 2 · Assess — scored the way an emergency scores you
+
+Every decision records `startedAt → decidedAt` against a calibrated per-step `targetMs`:
+
+| Grade | Condition | Speed score |
+|---|---|---|
+| `fast` | within target | 100 |
+| `normal` | within 2× target | 70 |
+| `slow` | beyond 2× target → **hesitation flag** | 35 |
+| `incorrect` | wrong answer → retrain regardless of speed | — |
 
 ```
 readiness = round(0.7 × accuracy + 0.3 × speed)
 ```
 
-Speed counts **only on decisions that were correct**. Fast and wrong is not a partial success,
-it is the actual failure mode.
+A missing or absurd measurement grades `unknown` and scores 70 rather than punishing the
+worker for a sensor or focus glitch.
 
-| Grade | Condition | Speed score |
-|---|---|---|
-| `fast` | within the step's target | 100 |
-| `normal` | within 2× target | 70 |
-| `slow` | beyond 2× target | 35 → **hesitation flag** |
-| `unknown` | beyond 10 minutes | 70 — walked away, not hesitation |
-| `incorrect` | any speed | retrain regardless |
-
-**Targets are per step, set by how much time the real situation allows:**
-
-| Step | Target | Why |
-|---|---|---|
-| Escalating fire, black smoke | **6 s** | Every second deciding is a second of smoke inhalation |
-| Burning smell at an electrical panel | **6 s** | Delay is how a fault becomes a fire |
-| Reversing forklift, alarm disabled | **7 s** | Immediate struck-by risk |
-| Pre-entry gas detector check | **10 s** | Nobody is in danger yet; there is room to think |
-| Colleague's persistent cough | **13 s** | Occupational health judgement — rewarding a snap answer trains the wrong instinct |
-
-**Buddy drill.** Two phones pair by scanning each other's QR codes over a WebRTC data channel.
-A confined-space entry runs as a shared state machine with a scripted distress event; the
-responder is scored on whether they noticed, how fast, and **whether they resisted going in
-unprotected** — the decision that turns one casualty into two.
+**The buddy drill** pairs two phones over WebRTC by scanning each other's QR codes, then runs a
+shared confined-space state machine. One side gets a scripted distress event; the other is
+scored on whether they noticed, how fast they responded, and whether they ran the correct
+sequence. Disconnects, timeouts, duplicate frames and role collisions are all handled
+explicitly.
 
 ### 3 · Certify — a record that cannot be quietly edited
 
-```
-payload ──► canonical JSON ──► SHA-256 ──► hash ──► signed by device key
-                                                        │
-        each record embeds the previous record's hash ───┘
-                    per-site append-only chain
-```
+Canonical-JSON → SHA-256 → signed with a non-extractable Web Crypto key. Every record embeds
+the previous record's hash, forming a per-site append-only chain.
 
-Verification reports **four independent signals**, never collapsed into one badge:
+Verification recomputes every hash and link and checks every signature, and reports the
+**specific** failure — broken link, mutated payload, bad signature, unknown signer, sequence
+gap, or fork — rather than a bare valid/invalid.
 
-| # | Signal | Why it is separate |
-|---|---|---|
-| 1 | Payload intact and correctly signed | Detects mutation and forgery |
-| 2 | Signer known to this device | A genuine record from an untrusted phone is *not* a forgery |
-| 3 | Record present in this ledger | Distinguishes "unknown here" from "invalid" |
-| 4 | Links correctly to its predecessor | Detects gaps and forks |
-
-Detects **broken link · mutated payload · bad signature · unknown signer · sequence gap ·
-fork**. Forks are stored rather than hidden — hiding one would defeat the purpose of the ledger.
-
-> **Terminology.** This is a **tamper-evident hash-chained ledger**, not a blockchain. No
-> consensus, no mining, no distributed agreement. Calling it a blockchain would be inaccurate —
-> and consensus needs peers, which is exactly what a mine shaft does not have. **Choosing the
-> weaker primitive is what buys the offline property.**
+> **Terminology.** This is a **tamper-evident hash-chained ledger**, not a blockchain. There is
+> no consensus, no distributed agreement, no mining. Calling it a blockchain would be
+> inaccurate and any judge who knows the space would rightly mark it down.
 
 ### 4 · Sustain — keeping it true after the certificate prints
 
-**Spaced refreshers** at 2 / 7 / 21 / 60 days per domain. A pass advances the interval; a fail
-resets it.
-
-**Readiness decays** — full value for 7 days, then **linearly** to a 0.55 floor at day 90:
+Spaced refresher intervals of **2, 7, 21 and 60 days** per domain. Readiness decays with time
+since the last pass — full value for 7 days, then **linearly** to a 0.55 floor at 90 days:
 
 ```
-decayFactor(d) = 1                          for d ≤ 7
-               = 1 − 0.45 × (d − 7) / 83    for 7 < d < 90
-               = 0.55                       for d ≥ 90
+decay(days) = 1 − 0.45 × (days − 7) / 83      for 7 < days ≤ 90
 ```
 
-From a base readiness of 88:
+The curve is linear rather than exponential on purpose. A real forgetting curve is closer to
+exponential, but a linear slide is legible: a worker or safety officer reading a roster can
+tell at a glance how many days are left before a certification lapses. The floor exists
+because training is degraded by disuse, not erased by it.
 
-```
- 88 ┤●───●
-    │     ╲──●
- 80 ┤         ╲──●
-    │             ╲──●
- 70 ┤─ ─ ─ ─ ─ ─ ─ ─ ─╲●─ ─ ─ ─ ─ pass mark ─ ─ ─ ─ ─ ─ ─ ─ ─
-    │                   ╲──●
- 60 ┤                        ╲──●
-    │                             ╲──●
- 48 ┤                                  ╲──●───── floor
-    └──┬────┬────┬────┬────┬────┬────┬────┬────┬
-       0    7   14   21   30   45   60   75   90   days
-                                 ↑
-                    certification lapses at day 46
-                  90 s of refresher resets this
-```
-
-Linear rather than exponential **on purpose**. A real forgetting curve is closer to
-exponential, but a linear slide is legible — a safety officer reads days-remaining off a roster
-at a glance. The floor exists because training is degraded by disuse, not erased by it.
-
-**Near-miss hazard reporting.** One photo, one tap, tagged by zone and compass bearing because
-GPS does not work underground. Voice note instead of typing, because a worker who cannot
-comfortably write Hindi can absolutely describe what he saw.
-
-**Compliance dashboard.** Hesitation-risk list, hazard triage with bearing clusters, chain
-integrity panel, QR verification, and CSV export shaped for **Mines Act 1952** and
-**Factories Act 1948** record-keeping.
-
----
-
-## Efficiency and compression
-
-All figures below are **measured**, not estimated. Reproduce them by inspecting `dist/` after
-`npm run build`.
-
-### Shipped bundle
-
-```
-                          raw                                    brotli
-app + domain logic    ████████████████████████████████████████  891.8 KiB
-        → brotli      █████████                                 194.5 KiB   ▼ 78%
-
-three.js runtime      █████████████████████████████████████     833.6 KiB
-        → brotli      ████████                                  184.3 KiB   ▼ 78%
-
-react + router        ███████                                   159.9 KiB
-        → brotli      ██                                         45.7 KiB   ▼ 71%
-
-tailwind css          ██                                          48.8 KiB
-        → brotli      ▏                                           8.7 KiB   ▼ 82%
-
-lazy AR / XR chunks   █                                           22.0 KiB
-        → brotli      ▏                                           7.4 KiB   ▼ 66%
-
-workbox runtime       █                                           21.8 KiB
-        → brotli      ▏                                           6.7 KiB   ▼ 69%
-────────────────────────────────────────────────────────────────────────────────
-TOTAL (22 files)      1988.1 KiB  →  561.0 KiB gzip  →  451.4 KiB brotli  ▼ 77%
-```
-
-Code only — fonts are counted separately below, and the remainder of the 22 is `index.html`,
-the web manifest and the service-worker glue.
-
-**Measure this off disk, not off the Vite console.** Vite and Workbox report the *character*
-length of a chunk. The app chunk carries the six-language string tables, where one Devanagari
-or Ol Chiki character is three UTF-8 bytes, so Vite prints `690.49 kB` for a file that is
-913,206 bytes. The service worker stores bytes, so bytes are the number that decides whether
-the app is installable on a cheap phone.
-
-**First install over the wire** (brotli), and every launch after:
-
-| Network | First install | Subsequent launches |
-|---|---|---|
-| 2G · 50 kbit/s | 126.3 s | **0 bytes** |
-| 3G · 750 kbit/s | 8.4 s | **0 bytes** |
-| 4G · 5 Mbit/s | 1.3 s | **0 bytes** |
-
-That is the whole precached shell — 35 entries, 2292.9 KiB raw, 770.9 KiB brotli — not just the
-code, because the service worker fetches every precache entry during install. Fonts are most of
-the gap: Latin, Devanagari and Ol Chiki ship in the shell so Hindi and Santali are styled on a
-cold offline start, while Bengali, Odia and Urdu are runtime-cached on first use rather than
-charged to every worker's install.
-
-Zero bytes after install because the shell is precached in full. **three.js is split into its
-own chunk**, so a worker who never opens a 3D drill never downloads the renderer, and the shell
-stays cacheable across releases. The AR, XR and detection surfaces are separate lazy chunks
-again — 22 KiB in total, precached so they still work offline, but never parsed unless opened.
-
-### WebRTC signalling payload — fitting a session into a scannable QR
-
-A raw WebRTC session description is too dense for a cheap phone camera to read reliably. The
-obstacle is real and the fix is measurable:
-
-```
-raw SDP from the browser      ████████████████████████████████████  1054 chars   QR v19
- ↓ trimSdp — drop non-host ICE candidates and unused lines
-trimmed                       ██████████████████████████████         882 chars   ▼ 16%
- ↓ deflate-raw + base64url
-packed for the QR             ████████████████████                   663 chars   QR v14  ▼ 37%
-
-no CompressionStream?         ████████████████████████████████████  1196 chars
- (trim + base64 only — still works, just a denser code)
-```
-
-Round-trip verified lossless, and the `srflx` candidate is correctly discarded — a
-data-channel-only session on a shared LAN does not need it, and a smaller input deflates to a
-smaller output.
-
-**QR version 19 → 14** is the difference between a code a worker's phone struggles with and one
-it reads first time.
-
-### Certificate QR — the whole record, not a lookup
-
-The payload uses **single-character keys** (`st`, `q`, `p`, `w`, `n`, `d`, `r`, `f`, `a`, `t`)
-and encodes the signature algorithm as one letter. That is not obfuscation, it is budget:
-
-```
-self-describing keys          ██████████████████████████████████  343 chars
-compact keys                  ███████████████████████             234 chars   ▼ 32%
-
-full signed record in the QR  ███████████████████████████████████ 435 chars   QR v11
-   └─ 192 of those 435 chars are the signature (128) + signer key (64)
-      i.e. 44% of the payload is the crypto that makes it verifiable offline
-```
-
-A server-lookup URL would be ~60 characters — **and would need connectivity to mean anything.**
-Carrying the entire signed record is what lets an inspector verify at the pit head with no
-signal and no copy of the ledger. Round-trip verified lossless, including a worker name that
-contains the `|` delimiter (the payload is deliberately last, and decoding splits on the first
-four delimiters only).
-
-### Media compression
-
-| | |
-|---|---|
-| Photo longest edge | capped at **720 px**, JPEG quality **0.62** |
-| Typical 12 MP phone photo | ~3500 KB → **45–70 KB** (**≈98% smaller**) |
-| Voice note | hard-capped at **20 s**, so it cannot silently eat storage |
-| Reports retained on device | **60** (ring buffer) |
-| Oversize input | **> 40 MB is rejected**, not decoded — that is a broken or hostile file |
-
-Storage pressure is handled rather than assumed: a quota failure surfaces as *"held for this
-session only, ask your supervisor to sync"* instead of silently dropping a hazard report.
-
-### Codebase
-
-| | Files | Lines |
-|---|---|---|
-| `src/lib` — domain logic, pure, no DOM | 25 | 9,710 |
-| `src/pages` | 14 | 5,774 |
-| `src/components` | 10 | 2,722 |
-| `src/context` | 1 | 21 |
-| **Total** | **53** | **~18,700** |
-
-Build: **690 modules**, no warnings, ~8 s.
+Certification requires **effective (decayed) readiness ≥ 70 in all five domains**, so a
+certificate reflects current competence rather than a historical date stamp.
 
 ---
 
 ## Architecture
 
-```
-┌───────────────────────────────────────────────────────────────────────────┐
-│  PRESENTATION      React 18 · React Router (hash) · Tailwind              │
-│  13 routes · 14 pages · 10 components                                     │
-│  ARDrill · DrillUI · Charts · GestureLayer · PeerSync · QrScanner          │
-├───────────────────────────────────────────────────────────────────────────┤
-│  DOMAIN LOGIC      src/lib — 25 modules, pure, no React and no DOM         │
-│                                                                            │
-│   TRAIN             ASSESS            CERTIFY          SUSTAIN            │
-│   siteMap.js        assessment.js     chain.js         spaced.js          │
-│   gesture.js        drills.js         certificate.js   hazards.js         │
-│   speech.js         scenarioMeta.js   crypto.js        sync.js            │
-│   pictograms.jsx    scenarios.js      identity.js      charts.js          │
-│                                                                            │
-│   SHARED            num.js · idb.js · local.js · i18n.js + i18nJaagruk.js  │
-├───────────────────────────────────────────────────────────────────────────┤
-│  PLATFORM          IndexedDB · Web Crypto · WebRTC · getUserMedia ·        │
-│                    DeviceOrientation · Web Speech · MediaPipe WASM ·      │
-│                    Service Worker + Workbox                                │
-├───────────────────────────────────────────────────────────────────────────┤
-│  PACKAGING         Capacitor 8 → Android APK (minSdk 29) · also a PWA      │
-└───────────────────────────────────────────────────────────────────────────┘
-                                        No backend. No account. No server.
+```mermaid
+flowchart TB
+    subgraph UI["Presentation · React 18 + Vite + Tailwind"]
+        P["16 routes + 404 · HashRouter"]
+        C["UI primitives<br/>Button · Card · Badge · Stat · Progress · Dialog · Toast"]
+        T["Design tokens<br/>CSS custom properties · dark + light"]
+    end
+
+    subgraph DOM["Domain logic · src/lib · pure, no DOM"]
+        A["assessment.js<br/>latency grading · readiness"]
+        S["spaced.js<br/>intervals · decay"]
+        CH["chain.js<br/>hash chain · QR codec"]
+        CR["crypto.js<br/>Ed25519 / ECDSA · SHA-256"]
+        I18["i18n · 640 keys × 6 languages"]
+        GEO["geometry<br/>bearing · projection · quaternion"]
+    end
+
+    subgraph DEV["Device capabilities"]
+        CAM["getUserMedia + DeviceOrientation"]
+        XR["WebXR immersive-ar"]
+        MP["MediaPipe Tasks Vision · WASM"]
+        SP["Web Speech API"]
+        RTC["WebRTC data channel"]
+    end
+
+    subgraph PER["Persistence · on device only"]
+        IDB[("IndexedDB 'jaagruk'<br/>9 stores")]
+        LS[("localStorage<br/>settings")]
+        SW["Service worker<br/>43 precache entries"]
+    end
+
+    UI --> DOM
+    DOM --> PER
+    UI --> DEV
+    DEV --> DOM
+    RTC -.->|"gossip, no server"| IDB
+    IDB -.->|"when online, optional"| EXT["Configured sync endpoint<br/>(client half only)"]
 ```
 
-**The load-bearing decision is the middle tier.** All domain logic — bearing maths, latency
-grading, the hash chain, decay curves, chart geometry — is plain modules with no React and no
-DOM. That is why it could be developed against executable checks, and why identical logic runs
-in a browser, in the Android WebView, and in a Node script.
+**No backend is required for any core path.** Training, assessment, certification and
+verification all complete with the network cable pulled out. The only networked features are
+the optional AI hazard scan and the optional central sync endpoint.
 
 ---
 
 ## Tech stack
 
-| Layer | Choice | Why this and not the alternative |
+| Layer | Choice | Why this one |
 |---|---|---|
-| UI | **React 18 + Vite 5 + Tailwind 3** | One codebase → APK, PWA and browser demo. ~8 s build, so iteration is not the bottleneck. |
-| Routing | **HashRouter** | Every route is a fragment, so deep links work on any static host with **no rewrite rules**, and inside the Capacitor WebView with no native config. |
-| Packaging | **Capacitor 8** · minSdk 29 | A real APK from the same build, no second codebase. |
-| Local database | **IndexedDB** — `jaagruk` v1, 9 stores | The Room equivalent on web. Structured, indexed, quota-aware, holds blobs. |
-| Crypto | **Web Crypto** — Ed25519 → ECDSA P-256 → HMAC ladder | Native audited primitives, with graceful fallback rather than failure on older WebViews. PIN hashing is PBKDF2, 210,000 iterations. |
-| AR overlay | **getUserMedia + DeviceOrientationEvent** | Camera passthrough anchored to compass and pitch. No plugin, no ARCore dependency, any Android 10+ phone. |
-| Hand tracking | **@mediapipe/tasks-vision** (WASM) | Same model family as native MediaPipe Hands. Fetched from CDN at runtime and cached to IndexedDB, so it never inflates the base bundle for the majority who will not enable it. |
-| Peer-to-peer | **WebRTC `RTCDataChannel`** + QR signalling | No signalling server, no internet. See the compression figures above. |
-| Voice | **Web Speech API** | Per-language locale mapping, fixed command lexicon, fuzzy matching. |
-| Offline shell | **Workbox** via `vite-plugin-pwa` | 35 precached entries. Cold-boots with the network off. |
-| 3D fallback | **three.js + React Three Fiber** | Phones with no usable camera or compass run the drill as a 3D scene rather than refusing to start. |
-| Charts | **Hand-rolled inline SVG** | No charting library: the bundle already carries three.js, and these must render offline with zero runtime deps. Geometry (`charts.js`) is separated from rendering (`Charts.jsx`). |
+| UI | React 18 + Vite 5 | Single codebase ships as APK, PWA and browser demo |
+| Styling | Tailwind CSS 3.4 over CSS custom properties | One `data-theme` attribute repaints SVG charts, pictograms and borders at the same instant |
+| 3D / AR | three.js 0.170 + `@react-three/fiber` + `drei` | Lazy-loaded; a worker who never opens a 3D drill never downloads it |
+| Immersive AR | WebXR `immersive-ar` | ARCore-backed on Chrome for Android — real 6DoF and hit-test |
+| Hand tracking | `@mediapipe/tasks-vision` 0.10.18 | Same model family as native, WASM runtime |
+| Object detection | EfficientDet-Lite0 (int8, COCO) | On-device headcount and vehicle proximity |
+| Speech | Web Speech API | Voice command and narration in six languages |
+| P2P | WebRTC `RTCDataChannel` + QR signalling | No signalling server, no internet |
+| Crypto | Web Crypto — Ed25519, ECDSA P-256 fallback | Non-extractable key handles |
+| Storage | IndexedDB (9 stores) + localStorage | The Room equivalent |
+| Offline | `vite-plugin-pwa` / Workbox | Full precache of the app shell and vision models |
+| Packaging | Capacitor 8 | Android APK from the same build |
 
-**Deliberately not used:** any backend · auth provider · database service · charting library ·
-state management library · component library · blockchain.
+**18 runtime dependencies (8 of them font subsets), 8 dev dependencies.** No charting library, no UI kit, no state
+manager — the charts are hand-rolled inline SVG because the bundle already carries three.js
+and they must render offline.
 
 ---
 
-## Native reference vs this implementation
+## Key components
 
-The reference design for this problem statement was **Kotlin + ARCore + Room + Nearby
-Connections**. Every substitution and its honest cost:
+| Path | Lines | Responsibility |
+|---|---:|---|
+| `src/lib/i18nJaagruk.js` | 1,584 | Main string table |
+| `src/components/SafetyScene3D.jsx` | 1,401 | 3D drill scene and props |
+| `src/lib/speech.js` | 1,295 | Narration, recognition, command lexicon |
+| `src/lib/siteMap.js` | 1,167 | Zone / anchor model |
+| `src/pages/Admin.jsx` | 974 | Compliance dashboard |
+| `src/pages/Scenario.jsx` | 972 | Drill runner |
+| `src/components/ARDrill.jsx` | 834 | Camera-anchored overlay |
+| `src/pages/Dashboard.jsx` | 806 | Worker readiness view |
+| `src/lib/hazards.js` | 715 | Near-miss capture, media compression |
+| `src/lib/sync.js` | 704 | Queue, batching, idempotency |
+| `src/lib/chain.js` | 586 | Hash chain, QR codec, verification |
+| `src/lib/crypto.js` | 482 | Signing, hashing, key handling |
 
-| Component | Native design | Jaagruk | Fidelity |
-|---|---|---|---|
-| Site-Scan AR | ARCore Depth + Cloud Anchors | Camera + compass/pitch bearing anchors | **Functional for orientation-anchored overlay.** No depth mesh, no occlusion, no translational tracking. |
-| Gesture input | MediaPipe Hands (TFLite) | `@mediapipe/tasks-vision` (WASM) | **Full** — same model family |
-| Local database | Room / SQLite | IndexedDB, versioned, quota-aware | **Full** |
-| Buddy pairing | Nearby Connections (Wi-Fi Direct + BT) | WebRTC + QR signalling | **Functional.** Needs a shared LAN or hotspot; Nearby brings its own radio. |
-| Certificate signing | Ed25519 via Tink + Android Keystore | Web Crypto Ed25519, non-extractable key in IndexedDB | **Full crypto, weaker key isolation** — no hardware keystore. |
-| Deferred sync | WorkManager | IndexedDB queue + `online` event + Background Sync | **Functional** |
-| Hindi voice | Vosk offline model | Web Speech `hi-IN`, fixed lexicon | **Partial** — OEM WebView may use a network recogniser |
-| Santali voice | Custom TFLite keyword spotter | Fixed lexicon on the `hi-IN` acoustic model | **Partial by design** — no production Santali ASR exists |
-| Refresher alarms | AlarmManager exact alarms | Computed on device, surfaced on open + `periodicSync` | **Partial** — the web platform cannot wake a closed page |
+### Project structure
 
-**What the trade buys:** one codebase that ships as an Android APK, installs as a PWA on a
-shared site tablet, and runs in a judge's browser with nothing to install. We do not write
-"full" where it isn't.
+```
+src/
+  lib/          41 files · 17,303 lines   domain logic, pure, no DOM
+  pages/        16 files ·  8,435 lines   one file per route
+  components/   27 files ·  7,946 lines   AR, 3D, charts, UI primitives
+  context/       1 file  ·     53 lines   language provider
+  styles/        1 file  ·    337 lines   design tokens
+tests/          21 files ·  4,717 lines   376 tests, node:test
+scripts/         7 files ·  1,861 lines   a11y, contrast, i18n, translit gates
+docs/                                     architecture, deployment, jury script
+```
+
+**Total application source: 86 files, 34,074 lines.**
 
 ---
 
 ## Data model
 
-**IndexedDB `jaagruk` v1**
+IndexedDB database `jaagruk`, version 1.
 
 | Store | Key | Indexes | Contents |
 |---|---|---|---|
-| `workers` | `id` | `siteId`, `phone` | name, phone, pinHash, pinSalt, role, siteId |
+| `workers` | `id` | `siteId`, `phone` | id, name, phone, pinHash, pinSalt, role, siteId |
 | `chain` | `hash` | `siteId`, `seq`, `workerId` | signed certificate records |
-| `keys` | `id` | — | device keypair handle, trusted site public keys |
+| `keys` | `id` | — | device keypair handle, site public keys, algorithm |
 | `attempts` | `id` | `workerId`, `domain`, `at` | per-step latency, grade, readiness |
-| `schedule` | `id` (`workerId:domain`) | `workerId`, `dueAt` | interval index, lastPassAt, dueAt |
-| `sites` | `id` | — | site, zones, anchors |
-| `hazards` | `id` | `siteId`, `status`, `at` | report, thumbnail blob, voice blob |
+| `schedule` | `id` (`workerId::domain`) | `workerId`, `dueAt` | interval index, lastPassAt, dueAt |
+| `sites` | `id` | — | site + zones + anchors |
+| `hazards` | `id` | `siteId`, `status`, `at` | report, thumbnail blob, voice note blob |
 | `syncQueue` | `id` | `kind` | pending outbound records |
 | `blobs` | `id` | — | cached ML model, media |
 
-Small synchronous settings (language, active session, toggles) live in `localStorage` under a
-`jaagruk_*` namespace, with a one-time idempotent migration from the pre-rebrand keys.
+Small synchronous-read settings (language, API key, active session, accessibility toggles) stay
+in `localStorage`. Legacy `khatra_*` keys migrate to `jaagruk_*` once, idempotently, on boot.
 
 ---
 
@@ -476,61 +361,363 @@ Small synchronous settings (language, active session, toggles) live in `localSto
 
 ```
 UI action
-  └─► write to IndexedDB            ← always succeeds first, never awaits network
-        └─► append to syncQueue
-              ├─ internet ─────────► POST batch (idempotency key)
-              ├─ no internet ──────► gossip to a supervisor phone over WebRTC
-              └─ never online ─────► signed export bundle (file hand-off)
+  └─> write to IndexedDB (always succeeds first, never blocks on network)
+        └─> append to syncQueue
+              ├─ internet available ──> POST batch to configured endpoint (idempotency key)
+              └─ no internet ────────> gossip to nearby supervisor phone over WebRTC
+                                          └─> supervisor gets internet later ──> POST batch
 ```
 
-Every write is **local-first, timestamped and additive**. Records are keyed by **content
-hash**, so replaying a batch is always safe and two phones that diverged for a week converge by
-set union with no reconciliation logic.
+Every write is local-first, timestamped and additive. Sync is eventual and idempotent;
+replaying a batch is always safe because records are keyed by content hash.
 
-**What genuinely needs network** — only two things, and neither is a core path:
-
-1. **AI hazard scan** — needs connectivity and a user-supplied Gemini or OpenAI key.
-2. **Gesture control, on first use only** — the MediaPipe WASM runtime and model come from CDN,
-   then the model is cached to IndexedDB. And nothing in the app is reachable *only* by gesture.
-
-Everything else — onboarding, all six modules, AR overlay, latency scoring, buddy drill,
-certificate issuance, chain verification, hazard reporting, refreshers, both dashboards — runs
-with the network off.
+**Font strategy is part of the offline model.** Latin, Devanagari and Ol Chiki ship in the
+precached shell so Hindi and Santali are fully styled on a cold offline start. Bengali, Odia and
+Urdu are runtime-cached on first use instead — Nastaliq alone is ~317 KB for two weights, and
+charging that to every worker's install would be the wrong default.
 
 ---
 
 ## Security and integrity
 
-| Concern | How it is handled | Honest boundary |
-|---|---|---|
-| Certificate forgery | SHA-256 over canonical JSON, signed by device key, chained by `prevHash` | — |
-| Silent edit of a past record | Breaks every subsequent link; verification names the failing sequence number | — |
-| Unknown issuer | Reported separately from "invalid"; trusting a new signer is an explicit supervisor prompt | Never a silent default |
-| Worker identity | PIN, PBKDF2 210k iterations + per-worker salt, lockout after repeated failures | **Device-local identity, not an authorization boundary** |
-| Supervisor access | Local PIN gate on `/admin` | **Not real authorization.** Production needs server-issued JWTs with RBAC |
-| Key storage | Non-extractable Web Crypto handle in IndexedDB | **No hardware keystore.** Clearing site data destroys the device key — which is why records gossip to a second device |
-| Data at rest | On-device only. No telemetry, no analytics | Photos and voice notes never leave the device until an explicit sync |
+| Property | How |
+|---|---|
+| Certificate authenticity | Ed25519 signature over SHA-256 of canonical JSON, ECDSA P-256 fallback |
+| Tamper evidence | Each record embeds the previous record's hash — editing one breaks every link after it |
+| Offline verification | The **entire signed record travels in the QR**, so no lookup and no network is needed |
+| Key protection | Non-extractable Web Crypto key handles in IndexedDB |
+| Failure reporting | Verification names the specific fault: broken link, mutated payload, bad signature, unknown signer, sequence gap, fork |
+
+**What this is not.** PIN auth is device-local and is offline-capable identity, not a security
+boundary. The `/admin` gate is a local PIN, not real authorization — production needs
+server-issued JWTs with RBAC. There is no hardware keystore in the browser, which is precisely
+why chain records gossip to a second device.
+
+---
+
+## Efficiency and compression
+
+All figures below are **measured off disk** after `npm run build`, in bytes. Reproduce them by
+inspecting `dist/`. Gzip is level 9; brotli is Node's default quality.
+
+### Shipped code
+
+```
+                               raw                                      brotli
+app + domain logic         ████████████████████████████████████  924.1 KiB
+             → brotli      ████████                              201.2 KiB   ▼ 78%
+
+three.js renderer (lazy)   ████████████████████████████████      833.6 KiB
+             → brotli      ███████                               184.4 KiB   ▼ 78%
+
+wasm JS glue (2 files)     ███████████████                       397.9 KiB
+             → brotli      ███                                    85.0 KiB   ▼ 79%
+
+react + router             ██████                                159.9 KiB
+             → brotli      █                                      45.7 KiB   ▼ 71%
+
+mediapipe glue (lazy)      █████                                  136.0 KiB
+             → brotli      █                                      34.8 KiB   ▼ 74%
+
+app css (tailwind)         ██                                      53.4 KiB
+             → brotli      ▏                                        9.3 KiB   ▼ 83%
+
+service worker + workbox   █                                       26.2 KiB
+             → brotli      ▏                                        8.2 KiB   ▼ 69%
+
+AR / XR / detection (lazy) ▊                                       22.0 KiB
+             → brotli      ▏                                        7.4 KiB   ▼ 66%
+
+html + manifest + font css ▏                                        6.1 KiB
+             → brotli      ▏                                        2.7 KiB   ▼ 56%
+──────────────────────────────────────────────────────────────────────────────────
+TOTAL (25 files)           2559.3 KiB raw → 708.6 KiB gzip → 578.7 KiB brotli ▼ 77%
+```
+
+> **Measure off disk, not off the Vite console.** Vite reports the *character* length of a
+> chunk. The app chunk carries six-language string tables where one Devanagari or Ol Chiki
+> character is three UTF-8 bytes, so the console under-reports the byte size that actually
+> decides installability. The service worker stores bytes.
+
+### What a cold install actually fetches
+
+The service worker precaches **43 entries, 33,431.8 KiB raw**. That splits into two very
+different things, and conflating them would misrepresent the install cost:
+
+| Group | Files | Raw | Brotli |
+|---|---:|---:|---:|
+| **App shell** — code, fonts, icons, HTML | 36 | 2,466.2 KiB | **813.0 KiB** |
+| **Offline vision** — WASM runtimes + TFLite/task models | 7 | 30,966.1 KiB | **12,447.3 KiB** |
+| **Total precache** | **43** | **33,431.8 KiB** | **13,260.3 KiB** |
+
+The vision group is dominated by two WASM builds that MediaPipe requires — SIMD and non-SIMD —
+plus the models:
+
+| Asset | Bytes |
+|---|---:|
+| `vision_wasm_internal.wasm` | 9,502,124 |
+| `vision_wasm_nosimd_internal.wasm` | 9,376,240 |
+| `hand_landmarker.task` | 7,819,105 |
+| `efficientdet_lite0.tflite` | 4,602,795 |
+| wasm JS glue (2 files) | 407,491 |
+| `manifest.json` | 1,544 |
+| **Total** | **31,709,299** |
+
+**Install time over the wire** (brotli), and every launch after:
+
+| Network | App shell | Full precache incl. vision | Subsequent launches |
+|---|---:|---:|---|
+| 2G · 50 kbit/s | 130.1 s | 35.4 min | **0 bytes** |
+| 3G · 750 kbit/s | 8.7 s | 2.4 min | **0 bytes** |
+| 4G · 5 Mbit/s | 1.3 s | 0.4 min | **0 bytes** |
+
+Zero bytes after install because the shell is precached in full. **This is the single biggest
+efficiency trade in the project** and it is a deliberate one: precaching the vision models is
+what makes gesture control and object detection work with no signal, and it costs a large
+one-time download. Making the models an opt-in download is the obvious improvement and is
+listed under [Future scope](#future-scope).
+
+### Certificate QR — the whole record, not a lookup
+
+Measured by calling the app's own `encodeCertQr()` with a real Ed25519 device key:
+
+```
+verbose self-describing keys   ██████████████████████████████████  348 chars
+compact single-char keys       ██████████████████████               229 chars   ▼ 34%
+
+full signed record in the QR   ██████████████████████████████████████  383 chars
+   └─ 145 of those 383 are the signature (86) + signer key (59)
+      i.e. 38% of the payload is the crypto that makes it verifiable offline
+```
+
+The payload uses single-character keys (`st`, `q`, `p`, `w`, `n`, `d`, `r`, `f`, `a`, `t`) and
+encodes the signature algorithm as one letter. That is not obfuscation, it is budget.
+
+A server-lookup URL would be ~60 characters — **and would need connectivity to mean anything.**
+Carrying the entire signed record is what lets an inspector verify at the pit head with no
+signal and no copy of the ledger. Round-trip verified lossless, including a worker name that
+contains the `|` delimiter: the payload is deliberately last, and decoding splits on the first
+four delimiters only.
+
+### WebRTC signalling
+
+A raw WebRTC session description is too dense for a cheap phone camera to read reliably, so
+`packSignal()` runs `trimSdp()` (drop non-host ICE candidates and unused lines) then
+`deflate-raw` + base64url, with a trim-and-base64-only fallback where `CompressionStream` is
+unavailable. The codec is exported as `__signalCodec` and round-trips losslessly.
+
+> Exact character counts are **not quoted here** because they depend on the ICE candidates a
+> given handset and network produce, and the sandbox used for this README could not gather
+> representative candidates. Measure on your own device via `__signalCodec`.
+
+### Media compression
+
+| | |
+|---|---|
+| Photo longest edge | capped at **720 px**, JPEG quality **0.62** |
+| Voice note | hard-capped at **20 s**, so it cannot silently eat storage |
+| Reports retained on device | **60** (ring buffer) |
+| Oversize input | **> 40 MB is rejected**, not decoded — that is a broken or hostile file |
+
+Constants live in `src/lib/hazards.js` as `PHOTO_MAX_DIM`, `PHOTO_QUALITY`, `VOICE_MAX_MS` and
+`MAX_REPORTS`. Storage pressure is handled rather than assumed: a quota failure surfaces as
+*"held for this session only, ask your supervisor to sync"* instead of silently dropping a
+hazard report.
+
+### Build
+
+| | |
+|---|---|
+| Modules transformed | **736** |
+| Build time | **~7–8 s** |
+| Warnings | none |
+| Chunking | three.js and react split out; AR, XR and detection lazy |
 
 ---
 
 ## Language and accessibility
 
-**Six languages** — English · हिन्दी Hindi · ᱥᱟᱱᱛᱟᱲᱤ Santali (Ol Chiki) · বাংলা Bengali ·
-ଓଡ଼ିଆ Odia · اردو Urdu. Around **430 UI keys**.
-
-| Language | Coverage |
+| | |
 |---|---|
-| English, Hindi, Bengali, Odia, Urdu | **100%** |
-| Santali (Ol Chiki) | **~38%**, flagged in-app as unverified |
+| Languages | **6** — English, Hindi, Santali (Ol Chiki), Bengali, Odia, Urdu |
+| UI strings | **640 keys** per language |
+| RTL | Urdu, via CSS logical properties — no `[dir='rtl']` overrides |
+| Zero-text mode | ISO 7010-style pictograms + audio narration |
+| Touch targets | 56 px minimum in field tier (`--touch-min`), above the 44 px web default |
+| Motion | every animation gated on `prefers-reduced-motion` |
 
-Coverage is **computed from the dictionaries at runtime and displayed in-app**, not asserted.
-Santali was written by a non-native speaker as a starting point and needs native-speaker review
-before deployment. Claiming full localisation would be one word on a slide and a real problem
-in a pilot.
+Coverage, as reported by `npm run i18n`:
 
-**Zero-literacy is a complete path, not a mode toggle** — onboarding itself works if you cannot
-read. Every animation honours `prefers-reduced-motion`; charts carry text alternatives rather
-than relying on colour.
+| Language | Coverage | Notes |
+|---|---|---|
+| English | 640 / 640 | source |
+| Hindi | 640 / 640 | complete |
+| Santali | 638 / 640 | 2 keys fall back to Hindi |
+| Bengali · Odia · Urdu | 638 / 640 | 2 keys fall back to English |
+
+**Santali is 100% covered and 0% verified, and the app says so.** These are two different
+numbers and conflating them is how software ends up lying. `SANTALI_VERIFIED` is `false` in
+`i18nSantali.js`, and `isPartiallyTranslated('sat')` returns true **regardless of coverage**
+until a reviewer is recorded there. Without that decoupling, writing the last string would have
+silenced the warning and left the app presenting unchecked machine-authored safety text as a
+finished translation.
+
+**Scenario prose is deliberately not machine-translated.** None of the 9 modules has Santali;
+they resolve to Hindi and the app names the language actually used, spoken in Santali before
+the drill switches. Drill prose is where a wrong verb changes what a worker physically does —
+"leave the extinguisher and evacuate" and "use the extinguisher then evacuate" differ by one
+word, and it is read aloud, so a worker cannot check it against the screen.
+
+---
+
+## Verification
+
+```bash
+npm run verify
+```
+
+Runs tests → a11y gate → a11y self-test → contrast gate → contrast self-test → i18n gate →
+transliteration check → production build → offline-build check.
+
+| Gate | What it enforces | Result |
+|---|---|---|
+| `npm test` | 376 tests across 71 suites | **376 passing, 0 failing** |
+| `npm run a11y` | 20 structural checks | **passing** |
+| `npm run contrast` | 9 WCAG contrast checks | **passing** |
+| `npm run i18n` | script correctness, numeral survival, font-subset coverage, fallback termination | **passing** |
+| `npm run translit` | Ol Chiki → Devanagari syllabification | **passing** |
+| `postbuild` | 6 vision assets packaged and precached | **verified** |
+
+Both the a11y and contrast gates ship **self-tests that plant a fault and assert the gate
+catches it**, so a gate cannot silently stop checking.
+
+The i18n gate is worth describing because it catches a specific class of bug:
+
+- No English text stored in another language's slot — four nav labels once did this, inflating
+  reported coverage while showing Latin script to a Santali reader.
+- Every authored value contains its own script.
+- Every figure survives translation, compared across numeral systems so Bengali ৪ counts as 4.
+  This catches a bulk pass dropping the 4 and 6 from a PIN-length rule, or 1952 from a statute
+  citation.
+- **Every character falls inside a shipped font subset.** A codepoint outside it renders as a
+  box, permanently, on a device with no network — and nothing else in the build fails.
+- Fallback chains terminate in a fully covered language.
+
+---
+
+## Native reference vs this implementation
+
+The reference architecture for this pitch was drafted for **Kotlin + ARCore + Room + Nearby
+Connections**. This repository implements the same four layers on a web stack packaged via
+Capacitor. The trade is stated plainly:
+
+| Pitch component | Native design | Jaagruk implementation | Fidelity |
+|---|---|---|---|
+| Site-Scan AR | ARCore Depth + Persistent Cloud Anchors | Camera passthrough + `DeviceOrientationEvent`; anchors store bearing + elevation + thumbnail. Plus a WebXR mode with real hit-test placement. | **Functional equivalent.** No depth mesh, no occlusion. |
+| Glove-friendly gestures | MediaPipe Hands (native TFLite) | `@mediapipe/tasks-vision` HandLandmarker (same model family, WASM) | **Full** |
+| Hindi voice commands | Vosk offline Hindi model | Web Speech API `hi-IN`, normalised against a fixed lexicon | **Partial** — OEM WebView may use a network recogniser |
+| Santali voice commands | Custom TFLite keyword spotter | Fixed lexicon against the Hindi acoustic model + romanised and Devanagari variants | **Partial by design** — no production Santali ASR exists |
+| Local database | Room (SQLite) | IndexedDB, versioned schema, quota handling | **Full** |
+| Peer-to-peer drill | Nearby Connections | WebRTC `RTCDataChannel`, QR manual signalling | **Functional equivalent.** Needs a shared LAN or hotspot |
+| Certificate signing | Ed25519 via Tink + Android Keystore | Web Crypto Ed25519, ECDSA P-256 fallback | **Full crypto, weaker key isolation** |
+| Deferred sync | WorkManager | IndexedDB queue + `online` event + Background Sync + signed bundle export | **Functional equivalent** |
+| Refresher alarms | AlarmManager exact alarms | Due-list on device, Notification API on open, `periodicSync` where supported | **Partial** — the web cannot wake a closed tab |
+
+**What the web stack buys:** one codebase that runs as an installable Android APK, as a PWA on
+any shared site tablet, and as a browser demo for judges with nothing to install.
+
+> A native Kotlin Android app is maintained separately at
+> **[github.com/palakrai573/Jaagruk-app](https://github.com/palakrai573/Jaagruk-app)**.
+
+---
+
+## Use cases
+
+| Setting | Who | What they do |
+|---|---|---|
+| Underground coal mine | Worker | Runs a roof-fall or gas-leak drill in the actual gallery, no signal needed |
+| Steel plant | Supervisor | Scans zone anchors once, exports a JSON bundle that seeds every worker's phone |
+| Mica processing unit | Worker | Reports a dust hazard with a photo and voice note; it queues and syncs later |
+| Confined-space entry | Two workers | Paired buddy drill over WebRTC, scored on coordination |
+| Pit head / gate | DGMS inspector | Scans a certificate QR and verifies it offline with no ledger copy |
+| District office | Safety officer | Hesitation-risk list, hazard triage, chain integrity, statutory CSV export |
+| Shared site tablet | Trainer | Same build as a PWA — no install, no app store |
+
+---
+
+## Advantages
+
+- **Works with the network cable pulled out.** Training, assessment, certification and
+  verification are all fully offline. Zero bytes on every launch after install.
+- **No backend to fund, deploy or secure** for any core path.
+- **Measures hesitation**, which right/wrong scoring structurally cannot see.
+- **Certification reflects today**, not the day the test was passed.
+- **Offline-verifiable certificates** — the whole signed record is in the QR, 383 characters.
+- **Six languages including Ol Chiki**, with a gate that fails the build if a character would
+  render as a box on an offline device.
+- **Degrades instead of blocking**: no camera → 3D scene; no WebGL → flat markers; no gesture
+  model → touch; no compass → manual re-centre.
+- **Honesty is mechanised**, not promised — the Santali warning keys off a verification flag
+  rather than a coverage percentage, and a test fails if the object detector's scope ever
+  silently widens.
+
+---
+
+## Honest limitations
+
+State these before a judge asks.
+
+1. **No depth or SLAM in compass mode, and an anchor has no distance.** Objects do not occlude
+   behind real geometry; nothing survives large translation; an anchor is a ray, so every object
+   is drawn on a ring at a fixed six metres. The overlay never displays a distance figure because
+   it would be fiction. ARCore Depth + Cloud Anchors is the upgrade path.
+2. **No depth occlusion in the WebXR mode either.** `depth-sensing` is requested and whether it
+   was granted is reported on screen, but sampling the depth texture per fragment needs an
+   ARCore device to develop against. The UI says so rather than implying otherwise.
+3. **Magnetometer drift.** Steel plants and mine shafts distort magnetic heading. The app
+   detects low-accuracy compass data and offers manual re-centring, but this is a sensor
+   constraint, not a software one.
+4. **AR requires a secure context (HTTPS).** Browsers do not expose `navigator.mediaDevices` or
+   fire `deviceorientation` on plain HTTP, so serving a dev build to a handset over
+   `http://192.168.x.x:5173` silently loses AR. Detected as `AR_INSECURE_CONTEXT` and named.
+5. **Santali ASR does not exist at production quality.** Commands match a Hindi acoustic model
+   with a fixed lexicon. Santali text and audio output is real; Santali speech *input* is
+   best-effort.
+6. **Santali UI is unverified by a native speaker** — see [Language](#language-and-accessibility).
+7. **No hardware keystore.** Keys are non-extractable Web Crypto handles, not hardware-backed.
+   Clearing site data destroys the device key, which is why records gossip to a second device.
+8. **PIN auth is device-local** and `/admin` is a local PIN, not real authorization.
+9. **The web cannot schedule exact offline alarms.** Refreshers are computed locally and
+   surfaced on app open.
+10. **Buddy drill needs a shared LAN or hotspot.** WebRTC host candidates cannot traverse two
+    unconnected phones the way Nearby Connections' own radio transport can.
+11. **AI hazard scan needs connectivity** and a user-supplied Gemini or OpenAI key. Every other
+    path works fully offline.
+12. **The central sync endpoint is configurable but unimplemented server-side.** This repo ships
+    the client half plus a signed export bundle. There is no DGMS server in this submission.
+13. **Object detection sees people and vehicles only.** EfficientDet-Lite0 is trained on COCO,
+    whose eighty classes do not include `door`, `fire exit`, `fire extinguisher`, `hard hat`,
+    `safety vest` or `forklift`. The scope is *enforced*, not promised: a `categoryAllowlist` is
+    passed to MediaPipe, `classifyLabel()` is a second exact-match gate, and a test **fails if
+    `door` or `helmet` ever becomes classifiable**. Proximity is reported as "close", never in
+    metres, because apparent size depends on the real size of the object and the lens.
+14. **The full precache is ~13 MB brotli**, dominated by two MediaPipe WASM builds. See
+    [Efficiency](#efficiency-and-compression) — the app shell alone is 813 KB.
+
+---
+
+## Future scope
+
+| | |
+|---|---|
+| **Make the vision models an opt-in download** | Cuts first install from ~13 MB to 813 KB brotli; gesture and detection become a deliberate choice rather than a tax on every worker |
+| **ARCore Depth + Persistent Cloud Anchors** | Fixes occlusion, translation and distance in one step |
+| **Depth-sensing occlusion in WebXR** | Requested and reported today; needs a device to develop the per-fragment material |
+| **Native Android shell** | Hardware keystore, AlarmManager exact alarms, Nearby Connections radio transport |
+| **Santali review pass** | `npm run santali:worksheet` already emits the 640 strings and the 332 untranslated drill strings with addressable paths, ordered by consequence |
+| **Custom-trained detector** | Site-specific classes (extinguisher, exit sign, PPE) need a labelled dataset this submission does not have |
+| **DGMS server half** | The client queue, idempotency keys and signed export bundle are done; the receiving endpoint is not |
+| **Server-issued JWTs with RBAC** | Replaces the local-PIN supervisor gate with real authorization |
 
 ---
 
@@ -538,193 +725,45 @@ than relying on colour.
 
 ```bash
 npm install
-npm run dev          # http://localhost:5173
-npm run build
-npm run preview
+npm run dev
 ```
 
-The AI hazard scan needs a free API key (Settings → Gemini or OpenAI). **Everything else works
-without one, and without a network.**
-
-### Checks
-
-```bash
-npm run verify       # every gate below, then the build
-```
-
-| Command | What it checks |
-| --- | --- |
-| `npm run a11y` | 20 structural accessibility and responsive checks over every `.jsx`: accessible names, form labelling, decorative SVG, focus order, reduced-motion escapes, the 320 px width budget, RTL logical properties and mirrored glyphs, live regions, field-tier touch targets, theme-blind colour literals in both `.jsx` and `.css`, heading order, that every colour utility names a token that exists, that nothing removes a focus ring without replacing it, and that no motion duration is written outside the token scale. |
-| `npm run a11y:selftest` | Plants one instance of each fault in a synthetic file and asserts every check catches it. Exists because the first version of the accessible-name check passed a button that had no name — `/<[^>]*>/` stops at the `>` inside `onClick={() => …}`, leaking handler source into what the check read as label text. It has since caught three more checks that could not fail: the reduced-motion check searched a haystack that contained its own answer, the physical-utility check did not know the `pl-[…]` form, and the duration check stopped at the opening quote of every inline style. |
-| `npm run contrast` | Computes WCAG relative luminance and contrast ratios from `tokens.css` — resolving `var()` chains — for **both themes**: ink on all five surfaces, every `*-text` on its own panel and on the page, the button label on brand *and on hover and pressed*, the control border and focus ring at 3:1, and that the elevation ramp has distinct steps. Also fails a raw ISO fill used as a text colour, since `text-hazard` is the sign-matching red and `text-hazard-text` is the legible one. |
-| `npm run contrast:selftest` | Plants a failing token pair and a raw ISO fill, and checks the arithmetic against black-on-white (21:1) and the two identity cases. A contrast gate that cannot fail is a comment with a build step attached. |
-| `npm run i18n` | English text stored in another language's slot; values written in the wrong script; figures dropped in translation (compared across numeral systems, so Bengali ৪ counts as 4); characters outside a shipped font subset, which render as a permanent box offline while failing nothing in the build; fallback chains that do not end in a fully covered language. Self-tests against the four nav labels that historically held English in the Santali slot. |
-| `npm run translit` | Ol Chiki → Devanagari transliteration: 14 hand-derived words, then all 639 Ol Chiki strings in the app, asserting no Ol Chiki survives and no vowel sign is left unattached. |
-| `npm run santali:worksheet` | Regenerates two CSVs. `docs/santali-worksheet.csv` is a **checking** task — all 627 UI strings that already have Ol Chiki, with English and Hindi source and the file to correct each in, ordered by consequence. `docs/santali-scenario-worksheet.csv` is a **writing** task — the 332 drill strings (9 titles, 9 intros, 54 prompts, 130 options, 130 feedback lines) that have no Santali at all, each with an addressable path so a filled-in column can be imported without matching prose by eye. |
-
-**On Santali specifically:** coverage is 100%, verification is 0%. Those are tracked
-separately on purpose — `SANTALI_VERIFIED` in `src/lib/i18nSantali.js` is what the in-app
-notice reads, not the coverage percentage, so reaching 100% does not silence the warning.
-Scenario prose is not machine-authored and resolves to Hindi.
-
-These are static checks. They cannot see rendered layout, so the device matrix in
-`docs/DEPLOYMENT.md` §10 is still required before a demo.
+Open `http://localhost:5173`. The dev server binds all interfaces, so a phone on the same
+network can reach it — but **AR needs HTTPS**, so use `npm run preview` behind a tunnel, or the
+deployed build, to demo the camera overlay.
 
 ### Android
 
 ```bash
-npm run android:sync   # vite build + cap sync android
-npm run android:open   # opens Android Studio
+npm run android:sync
+npm run android:open
 ```
 
-Then **Build → Generate Signed Bundle / APK → APK → release**.
+### Checks
+
+```bash
+npm run verify
+```
 
 ### Testing the buddy drill
 
-Two phones on the same wifi or hotspot: one taps *Start a drill*, the other *Join my buddy*,
-then they scan each other's QR codes. To see it on one machine use *Practise on one device* and
-open a second tab — clearly labelled as practice, not the real two-person exercise.
+Two phones on the same Wi-Fi or hotspot. Open `/buddy` on both, one hosts and shows a QR, the
+other scans it, then scan the answer back. A BroadcastChannel loopback mode is available for a
+single-device demo.
 
 ---
 
 ## Deploy
 
-> **HTTPS is a functional requirement, not a best practice.** `crypto.subtle` is `undefined` on
-> insecure origins, so over plain HTTP certification cannot run at all. Camera, compass, WebRTC
-> and the service worker are gated the same way. `localhost` is exempt; nothing else is.
-
-Because routing is hash-based and the asset base is relative, **no rewrite rules are needed on
-any host** and the same artefact deploys to a domain root, a sub-path, or the Capacitor WebView.
+The build uses `base: './'` and `HashRouter`, so **one artefact deploys anywhere** — a domain
+root, a sub-path like `/jaagruk/` on GitHub Pages, or the Capacitor WebView which serves from
+`https://localhost`.
 
 ```bash
-npm run build
-wrangler pages deploy dist --project-name jaagruk
+npm run build      # -> dist/
 ```
 
-Recommended: **Cloudflare Pages** (free, unlimited bandwidth, strong India PoPs, reads
-`public/_headers`) — or **Firebase Hosting** if you later add a Firebase backend.
-
-Full guide, cache policy, CSP origins, APK signing and an 11-point post-deploy checklist:
-**[`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md)**.
-
----
-
-## Project structure
-
-```
-src/
-├── lib/                     domain logic — pure, no React, no DOM
-│   ├── num.js               strict numeric coercion (see Verification)
-│   ├── idb.js               IndexedDB wrapper, 9 stores, quota handling
-│   ├── crypto.js            SHA-256, canonical JSON, signing ladder
-│   ├── identity.js          device key, PIN hashing, trusted signers
-│   ├── chain.js             hash-chained ledger, QR encode/decode
-│   ├── certificate.js       eligibility on decayed readiness
-│   ├── assessment.js        latency grading, readiness composite
-│   ├── spaced.js            intervals, decay curve
-│   ├── siteMap.js           bearing anchors, AR projection
-│   ├── gesture.js           MediaPipe hand tracking
-│   ├── speech.js            voice I/O, command lexicon
-│   ├── pictograms.jsx       39 ISO 7010 glyphs
-│   ├── scenarios.js         6 modules, 18 timed decisions
-│   ├── scenarioMeta.js      per-step targets, seeded choice shuffle
-│   ├── p2p.js               WebRTC + QR signalling codec
-│   ├── drills.js            buddy drill state machine
-│   ├── hazards.js           reporting, photo/voice compression, triage
-│   ├── sync.js              queue, gossip, export bundle
-│   ├── charts.js            chart geometry, pure
-│   └── i18n*.js             6 languages, runtime coverage
-├── components/              ARDrill · DrillUI · Charts · GestureLayer · PeerSync · QrScanner
-├── pages/                   14 screens
-└── context/                 language provider
-
-docs/
-├── ARCHITECTURE.md          four layers, native mapping, data model, limitations
-├── DEPLOYMENT.md            hosting, HTTPS requirement, APK, checklists
-└── PRESENTATION.md          slide content, demo script, Q&A prep, fact sheet
-```
-
----
-
-## Verification
-
-Domain logic was developed against executable checks covering SHA-256 (cross-checked against
-Node's own implementation including multi-byte UTF-8), RFC 4231 HMAC vectors, chain
-tamper/fork/link detection, QR round-tripping with separator-containing names, latency grading
-boundaries, decay curve boundaries, WebRTC signal compression, buddy-drill state divergence,
-hazard triage transitions, gossip idempotency, and bearing maths across the 359°/0° seam.
-
-**Three bugs it found are worth naming, because all three silently corrupted data:**
-
-| Bug | Effect | Fix |
-|---|---|---|
-| `Number(null) === 0` | A dropped compass reading was stored as a valid bearing of **due north**, putting AR markers in the wrong place | `src/lib/num.js` **allowlists** `number` and `string` rather than blocklisting traps — `Number([])` is also `0` and `Number(true)` is `1`, so the blocklist kept growing |
-| The safe answer was `choices[1]` in **all 18 steps** | A worker who noticed could score 100% without reading, making every readiness figure meaningless | Seeded, render-stable per-attempt shuffle — seeded so buttons never reorder under a worker's thumb mid-decision |
-| `translateScenario` returned a new object each render | Non-English users had feedback narration **silently cancelled** — an effect keyed on it re-ran and cleaned up the speech it had just started | Memoised |
-
-### Reachability
-
-Features that exist but cannot be reached are worse than features that do not exist, so the
-codebase was audited for them. **Two subsystems were built and never wired up**, and both are
-now live: gesture control is mounted in the app shell, and peer-to-peer gossip sync is reachable
-from the Admin panel.
-
-The same audit against the translation dictionary found **six strings defined but never
-rendered — each marking a real gap**, not dead text:
-
-| String | Gap it revealed |
-|---|---|
-| `bd_connecting` | WebRTC negotiation showed "waiting for buddy" for seconds, reading as nothing happening |
-| `as_your_time` / `as_target_time` | The grade pill showed `4.2s / 9s` with no indication which was which |
-| `as_decide_now` | The latency bar changed colour past target but never said so in words |
-| `db_live` | The pulsing refresh indicator had no text alternative |
-| `db_showing` | Filtering the attempt list silently hid rows without saying how many |
-| `ar_turn_around` | Facing entirely the wrong way in AR produced only a small edge chevron |
-
-Twenty-three genuinely dead strings from the pre-rebrand UI were removed. The dictionary now has
-**no unreachable key and no missing reachable key, in any of the six languages.**
-
----
-
-## Honest limitations
-
-Stated here rather than buried, because a judge will ask — and because a system whose weaknesses
-you can name is easier to trust.
-
-1. **No depth or SLAM.** Markers anchor to bearing and elevation, not a 3D mesh. They hold
-   direction as you turn but do not occlude behind real geometry or survive large translation.
-   *ARCore Depth + Cloud Anchors is the upgrade path.*
-2. **Magnetometer drift.** Steel plants and shafts distort magnetic heading. Detected, with
-   manual re-centring offered — but a sensor limit, not a software one.
-3. **No production Santali ASR exists.** Santali text and audio output are real; Santali voice
-   *input* matches a fixed lexicon against a Hindi acoustic model.
-4. **Santali translations are unverified** and need native-speaker review. Flagged in-app.
-5. **PIN is device-local identity, not authorization.** Same for the `/admin` gate. Production
-   needs server-issued credentials with RBAC.
-6. **No hardware keystore.** Keys are non-extractable Web Crypto handles. Clearing site data
-   destroys the device key — hence gossip to a second device.
-7. **Reaction-time baselines are reasoned, not yet measured** against a worker cohort.
-   Deliberately generous, because over-flagging hesitation would erode trust in the flag.
-8. **The web platform cannot wake a closed page on a schedule.** Refreshers surface on app open.
-9. **The buddy drill needs a shared LAN or hotspot.** Nearby Connections can bring up its own
-   radio transport; a browser cannot.
-10. **No DGMS server in this submission.** The client sync half is complete and configurable;
-    the shipped path is a signed export bundle.
-
----
-
-## Roadmap
-
-| Phase | Work | Unlocks |
-|---|---|---|
-| **Pilot** · 0–3 mo | One site, one ITI. Native-speaker Santali review. Measure real reaction times across a cohort. | Calibrated baselines, verified translations |
-| **Harden** · 3–6 mo | DGMS sync server, server-issued credentials with RBAC, hardware-backed keystore | Real authorization, audit-grade key custody |
-| **Anchor** · 6–9 mo | Merkle-root anchoring of the chain to a public or permissioned ledger — hashes only, no PII, one transaction per batch | Public non-repudiation without breaking offline issuance |
-| **Native AR** · 9–12 mo | ARCore Depth + Persistent Cloud Anchors; Nearby Connections pairing | Occlusion, translational tracking, radio-independent pairing |
-
-Calibration and translation review come **first**, deliberately — they are the two things
-currently flagged as unverified, and you cannot harden a system whose baselines you have not
-measured.
+See `docs/DEPLOYMENT.md` for the HTTPS requirement, headers and tunnel options.
 
 ---
 
@@ -732,17 +771,19 @@ measured.
 
 | Document | Contents |
 |---|---|
-| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | The four layers, native→web mapping with an honest fidelity column, data model, offline write path, §9 limitations |
-| [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) | Why HTTPS is functional not optional, host comparison, cache policy, CSP origins, APK signing, post-deploy checklist, failure table |
-| [`docs/PRESENTATION.md`](docs/PRESENTATION.md) | Slide-by-slide deck with speaker notes, 12-step demo script, prepared Q&A, diagram sources, fact sheet |
+| `docs/ARCHITECTURE.md` | Full architecture, native mapping, data model, 14 stated limitations |
+| `docs/DEPLOYMENT.md` | HTTPS, headers, sub-path and Capacitor notes |
+| `docs/OFFLINE_VISION.md` | How the vision assets are pinned and verified |
+| `docs/WEB_SYNC_CONTRACT.md` | The sync payload contract the server half would implement |
+| `docs/JURY_SCRIPT.md` | Demo walkthrough |
+| `docs/santali-worksheet.csv` | All 640 strings for native-speaker review |
+| `docs/santali-scenario-worksheet.csv` | 332 untranslated drill strings with addressable paths |
 
 ---
 
 <div align="center">
 
-**Not "trained in March." Aware today.**
-
-*A certificate says a worker was trained. Jaagruk says whether he is ready — and it can tell
-you that this morning, on a phone, with no signal.*
+**Built for Jharkhand's mines, steel plants and mica units.**
+Works with the network cable pulled out.
 
 </div>

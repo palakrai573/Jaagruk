@@ -211,7 +211,7 @@ export default function Refresher() {
           <button
             type="button"
             onClick={closeQuiz}
-            className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary hover:text-hazard-text"
+            className="font-mono text-2xs uppercase tracking-widest text-ink-tertiary hover:text-hazard-text"
           >
             {t('cancel_label')}
           </button>
@@ -355,7 +355,7 @@ export default function Refresher() {
                 <div className="min-w-0">
                   <p className="font-bold text-sm">{entry.domain}</p>
                   {entry.overdueDays >= 1 && (
-                    <p className="font-mono text-[11px] text-hazard-text mt-0.5">
+                    <p className="font-mono text-2xs text-hazard-text mt-0.5">
                       {t('rf_overdue_by')} {Math.floor(entry.overdueDays)} {t('rf_days')}
                     </p>
                   )}
@@ -392,7 +392,7 @@ export default function Refresher() {
             ))}
           </div>
 
-          <p className="font-mono text-[10px] text-ink-tertiary mt-3">
+          <p className="font-mono text-2xs text-ink-tertiary mt-3">
             {t('rf_next_in')}: {INTERVALS_DAYS.join(' / ')} {t('rf_days')}
           </p>
         </section>
@@ -422,7 +422,7 @@ export default function Refresher() {
           </button>
         )}
 
-        <p className="text-[11px] text-ink-tertiary leading-relaxed max-w-xl">{t('rf_web_limit')}</p>
+        <p className="text-2xs text-ink-tertiary leading-relaxed max-w-xl">{t('rf_web_limit')}</p>
       </section>
     </div>
   )
@@ -439,7 +439,7 @@ function RetentionRow({ row, t, onStart }) {
     <div className="p-4 flex items-center justify-between gap-4 flex-wrap">
       <div className="min-w-0 flex-1">
         <p className="font-bold text-sm truncate">{row.domain}</p>
-        <p className="font-mono text-[10px] text-ink-tertiary mt-1">
+        <p className="font-mono text-2xs text-ink-tertiary mt-1">
           {!row.attempted && t('rf_never_trained')}
           {row.attempted && row.due && <span className="text-hazard-text">{t('rf_due_now')}</span>}
           {row.attempted && !row.due && row.daysUntil !== null && (
@@ -456,7 +456,7 @@ function RetentionRow({ row, t, onStart }) {
           {row.attempted ? `${effective}%` : '—'}
         </span>
         {decayed && (
-          <p className="font-mono text-[10px] text-ink-tertiary">
+          <p className="font-mono text-2xs text-ink-tertiary">
             {t('db_decayed_from')} {row.baseReadiness}%
           </p>
         )}
@@ -466,7 +466,7 @@ function RetentionRow({ row, t, onStart }) {
         <button
           type="button"
           onClick={onStart}
-          className="font-mono text-[10px] uppercase tracking-widest border border-line-subtle rounded px-3 py-2 text-ink-tertiary hover:border-brand hover:text-brand-text shrink-0"
+          className="font-mono text-2xs uppercase tracking-widest border border-line-subtle rounded px-3 py-2 text-ink-tertiary hover:border-brand hover:text-brand-text shrink-0"
         >
           {t('rf_start')}
         </button>

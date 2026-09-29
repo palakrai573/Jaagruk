@@ -116,7 +116,7 @@ export default function QrScanner({ onResult, height = 260, hint }) {
 
       {!ready && (
         <div className="absolute inset-0 flex items-center justify-center">
-          <p className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary">{t('ar_starting')}</p>
+          <p className="font-mono text-2xs uppercase tracking-widest text-ink-tertiary">{t('ar_starting')}</p>
         </div>
       )}
 
@@ -125,7 +125,7 @@ export default function QrScanner({ onResult, height = 260, hint }) {
         <div className="border-2 border-brand rounded-lg" style={{ width: height * 0.6, height: height * 0.6 }} />
       </div>
 
-      <p className="absolute bottom-2 inset-x-0 text-center font-mono text-[10px] text-ink pointer-events-none">
+      <p className="absolute bottom-2 inset-x-0 text-center font-mono text-2xs text-ink pointer-events-none">
         {hint || t('bd_scan_now')}
       </p>
     </div>

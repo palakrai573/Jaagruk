@@ -120,7 +120,7 @@ export default class ErrorBoundary extends Component {
             <summary className="cursor-pointer px-4 py-3 font-mono text-xs text-ink-secondary min-h-[44px] flex items-center">
               Details
             </summary>
-            <pre className="px-4 pb-4 font-mono text-[10px] leading-relaxed text-ink-tertiary whitespace-pre-wrap break-words">
+            <pre className="px-4 pb-4 font-mono text-2xs leading-relaxed text-ink-tertiary whitespace-pre-wrap break-words">
               {String(error?.message || error)}
               {this.componentStack ? `\n${this.componentStack.trim()}` : ''}
             </pre>

@@ -85,7 +85,7 @@ export function CardHeader({ eyebrow, title, subtitle, status, icon, className =
           <p className="font-mono text-2xs uppercase tracking-[0.18em] text-brand-text mb-1.5">{eyebrow}</p>
         ) : null}
         {title ? (
-          <h3 className="font-display font-bold text-xl uppercase leading-tight text-ink text-balance">{title}</h3>
+          <h3 className="font-display font-bold text-xl leading-tight text-ink text-balance">{title}</h3>
         ) : null}
         {subtitle ? <p className="text-sm text-ink-tertiary mt-1">{subtitle}</p> : null}
       </div>

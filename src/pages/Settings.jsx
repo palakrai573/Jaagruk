@@ -134,7 +134,7 @@ export default function Settings() {
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <div>
               <p className="font-bold">{worker.name}</p>
-              <p className="font-mono text-[10px] text-ink-tertiary mt-0.5">
+              <p className="font-mono text-2xs text-ink-tertiary mt-0.5">
                 {worker.role === ROLE.SUPERVISOR ? t('site_eyebrow') : t('nav_train')}
                 {worker.phone && ` · ${worker.phone}`}
               </p>
@@ -222,17 +222,17 @@ export default function Settings() {
         </div>
 
         {/* Measured coverage, not a claim */}
-        <p className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary mb-2">{t('st_voice_check')}</p>
+        <p className="font-mono text-2xs uppercase tracking-widest text-ink-tertiary mb-2">{t('st_voice_check')}</p>
         <div className="space-y-1.5">
           {coverage.map((c) => {
             const voice = voices.find((v) => v.lang === c.code)
             return (
-              <div key={c.code} className="flex items-center justify-between gap-3 text-[11px]">
+              <div key={c.code} className="flex items-center justify-between gap-3 text-2xs">
                 <span className="text-ink-tertiary min-w-0 truncate">{c.label}</span>
                 <span className="flex items-center gap-3 shrink-0 font-mono">
                   <span style={{ color: c.percent >= 92 ? 'rgb(var(--safe-text))' : 'rgb(var(--warning-text))' }}>{c.percent}%</span>
                   <span
-                    className="text-[10px]"
+                    className="text-2xs"
                     style={{ color: voice?.available ? 'rgb(var(--safe-text))' : 'rgb(var(--text-tertiary))' }}
                   >
                     {voice?.available
@@ -261,13 +261,13 @@ export default function Settings() {
           the device itself defaults to. If the first entry is the one in use, Hindi
           recognition is working; if not, the drill says so while it is running.
         */}
-        <p className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary mt-5 mb-2">
+        <p className="font-mono text-2xs uppercase tracking-widest text-ink-tertiary mt-5 mb-2">
           {t('st_asr_check')}
         </p>
         {!recognitionSupported ? (
-          <p className="font-mono text-[11px] text-warning-text">{t('as_UNSUPPORTED')}</p>
+          <p className="font-mono text-2xs text-warning-text">{t('as_UNSUPPORTED')}</p>
         ) : (
-          <p className="font-mono text-[11px] text-ink-tertiary leading-relaxed">
+          <p className="font-mono text-2xs text-ink-tertiary leading-relaxed">
             {/* A middot rather than an arrow. An arrow carries a direction that has to
                 mirror for Urdu, and the order here is already conveyed by position and
                 stated in the hint below — so a neutral separator is simply correct
@@ -277,7 +277,7 @@ export default function Settings() {
               .join(' · ')}
           </p>
         )}
-        <p className="font-mono text-[10px] text-ink-tertiary mt-1.5 leading-relaxed">
+        <p className="font-mono text-2xs text-ink-tertiary mt-1.5 leading-relaxed">
           {t('st_asr_offline_hint')}
         </p>
 
@@ -287,7 +287,7 @@ export default function Settings() {
           all — so "I installed it, went offline, and the fix is not there" could mean
           either a bug or a stale copy, with no way to tell them apart on the device.
         */}
-        <p className="font-mono text-[10px] text-ink-tertiary mt-4">
+        <p className="font-mono text-2xs text-ink-tertiary mt-4">
           {t('st_build')}: <span className="text-ink-secondary">{__BUILD_STAMP__}</span>
         </p>
       </Panel>
@@ -342,14 +342,14 @@ export default function Settings() {
           <div className="bg-hazard/10 border border-hazard/40 rounded p-3 mb-4 flex items-start gap-3">
             <Pictogram name="warning" size={20} />
             <div>
-              <p className="text-[11px] text-ink-tertiary leading-relaxed mb-2">{t('db_storage_temp')}</p>
+              <p className="text-2xs text-ink-tertiary leading-relaxed mb-2">{t('db_storage_temp')}</p>
               <button
                 type="button"
                 onClick={async () => {
                   await requestPersistence()
                   refresh()
                 }}
-                className="font-mono text-[10px] uppercase text-brand-text underline"
+                className="font-mono text-2xs uppercase text-brand-text underline"
               >
                 {t('retry_label')}
               </button>
@@ -376,7 +376,7 @@ export default function Settings() {
 
         <label
           htmlFor={endpointId}
-          className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary block mb-2"
+          className="font-mono text-2xs uppercase tracking-widest text-ink-tertiary block mb-2"
         >
           {t('set_endpoint_label')}
         </label>
@@ -464,9 +464,9 @@ function Toggle({ pictogram, label, hint, on, onToggle, disabled, disabledReason
 
       <div className="min-w-0 flex-1">
         <p className="font-bold text-sm">{label}</p>
-        <p className="text-[11px] text-ink-tertiary mt-1 leading-relaxed">{hint}</p>
+        <p className="text-2xs text-ink-tertiary mt-1 leading-relaxed">{hint}</p>
         {disabled && disabledReason && (
-          <p className="text-[11px] text-hazard-text mt-1.5 leading-relaxed">{disabledReason}</p>
+          <p className="text-2xs text-hazard-text mt-1.5 leading-relaxed">{disabledReason}</p>
         )}
       </div>
 
@@ -475,7 +475,7 @@ function Toggle({ pictogram, label, hint, on, onToggle, disabled, disabledReason
         onClick={disabled ? undefined : onToggle}
         disabled={disabled}
         aria-pressed={on}
-        className={`shrink-0 font-mono text-[10px] uppercase tracking-widest rounded px-3 py-2 border ${
+        className={`shrink-0 font-mono text-2xs uppercase tracking-widest rounded px-3 py-2 border ${
           on ? 'border-brand text-brand-text bg-brand-subtle' : 'border-line-subtle text-ink-tertiary'
         } ${disabled ? 'opacity-40 cursor-default' : ''}`}
       >
@@ -488,7 +488,7 @@ function Toggle({ pictogram, label, hint, on, onToggle, disabled, disabledReason
 function Row({ label, value, warn }) {
   return (
     <div className="flex items-center justify-between gap-3 text-xs">
-      <span className="font-mono text-[10px] uppercase tracking-widest text-ink-tertiary">{label}</span>
+      <span className="font-mono text-2xs uppercase tracking-widest text-ink-tertiary">{label}</span>
       <span className={`font-mono ${warn ? 'text-hazard-text' : 'text-ink'}`}>{value}</span>
     </div>
   )

@@ -280,7 +280,7 @@ export default function Dashboard() {
         <div className="flex items-center gap-3 shrink-0">
           {loadedAt > 0 && (
             <span
-              className="font-mono text-[10px] text-ink-tertiary flex items-center gap-1.5"
+              className="font-mono text-2xs text-ink-tertiary flex items-center gap-1.5"
               aria-live="polite"
             >
               <span
@@ -296,7 +296,7 @@ export default function Dashboard() {
             type="button"
             onClick={() => load(true)}
             disabled={refreshing}
-            className="font-mono text-[10px] uppercase tracking-widest border border-line-subtle rounded px-3 py-2 text-ink-tertiary hover:border-brand hover:text-brand-text disabled:opacity-50"
+            className="font-mono text-2xs uppercase tracking-widest border border-line-subtle rounded px-3 py-2 text-ink-tertiary hover:border-brand hover:text-brand-text disabled:opacity-50"
           >
             {t('db_refresh')}
           </button>
@@ -397,7 +397,7 @@ export default function Dashboard() {
                   <DecayCurve points={decayPoints} width={276} height={110} threshold={PASS_THRESHOLD} />
                   <Link
                     to="/refresher"
-                    className="inline-block mt-4 bg-brand text-ink-onBrand font-bold text-[11px] uppercase px-4 py-2 rounded"
+                    className="inline-block mt-4 bg-brand text-ink-onBrand font-bold text-2xs uppercase px-4 py-2 rounded"
                   >
                     {t('rf_start')}
                   </Link>
@@ -423,7 +423,7 @@ export default function Dashboard() {
                     ]}
                   />
                   {distribution.slow > 0 && (
-                    <p className="text-[11px] text-ink-tertiary mt-4 leading-relaxed">{t('as_hesitation_body')}</p>
+                    <p className="text-2xs text-ink-tertiary mt-4 leading-relaxed">{t('as_hesitation_body')}</p>
                   )}
                 </>
               ) : (
@@ -508,7 +508,7 @@ export default function Dashboard() {
             {/* Without this, filtering silently hides rows with no explanation of
                 how many were dropped. */}
             {modeFilter !== 'all' && attempts.length > 0 && (
-              <p className="font-mono text-[10px] text-ink-tertiary mb-3" aria-live="polite">
+              <p className="font-mono text-2xs text-ink-tertiary mb-3" aria-live="polite">
                 {t('db_showing')} {filteredAttempts.length} / {attempts.length}
               </p>
             )}
@@ -537,7 +537,7 @@ export default function Dashboard() {
                         <p className="font-bold text-sm">
                           {entry.type === 'scan' ? t('dash_hazard_scan') : t('dash_scenario_training')}
                         </p>
-                        <p className="font-mono text-[10px] text-ink-tertiary">
+                        <p className="font-mono text-2xs text-ink-tertiary">
                           <RelativeTime timestamp={entry.timestamp} /> · {t('as_grade_unknown')}
                         </p>
                       </div>
@@ -555,7 +555,7 @@ export default function Dashboard() {
         </>
       )}
 
-      <p className="font-mono text-[10px] text-ink-tertiary text-center mt-12 leading-relaxed">
+      <p className="font-mono text-2xs text-ink-tertiary text-center mt-12 leading-relaxed">
         {t('db_all_local')}
         {pending > 0 && ` · ${pending} ${t('db_pending_sync')}`}
       </p>
@@ -574,7 +574,7 @@ function Panel({ title, hint, children, delay = 0, className = '' }) {
       style={{ animationDelay: `${delay}ms` }}
     >
       <h2 className="font-display font-bold text-lg uppercase leading-tight mb-1">{title}</h2>
-      {hint && <p className="text-[11px] text-ink-tertiary mb-4 leading-relaxed">{hint}</p>}
+      {hint && <p className="text-2xs text-ink-tertiary mb-4 leading-relaxed">{hint}</p>}
       {children}
     </section>
   )
@@ -597,7 +597,7 @@ function NoData({ t }) {
   return (
     <div className="py-10 text-center">
       <Pictogram name="warning" size={30} className="mx-auto mb-3 opacity-40" />
-      <p className="font-mono text-[11px] text-ink-tertiary">{t('db_no_data')}</p>
+      <p className="font-mono text-2xs text-ink-tertiary">{t('db_no_data')}</p>
     </div>
   )
 }
@@ -608,7 +608,7 @@ function FilterChip({ active, onClick, label, count }) {
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`shrink-0 font-mono text-[10px] uppercase tracking-widest rounded-full px-3 py-1.5 border transition-colors ${
+      className={`shrink-0 font-mono text-2xs uppercase tracking-widest rounded-full px-3 py-1.5 border transition-colors ${
         active ? 'border-brand bg-brand-subtle text-brand-text' : 'border-line-subtle text-ink-tertiary hover:border-brand'
       }`}
     >
@@ -631,7 +631,7 @@ function DomainRow({ row, series, t }) {
     <div className="px-5 py-4 flex items-center gap-4 flex-wrap row-hover">
       <div className="min-w-0 flex-1">
         <p className="font-bold text-sm truncate">{row.domain}</p>
-        <p className="font-mono text-[10px] text-ink-tertiary mt-1">
+        <p className="font-mono text-2xs text-ink-tertiary mt-1">
           {!row.attempted && t('rf_never_trained')}
           {row.attempted && row.lastPassAt > 0 && (
             <>
@@ -700,7 +700,7 @@ function AttemptRow({ attempt, t, expanded, onToggle }) {
               {SCENARIO_TITLE[attempt.scenarioId] || attempt.domain || attempt.scenarioId}
             </span>
           </p>
-          <p className="font-mono text-[10px] text-ink-tertiary mt-0.5">
+          <p className="font-mono text-2xs text-ink-tertiary mt-0.5">
             <RelativeTime timestamp={attempt.at} />
             {' · '}
             {t(MODE_LABEL[attempt.mode] || 'db_mode_solo')}
@@ -743,7 +743,7 @@ function AttemptRow({ attempt, t, expanded, onToggle }) {
             {attempt.steps.map((step, i) => (
               <div key={step.stepId || i} className="flex items-center gap-3">
                 <Pictogram name={step.correct ? 'correct' : 'incorrect'} size={16} />
-                <span className="font-mono text-[10px] text-ink-tertiary w-16 shrink-0">
+                <span className="font-mono text-2xs text-ink-tertiary w-16 shrink-0">
                   {t('sc_decision')} {i + 1}
                 </span>
 
@@ -759,7 +759,7 @@ function AttemptRow({ attempt, t, expanded, onToggle }) {
                 </div>
 
                 <span
-                  className="font-mono text-[10px] shrink-0 w-20 text-end"
+                  className="font-mono text-2xs shrink-0 w-20 text-end"
                   style={{ color: gradeTextColor(step.grade) }}
                 >
                   {step.latencyMs ? formatLatency(step.latencyMs) : '—'}
