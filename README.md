@@ -20,6 +20,12 @@ Department of Higher & Technical Education
 
 </div>
 
+## Kotlin Android App
+
+**[View the Jaagruk Kotlin App on GitHub](https://github.com/palakrai573/Jaagruk-app)**
+
+The native Kotlin Android app is maintained in a separate repository. This repository contains the Jaagruk web application.
+
 ---
 
 ## Contents
