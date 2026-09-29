@@ -37,18 +37,14 @@
  *
  * LOADING AND FAILURE
  *
- * Same strategy as gesture.js, for the same reasons: MediaPipe is fetched from CDN
- * at runtime rather than bundled, the model bytes are cached in IndexedDB so it
- * works offline from the second run onward, and every failure degrades to "no
- * detection" with an honest status. Nothing in the app is reachable only through
- * this module.
+ * Runtime, WASM and models ship locally and are precached at installation.
+ * Inference failures degrade to an explicit unavailable status. Nothing in the
+ * app is reachable only through this module.
  */
 
 import { STORE, idbGet, idbPut } from './idb.js'
 import { clamp, toNumberOr } from './num.js'
-
-const VISION_MODULE_URL = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.18/vision_bundle.mjs'
-const WASM_BASE_URL = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.18/wasm'
+import { VISION_WASM_ROOT as WASM_BASE_URL, OBJECT_MODEL_URL as MODEL_URL } from './visionAssets.js'
 
 /*
  * The int8 model, not float16: 4.4 MB against 6.9 MB. This is going to a phone on
@@ -56,9 +52,6 @@ const WASM_BASE_URL = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10
  * is immaterial for "is there a person in frame". The smaller model also runs
  * faster on the CPU delegate, which is where mid-range Android ends up.
  */
-const MODEL_URL =
-  'https://storage.googleapis.com/mediapipe-models/object_detector/efficientdet_lite0/int8/1/efficientdet_lite0.tflite'
-
 const MODEL_CACHE_ID = 'efficientdet_lite0_int8_v1'
 
 export const VISION_STATUS = {
@@ -135,8 +128,7 @@ let detectorPromise = null
 
 function loadVisionModule() {
   if (visionModulePromise) return visionModulePromise
-  // @vite-ignore: deliberately a runtime CDN URL, not a bundled dependency.
-  visionModulePromise = import(/* @vite-ignore */ VISION_MODULE_URL).catch((err) => {
+  visionModulePromise = import('@mediapipe/tasks-vision').catch((err) => {
     visionModulePromise = null
     throw err
   })

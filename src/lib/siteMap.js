@@ -809,13 +809,16 @@ function mapCameraError(err) {
  *
  * Throws an Error whose message is a CAMERA_ERROR code.
  */
-export async function openRearCamera() {
+export async function openRearCamera(deviceId = '') {
   // Checked before the API test, because an insecure context is why the API is
   // missing. Reporting the absent API first sends someone hunting a browser bug.
   if (!secureContext()) throw new Error(CAMERA_ERROR.INSECURE_CONTEXT)
   if (!navigator.mediaDevices?.getUserMedia) throw new Error(CAMERA_ERROR.UNSUPPORTED)
 
-  const attempts = [
+  // An explicitly selected USB/lens device must not silently switch to another.
+  const attempts = deviceId ? [
+    { video: { deviceId: { exact: deviceId }, width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false },
+  ] : [
     { video: { facingMode: { exact: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false },
     { video: { facingMode: 'environment' }, audio: false },
     { video: true, audio: false },

@@ -16,6 +16,7 @@ import { enqueue, SYNC_KIND } from '../lib/sync.js'
 import { LS, lsGetBool, lsGetBoolOrNull, lsSetBool } from '../lib/local.js'
 import SafetyScene3D from '../components/SafetyScene3D.jsx'
 import { actionForChoice } from '../lib/sceneAction.js'
+import { useDecisionClock } from '../lib/useDecisionClock.js'
 import ARDrill from '../components/ARDrill.jsx'
 import Pictogram from '../lib/pictograms.jsx'
 import { ChoiceCard, LatencyBar, FeedbackPanel, ReadinessRing, VoiceButton } from '../components/DrillUI.jsx'
@@ -113,26 +114,12 @@ export default function Scenario() {
   const [feedbackLatency, setFeedbackLatency] = useState(0)
   const [aiCoaching, setAiCoaching] = useState('')
   const [aiLoading, setAiLoading] = useState(false)
+  const coachingGeneration = useRef(0)
   const [finished, setFinished] = useState(false)
   const [result, setResult] = useState(null)
   const [saveNote, setSaveNote] = useState(null)
 
-  /*
-   * TWO timestamps, because a reader and a listener receive the question at
-   * different moments and neither should be penalised for the other's channel.
-   *
-   *   stepShownAt    the step appeared and could be READ
-   *   clockStartedAt narration of the prompt and every option FINISHED, so a
-   *                  listener now knows the situation. Null until then.
-   *
-   * Latency measures from clockStartedAt when it exists, and from stepShownAt when
-   * the worker answers before narration finished — which a literate worker legitimately
-   * can. Measuring from clockStartedAt only would have handed anyone who read ahead a
-   * latency of zero; measuring from stepShownAt only is the old bug, where every
-   * worker was charged for the seconds the phone spent talking.
-   */
-  const [stepShownAt, setStepShownAt] = useState(() => Date.now())
-  const [clockStartedAt, setClockStartedAt] = useState(null)
+  // Timing is owned by useDecisionClock, including narration and interruptions.
   const [aimedThisStep, setAimedThisStep] = useState(false)
 
   /* ---------------- presentation modes ---------------- */
@@ -159,6 +146,8 @@ export default function Scenario() {
    * error panel.
    */
   const [arMode, setArMode] = useState(() => shouldUseAr(lsGetBoolOrNull(LS.MODE_AR)))
+  const [arReady, setArReady] = useState(false)
+  const [sceneReady, setSceneReady] = useState(false)
   const [zone, setZone] = useState(null)
   const [zones, setZones] = useState([])
 
@@ -167,7 +156,14 @@ export default function Scenario() {
   const arBlock = useMemo(() => arBlocker(), [])
 
   const step = scenario?.steps?.[stepIndex] || null
+  useEffect(() => {
+    coachingGeneration.current += 1
+    setAiCoaching('')
+    setAiLoading(false)
+    return () => { coachingGeneration.current += 1 }
+  }, [id, step?.id, lang])
   const totalSteps = scenario?.steps?.length || 0
+  const decisionClock = useDecisionClock(`${scenario?.id}:${step?.id}:${lang}`, !finished && !feedback && (arMode ? arReady : sceneReady))
 
   /* ---------------- AR zone ---------------- */
 
@@ -265,9 +261,8 @@ export default function Scenario() {
   // not an enhancement, so it always runs.
   useEffect(() => {
     if (!step || finished) return undefined
-    setStepShownAt(Date.now())
-    setClockStartedAt(null)
     setAimedThisStep(false)
+    let active = true
 
     const spoken = spokenPrompt(step)
 
@@ -288,11 +283,11 @@ export default function Scenario() {
      */
     const token = speak(spoken, spokenIn, {
       interrupt: true,
-      onEnd: () => setClockStartedAt(Date.now()),
+      onEnd: () => { if (active) decisionClock.narrationEnded() },
     })
-    if (!token) setClockStartedAt(Date.now())
+    if (!token) decisionClock.narrationEnded()
 
-    return () => stopSpeaking(token)
+    return () => { active = false; stopSpeaking(token) }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step?.id, lang, spokenIn])
 
@@ -304,14 +299,16 @@ export default function Scenario() {
     // Repeating does not restart the clock. A worker who asks to hear it again has
     // already had the situation described once; resetting the timer would make
     // "say that again" a way to buy unlimited thinking time.
-    speak(spokenPrompt(step), spokenIn)
-  }, [step, spokenIn])
+    speak(spokenPrompt(step), spokenIn, { onEnd: decisionClock.narrationEnded })
+  }, [step, spokenIn, decisionClock.narrationEnded])
 
   /* ---------------- answering ---------------- */
 
   const choose = useCallback(
     async (choice) => {
       if (!step || feedback) return
+      const timing = decisionClock.read()
+      if (!timing.ready) return
       /*
        * A ref guard as well as the state guard above, because the state one is not
        * enough against voice.
@@ -326,9 +323,8 @@ export default function Scenario() {
       if (answeredStepRef.current === step.id) return
       answeredStepRef.current = step.id
 
-      // See the note on the two timestamps above: whichever moment the worker
-      // actually received the question from.
-      const latencyMs = Date.now() - (clockStartedAt || stepShownAt)
+      // Use the same interruption-aware measurement shown by the timer.
+      const latencyMs = timing.elapsedMs
       const grade = gradeLatency(latencyMs, step.targetMs)
       const safe = choice.points >= step.maxPoints
 
@@ -349,6 +345,8 @@ export default function Scenario() {
       speak(choice.feedback, spokenIn)
 
       if (getApiKey()) {
+        const generation = ++coachingGeneration.current
+        const isCurrent = () => generation === coachingGeneration.current
         setAiLoading(true)
         try {
           const context = `You are a firm but encouraging industrial safety trainer for mining and manufacturing workers in India. Keep responses to 2 short sentences, plain language, practical tone. Respond in ${langName(lang)}.`
@@ -357,16 +355,16 @@ export default function Scenario() {
             : 'They answered incorrectly.'
           const msg = `Scenario: ${scenario.title}. Situation: "${step.prompt}" Worker chose: "${choice.text}" (${safe ? 'a safe choice' : 'an unsafe choice'}). ${timing} Give one short additional coaching tip specific to this situation.`
           const aiText = await askTrainer(context, [{ role: 'user', content: msg }])
-          setAiCoaching(aiText)
+          if (isCurrent()) setAiCoaching(aiText)
         } catch {
           // Coaching is a bonus layer. A failed call must not interrupt the drill.
-          setAiCoaching('')
+          if (isCurrent()) setAiCoaching('')
         } finally {
-          setAiLoading(false)
+          if (isCurrent()) setAiLoading(false)
         }
       }
     },
-    [step, feedback, clockStartedAt, stepShownAt, lang, spokenIn, scenario]
+    [step, feedback, decisionClock.read, lang, spokenIn, scenario]
   )
 
   /* ---------------- finishing ---------------- */
@@ -418,6 +416,8 @@ export default function Scenario() {
   )
 
   const next = useCallback(() => {
+    coachingGeneration.current += 1
+    setAiLoading(false)
     setFeedback(null)
     setFeedbackGrade(null)
     setFeedbackLatency(0)
@@ -786,6 +786,7 @@ export default function Scenario() {
       {/* Visual stage: real camera when AR is on, hand-built 3D scene otherwise */}
       {arMode ? (
         <ARDrill
+          onReadyChange={setArReady}
           anchors={arAnchors}
           mode={step?.aim && !feedback ? 'aim' : 'view'}
           targetTypes={step?.aim?.types || scenario.arTargets}
@@ -818,7 +819,7 @@ export default function Scenario() {
           )}
         </ARDrill>
       ) : (
-        <SafetyScene3D scenarioId={scenario.id} action={sceneAction} />
+        <SafetyScene3D scenarioId={scenario.id} action={sceneAction} onReadyChange={setSceneReady} />
       )}
 
       {/* border-s / ps, not border-l / pl — the rule mirrors for Urdu. */}
@@ -849,10 +850,8 @@ export default function Scenario() {
         </button>
       </div>
 
-      {/* startedAt is null until narration ends, and LatencyBar already renders a
-          still, zeroed bar in that case — so the worker sees the timer waiting for
-          the question to finish rather than already running against them. */}
-      {!feedback && <LatencyBar startedAt={clockStartedAt} targetMs={step.targetMs} />}
+      {/* Render the same monotonic active time used for scoring. */}
+      {!feedback && <LatencyBar elapsedMs={decisionClock.narrated ? decisionClock.elapsedMs : 0} targetMs={step.targetMs} paused={!decisionClock.ready} />}
 
       {/* Choices */}
       {!feedback && (
@@ -866,6 +865,7 @@ export default function Scenario() {
                 pictogram={choice.pictogram}
                 pictogramMode={pictogramMode}
                 onSelect={() => choose(choice)}
+                disabled={!decisionClock.ready}
               />
             ))}
           </div>
@@ -881,7 +881,7 @@ export default function Scenario() {
             <VoiceButton
               choiceCount={step.choices.length}
               onCommand={onVoiceCommand}
-              ready={clockStartedAt !== null}
+              ready={decisionClock.ready && decisionClock.narrated}
               className="mt-4"
             />
           )}

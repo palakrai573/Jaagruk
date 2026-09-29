@@ -43,8 +43,8 @@ export const FONT_STACK = {
     body: "'Inter', 'Noto Sans Devanagari', system-ui, sans-serif",
   },
   olchiki: {
-    display: "'Barlow Condensed', 'Noto Sans Ol Chiki', system-ui, sans-serif",
-    body: "'Inter', 'Noto Sans Ol Chiki', system-ui, sans-serif",
+    display: "'Barlow Condensed', 'Noto Sans Ol Chiki', 'Noto Sans Devanagari', system-ui, sans-serif",
+    body: "'Inter', 'Noto Sans Ol Chiki', 'Noto Sans Devanagari', system-ui, sans-serif",
   },
   bengali: {
     display: "'Barlow Condensed', 'Noto Sans Bengali', system-ui, sans-serif",
@@ -75,6 +75,9 @@ const LOADERS = {
   olchiki: () => [
     import('@fontsource/noto-sans-ol-chiki/ol-chiki-400.css'),
     import('@fontsource/noto-sans-ol-chiki/ol-chiki-700.css'),
+    // Missing Santali content resolves to Hindi, including offline drills.
+    import('@fontsource/noto-sans-devanagari/devanagari-400.css'),
+    import('@fontsource/noto-sans-devanagari/devanagari-700.css'),
   ],
   bengali: () => [
     import('@fontsource/noto-sans-bengali/bengali-400.css'),

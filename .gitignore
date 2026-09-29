@@ -1,6 +1,9 @@
 node_modules
 dist
 dist-ssr
+public/vision/
+test-results/
+playwright-report/
 *.local
 .DS_Store
 

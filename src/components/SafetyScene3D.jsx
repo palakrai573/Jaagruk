@@ -1,6 +1,7 @@
-import { Suspense, createContext, useContext, useRef, useMemo } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
+import { Suspense, createContext, useContext, useRef, useMemo, useEffect } from 'react'
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { OrbitControls, Html, ContactShadows } from '@react-three/drei'
+import { DoubleSide } from 'three'
 import { usePrefersReducedMotion } from './ui/motion.js'
 import { SCENE_ACTION, resolvesHazard, escalatesHazard } from '../lib/sceneAction.js'
 
@@ -1319,16 +1320,57 @@ function Scene({ scenarioId }) {
  *                worker has answered. Driving the scene from the chosen answer is
  *                what turns this from a rotating diagram into a simulation.
  */
-export default function SafetyScene3D({ scenarioId, action = null }) {
+function ResponsiveSceneCamera() {
+  const camera = useThree(state => state.camera)
+  const aspect = useThree(state => state.size.width / state.size.height)
+  useEffect(() => {
+    // Keep at least a 60-degree horizontal view on portrait phones.
+    camera.fov = Math.max(45, Math.min(90, 2 * Math.atan(Math.tan(Math.PI / 6) / aspect) * 180 / Math.PI))
+    camera.updateProjectionMatrix()
+  }, [camera, aspect])
+  return null
+}
+
+function SceneReadiness({ onReadyChange }) {
+  const frames = useRef(0)
+  const lost = useRef(false)
+  const gl = useThree(state => state.gl)
+  useEffect(() => {
+    frames.current = 0
+    lost.current = false
+    onReadyChange?.(false)
+    const onLost = event => {
+      event.preventDefault()
+      lost.current = true
+      frames.current = 0
+      onReadyChange?.(false)
+    }
+    const onRestored = () => { lost.current = false; frames.current = 0 }
+    const canvas = gl.domElement
+    canvas.addEventListener('webglcontextlost', onLost)
+    canvas.addEventListener('webglcontextrestored', onRestored)
+    return () => {
+      canvas.removeEventListener('webglcontextlost', onLost)
+      canvas.removeEventListener('webglcontextrestored', onRestored)
+      onReadyChange?.(false)
+    }
+  }, [gl, onReadyChange])
+  useFrame(() => {
+    if (lost.current || gl.getContext().isContextLost()) return
+    // The second frame confirms the first scene render has completed.
+    if (++frames.current === 2) onReadyChange?.(true)
+  })
+  return null
+}
+
+export default function SafetyScene3D({ scenarioId, action = null, onReadyChange }) {
   return (
     <div
       style={{
         width: '100%',
         height: '420px',
         marginBottom: '24px',
-        borderRadius: '12px',
         overflow: 'hidden',
-        border: '1px solid #444',
         /* A gradient rather than a flat fill, so the floor fades into the backdrop
            instead of meeting it at a hard visible line. CSS, so it costs nothing
            on the GPU that is already drawing the scene. */
@@ -1345,27 +1387,15 @@ export default function SafetyScene3D({ scenarioId, action = null }) {
            the pixels for a briefing diagram that gains nothing from it. */
         dpr={[1, 1.75]}
       >
+        <ResponsiveSceneCamera />
         <Suspense fallback={null}>
           <SceneActionContext.Provider value={action}>
             <Scene scenarioId={scenarioId} />
+            <SceneReadiness onReadyChange={onReadyChange} />
           </SceneActionContext.Provider>
         </Suspense>
       </Canvas>
 
-      <div
-        style={{
-          position: 'absolute',
-          bottom: '10px',
-          left: '0',
-          right: '0',
-          textAlign: 'center',
-          color: '#cccccc',
-          fontSize: '12px',
-          pointerEvents: 'none',
-        }}
-      >
-        Drag to rotate • Scroll to zoom
-      </div>
     </div>
   )
 }

@@ -63,7 +63,7 @@ export default defineConfig({
         // Precache the whole app shell. Training, assessment, certification and
         // verification all have to work with no network at all — that is the
         // core requirement, not a nice-to-have.
-        globPatterns: ['**/*.{js,css,html,png,svg,woff2}'],
+        globPatterns: ['**/*.{js,css,html,png,svg,woff2}', 'vision/**/*.{wasm,task,tflite,json}'],
 
         // ...but not every script's fonts.
         //
@@ -81,9 +81,8 @@ export default defineConfig({
           '**/noto-sans-oriya-*.woff2',
           '**/noto-nastaliq-urdu-*.woff2',
         ],
-        // The three-panel dashboard plus three.js pushes the bundle past the
-        // default 2 MB precache ceiling.
-        maximumFileSizeToCacheInBytes: 6 * 1024 * 1024,
+        // Each offline WASM variant is about 9 MB; neither may be silently skipped.
+        maximumFileSizeToCacheInBytes: 12 * 1024 * 1024,
         cleanupOutdatedCaches: true,
         navigateFallback: 'index.html',
         runtimeCaching: [
@@ -101,29 +100,6 @@ export default defineConfig({
             options: {
               cacheName: 'jaagruk-fonts',
               expiration: { maxEntries: 24, maxAgeSeconds: 60 * 60 * 24 * 365 },
-              cacheableResponse: { statuses: [0, 200] },
-            },
-          },
-          {
-            // MediaPipe runtime, WASM and models — now TWO models sharing this
-            // cache: the hand landmarker for gesture control and the object
-            // detector for person/vehicle detection. Both sets of model bytes are
-            // additionally cached in IndexedDB by gesture.js and vision.js, so
-            // this entry is the secondary layer; it is what makes the runtime and
-            // WASM available offline.
-            //
-            // maxEntries was raised from 12 when the second model landed. The
-            // runtime bundle plus its WASM variants plus two models is already
-            // most of a dozen, and a CacheFirst eviction would surface as a
-            // feature that worked yesterday and cannot initialise on a phone with
-            // no signal.
-            urlPattern: ({ url }) =>
-              url.href.includes('cdn.jsdelivr.net/npm/@mediapipe') ||
-              url.href.includes('storage.googleapis.com/mediapipe-models'),
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'jaagruk-mediapipe',
-              expiration: { maxEntries: 24, maxAgeSeconds: 60 * 60 * 24 * 180 },
               cacheableResponse: { statuses: [0, 200] },
             },
           },

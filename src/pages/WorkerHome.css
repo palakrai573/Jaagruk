@@ -1,0 +1,9 @@
+.worker-home,
+.worker-home * {
+  letter-spacing: 0;
+}
+
+.worker-home a > span {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}

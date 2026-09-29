@@ -32,6 +32,7 @@ import {
 } from './chain.js'
 import { listHazards, mergeHazards, toTransport } from './hazards.js'
 import { listAllAttempts } from './assessment.js'
+import { acceptedSyncHashes, retryableSyncStatus, syncRetryDelay } from './syncReceipt.js'
 
 export const SYNC_KIND = {
   CERT: 'cert',
@@ -81,7 +82,8 @@ export function setSyncEndpoint(url) {
   }
 
   const isLocal = parsed.hostname === 'localhost' || parsed.hostname === '127.0.0.1'
-  if (parsed.protocol !== 'https:' && !isLocal) return { ok: false, error: 'ENDPOINT_NOT_HTTPS' }
+  if (parsed.protocol !== 'https:' && !(isLocal && parsed.protocol === 'http:')) return { ok: false, error: 'ENDPOINT_NOT_HTTPS' }
+  if (parsed.username || parsed.password) return { ok: false, error: 'ENDPOINT_INVALID' }
 
   lsSet(LS.SYNC_ENDPOINT, parsed.toString())
   return { ok: true, url: parsed.toString() }
@@ -144,7 +146,7 @@ export async function queueStats() {
   let stuck = 0
   for (const row of rows) {
     if (byKind[row.kind] !== undefined) byKind[row.kind] += 1
-    if (row.attempts >= MAX_ATTEMPTS) stuck += 1
+    if (row.permanent && row.attempts >= MAX_ATTEMPTS) stuck += 1
   }
   return {
     total: rows.length,
@@ -215,17 +217,27 @@ export async function rebuildQueue({ siteId = null } = {}) {
  * POST queued records to the configured endpoint.
  *
  * Failure handling distinguishes the two cases that matter:
- *   - 4xx means the server rejected the content. Retrying will not help, so the
- *     entry is marked and dropped after the attempt cap rather than looping.
- *   - 5xx / network means try again later. The entry stays queued.
+ *   - Non-retryable 4xx eventually need an explicit supervisor retry.
+ *   - Network, auth and transient HTTP failures back off without exhausting retries.
+ *   - Only an exact per-record durable receipt removes an entry. Nothing is dropped
+ *     merely because the HTTP request returned 200.
  */
-export async function pushToEndpoint({ onProgress } = {}) {
+let activePush = null
+
+export function pushToEndpoint(options = {}) {
+  if (activePush) return activePush
+  activePush = pushBatchToEndpoint(options).finally(() => { activePush = null })
+  return activePush
+}
+
+async function pushBatchToEndpoint({ onProgress, retryFailed = false } = {}) {
   const endpoint = getSyncEndpoint()
   if (!endpoint) return { status: SYNC_STATUS.NO_ENDPOINT, sent: 0, remaining: (await queueStats()).total }
   if (!isOnline()) return { status: SYNC_STATUS.OFFLINE, sent: 0, remaining: (await queueStats()).total }
 
-  const queue = (await listQueue()).filter((row) => row.attempts < MAX_ATTEMPTS)
-  if (!queue.length) return { status: SYNC_STATUS.DONE, sent: 0, remaining: 0 }
+  const all = await listQueue()
+  const queue = all.filter(row => retryFailed || (!(row.permanent && row.attempts >= MAX_ATTEMPTS) && (row.nextAttemptAt || 0) <= Date.now()))
+  if (!queue.length) return { status: all.length ? SYNC_STATUS.PARTIAL : SYNC_STATUS.DONE, sent: 0, remaining: all.length }
 
   let sent = 0
   let failed = 0
@@ -245,6 +257,7 @@ export async function pushToEndpoint({ onProgress } = {}) {
 
     let response = null
     let networkError = false
+    let receipt = null
     const controller = typeof AbortController !== 'undefined' ? new AbortController() : null
     const timer = controller ? setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS) : null
 
@@ -259,18 +272,22 @@ export async function pushToEndpoint({ onProgress } = {}) {
         },
         body: JSON.stringify(body),
         signal: controller?.signal,
+        redirect: 'error',
       })
+      if (response.ok) {
+        try { receipt = await response.json() } catch { /* No receipt means no acknowledgement. */ }
+      }
     } catch {
       networkError = true
     } finally {
       if (timer) clearTimeout(timer)
     }
 
-    const ok = !networkError && response && response.ok
-    const permanent = !networkError && response && response.status >= 400 && response.status < 500
+    const accepted = !networkError && response?.ok ? acceptedSyncHashes(receipt, batch) : new Set()
+    const permanent = !networkError && response && response.status >= 400 && response.status < 500 && !retryableSyncStatus(response.status)
 
     for (const row of batch) {
-      if (ok) {
+      if (accepted.has(row.contentHash)) {
         // eslint-disable-next-line no-await-in-loop
         await idbDelete(STORE.SYNC_QUEUE, row.id)
         sent += 1
@@ -281,9 +298,10 @@ export async function pushToEndpoint({ onProgress } = {}) {
         await idbPut(STORE.SYNC_QUEUE, {
           ...row,
           attempts,
-          lastError: networkError ? 'NETWORK' : `HTTP_${response?.status ?? 0}`,
+          lastError: networkError ? 'NETWORK' : response?.ok ? 'NOT_ACKNOWLEDGED' : `HTTP_${response?.status ?? 0}`,
           permanent: !!permanent,
           lastAttemptAt: Date.now(),
+          nextAttemptAt: Date.now() + syncRetryDelay(attempts),
         })
       }
     }
@@ -298,6 +316,7 @@ export async function pushToEndpoint({ onProgress } = {}) {
   let status = SYNC_STATUS.DONE
   if (failed && sent) status = SYNC_STATUS.PARTIAL
   else if (failed && !sent) status = SYNC_STATUS.FAILED
+  else if (remaining) status = SYNC_STATUS.PARTIAL
 
   return { status, sent, failed, remaining }
 }
@@ -628,13 +647,24 @@ export function registerAutoSync({ onResult } = {}) {
   autoSyncBound = true
 
   let running = false
+  let disposed = false
+  let timer = null
+  const schedule = delay => {
+    if (disposed) return
+    clearTimeout(timer)
+    timer = setTimeout(attempt, delay)
+  }
 
   const attempt = async () => {
-    if (running || !isOnline() || !getSyncEndpoint()) return
+    if (disposed || running || !isOnline() || !getSyncEndpoint()) return
     running = true
     try {
       const result = await pushToEndpoint()
-      if (result.sent > 0 || result.status === SYNC_STATUS.FAILED) onResult?.(result)
+      if (!disposed && (result.sent > 0 || result.status === SYNC_STATUS.FAILED)) onResult?.(result)
+      if (result.remaining > 0) {
+        const rows = (await listQueue()).filter(row => !(row.permanent && row.attempts >= MAX_ATTEMPTS))
+        if (rows.length) schedule(Math.max(1000, Math.min(...rows.map(row => row.nextAttemptAt || Date.now())) - Date.now()))
+      }
     } catch {
       /* nothing useful to do; the queue keeps the records */
     } finally {
@@ -644,7 +674,7 @@ export function registerAutoSync({ onResult } = {}) {
 
   const onOnline = () => {
     // Give the connection a moment to actually be usable.
-    setTimeout(attempt, 1500)
+    schedule(1500)
   }
   const onVisible = () => {
     if (!document.hidden) attempt()
@@ -652,9 +682,11 @@ export function registerAutoSync({ onResult } = {}) {
 
   window.addEventListener('online', onOnline)
   document.addEventListener('visibilitychange', onVisible)
-  setTimeout(attempt, 3000)
+  schedule(3000)
 
   return () => {
+    disposed = true
+    clearTimeout(timer)
     window.removeEventListener('online', onOnline)
     document.removeEventListener('visibilitychange', onVisible)
     autoSyncBound = false

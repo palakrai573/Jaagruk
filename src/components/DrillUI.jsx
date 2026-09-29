@@ -137,13 +137,13 @@ export function ChoiceCard({
  * The 120ms LINEAR transition in `.latency-bar` is deliberate and must stay
  * linear: an easing curve on a countdown misrepresents how much time is left.
  */
-export function LatencyBar({ startedAt, targetMs, paused = false }) {
+export function LatencyBar({ startedAt, targetMs, paused = false, elapsedMs }) {
   const { t } = useLanguage()
   const [elapsed, setElapsed] = useState(0)
   const frameRef = useRef(null)
 
   useEffect(() => {
-    if (!startedAt || paused) return undefined
+    if (elapsedMs !== undefined || !startedAt || paused) return undefined
 
     const tick = () => {
       setElapsed(Date.now() - startedAt)
@@ -155,12 +155,14 @@ export function LatencyBar({ startedAt, targetMs, paused = false }) {
       if (frameRef.current !== null) cancelAnimationFrame(frameRef.current)
       frameRef.current = null
     }
-  }, [startedAt, paused])
+  }, [startedAt, paused, elapsedMs])
+
+  const measured = elapsedMs === undefined ? elapsed : elapsedMs
 
   const target = toNumberOr(targetMs, 0) > 0 ? toNumberOr(targetMs, 0) : DEFAULT_TARGET_MS
-  const ratio = Math.min(1, elapsed / target)
-  const over = elapsed > target
-  const wayOver = elapsed > target * 2
+  const ratio = Math.min(1, measured / target)
+  const over = measured > target
+  const wayOver = measured > target * 2
 
   // Fill uses the ISO hue; the numeral beside it uses the text variant, which is
   // the pair that survives both themes.
@@ -171,13 +173,13 @@ export function LatencyBar({ startedAt, targetMs, paused = false }) {
     <div className="mb-4" aria-hidden="true">
       <div className="flex items-center justify-between gap-3 mb-1.5">
         <span className="font-mono text-2xs uppercase tracking-widest text-ink-tertiary">
-          {over ? <span className="text-hazard-text font-bold">{t('as_decide_now')}</span> : t('as_time_pressure')}
+          {paused ? t('as_time_paused') : over ? <span className="text-hazard-text font-bold">{t('as_decide_now')}</span> : t('as_time_pressure')}
         </span>
         {/* The elapsed number means nothing without the target beside it. Showing
             both is what turns the bar into feedback rather than a stopwatch. */}
         <span className="font-mono text-xs text-ink-tertiary tabular-nums whitespace-nowrap">
           <span style={{ color: textColor }} className="font-bold">
-            {formatLatency(elapsed)}
+            {formatLatency(measured)}
           </span>
           <span className="opacity-60"> / {formatLatency(target)}</span>
         </span>

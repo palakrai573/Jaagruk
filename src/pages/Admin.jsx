@@ -357,7 +357,7 @@ function Console({ t, onLock }) {
   }
 
   const syncNow = async () => {
-    const result = await pushToEndpoint()
+    const result = await pushToEndpoint({ retryFailed: true })
     if (result.status === SYNC_STATUS.NO_ENDPOINT) flash('error', 'ad_sync_no_endpoint')
     else if (result.status === SYNC_STATUS.OFFLINE) flash('error', 'ad_sync_offline')
     else if (result.status === SYNC_STATUS.FAILED) flash('error', 'ad_sync_failed')

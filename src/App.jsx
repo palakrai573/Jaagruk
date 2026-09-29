@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Routes, Route, NavLink, useLocation } from 'react-router-dom'
 import Home from './pages/Home.jsx'
+import WorkerHome from './pages/WorkerHome.jsx'
 import HazardScan from './pages/HazardScan.jsx'
 import Scenario from './pages/Scenario.jsx'
 import ScenarioList from './pages/ScenarioList.jsx'
@@ -163,7 +164,7 @@ export default function App() {
         className="border-b border-line-subtle sticky top-0 bg-surface-0/90 backdrop-blur-md z-sticky
                    pt-[var(--safe-t)] pl-[var(--safe-l)] pr-[var(--safe-r)]"
       >
-        <div className="max-w-5xl mx-auto px-5 h-16 flex items-center justify-between gap-4">
+        <div className="max-w-5xl mx-auto px-3 sm:px-5 h-16 flex items-center justify-between gap-2 sm:gap-4">
           {/* Wordmark only — no tagline.
               With the tagline the widest language (English) came to 970px against
               984px usable: it fitted, but on 14px of headroom, which is inside the
@@ -176,7 +177,7 @@ export default function App() {
             </span>
           </NavLink>
 
-          <div className="flex items-center gap-3 min-w-0">
+          <div className="flex items-center gap-1 sm:gap-3 min-w-0">
             <nav className="hidden md:flex gap-1 font-mono text-sm">
               {PRIMARY_NAV.map((item) => (
                 <NavLink
@@ -257,7 +258,8 @@ export default function App() {
         */}
         <ErrorBoundary key={location.pathname}>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<WorkerHome />} />
+          <Route path="/about" element={<Home />} />
           <Route path="/start" element={<Onboarding />} />
           <Route path="/scan" element={<HazardScan />} />
           <Route path="/train" element={<ScenarioList />} />
@@ -461,9 +463,12 @@ function SessionChip({ worker, t }) {
     return (
       <NavLink
         to="/start"
+        aria-label={t('nav_start')}
+        title={t('nav_start')}
         className="font-mono text-2xs uppercase tracking-widest border border-line-subtle rounded-md px-2.5 min-h-[40px] flex items-center text-ink-tertiary hover:border-brand hover:text-brand-text transition-colors duration-fast whitespace-nowrap"
       >
-        {t('nav_start')}
+        <span className="sm:hidden"><Pictogram name="ppe" size={18} /></span>
+        <span className="hidden sm:inline">{t('nav_start')}</span>
       </NavLink>
     )
   }
@@ -473,9 +478,10 @@ function SessionChip({ worker, t }) {
       to="/start"
       className="flex items-center gap-2 border border-line-subtle rounded-md px-2.5 min-h-[40px] hover:border-brand transition-colors duration-fast max-w-[140px]"
       title={worker.name}
+      aria-label={worker.name}
     >
       <Pictogram name={worker.role === ROLE.SUPERVISOR ? 'report_it' : 'ppe'} size={16} />
-      <span className="font-mono text-2xs text-ink truncate">{worker.name}</span>
+      <span className="hidden sm:inline font-mono text-2xs text-ink truncate">{worker.name}</span>
     </NavLink>
   )
 }

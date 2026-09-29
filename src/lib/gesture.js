@@ -5,21 +5,14 @@
 // usable at the actual job. Pointing and pinching in the air is not a garnish
 // here, it is the difference between the app being used and being abandoned.
 //
-// LOADING STRATEGY: MediaPipe is fetched from CDN at runtime rather than
-// bundled. Three reasons: the app bundle is already large, gesture control is
-// strictly optional, and a missing/failed dependency must never be able to
-// break the build or the core training path. The model bytes are cached in
-// IndexedDB on first successful load, so it works offline from then on.
+// Runtime, WASM and models ship with the offline installation. IndexedDB keeps
+// an additional model cache; touch input remains available if inference fails.
 //
 // EVERY failure degrades to touch input with an honest status message. Nothing
 // in the app is reachable only by gesture.
 
 import { STORE, idbGet, idbPut } from './idb.js'
-
-const VISION_MODULE_URL = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.18/vision_bundle.mjs'
-const WASM_BASE_URL = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.18/wasm'
-const MODEL_URL =
-  'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task'
+import { VISION_WASM_ROOT as WASM_BASE_URL, HAND_MODEL_URL as MODEL_URL } from './visionAssets.js'
 
 const MODEL_CACHE_ID = 'hand_landmarker_float16_v1'
 
@@ -80,9 +73,7 @@ let landmarkerPromise = null
 
 function loadVisionModule() {
   if (visionModulePromise) return visionModulePromise
-  // @vite-ignore keeps Vite from trying to resolve this at build time — it is
-  // deliberately a runtime CDN URL, not a bundled dependency.
-  visionModulePromise = import(/* @vite-ignore */ VISION_MODULE_URL).catch((err) => {
+  visionModulePromise = import('@mediapipe/tasks-vision').catch((err) => {
     visionModulePromise = null
     throw err
   })

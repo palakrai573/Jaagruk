@@ -189,6 +189,8 @@ const AR = {
   ar_camera_in_use: { en: 'The camera is being used by another app. Close it and try again.', hi: 'कैमरा दूसरे ऐप में चल रहा है। उसे बंद करके फिर कोशिश करें।', bn: 'ক্যামেরা অন্য অ্যাপে ব্যবহৃত হচ্ছে। বন্ধ করে আবার চেষ্টা করুন।', or: 'କ୍ୟାମେରା ଅନ୍ୟ ଆପରେ ବ୍ୟବହୃତ ହେଉଛି। ବନ୍ଦ କରି ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ।', ur: 'کیمرہ دوسری ایپ میں استعمال ہو رہا ہے۔ بند کر کے دوبارہ کوشش کریں۔' },
   ar_camera_unsupported: { en: 'This browser cannot open the camera.', hi: 'यह ब्राउज़र कैमरा नहीं खोल सकता।', bn: 'এই ব্রাউজার ক্যামেরা খুলতে পারে না।', or: 'ଏହି ବ୍ରାଉଜର କ୍ୟାମେରା ଖୋଲିପାରିବ ନାହିଁ।', ur: 'یہ براؤزر کیمرہ نہیں کھول سکتا۔' },
   ar_camera_unknown: { en: 'The camera could not start.', hi: 'कैमरा शुरू नहीं हो सका।', bn: 'ক্যামেরা চালু হতে পারেনি।', or: 'କ୍ୟାମେରା ଆରମ୍ଭ ହୋଇପାରିଲା ନାହିଁ।', ur: 'کیمرہ شروع نہیں ہو سکا۔' },
+  ar_interrupted: { en: 'Camera feed interrupted. Assessment paused.', hi: 'कैमरे की तस्वीर रुक गई है। मूल्यांकन रुका हुआ है।' },
+  as_time_paused: { en: 'Timer paused', hi: 'समय मापना रुका हुआ है' },
   ar_retry: { en: 'Retry camera', hi: 'कैमरा फिर आज़माएं', bn: 'ক্যামেরা আবার চেষ্টা', or: 'କ୍ୟାମେରା ପୁଣି', ur: 'کیمرہ دوبارہ' },
 
   // Why the camera view is unavailable, stated per cause rather than as one

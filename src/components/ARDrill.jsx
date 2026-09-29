@@ -14,6 +14,7 @@ import {
 } from '../lib/siteMap.js'
 import { webglSupported } from '../lib/arSupport.js'
 import { visionCapable } from '../lib/vision.js'
+import { monitorVideoReadiness } from '../lib/videoReadiness.js'
 import Pictogram from '../lib/pictograms.jsx'
 import { useLanguage } from '../context/LanguageContext.jsx'
 
@@ -99,6 +100,7 @@ export default function ARDrill({
   aimToleranceDeg = 14,
   aimHoldMs = 1200,
   onAimComplete,
+  onReadyChange,
   onFallback,
   // Exposes the live camera bearing/elevation to the parent. Site Setup needs it
   // to record where the supervisor is pointing when they drop an anchor, and
@@ -125,13 +127,21 @@ export default function ARDrill({
   const aimStartRef = useRef(0)
   const aimFiredRef = useRef(false)
   const mountedRef = useRef(true)
+  const cameraGenerationRef = useRef(0)
+  const stopVideoMonitorRef = useRef(null)
+  const selectedCameraRef = useRef('')
   // Held in a ref so a parent passing an inline arrow function does not restart
   // the render loop on every one of its own renders.
   const onViewRef = useRef(onView)
   onViewRef.current = onView
+  const onAimCompleteRef = useRef(onAimComplete)
+  onAimCompleteRef.current = onAimComplete
 
   const [cameraError, setCameraError] = useState(null)
   const [cameraReady, setCameraReady] = useState(false)
+  const [cameraHadFrames, setCameraHadFrames] = useState(false)
+  const [cameras, setCameras] = useState([])
+  const [selectedCamera, setSelectedCamera] = useState('')
   const [orientationStatus, setOrientationStatus] = useState(ORIENTATION_STATUS.IDLE)
   const [headingSource, setHeadingSource] = useState(HEADING_SOURCE.NONE)
   const [needsGesture, setNeedsGesture] = useState(orientationNeedsPermission())
@@ -154,32 +164,69 @@ export default function ARDrill({
   /* ---------------- camera ---------------- */
 
   const startCamera = useCallback(async () => {
+    const generation = ++cameraGenerationRef.current
+    const current = () => mountedRef.current && generation === cameraGenerationRef.current
+    setCameraReady(false)
+    setCameraHadFrames(false)
+    stopVideoMonitorRef.current?.()
+    stopVideoMonitorRef.current = null
+    stopStream(streamRef.current)
+    streamRef.current = null
     setCameraError(null)
     try {
-      const stream = await openRearCamera()
-      if (!mountedRef.current) {
+      const stream = await openRearCamera(selectedCameraRef.current)
+      if (!current()) {
         stopStream(stream)
         return
       }
       streamRef.current = stream
+      const actualDevice = stream.getVideoTracks()[0]?.getSettings?.().deviceId || ''
+      selectedCameraRef.current = actualDevice
+      setSelectedCamera(actualDevice)
+      navigator.mediaDevices.enumerateDevices?.().then(devices => {
+        if (current()) setCameras(devices.filter(device => device.kind === 'videoinput'))
+      }).catch(() => {})
       const video = videoRef.current
       if (!video) {
         stopStream(stream)
         return
       }
       video.srcObject = stream
+      stopVideoMonitorRef.current = monitorVideoReadiness(video, ready => {
+        if (current()) {
+          setCameraReady(ready)
+          if (ready) setCameraHadFrames(true)
+        }
+      })
+      for (const track of stream.getVideoTracks()) {
+        track.onended = () => {
+          if (current()) { setCameraReady(false); setCameraError(CAMERA_ERROR.NOT_FOUND) }
+        }
+      }
       try {
         await video.play()
       } catch {
         // Autoplay refused. The stream is live but nothing will render, so this
         // is a real failure rather than something to ignore.
-        if (mountedRef.current) setCameraError(CAMERA_ERROR.UNKNOWN)
+        stopStream(stream)
+        if (current()) setCameraError(CAMERA_ERROR.UNKNOWN)
         return
       }
-      if (mountedRef.current) setCameraReady(true)
+      if (!current()) { stopStream(stream); return }
     } catch (err) {
-      if (mountedRef.current) setCameraError(err?.message || CAMERA_ERROR.UNKNOWN)
+      if (current()) setCameraError(err?.message || CAMERA_ERROR.UNKNOWN)
     }
+  }, [])
+
+  useEffect(() => {
+    const refresh = async () => {
+      try {
+        const devices = await navigator.mediaDevices?.enumerateDevices?.()
+        if (mountedRef.current && devices) setCameras(devices.filter(device => device.kind === 'videoinput'))
+      } catch { /* Existing camera and fallback remain usable. */ }
+    }
+    navigator.mediaDevices?.addEventListener?.('devicechange', refresh)
+    return () => navigator.mediaDevices?.removeEventListener?.('devicechange', refresh)
   }, [])
 
   /* ---------------- orientation ---------------- */
@@ -221,6 +268,9 @@ export default function ARDrill({
 
     return () => {
       mountedRef.current = false
+      cameraGenerationRef.current += 1
+      stopVideoMonitorRef.current?.()
+      stopVideoMonitorRef.current = null
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current)
       trackerRef.current?.stop()
       trackerRef.current = null
@@ -286,6 +336,11 @@ export default function ARDrill({
     () => visibleAnchors.filter((a) => !targetTypes || targetTypes.includes(a.type)),
     [visibleAnchors, targetTypes]
   )
+  const interactionReady = cameraReady && !cameraError && portrait && orientationStatus === ORIENTATION_STATUS.ACTIVE
+  useEffect(() => {
+    onReadyChange?.(interactionReady)
+    return () => onReadyChange?.(false)
+  }, [interactionReady, onReadyChange])
 
   useEffect(() => {
     // Reset aim state whenever the task changes, so a new step doesn't inherit
@@ -307,6 +362,11 @@ export default function ARDrill({
       setView(current)
       onViewRef.current?.({ ...current, headingSource, hFov: fov.hFov, vFov: fov.vFov })
 
+      if (!interactionReady || document.hidden) {
+        aimStartRef.current = 0
+        setAimProgress(0)
+        return
+      }
       if (mode !== 'aim' || aimFiredRef.current) return
 
       const viewport = { ...current, hFov: fov.hFov, vFov: fov.vFov }
@@ -334,7 +394,7 @@ export default function ARDrill({
 
       if (progress >= 1) {
         aimFiredRef.current = true
-        onAimComplete?.(closest.anchor)
+        onAimCompleteRef.current?.(closest.anchor)
       }
     }
 
@@ -344,7 +404,7 @@ export default function ARDrill({
       rafRef.current = null
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode, targetAnchors, fov.hFov, fov.vFov, aimToleranceDeg, aimHoldMs, onAimComplete])
+  }, [mode, targetAnchors, fov.hFov, fov.vFov, aimToleranceDeg, aimHoldMs, interactionReady])
 
   /* ---------------- derived ---------------- */
 
@@ -407,10 +467,8 @@ export default function ARDrill({
 
   /* ---------------- error state ---------------- */
 
-  if (cameraError) {
-    return (
-      <ARShell height={height}>
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 gap-3">
+  const errorPanel = cameraError ? (
+        <div role="status" className="absolute inset-0 z-50 bg-black flex flex-col items-center justify-center text-center px-6 gap-3">
           <Pictogram name="warning" size={44} />
           <p className="font-display font-bold text-xl uppercase">{t('ar_unavailable')}</p>
           <p className="text-white/70 text-sm max-w-sm">{t(CAMERA_ERROR_KEYS[cameraError] || 'ar_camera_unknown')}</p>
@@ -433,9 +491,7 @@ export default function ARDrill({
             )}
           </div>
         </div>
-      </ARShell>
-    )
-  }
+    ) : null
 
   /* ---------------- live view ---------------- */
 
@@ -453,10 +509,36 @@ export default function ARDrill({
         className="absolute inset-0 w-full h-full object-cover"
         aria-hidden="true"
       />
+      {errorPanel}
+      {cameras.length > 1 && (
+        <select
+          aria-label={t('ar_use_ar')}
+          value={selectedCamera}
+          onChange={event => {
+            selectedCameraRef.current = event.target.value
+            setSelectedCamera(event.target.value)
+            startCamera()
+          }}
+          className="absolute bottom-2 left-2 z-50 max-w-[220px] min-h-[44px] bg-black text-white border border-white/30 rounded px-2 text-xs"
+        >
+          {!cameras.some(camera => camera.deviceId === selectedCamera) && <option value="">{t('ar_use_ar')}</option>}
+          {cameras.map((camera, index) => <option key={camera.deviceId} value={camera.deviceId}>{camera.label || `${t('ar_use_ar')} ${index + 1}`}</option>)}
+        </select>
+      )}
 
-      {!cameraReady && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black">
-          <p className="font-mono text-xs text-white/70 uppercase tracking-widest">{t('ar_starting')}</p>
+      {!cameraReady && !cameraError && (
+        <div role="status" className="absolute inset-0 z-40 flex flex-col gap-4 items-center justify-center bg-black">
+          <p className="font-mono text-xs text-white/70 text-center px-4">{t(cameraHadFrames ? 'ar_interrupted' : 'ar_starting')}</p>
+          {cameraHadFrames && (
+            <button onClick={startCamera} className="border border-white/30 rounded px-4 min-h-[44px] font-mono text-xs text-white">
+              {t('ar_retry')}
+            </button>
+          )}
+          {onFallback && (
+            <button onClick={onFallback} className="bg-[#FFB020] text-[#101315] font-bold text-xs px-4 py-3 rounded">
+              {t('ar_use_3d')}
+            </button>
+          )}
         </div>
       )}
 
