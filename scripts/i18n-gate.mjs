@@ -166,9 +166,9 @@ console.log('\n=== 5. EVERY GLYPH IS IN A SHIPPED FONT SUBSET ===')
 const SUBSET = {
   hi: [[0x0900, 0x097f]],
   sat: [[0x1c50, 0x1c7f], [0x0900, 0x097f]], // fonts.js also loads Hindi fallback
-  bn: [[0x0980, 0x09ff]],
-  or: [[0x0b00, 0x0b7f]],
-  ur: [[0x0600, 0x06ff], [0xfb50, 0xfdff], [0xfe70, 0xfeff]],
+  bn: [[0x0980, 0x09ff], [0x0900, 0x097f]], // fonts.js also loads Hindi fallback
+  or: [[0x0b00, 0x0b7f], [0x0900, 0x097f]], // fonts.js also loads Hindi fallback
+  ur: [[0x0600, 0x06ff], [0xfb50, 0xfdff], [0xfe70, 0xfeff], [0x0900, 0x097f]], // fonts.js also loads Hindi fallback
 }
 // Punctuation and marks that come with the Latin subset.
 const SHARED = new Set([

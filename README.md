@@ -17,7 +17,7 @@ Department of Higher & Technical Education
 ![Offline](https://img.shields.io/badge/Offline-first-2E7D4F?style=flat-square)
 ![Backend](https://img.shields.io/badge/Backend-none_required-2E7D4F?style=flat-square)
 ![Languages](https://img.shields.io/badge/Languages-6-FFB020?style=flat-square)
-![Tests](https://img.shields.io/badge/tests-376_passing-2E7D4F?style=flat-square)
+![Tests](https://img.shields.io/badge/tests-377_passing-2E7D4F?style=flat-square)
 ![Gates](https://img.shields.io/badge/quality_gates-4-2E7D4F?style=flat-square)
 
 </div>
@@ -71,7 +71,7 @@ Every screenshot below is the running app at **412 × 915** — a Pixel-class An
 | [Offline model](#offline-model) · [Security](#security-and-integrity) | The guarantees |
 | [Efficiency and compression](#efficiency-and-compression) | **Measured numbers** |
 | [Native comparison](#native-reference-vs-this-implementation) · [Use cases](#use-cases) | The context |
-| [Quick start](#quick-start) · [Verification](#verification) | Running it |
+| [Quick start](#quick-start) · [Verification](#verification) · [Licence](#licence) | Running it |
 | [Advantages](#advantages) · [Limitations](#honest-limitations) · [Future scope](#future-scope) | The honesty |
 
 ---
@@ -170,6 +170,11 @@ Android that is ARCore, giving real 6DoF tracking and hit-test placement with a 
 distance. Cross-device persistence uses a printed marker and two taps rather than Cloud
 Anchors, so a zone scanned in XR still works on a phone that cannot run XR.
 
+**The XR mode runs in Chrome, not in the APK.** Android WebView — which is what a Capacitor
+APK renders in — has never implemented WebXR, so inside the APK `navigator.xr` is absent,
+`webxr.js` reports it, and the drill runs the compass mode instead. Same app, same zones,
+same scoring; only the tracking tier differs. Install the PWA from Chrome to get the XR tier.
+
 Also in this layer: **MediaPipe hand tracking** (point to aim, pinch to confirm, 1.2 s dwell
 fallback for gloved hands), **voice I/O** as a first-class parallel input, and a **zero-text
 pictogram mode** where every step and choice renders as ISO 7010-style inline SVG with audio
@@ -261,7 +266,7 @@ flowchart TB
     subgraph PER["Persistence · on device only"]
         IDB[("IndexedDB 'jaagruk'<br/>9 stores")]
         LS[("localStorage<br/>settings")]
-        SW["Service worker<br/>43 precache entries"]
+        SW["Service worker<br/>46 precache entries"]
     end
 
     UI --> DOM
@@ -322,17 +327,17 @@ and they must render offline.
 
 ```
 src/
-  lib/          41 files · 17,303 lines   domain logic, pure, no DOM
-  pages/        16 files ·  8,435 lines   one file per route
-  components/   27 files ·  7,946 lines   AR, 3D, charts, UI primitives
+  lib/          41 files · 17,324 lines   domain logic, pure, no DOM
+  pages/        16 files ·  8,465 lines   one file per route
+  components/   27 files ·  7,966 lines   AR, 3D, charts, UI primitives
   context/       1 file  ·     53 lines   language provider
   styles/        1 file  ·    337 lines   design tokens
-tests/          21 files ·  4,717 lines   376 tests, node:test
+tests/          21 files ·  4,734 lines   377 tests, node:test
 scripts/         7 files ·  1,861 lines   a11y, contrast, i18n, translit gates
 docs/                                     architecture, deployment, jury script
 ```
 
-**Total application source: 86 files, 34,074 lines.**
+**Total application source: 86 files, 34,145 lines.**
 
 ---
 
@@ -404,8 +409,8 @@ inspecting `dist/`. Gzip is level 9; brotli is Node's default quality.
 
 ```
                                raw                                      brotli
-app + domain logic         ████████████████████████████████████  924.1 KiB
-             → brotli      ████████                              201.2 KiB   ▼ 78%
+app + domain logic         ████████████████████████████████████  926.8 KiB
+             → brotli      ████████                              202.5 KiB   ▼ 78%
 
 three.js renderer (lazy)   ████████████████████████████████      833.6 KiB
              → brotli      ███████                               184.4 KiB   ▼ 78%
@@ -419,19 +424,19 @@ react + router             ██████                                159
 mediapipe glue (lazy)      █████                                  136.0 KiB
              → brotli      █                                      34.8 KiB   ▼ 74%
 
-app css (tailwind)         ██                                      53.4 KiB
+app css (tailwind)         ██                                      53.8 KiB
              → brotli      ▏                                        9.3 KiB   ▼ 83%
 
-service worker + workbox   █                                       26.2 KiB
-             → brotli      ▏                                        8.2 KiB   ▼ 69%
+service worker + workbox   █                                       26.4 KiB
+             → brotli      ▏                                        8.3 KiB   ▼ 69%
 
 AR / XR / detection (lazy) ▊                                       22.0 KiB
              → brotli      ▏                                        7.4 KiB   ▼ 66%
 
-html + manifest + font css ▏                                        6.1 KiB
-             → brotli      ▏                                        2.7 KiB   ▼ 56%
+html + manifest + font css ▏                                        6.4 KiB
+             → brotli      ▏                                        2.8 KiB   ▼ 56%
 ──────────────────────────────────────────────────────────────────────────────────
-TOTAL (25 files)           2559.3 KiB raw → 708.6 KiB gzip → 578.7 KiB brotli ▼ 77%
+TOTAL (25 files)           2562.9 KiB raw → 710.7 KiB gzip → 580.3 KiB brotli ▼ 77%
 ```
 
 > **Measure off disk, not off the Vite console.** Vite reports the *character* length of a
@@ -441,14 +446,14 @@ TOTAL (25 files)           2559.3 KiB raw → 708.6 KiB gzip → 578.7 KiB brotl
 
 ### What a cold install actually fetches
 
-The service worker precaches **43 entries, 33,431.8 KiB raw**. That splits into two very
+The service worker precaches **46 entries, 33,486.2 KiB raw**. That splits into two very
 different things, and conflating them would misrepresent the install cost:
 
 | Group | Files | Raw | Brotli |
 |---|---:|---:|---:|
-| **App shell** — code, fonts, icons, HTML | 36 | 2,466.2 KiB | **813.0 KiB** |
+| **App shell** — code, fonts, icons, HTML | 39 | 2,520.1 KiB | **866.9 KiB** |
 | **Offline vision** — WASM runtimes + TFLite/task models | 7 | 30,966.1 KiB | **12,447.3 KiB** |
-| **Total precache** | **43** | **33,431.8 KiB** | **13,260.3 KiB** |
+| **Total precache** | **46** | **33,486.2 KiB** | **13,314.2 KiB** |
 
 The vision group is dominated by two WASM builds that MediaPipe requires — SIMD and non-SIMD —
 plus the models:
@@ -467,15 +472,23 @@ plus the models:
 
 | Network | App shell | Full precache incl. vision | Subsequent launches |
 |---|---:|---:|---|
-| 2G · 50 kbit/s | 130.1 s | 35.4 min | **0 bytes** |
-| 3G · 750 kbit/s | 8.7 s | 2.4 min | **0 bytes** |
-| 4G · 5 Mbit/s | 1.3 s | 0.4 min | **0 bytes** |
+| 2G · 50 kbit/s | 138.7 s | 35.5 min | **0 bytes** |
+| 3G · 750 kbit/s | 9.2 s | 2.4 min | **0 bytes** |
+| 4G · 5 Mbit/s | 1.4 s | 0.4 min | **0 bytes** |
 
-Zero bytes after install because the shell is precached in full. **This is the single biggest
-efficiency trade in the project** and it is a deliberate one: precaching the vision models is
-what makes gesture control and object detection work with no signal, and it costs a large
-one-time download. Making the models an opt-in download is the obvious improvement and is
-listed under [Future scope](#future-scope).
+**What these times mean.** The app is usable as soon as the shell's first chunks load — a few
+seconds on 3G. The precache then fills **in the background**; the right-hand column is how long
+until the phone is fully offline-ready, not how long a worker waits. Zero bytes after that.
+
+**This is the single biggest efficiency trade in the project, and it is deliberate.** An earlier
+build runtime-cached the vision models, which produced the classic failure: a feature never
+opened while online did not work underground. Precaching them removes that failure at the cost
+of a large one-time download. `docs/OFFLINE_VISION.md` records the decision.
+
+**The APK sidesteps the trade entirely.** It carries `dist/` in the package — vision models
+included — and needs no network at all, ever, after install. Measured: the release APK is
+**25.4 MiB** (26,605,070 bytes), the debug APK 28.9 MiB — APK compression takes the 34.9 MiB
+`dist/` down by about a quarter.
 
 ### Certificate QR — the whole record, not a lookup
 
@@ -528,7 +541,7 @@ hazard report.
 
 | | |
 |---|---|
-| Modules transformed | **736** |
+| Modules transformed | **737** |
 | Build time | **~7–8 s** |
 | Warnings | none |
 | Chunking | three.js and react split out; AR, XR and detection lazy |
@@ -553,7 +566,7 @@ Coverage, as reported by `npm run i18n`:
 | English | 640 / 640 | source |
 | Hindi | 640 / 640 | complete |
 | Santali | 638 / 640 | 2 keys fall back to Hindi |
-| Bengali · Odia · Urdu | 638 / 640 | 2 keys fall back to English |
+| Bengali · Odia · Urdu | 638 / 640 | 2 keys fall back to Hindi |
 
 **Santali is 100% covered and 0% verified, and the app says so.** These are two different
 numbers and conflating them is how software ends up lying. `SANTALI_VERIFIED` is `false` in
@@ -564,7 +577,13 @@ finished translation.
 
 **Scenario prose is deliberately not machine-translated.** None of the 9 modules has Santali;
 they resolve to Hindi and the app names the language actually used, spoken in Santali before
-the drill switches. Drill prose is where a wrong verb changes what a worker physically does —
+the drill switches. Bengali, Odia and Urdu have prose for one module (`warehouse-loading`);
+the other eight now fall back to **Hindi** — they used to fall through to English, the least
+readable option for a worker in Jharkhand. Fallback prose is tagged with its own `lang` and
+`dir`, so Hindi reads left-to-right inside the right-to-left Urdu interface and a screen
+reader uses a Hindi voice for it.
+
+Drill prose is where a wrong verb changes what a worker physically does —
 "leave the extinguisher and evacuate" and "use the extinguisher then evacuate" differ by one
 word, and it is read aloud, so a worker cannot check it against the screen.
 
@@ -579,9 +598,14 @@ npm run verify
 Runs tests → a11y gate → a11y self-test → contrast gate → contrast self-test → i18n gate →
 transliteration check → production build → offline-build check.
 
+CI runs the same command on every push and pull request (`.github/workflows/build.yml`), then
+builds the Android APK. Pushing a `v*` tag attaches the APK and its SHA-256 to a GitHub release —
+signed with your own key when the four `ANDROID_*` signing secrets are set, otherwise the debug
+build, named as such.
+
 | Gate | What it enforces | Result |
 |---|---|---|
-| `npm test` | 376 tests across 71 suites | **376 passing, 0 failing** |
+| `npm test` | 377 tests across 71 suites | **377 passing, 0 failing** |
 | `npm run a11y` | 20 structural checks | **passing** |
 | `npm run contrast` | 9 WCAG contrast checks | **passing** |
 | `npm run i18n` | script correctness, numeral survival, font-subset coverage, fallback termination | **passing** |
@@ -702,7 +726,9 @@ State these before a judge asks.
     `door` or `helmet` ever becomes classifiable**. Proximity is reported as "close", never in
     metres, because apparent size depends on the real size of the object and the lens.
 14. **The full precache is ~13 MB brotli**, dominated by two MediaPipe WASM builds. See
-    [Efficiency](#efficiency-and-compression) — the app shell alone is 813 KB.
+    [Efficiency](#efficiency-and-compression) — the app shell alone is 867 KB.
+15. **The APK runs compass AR only.** Android WebView has no WebXR, so the 6DoF hit-test tier
+    needs the PWA in Chrome. The APK detects this and falls back rather than failing.
 
 ---
 
@@ -710,7 +736,7 @@ State these before a judge asks.
 
 | | |
 |---|---|
-| **Make the vision models an opt-in download** | Cuts first install from ~13 MB to 813 KB brotli; gesture and detection become a deliberate choice rather than a tax on every worker |
+| **Make the PWA's vision models an explicit "download for offline" step** | Cuts the PWA's first install from ~13 MB to 867 KB brotli. Only worth doing with a visible download step: silently runtime-caching them is exactly what this project moved away from |
 | **ARCore Depth + Persistent Cloud Anchors** | Fixes occlusion, translation and distance in one step |
 | **Depth-sensing occlusion in WebXR** | Requested and reported today; needs a device to develop the per-fragment material |
 | **Native Android shell** | Hardware keystore, AlarmManager exact alarms, Nearby Connections radio transport |
@@ -734,10 +760,17 @@ deployed build, to demo the camera overlay.
 
 ### Android
 
+The Capacitor Android project is committed in `android/` (app ID `org.jaagruk.web`).
+Building needs **JDK 21** and an Android SDK.
+
 ```bash
-npm run android:sync
-npm run android:open
+npm run android:sync          # full build incl. vision-asset checks, then copy into android/
+cd android
+./gradlew assembleDebug       # Windows: gradlew.bat assembleDebug
 ```
+
+The APK lands in `android/app/build/outputs/apk/debug/`. `npm run android:open` opens the
+project in Android Studio instead. Signed release builds are covered in `docs/DEPLOYMENT.md`.
 
 ### Checks
 
@@ -778,6 +811,12 @@ See `docs/DEPLOYMENT.md` for the HTTPS requirement, headers and tunnel options.
 | `docs/JURY_SCRIPT.md` | Demo walkthrough |
 | `docs/santali-worksheet.csv` | All 640 strings for native-speaker review |
 | `docs/santali-scenario-worksheet.csv` | 332 untranslated drill strings with addressable paths |
+
+## Licence
+
+[MIT](LICENSE) © 2026 The Jaagruk team. Bundled third-party components keep their own licences —
+the MediaPipe Tasks Vision package declares Apache-2.0, and the bundled models' own documentation
+should be reviewed for release attribution (see `docs/OFFLINE_VISION.md`).
 
 ---
 

@@ -27,6 +27,7 @@ import { registerAutoSync, pendingCount, isOnline } from './lib/sync.js'
 import { dueRefreshers } from './lib/spaced.js'
 import { listAttempts, bestByDomain } from './lib/assessment.js'
 import { LS, lsGetBool } from './lib/local.js'
+import brandMark from './assets/brand-mark.png'
 
 /**
  * App shell.
@@ -171,7 +172,11 @@ export default function App() {
               margin of error for font metrics across devices. The footer already
               carries brand and tagline together, and a header's job is navigation,
               so dropping it here buys ~144px of real headroom instead. */}
-          <NavLink to="/" className="flex items-center shrink-0" aria-label={t('app_name')}>
+          <NavLink to="/" className="flex items-center gap-2 shrink-0" aria-label={t('app_name')}>
+            {/* The symbol, not the full lockup: the lockup's wordmark is near-black and
+                disappears on the dark theme. Decorative, since the link is already named.
+                Fixed width and height so it cannot shift the header while it loads. */}
+            <img src={brandMark} alt="" aria-hidden="true" width="22" height="28" className="h-7 w-auto shrink-0" />
             <span className="font-display text-2xl tracking-wide text-brand-text font-bold leading-none">
               {t('app_name')}
             </span>

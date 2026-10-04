@@ -57,6 +57,8 @@ import { useLanguage } from '../context/LanguageContext.jsx'
 export function ChoiceCard({
   index,
   text,
+  textLang,
+  textDir,
   pictogram,
   onSelect,
   disabled = false,
@@ -73,6 +75,9 @@ export function ChoiceCard({
       disabled={disabled}
       data-gesture-target={disabled ? undefined : `choice-${index}`}
       aria-label={pictogramMode ? `${number}. ${text}` : undefined}
+      /* In pictogram mode the label is all a screen reader hears, so it needs the
+         content's language or it is read in the interface's voice. */
+      lang={pictogramMode ? textLang : undefined}
       className={[
         // text-start, not text-left: mirrors for Urdu.
         'relative w-full text-start rounded-xl border-2 overflow-hidden',
@@ -116,7 +121,9 @@ export function ChoiceCard({
         {/* In pictogram mode the text stays in the DOM for screen readers, only
             visually hidden. Removing it would break assistive technology for the
             users this mode exists to serve. */}
-        <span className={pictogramMode ? 'sr-only' : 'flex-1 leading-relaxed text-ink'}>{text}</span>
+        <span lang={textLang} dir={textDir} className={pictogramMode ? 'sr-only' : 'flex-1 leading-relaxed text-ink'}>
+          {text}
+        </span>
       </span>
     </button>
   )
@@ -575,7 +582,18 @@ export function VoiceButton({
  * correct-but-slow explicitly. That case is the entire reason the latency
  * measurement exists, so burying it would waste the signal.
  */
-export function FeedbackPanel({ safe, feedback, grade, latencyMs, targetMs, aiCoaching, aiLoading, children }) {
+export function FeedbackPanel({
+  safe,
+  feedback,
+  feedbackLang,
+  feedbackDir,
+  grade,
+  latencyMs,
+  targetMs,
+  aiCoaching,
+  aiLoading,
+  children,
+}) {
   const { t } = useLanguage()
   const hesitated = safe && grade === GRADE.SLOW
 
@@ -601,7 +619,9 @@ export function FeedbackPanel({ safe, feedback, grade, latencyMs, targetMs, aiCo
           <GradePill grade={grade} latencyMs={latencyMs} targetMs={targetMs} />
         </div>
 
-        <p className="text-sm leading-relaxed text-ink">{feedback}</p>
+        <p lang={feedbackLang} dir={feedbackDir} className="text-sm leading-relaxed text-ink">
+          {feedback}
+        </p>
 
         {hesitated && (
           <div className="mt-4 pt-3.5 border-t border-warning-border/60 flex items-start gap-3">

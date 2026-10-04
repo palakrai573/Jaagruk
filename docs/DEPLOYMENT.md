@@ -170,8 +170,9 @@ The web deploy and the APK are independent. The APK bundles `dist/` — it does 
 your hosting, so **the app works with no network from first launch**.
 
 ```bash
-npm run android:sync     # vite build + cap sync android
-npm run android:open     # opens Android Studio
+npm run android:sync     # npm run build (incl. vision-asset checks) + cap sync android
+cd android && ./gradlew assembleDebug    # needs JDK 21; Windows: gradlew.bat
+npm run android:open     # or open the project in Android Studio
 ```
 
 Then in Android Studio: **Build → Generate Signed Bundle / APK → APK → release**.
@@ -192,13 +193,24 @@ keytool -genkey -v -keystore jaagruk-release.jks -keyalg RSA \
 ```
 
 **Distribution.** For judging and a pilot, hand over the signed APK directly or push it via
-the department's MDM — no store review, no delay. For Play Store, the app ID
-`in.gov.jharkhand.jaagruk` implies government ownership, so the developer account should
-belong to the department rather than a student.
+the department's MDM — no store review, no delay.
 
-**Permissions to declare** in `android/app/src/main/AndroidManifest.xml`: `CAMERA`,
-`RECORD_AUDIO`, `INTERNET`, and optionally `ACCESS_FINE_LOCATION` (GPS is a bonus field on
-hazard reports; the app works without it).
+**App ID.** `org.jaagruk.web`. It was previously `in.gov.jharkhand.jaagruk`, which claims a
+government namespace this project does not own; an app ID is permanent once published, so it
+was changed before any release. It is deliberately different from the native Kotlin app's
+`org.jaagruk.safety`, so both can be installed on the same phone. If the department adopts
+the app, it should be re-published under the department's own namespace and account.
+
+**Permissions** are declared in `android/app/src/main/AndroidManifest.xml`: `CAMERA`,
+`RECORD_AUDIO` + `MODIFY_AUDIO_SETTINGS`, coarse and fine location, and `INTERNET`. They have
+to be: Capacitor's `BridgeWebChromeClient` turns a page's `getUserMedia` or geolocation call
+into an Android runtime request, and that request silently fails for anything undeclared — so
+the camera AR and the voice note would work in Chrome and fail in the APK. Camera, microphone,
+compass and GPS hardware are all marked `required="false"`, so a phone lacking one still
+installs and gets the 3D drill.
+
+**AR tier in the APK.** Android WebView does not implement WebXR. Inside the APK the drill
+runs the compass mode; the WebXR hit-test mode needs the PWA in Chrome.
 
 ---
 
@@ -310,15 +322,16 @@ fully offline install means understanding which is which.
 
 | Tier | What is in it | When it arrives |
 |---|---|---|
-| **Precached** — 35 entries, ~2.3 MB | Every route and code chunk including the lazy AR, XR and detection ones; the stylesheet; `index.html`; the manifest; and the Latin, Devanagari and **Ol Chiki** font subsets | At install. Nothing further needed. |
-| **Runtime-cached** | Bengali, Odia and Urdu font subsets; the MediaPipe runtime, WASM and the two models (hand landmarker, object detector, ~4 MB) | **On first use, online.** Never fetched until something asks for them. |
+| **Precached** — ~13 MB brotli | Every route and code chunk including the lazy AR, XR and detection ones; the stylesheet; `index.html`; the manifest; the Latin, Devanagari and **Ol Chiki** font subsets; and the MediaPipe runtime, both WASM variants and both models (`docs/OFFLINE_VISION.md`) | At install, in the background. The app is usable before it finishes. |
+| **Runtime-cached** | Bengali, Odia and Urdu font subsets | **On first use, online.** Never fetched until something asks for them. |
 | **Not the app's** | Offline *speech recognition* language packs | Android system setting. See below. |
 
 The runtime tier is deliberate: Nastaliq alone is ~317 KB for two weights, and making
 every worker download it to install an app they will use in Hindi is the wrong
 default. But it means a feature you have never opened while online will not work
 offline. That is the single most common cause of "it worked in the demo and not on
-the day".
+the day" — and it is exactly why the vision models were moved *out* of this tier and
+into the precache, despite their size.
 
 ### Install
 
@@ -343,11 +356,10 @@ turns "installed" into "fully offline".
       whenever a fix seems missing.
 - [ ] **Run one drill to the end.** Confirms the 3D scene chunk, the assessment and the
       certificate path are all resident.
-- [ ] **Open a drill with AR on**, and once with **Live detection** on. Downloads the
-      MediaPipe runtime and the object detector. `vision.js` also copies the model
-      bytes into IndexedDB, which survives cache eviction, so this only has to happen
-      once per device.
-- [ ] **Enable gesture control once.** Same, for the hand landmarker.
+- [ ] **Wait for the precache to finish** before going offline — the vision models are
+      most of its ~13 MB. Then open a drill with AR on, once with **Live detection** on,
+      and enable gesture control once: nothing downloads any more, but it proves the
+      runtime and both models actually load on this device.
 - [ ] **Switch language to each one you will demo.** Bengali, Odia and Urdu pull their
       font on first use. Skip this and the text renders in boxes offline. Hindi and
       Santali need nothing — their fonts are precached.

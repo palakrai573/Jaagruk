@@ -1,5 +1,5 @@
 {
-  "appId": "in.gov.jharkhand.jaagruk",
+  "appId": "org.jaagruk.web",
   "appName": "Jaagruk",
   "webDir": "dist",
   "server": {

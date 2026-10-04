@@ -23,6 +23,7 @@ import { ChoiceCard, LatencyBar, FeedbackPanel, ReadinessRing, VoiceButton } fro
 import { Button, Card, Badge, EmptyState } from '../components/ui/index.js'
 import { useLanguage } from '../context/LanguageContext.jsx'
 import { langName, narrationNotice, narrationStatus, NARRATION } from '../lib/i18n.js'
+import { bcp47For, directionFor } from '../lib/rtl.js'
 
 /*
  * Spoken option number to zero-based choice index.
@@ -98,6 +99,19 @@ export default function Scenario() {
    */
   const spokenIn = scenario ? scenarioContentLanguage(scenario.id, lang) : lang
   const languageNotice = narrationNotice(lang, spokenIn)
+
+  /*
+   * The drill's own language and direction, when they differ from the interface's.
+   *
+   * Drill prose falls back when a module has no text in the worker's language, so an
+   * Urdu page can be showing Hindi or English. The document is dir="rtl" for Urdu, and
+   * without an override that prose inherited it: right-aligned, with sentence-final
+   * punctuation jumping to the wrong end of the line. lang matters as much — it is what
+   * selects the right glyphs and the screen-reader voice. Applied to the text elements
+   * only, so the page chrome keeps the interface's direction.
+   */
+  const contentLang = spokenIn !== lang ? bcp47For(spokenIn) : undefined
+  const contentDir = spokenIn !== lang ? directionFor(spokenIn) : undefined
 
   const [stepIndex, setStepIndex] = useState(0)
   /* Mirrors stepIndex for callbacks that outlive the render they were created in.
@@ -695,7 +709,9 @@ export default function Scenario() {
       <div className="flex items-start justify-between gap-3 mb-5">
         <h1 className="font-display font-bold text-xl md:text-2xl uppercase tracking-tight flex items-center gap-3 min-w-0">
           <Pictogram name={scenario.pictogram} size={34} className="shrink-0" />
-          <span className="min-w-0">{scenario.title}</span>
+          <span className="min-w-0" lang={contentLang} dir={contentDir}>
+            {scenario.title}
+          </span>
         </h1>
 
         {/* The mode switch was a 10px tertiary-ink caption at the far right of the
@@ -824,7 +840,11 @@ export default function Scenario() {
 
       {/* border-s / ps, not border-l / pl — the rule mirrors for Urdu. */}
       {stepIndex === 0 && !feedback && (
-        <p className="text-ink-secondary mb-8 leading-relaxed border-s-2 border-brand ps-4 text-pretty">
+        <p
+          lang={contentLang}
+          dir={contentDir}
+          className="text-ink-secondary mb-8 leading-relaxed border-s-2 border-brand ps-4 text-pretty"
+        >
           {scenario.intro}
         </p>
       )}
@@ -834,7 +854,13 @@ export default function Scenario() {
       <div className="bg-surface-1 border border-line-subtle rounded-xl p-5 md:p-6 mb-6">
         <div className="flex items-start gap-4">
           {pictogramMode && <Pictogram name={step.pictogram} size={56} className="shrink-0" />}
-          <p className={`leading-relaxed text-ink ${pictogramMode ? 'text-base' : 'text-lg'}`}>{step.prompt}</p>
+          <p
+            lang={contentLang}
+            dir={contentDir}
+            className={`leading-relaxed text-ink ${pictogramMode ? 'text-base' : 'text-lg'}`}
+          >
+            {step.prompt}
+          </p>
         </div>
 
         {/* 44px target: a worker who cannot read relies on this, so it cannot be
@@ -862,6 +888,8 @@ export default function Scenario() {
                 key={`${step.id}-${choice.sourceIndex}`}
                 index={i}
                 text={choice.text}
+                textLang={contentLang}
+                textDir={contentDir}
                 pictogram={choice.pictogram}
                 pictogramMode={pictogramMode}
                 onSelect={() => choose(choice)}
@@ -922,6 +950,8 @@ export default function Scenario() {
         <FeedbackPanel
           safe={feedback.points >= step.maxPoints}
           feedback={feedback.feedback}
+          feedbackLang={contentLang}
+          feedbackDir={contentDir}
           grade={feedbackGrade}
           latencyMs={feedbackLatency}
           targetMs={step.targetMs}

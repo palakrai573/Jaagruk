@@ -424,7 +424,7 @@ SYNC (whenever, never blocking)
 │  Web Speech  MediaPipe WASM   Service Worker + Workbox (offline shell)   │
 ├─────────────────────────────────────────────────────────────────────────┤
 │  PACKAGING       Capacitor 8 → Android APK (minSdk 29)                   │
-│                  in.gov.jharkhand.jaagruk · also installable PWA         │
+│                  org.jaagruk.web · also installable PWA                  │
 └─────────────────────────────────────────────────────────────────────────┘
                               No backend. No account. No server dependency.
 ```
@@ -641,7 +641,7 @@ UI action
 
 | Deliverable required | Status |
 |---|---|
-| Working Android APK | Capacitor project configured, `minSdk 29`, `in.gov.jharkhand.jaagruk` |
+| Working Android APK | Capacitor project configured, `minSdk 29`, `org.jaagruk.web` |
 | ≥ 2 complete AR training modules | **9 modules, 54 timed decisions**, covering all 5 named domains + manual handling, roof & strata, working at height and mine haulage |
 | Assessment engine | Accuracy + latency grading, hesitation detection, decaying readiness |
 | QR certificate + verification | Signed hash-chained ledger; QR carries the whole record for offline verify |
@@ -1140,7 +1140,7 @@ Every number here is from the code, not rounded up for effect. Safe to be challe
 - Bytes on disk: `index` 891.8 KiB · `three` 833.6 KiB · `react` 159.9 KiB · CSS 48.8 KiB
   (Vite's console prints characters, not bytes — see the note in `README.md`)
 - 35 precached entries, ≈ 2.24 MiB
-- Capacitor 8, `minSdk 29` (Android 10+), app id `in.gov.jharkhand.jaagruk`
+- Capacitor 8, `minSdk 29` (Android 10+), app id `org.jaagruk.web`
 - Build time ≈ 5 s
 
 **Statutory alignment**

@@ -1,6 +1,7 @@
 {
   "name": "jaagruk",
   "private": true,
+  "license": "MIT",
   "version": "1.0.0",
   "description": "AR-based vocational safety training and certification for Jharkhand's mining and manufacturing sector (SIH 26041)",
   "type": "module",
@@ -23,7 +24,7 @@
     "translit": "node scripts/translit-check.mjs",
     "santali:worksheet": "node scripts/santali-worksheet.mjs",
     "verify": "npm run test && npm run a11y && npm run a11y:selftest && npm run contrast && npm run contrast:selftest && npm run i18n && npm run translit && npm run build",
-    "android:sync": "vite build && npx cap sync android",
+    "android:sync": "npm run build && npx cap sync android",
     "android:open": "npx cap open android"
   },
   "dependencies": {

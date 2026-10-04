@@ -64,10 +64,25 @@ describe('what language a drill actually resolves to', () => {
 
   test('the per-module asymmetry is real and is not smoothed over', () => {
     // warehouse-loading is the only module carried over from before the domain
-    // restructure, so it alone has bn/or/ur. The other eight resolve to English for
+    // restructure, so it alone has bn/or/ur. The other eight fall back to Hindi for
     // those languages. A test that asserted uniformity would be asserting a fiction.
     assert.equal(scenarioContentLanguage('warehouse-loading', 'bn'), 'bn')
-    assert.equal(scenarioContentLanguage('fire-explosion', 'bn'), 'en')
+    assert.equal(scenarioContentLanguage('fire-explosion', 'bn'), 'hi')
+  })
+
+  test('Bengali, Odia and Urdu never fall through to English', () => {
+    // They had no fallback chain, so 8 of 9 drills were shown and read aloud in
+    // English. Every module has Hindi, so with the chain in place none should.
+    for (const code of ['bn', 'or', 'ur']) {
+      for (const s of SCENARIOS) {
+        const resolved = scenarioContentLanguage(s.id, code)
+        assert.ok(
+          resolved === code || resolved === 'hi',
+          `${s.id}: ${code} resolved to ${resolved}, expected ${code} or hi`
+        )
+        if (resolved === 'hi') assert.equal(narrationStatus(code, resolved), NARRATION.FALLBACK, `${s.id}/${code}`)
+      }
+    }
   })
 
   test('English asks for itself and gets itself', () => {
@@ -110,10 +125,12 @@ describe('the notice tells the truth, and tells it at all', () => {
   })
 
   test('a genuine English fallback still gets the stronger notice', () => {
-    const resolved = scenarioContentLanguage('fire-explosion', 'bn')
-    assert.equal(resolved, 'en')
-    assert.equal(narrationStatus('bn', resolved), NARRATION.ENGLISH)
-    assert.equal(narrationNotice('bn', resolved), CONTENT_NOTICE.bn)
+    // No shipped language resolves a drill to English any more. The path still has
+    // to work — for a language added without a chain, or a module that loses its
+    // Hindi — so it is exercised directly rather than through a resolution that no
+    // longer produces it.
+    assert.equal(narrationStatus('bn', 'en'), NARRATION.ENGLISH)
+    assert.equal(narrationNotice('bn', 'en'), CONTENT_NOTICE.bn)
   })
 
   test('every language can render both notices', () => {

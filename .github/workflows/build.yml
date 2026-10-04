@@ -1,0 +1,145 @@
+# Build, verify, and package Jaagruk.
+#
+# Every push and pull request runs the same `npm run verify` a developer runs locally:
+# 376 tests, the a11y and contrast gates with their self-tests, the i18n and
+# transliteration gates, the production build and the offline-build check. Nothing is
+# packaged unless all of that passes.
+#
+# The APK job then builds the Capacitor Android project. Pushing a tag like `v1.0.0`
+# also publishes the APK, with its SHA-256, to a GitHub release.
+#
+# SIGNING
+# Add four repository secrets to get a signed release APK:
+#   ANDROID_KEYSTORE_BASE64    base64 of the .jks file   (base64 -w0 jaagruk-release.jks)
+#   ANDROID_KEYSTORE_PASSWORD
+#   ANDROID_KEY_ALIAS
+#   ANDROID_KEY_PASSWORD
+# Without them the job publishes the debug build and says so in the file name, rather
+# than shipping a release APK signed with a key nobody can reproduce.
+
+name: Build
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Tests, gates and web build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # ~30 MiB of pinned MediaPipe runtime and models. `npm run build` re-verifies every
+      # file against scripts/vision-assets.lock.json, so a cached copy cannot drift.
+      - name: Cache vision assets
+        uses: actions/cache@v4
+        with:
+          path: public/vision
+          key: vision-${{ hashFiles('scripts/vision-assets.lock.json') }}
+
+      - run: npm ci
+      - run: npm run verify
+
+      - name: Upload web build
+        uses: actions/upload-artifact@v4
+        with:
+          name: jaagruk-web
+          path: dist
+          retention-days: 14
+
+  android:
+    name: Android APK
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # only used to publish a release on a version tag
+    env:
+      HAS_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # Capacitor 8 compiles at Java 21.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Cache vision assets
+        uses: actions/cache@v4
+        with:
+          path: public/vision
+          key: vision-${{ hashFiles('scripts/vision-assets.lock.json') }}
+
+      - run: npm ci
+
+      # Full `npm run build` (vision-asset preparation and the offline-build check
+      # included), then copy dist/ into the Android project.
+      - run: npm run android:sync
+
+      - name: Decode signing key
+        if: env.HAS_KEYSTORE == 'true'
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/release.jks"
+          echo "JAAGRUK_KEYSTORE_PATH=$RUNNER_TEMP/release.jks" >> "$GITHUB_ENV"
+
+      - name: Build APK
+        working-directory: android
+        env:
+          JAAGRUK_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          JAAGRUK_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          JAAGRUK_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          chmod +x gradlew
+          VERSION=$(node -p "require('../package.json').version")
+          if [ "$HAS_KEYSTORE" = "true" ]; then
+            ./gradlew assembleRelease --no-daemon
+            SRC=app/build/outputs/apk/release/app-release.apk
+            OUT="jaagruk-$VERSION.apk"
+          else
+            ./gradlew assembleDebug --no-daemon
+            SRC=app/build/outputs/apk/debug/app-debug.apk
+            OUT="jaagruk-$VERSION-debug.apk"
+          fi
+          mkdir -p ../release
+          cp "$SRC" "../release/$OUT"
+          (cd ../release && sha256sum "$OUT" > "$OUT.sha256")
+          ls -l ../release
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: jaagruk-apk
+          path: release/*
+          retention-days: 30
+
+      - name: Publish release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release/*
+          generate_release_notes: true

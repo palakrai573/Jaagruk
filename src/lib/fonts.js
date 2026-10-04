@@ -46,19 +46,21 @@ export const FONT_STACK = {
     display: "'Barlow Condensed', 'Noto Sans Ol Chiki', 'Noto Sans Devanagari', system-ui, sans-serif",
     body: "'Inter', 'Noto Sans Ol Chiki', 'Noto Sans Devanagari', system-ui, sans-serif",
   },
+  // Bengali, Odia and Urdu carry Devanagari for the same reason Ol Chiki does: their
+  // missing strings and drills fall back to Hindi (LANGUAGE_FALLBACK in i18n.js).
   bengali: {
-    display: "'Barlow Condensed', 'Noto Sans Bengali', system-ui, sans-serif",
-    body: "'Inter', 'Noto Sans Bengali', system-ui, sans-serif",
+    display: "'Barlow Condensed', 'Noto Sans Bengali', 'Noto Sans Devanagari', system-ui, sans-serif",
+    body: "'Inter', 'Noto Sans Bengali', 'Noto Sans Devanagari', system-ui, sans-serif",
   },
   oriya: {
-    display: "'Barlow Condensed', 'Noto Sans Oriya', system-ui, sans-serif",
-    body: "'Inter', 'Noto Sans Oriya', system-ui, sans-serif",
+    display: "'Barlow Condensed', 'Noto Sans Oriya', 'Noto Sans Devanagari', system-ui, sans-serif",
+    body: "'Inter', 'Noto Sans Oriya', 'Noto Sans Devanagari', system-ui, sans-serif",
   },
   urdu: {
     // Nastaliq leads for Urdu: it is the script Urdu readers expect, and a
     // naskh fallback looks wrong rather than merely plain.
-    display: "'Noto Nastaliq Urdu', 'Barlow Condensed', system-ui, sans-serif",
-    body: "'Noto Nastaliq Urdu', 'Inter', system-ui, sans-serif",
+    display: "'Noto Nastaliq Urdu', 'Barlow Condensed', 'Noto Sans Devanagari', system-ui, sans-serif",
+    body: "'Noto Nastaliq Urdu', 'Inter', 'Noto Sans Devanagari', system-ui, sans-serif",
   },
 }
 
@@ -79,17 +81,25 @@ const LOADERS = {
     import('@fontsource/noto-sans-devanagari/devanagari-400.css'),
     import('@fontsource/noto-sans-devanagari/devanagari-700.css'),
   ],
+  // Devanagari rides along for the Hindi fallback. Its files are precached, so on
+  // an offline device this costs nothing.
   bengali: () => [
     import('@fontsource/noto-sans-bengali/bengali-400.css'),
     import('@fontsource/noto-sans-bengali/bengali-700.css'),
+    import('@fontsource/noto-sans-devanagari/devanagari-400.css'),
+    import('@fontsource/noto-sans-devanagari/devanagari-700.css'),
   ],
   oriya: () => [
     import('@fontsource/noto-sans-oriya/oriya-400.css'),
     import('@fontsource/noto-sans-oriya/oriya-700.css'),
+    import('@fontsource/noto-sans-devanagari/devanagari-400.css'),
+    import('@fontsource/noto-sans-devanagari/devanagari-700.css'),
   ],
   urdu: () => [
     import('@fontsource/noto-nastaliq-urdu/arabic-400.css'),
     import('@fontsource/noto-nastaliq-urdu/arabic-700.css'),
+    import('@fontsource/noto-sans-devanagari/devanagari-400.css'),
+    import('@fontsource/noto-sans-devanagari/devanagari-700.css'),
   ],
 }
 

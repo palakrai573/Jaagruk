@@ -350,9 +350,20 @@ const STRINGS = {
  *
  * Hindi is at 100% coverage, so in practice a Santali screen never reaches
  * English. That is what lets the coverage notice name Hindi honestly.
+ *
+ * Bengali, Odia and Urdu fall back to Hindi for the same reason. They used to
+ * have no chain at all, which mattered far more for drills than for the interface:
+ * only one of the nine modules has prose in those languages, so eight of nine
+ * drills were shown and read aloud in English — the least readable option for a
+ * worker in Jharkhand, and the one the narration notice rightly flags as a hazard.
+ * Spoken Hindi is also close to spoken Urdu, which matters for a drill that is
+ * read aloud. Each of these scripts' font stacks carries Devanagari for this.
  */
 export const LANGUAGE_FALLBACK = {
   sat: ['hi'],
+  bn: ['hi'],
+  or: ['hi'],
+  ur: ['hi'],
 }
 const FALLBACK = LANGUAGE_FALLBACK
 

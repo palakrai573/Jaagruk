@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Jaagruk</string>
+    <string name="title_activity_main">Jaagruk</string>
+    <string name="package_name">org.jaagruk.web</string>
+    <string name="custom_url_scheme">org.jaagruk.web</string>
+</resources>
