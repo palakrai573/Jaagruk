@@ -24,6 +24,23 @@ Department of Higher & Technical Education
 
 ---
 
+## Demo and download
+
+<div align="center">
+
+[![Jaagruk demo video: AR safety training, offline AI and the compliance dashboard](https://img.youtube.com/vi/B-6fgtAkHbg/maxresdefault.jpg)](https://youtu.be/B-6fgtAkHbg)
+
+**[Watch the demo video](https://youtu.be/B-6fgtAkHbg)** · **[Download the Android APK](https://github.com/palakrai573/Jaagruk/releases/latest)**
+
+</div>
+
+The APK on the [Releases page](https://github.com/palakrai573/Jaagruk/releases/latest) is built by CI
+from this repository, with its SHA-256 alongside. It is about 29 MiB, needs Android 10 or later,
+and works with no network after install. It is a debug-signed build for sideloading — allow
+"install unknown apps" for your browser or file manager when Android asks.
+
+---
+
 ## Kotlin Android App
 
 **[View the Jaagruk Kotlin App on GitHub](https://github.com/palakrai573/Jaagruk-app)**
@@ -71,7 +88,7 @@ Every screenshot below is the running app at **412 × 915** — a Pixel-class An
 | [Offline model](#offline-model) · [Security](#security-and-integrity) | The guarantees |
 | [Efficiency and compression](#efficiency-and-compression) | **Measured numbers** |
 | [Native comparison](#native-reference-vs-this-implementation) · [Use cases](#use-cases) | The context |
-| [Quick start](#quick-start) · [Verification](#verification) · [Licence](#licence) | Running it |
+| [Demo and download](#demo-and-download) · [Quick start](#quick-start) · [Verification](#verification) · [Licence](#licence) | Running it |
 | [Advantages](#advantages) · [Limitations](#honest-limitations) · [Future scope](#future-scope) | The honesty |
 
 ---
